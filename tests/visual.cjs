@@ -58,6 +58,11 @@ async function main(){
     await visit(mobile);
     await mobile.click('#explore');
     await mobile.waitForTimeout(600);
+    const mobileFrame=await mobile.evaluate(()=>{
+      const s=window.YangzhouDebug.state;
+      return {fraction:660*s.scale/innerWidth,scale:s.scale};
+    });
+    assert(mobileFrame.fraction>=.75,'The painted city should use at least 75% of mobile viewport width');
     await mobile.screenshot({path:OUT+'/mobile-overview.png'});
     await mobile.click('#scenes');
     await mobile.locator('#artDialog').waitFor({state:'visible'});
