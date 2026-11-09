@@ -42,6 +42,9 @@ The game opens around one seamlessly painted Slender West Lake landscape, fitted
 
 All six are neutral; internal contacting edges match. Water extends north-to-south through the centre column; a walking path crosses the bridge between the lower left and lower right scenes. The starter artwork is a **stylised illustration**, not a scale map: image content and logical paths are intentionally separate so placement remains deterministic. Future topology-aware painted tiles must align visible water and street exits, particularly at the starter perimeter. Refer to [painted asset specifications](PAINTED-ASSETS.md).
 
+## Living painting asset rule (pass 4)
+For every starter scene and future tile, the base layer must be free of animated people, boats, steam and leaves. Keep foreground occluders (bridges, roofs, some trees) as transparent assets. Boats and residents are independent paint-matched sprites in world coordinates, never baked into the static panorama. The prototype contains a content-reconstructed clean plate, two moving boats, three painted resident cut-outs, bridge/willow occlusion and separate small atmospheric effects. **These are an editable first pass**: local retouching, walk/row frame animations and dynamic route graphs remain future work. See [Living Painting Architecture](LIVING-PAINTING.md).
+
 ## Tile system
 - Square orthogonal grid; all contacting edge types match after 90-degree rotation.
 - Three MVP edge types: L=landscape, S=street, W=water. A connected-wall / walled-quarter subgraph is reserved for the full game.
