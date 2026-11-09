@@ -133,15 +133,20 @@
       const exposed=[];
       for(let index=0;index<4;index++){
         const [dx,dy]=offset[index],neighbour=board.get((t.x+dx)+','+(t.y+dy));
-        // The six starter tiles are a single painting. Avoid artificial
-        // seams where two starter tiles already share the panorama.
+        // The six starter cells are now independent square masters, not
+        // slices of one panorama. Internal edges receive the same contract
+        // through the normal tile renderer; perimeter-only lead-ins remain
+        // here so we do not paint a second wash over internal joins.
         if(neighbour?.fixed)continue;
         exposed.push(index);
       }
       if(exposed.length){
         c.save();c.translate(t.x*SIDE,t.y*SIDE);
         for(const i of exposed)drawStarterLeadIn(c,t.edges[i],i);
-        drawBands(c,t.edges,exposed);c.restore();
+        // Tile-system.paint() has already applied the identical boundary
+        // contract to every edge. Painting it again here would create a
+        // visibly muddy double collar at the outside of the lake.
+        c.restore();
       }
     }
   }
