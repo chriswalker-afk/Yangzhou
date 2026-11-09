@@ -7,8 +7,9 @@ A calm, tile-laying city-builder inspired by the everyday stories of eighteenth-
 Open **index.html** in a modern browser (or host the repository as a static site). No build step, account, external dependency or network connection is required.
 
 This prototype now includes:
-- **A genuinely separate clean-plate image** generated from the original Slender West Lake painting. Marked static people and boats are removed and the revealed ground/water is reconstructed; unfinished retouching is documented.
+- **A genuinely separate, edge-compatible clean-plate image** generated from the original Slender West Lake painting. Marked static people and boats are removed and the revealed ground/water is reconstructed; unfinished retouching is documented.
 - **Independent transparent artwork layers:** two boats, three painted walking residents, the Five-Pavilion Bridge foreground and willow branches. Boats render beneath the bridge layer while walkers move across the bridge.
+- **Tileable terrain edges:** one shared painter controls the 44-unit street and 88-unit water openings at the exact centre of every 220-unit edge. The starter perimeter and newly placed tiles use identical boundary pixels, preserving visual compatibility after rotation.
 - **Clean plate / Living city toggle:** instantly switch between the unoccupied background and its independently animated inhabitants, with the same pan/zoom camera.
 - An editable/reproducible asset pipeline and QA screenshots covering the two-layer states.
 
@@ -52,6 +53,7 @@ This prototype includes:
 - [Pass 2: camera and procedural art prototype](docs/ARTWORK-CAMERA-PASS.md)
 - [Pass 3: painted asset architecture, starter topology, quality gates and future asset production](docs/PAINTED-ASSETS.md)
 - [Pass 4: **Living Painting Architecture**, clean background, independent actors, occlusion and next steps](docs/LIVING-PAINTING.md)
+- [Mandatory **tileable artwork-edge contract** and seam acceptance tests](docs/TILE-EDGE-CONTRACT.md)
 - [Painted asset manifest](assets/painted/manifest.json)
 - [Dependency-free gameplay and camera smoke tests](tests/smoke.cjs) (`node tests/smoke.cjs`)
 
