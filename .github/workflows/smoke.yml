@@ -1,0 +1,21 @@
+name: Browser logic smoke tests
+on:
+  push:
+    branches: [main, "feat/**"]
+  pull_request:
+    branches: [main]
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate JavaScript and run canvas interaction smoke tests
+        run: |
+          node --check artwork.js
+          node --check ambient.js
+          node --check tests/smoke.cjs
+          node tests/smoke.cjs
