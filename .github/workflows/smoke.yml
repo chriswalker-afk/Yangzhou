@@ -20,5 +20,7 @@ jobs:
           node --check edge-art.js
           node --check artwork.js
           node --check ambient.js
+          node --check tests/tile-topology.cjs
+          node tests/tile-topology.cjs
           node --check tests/smoke.cjs
           node tests/smoke.cjs
