@@ -171,8 +171,8 @@ function moveGoal(scale,x,y,instant=false){camera.ts=Math.max(.20,Math.min(5.3,s
   state.dirty=true;}
 function fit(instant=false){let ts=[...board.values()],mnx=Math.min(...ts.map(t=>t.x)),mny=Math.min(...ts.map(t=>t.y)),mxx=Math.max(...ts.map(t=>t.x))+1,mxy=Math.max(...ts.map(t=>t.y))+1;
   let usableH=Math.max(260,state.h-(state.w<680?180:165));
-  let margin=state.w<680?95:185;
-  let scale=Math.min((state.w-margin)/((mxx-mnx+1)*TILE),usableH/((mxy-mny+1)*TILE),1.08);
+  let margin=state.w<680?78:185;
+  let scale=Math.min((state.w-margin)/((mxx-mnx)*TILE),usableH/((mxy-mny)*TILE),1.08);
   scale=Math.max(.24,scale);
   moveGoal(scale,state.w/2-((mnx+mxx)/2)*TILE*scale,(usableH/2+27)-((mny+mxy)/2)*TILE*scale,instant);}
 function zoomBy(f,screenX=state.w/2,screenY=state.h/2){const old=camera.ts,p={x:(screenX-camera.tx)/old,y:(screenY-camera.ty)/old};
