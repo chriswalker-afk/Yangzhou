@@ -31,7 +31,7 @@
   const skin={
     causeway:['road-straight'],lake:['garden-riverside'],
     tea:['garden-courtyard','garden-teahouse'],
-    pagoda:['garden-willow'],five:['bridge-stone'],landing:['garden-teahouse','garden-riverside'],
+    pagoda:['garden-willow'],five:['bridge-stone'],landing:['garden-courtyard','garden-riverside'],
     garden:['garden-willow','garden-courtyard','garden-rockery','garden-blossoms'],
     court:['garden-courtyard','garden-teahouse'],market:['garden-teahouse','garden-courtyard'],
     street:['garden-willow','garden-blossoms'],canal:['garden-riverside','garden-rockery'],
@@ -179,7 +179,7 @@
     // The bridge roof layer is already part of the stationary tile painting;
     // actors are drawn only along designated bridge deck path heights.
   }
-  window.YangzhouTiles={draw,drawBridgeOccluders,ready:()=>populated()>=8,
+  window.YangzhouTiles={draw,drawBridgeOccluders,ready:()=>NAMES.every(ok),
     assetsReady:()=>NAMES.filter(ok),errors:()=>errors.slice(),
     stats:()=>({cached:cache.size,loaded:populated(),mode:'individual-square-tile-masters'}),
     tileSize:S,sourceFor:baseFor,clear:()=>cache.clear()};
