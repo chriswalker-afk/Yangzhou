@@ -8,6 +8,12 @@ const html=fs.readFileSync('index.html','utf8');
 const artwork=fs.readFileSync('artwork.js','utf8');
 const ambient=fs.readFileSync('ambient.js','utf8');
 const living=fs.readFileSync('living-scene.js','utf8');
+const edges=fs.readFileSync('edge-art.js','utf8');
+new vm.Script(edges,{filename:'edge-art.js'});
+assert(html.includes('<script src="edge-art.js"></script>'),'Universal edge painter should load');
+assert(edges.includes('drawStarterPerimeter')&&edges.includes('drawBands'),
+       'Fixed and newly placed tiles must share a border geometry contract');
+
 new vm.Script(living,{filename:'living-scene.js'});
 assert(html.includes('<script src="living-scene.js"></script>'),'Living painting module should be loaded');
 assert(html.includes('id="livingToggle"'),'Clean-plate comparison control should exist');
