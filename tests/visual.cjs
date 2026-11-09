@@ -12,6 +12,15 @@ async function main(){
     page.on('pageerror',e=>errors.push(String(e)));
     await page.goto('http://127.0.0.1:8765/',{waitUntil:'load'});
     await page.waitForFunction(()=>window.YangzhouPainted?.ready()===true,{timeout:25000});
+    await page.waitForFunction(()=>window.YangzhouTiles?.ready()===true,{timeout:25000});
+    const individual=await page.evaluate(()=>{
+      const g=window.YangzhouDebug,t=window.YangzhouTiles;
+      return {sources:[...g.board.values()].map(tile=>t.sourceFor(tile)),
+              mode:t.stats().mode,tiles:g.board.size};
+    });
+    assert.equal(individual.tiles,6);
+    assert.equal(new Set(individual.sources).size,6,'Six different square art masters must form the starter, not a sliced panorama');
+    assert.equal(individual.mode,'individual-square-tile-masters');
     await page.waitForFunction(()=>window.YangzhouLiving?.ready()===true,{timeout:25000});
     const layers=await page.evaluate(()=>window.YangzhouLiving.inspect());
     assert(layers.ready,'Clean layered painted scene should be ready');
@@ -80,8 +89,8 @@ async function main(){
     await page.click('#place');
     assert.equal(await page.evaluate(()=>window.YangzhouDebug.board.size),7,'Tile placement must still work');
     await page.waitForTimeout(330);
-    assert((await page.evaluate(()=>window.YangzhouTileArt?.stats().cached||0))>0,'New tiles must use painted image composites, not procedural fallback');
-    assert.equal(await page.evaluate(()=>window.YangzhouTileArt.stats().source),'clean-plate','Placed tiles must use a background without baked-in actors');
+    assert((await page.evaluate(()=>window.YangzhouTiles?.stats().cached||0))>0,'Newly placed tiles must use the same square-art renderer as fixed tiles');
+    assert.equal(await page.evaluate(()=>window.YangzhouTiles.stats().mode),'individual-square-tile-masters','Placed tiles must share the independent tile-art pipeline');
     // Actual pixel comparisons across every compatible edge type and
     // orientation: two different underlying paintings must have a tiny
     // measurable seam once their shared boundary aprons are rendered.
@@ -133,7 +142,7 @@ async function main(){
         const x=t.x+dirs[i][0],y=t.y+dirs[i][1],k=x+','+y;
         if(!board.has(k))slots.set(k,{x,y,side:i,port:t.edges[i]});
       }
-      const types={W:'Mooring basin',L:'Garden pavilion'};
+      const types={S:'Stone-paved street',W:'Mooring basin',L:'Garden pavilion'};
       const results=[];
       for(const slot of [...slots.values()].sort((a,b)=>a.y-b.y||a.x-b.x)){
         const arch=g.archetypes.find(t=>t.name===types[slot.port]);
@@ -153,8 +162,8 @@ async function main(){
     });
     assert.equal(expansion.count,16,'Ten painted tiles must surround six-tile lake');
     assert.equal(expansion.slots.length,10);
-    assert.equal(expansion.slots.filter(x=>x.port==='S').length,0);
-    assert.equal(expansion.slots.filter(x=>x.port==='L').length,8);
+    assert.equal(expansion.slots.filter(x=>x.port==='S').length,4);
+    assert.equal(expansion.slots.filter(x=>x.port==='L').length,4);
     assert.equal(expansion.slots.filter(x=>x.port==='W').length,2);
     await page.click('#fit');
     await page.waitForTimeout(750);
