@@ -127,7 +127,7 @@
     if(t.kind==='five'){
       // The bridge underpainting is a separate tile; the five roofs are
       // a separate illustration layer, never hard-coded into the lake base.
-      if(!imageOr(c,'five-pavilion-foreground',12,82,196,85)){
+      if(!imageOr(c,'five-pavilion-foreground',20,91,180,66)){
         c.save();for(let i=0;i<5;i++){
           const x=29+i*41;c.fillStyle='#b69b6b';
           c.beginPath();c.moveTo(x-15,102);c.lineTo(x,80);c.lineTo(x+15,102);
