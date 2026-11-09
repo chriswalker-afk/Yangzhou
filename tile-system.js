@@ -153,14 +153,8 @@
     const road=texturedPaint(c,'road-stone-texture','#c8b495');
     const water=texturedPaint(c,'canal-water-texture','#82aaa5');
     if(master){
-      // On a finished tile the path is part of the painting. Only missing
-      // branches are added as *narrow* extensions of its existing road.
-      if(t.kind==='pagoda'||t.kind==='landing'){
-        const spur=t.kind==='pagoda'?['L','S','L','L']:['L','S','L','S'];
-        network(c,spur,'S',33,'#a89474a7');
-        network(c,spur,'S',29,'#d5c4a4d5');
-        network(c,spur,'S',25,road);
-      }
+      // Full-square master is the art layer. Its topology is already encoded
+      // in the painting; do not lay a translucent vector road over roofs.
     }else{
       // Unsupplied topologies remain playable prototypes, but are not yet
       // signed off as production artwork. Geometry is always legal.
@@ -183,7 +177,10 @@
       }
     }
     // Architectural detail is a separate stationary layer with no people.
-    if(t.kind==='five'||t.kind==='pagoda'||t.kind==='tea'||t.kind==='market')drawLocalArchitecture(c,t);
+    // The full-square bridge and pagoda masters already contain architecture.
+    // Never paste a second pavilion/stupa over the hand-painted landmark.
+    // Procedural landmark sketches are reserved for tiles without a master.
+    if(!master&&(t.kind==='five'||t.kind==='pagoda'||t.kind==='tea'||t.kind==='market'))drawLocalArchitecture(c,t);
     if(t.kind==='garden'||t.kind==='court'){
       for(let k=0;k<5;k++)plant(c,24+((k*73)%175),21+((k*41)%165),4,k+t.seed);
     }
