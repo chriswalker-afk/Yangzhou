@@ -15,7 +15,7 @@ All edges share the same contract:
 | Stone street / path | S | Exact centre (110 of 220 units) | 44 units |
 | Navigable water | W | Exact centre (110 of 220 units) | 88 units |
 
-At the exact seam, all sides use the same neutral ink-and-paper land colour, road wash or canal wash. Stone curbs and banks meet at the same offsets, and no hand-painted object may obscure the connection. The 34-unit border apron transitions from canonical boundary pixels into the unique landscape illustration. On the starter perimeter, water ports have a translucent, tapering painted lead-in extending roughly 105 world units into the scene; they no longer terminate abruptly at the edge. Corners default to open ground so perpendicular neighbours meet consistently. Painting, rotation and the game's logical connection type are not independent choices.
+At the exact seam, all sides use the same neutral ink-and-paper land colour, road wash or canal wash. Stone curbs and banks meet at the same offsets, and no hand-painted object may obscure the connection. The runtime paints a narrow six-unit seam feather at land edges and gradually fades the road/water entry washes into the square tile painting. This avoids the former thick green border stripes. Tile artwork itself must preserve a clear connector-safe corridor well beyond the feather so a road or watercourse does not abruptly narrow inside the tile. Corners default to open ground so perpendicular neighbours meet consistently. Painting, rotation and the game's logical connection type are not independent choices.
 
 ## Implementation
 - `edge-art.js` is the single owner of the boundary palette, width and painting transforms for N/E/S/W.
@@ -48,7 +48,7 @@ Automated tests check: (a) each individual position has at least one archetype a
 
 ## Production-asset standard
 When commissioning a clean plate for a future tile:
-1. Reserve a 34-world-unit perimeter as a connection-safe band.
+1. Reserve at least 34 world units of **unobstructed authoring space** at each port (this is *not* a 34-unit solid-colour overlay). The runtime colour feather at land seams is only 6 units.
 2. Paint clear, unobstructed road/water exits at centre ±22 and ±44 units respectively, using the canonical land/road/water washes.
 3. Preserve land corners and do not place major buildings, movable figures, boats, walls or projecting roof pieces across a port.
 4. Provide a clean static base, independent foreground occluder PNGs, moving sprites and path anchors. Do not bake humans or boats into ground art.
@@ -66,12 +66,12 @@ When commissioning a clean plate for a future tile:
 - Pixel-level seam regression tests compare opposite edges in both horizontal and vertical orientations. The mean maximum-channel difference must be under 14 levels; the worst isolated difference under 70. Tests must not replace manual visual QA.
 
 ## Explicit limitations
-The new apron solves **border continuity**, not perfect visual storytelling several centimetres into an adjoining tile. The 34-unit transition is a bridging mechanism until hand-painted layers explicitly honour the opening widths. Source painting details near the starter perimeter sometimes still resist those geometry requirements and need artist review. A shared shape contract protects gameplay and basic continuity now; the bespoke paintings should ultimately make the patch unnoticeable.
+The narrow feather solves the immediate pixel-row discontinuity; it does **not** make mismatched landscape artwork genuinely seamless. Historical-style source paintings often have banks, buildings and paths that resist the logical tile geometry farther into the square. These require individually authored replacements, not wider tinted boundary bands. A shared shape contract protects gameplay and basic continuity now; the bespoke paintings should ultimately make the patch unnoticeable.
 
 See [Living Painting Architecture](LIVING-PAINTING.md) for the clean plate, independent walkers/boats and foreground occlusion requirements.
 
 ## Known production-art gap (9 November 2026)
 
-The six masters are distinct, but several were built using reworked shared sources and painterly composites. A matching pixel row on each side cannot conceal mismatched stone paths or waterbanks farther inside. Some images also contain partial paths and architecture not fully governed by the logical topology. They should be **repainted per archetype/topology at 1024×1024 or higher**, using the 44-unit road and 88-unit water edge ports as hard constraints. Preserve separate alpha masks for actors/foreground occlusion. The reference image supplied in the discussion is an **art-direction and connection-system target**, not a source asset to slice into the game.
+The six master *files* are distinct, but several were built using reworked shared sources and painterly composites. A matching pixel row on each side cannot conceal mismatched stone paths or waterbanks farther inside. Some images also contain partial paths and architecture not fully governed by the logical topology. They should be **repainted per archetype/topology at 1024×1024 or higher**, using the 44-unit road and 88-unit water edge ports as hard constraints. Preserve separate alpha masks for actors/foreground occlusion. The reference image supplied in the discussion is an **art-direction and connection-system target**, not a source asset to slice into the game.
 
-The original Slender West Lake panorama is only a gallery reference. The live grid must remain independent if it is later removed entirely. A production acceptance screenshot should show the 3×2 starter, a mixed 16-square ring, and rotated road/canal curves at overview and close detail without smearing, tinted bands, or disconnected waterways.
+The original Slender West Lake panorama is only a gallery reference. The live grid must remain independent if it is later removed entirely. Open [tile artwork review](../tile-review.html) for six-tile and full-ring visual inspections. A production acceptance screenshot should show the 3×2 starter, a mixed 16-square ring, and rotated road/canal curves at overview and close detail without smearing, tinted bands, or disconnected waterways.
