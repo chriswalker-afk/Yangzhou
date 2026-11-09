@@ -2,9 +2,15 @@
 
 A calm, tile-laying city-builder inspired by the everyday stories of eighteenth-century Yangzhou. The intended game combines a high, readable illustrated city view with rewarding close inspection, small ambient animations and activity-based scoring.
 
-## Painted Slender West Lake prototype · Pass 3
+## Living Painting proof of concept · Pass 4
 
 Open **index.html** in a modern browser (or host the repository as a static site). No build step, account, external dependency or network connection is required.
+
+This prototype now includes:
+- **A genuinely separate clean-plate image** generated from the original Slender West Lake painting. Marked static people and boats are removed and the revealed ground/water is reconstructed; unfinished retouching is documented.
+- **Independent transparent artwork layers:** two boats, three painted walking residents, the Five-Pavilion Bridge foreground and willow branches. Boats render beneath the bridge layer while walkers move across the bridge.
+- **Clean plate / Living city toggle:** instantly switch between the unoccupied background and its independently animated inhabitants, with the same pan/zoom camera.
+- An editable/reproducible asset pipeline and QA screenshots covering the two-layer states.
 
 This prototype includes:
 - Six connected Slender West Lake starting tiles arranged in a **3 × 2** grid; a single continuous handscroll-style WebP painting covers the full starter scene without internal grid seams.
@@ -30,7 +36,8 @@ This prototype includes:
 | Detail / 3 | Inspect buildings and small painted features |
 | Double click | Zoom toward the selected detail |
 | Explore artwork | Hide placement guides; zoom in and select a tile to inspect the painting |
-| Paintings | Open the four detailed local artworks and browse them |
+| Clean plate / Living city (or L) | Toggle between the unoccupied background and independent animated sprites |
+| Paintings | Open the four detailed reference artworks and browse them |
 | Gallery ← / → | Previous / next painting; Escape closes |
 | Previous / Next | Choose prototype tile archetype |
 | Rotate or R | Rotate clockwise |
@@ -44,10 +51,11 @@ This prototype includes:
 - [Prototype QA checklist and honest limitations](docs/PROTOTYPE-QA.md)
 - [Pass 2: camera and procedural art prototype](docs/ARTWORK-CAMERA-PASS.md)
 - [Pass 3: painted asset architecture, starter topology, quality gates and future asset production](docs/PAINTED-ASSETS.md)
+- [Pass 4: **Living Painting Architecture**, clean background, independent actors, occlusion and next steps](docs/LIVING-PAINTING.md)
 - [Painted asset manifest](assets/painted/manifest.json)
 - [Dependency-free gameplay and camera smoke tests](tests/smoke.cjs) (`node tests/smoke.cjs`)
 
-**Next:** draw **topology-aware painted variants** of the 12 playable tile archetypes to match the starter painting, then build a **dynamic transport graph** and painterly moving person/boat sprites. Afterwards, add player pools and activity scoring. Afterwards, build the turn manager, six-person pools, activity completion rules and score-once tests.
+**Next:** inspect and manually retouch the reconstructed clean scene, then create painterly multi-frame animation sprites and dynamic street/canal routes connecting newly placed tiles. Expand the layered art to all 12 tile archetypes before activity scoring. Afterwards, build the turn manager, six-person pools, activity completion rules and score-once tests.
 
 ## Rights and reference policy
 The four local WebP assets are newly generated project illustrations. The original painted references and museum photographs are research sources, not copied into the game. The imagery requires historical/cultural review before claims of authenticity; original source files and checksums are recorded in the manifest. Production artwork and any external sources must have documented usage rights.
