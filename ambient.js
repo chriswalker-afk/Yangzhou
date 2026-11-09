@@ -40,6 +40,10 @@ function along(points,f){let lengths=[],total=0;
 function draw(now){requestAnimationFrame(draw);const g=game();if(!g)return;
  const s=g.state;resize(s.w,s.h);c.clearRect(0,0,s.w,s.h);if(!s.motion)return;
  c.save();c.translate(s.offsetX,s.offsetY);c.scale(s.scale,s.scale);
+ c.beginPath();c.rect(0,0,660,440);c.clip();
+ const painted=window.YangzhouPainted?.ready()===true;
+ // At close zoom preserve the painted style; production actor sprites are future artwork.
+ if(!painted||s.scale<.78){
  // Painting-aligned illustration paths: real graph navigation for placed tiles follows in next pass.
  if(g.board.has('1,0')&&g.board.has('1,1')){
    const p=(now*.017%530)-45,x=393+Math.sin(p*.016)*10;
@@ -53,7 +57,8 @@ function draw(now){requestAnimationFrame(draw);const g=game();if(!g)return;
    for(let i=0;i<3;i++){const f=(now*.000015+(i/3))%1,p=along(walk,i===1?1-f:f);
      person(p[0],p[1],now,i+2);}
  }
- // Small ink-and-watercolour glints; invisible as separate illustrations at high zoom.
+ }
+ // Small ink-and-watercolour glints; keep these subtle at every zoom level.
  c.strokeStyle='rgba(244,237,208,.22)';c.lineWidth=.9;
  for(let i=0;i<8;i++){let y=(now*.008+i*74)%475,x=375+Math.sin(i*4+y*.009)*14;
    c.beginPath();c.ellipse(x,y,4+i%3*2,1,0,0,Math.PI);c.stroke();}
