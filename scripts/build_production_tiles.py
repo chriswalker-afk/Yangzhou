@@ -46,6 +46,7 @@ MOTIFS = [
     "garden-blossoms.webp", "garden-riverside.webp", "garden-teahouse.webp",
 ]
 SOURCE_FILES = ["road-straight.webp", "bridge-stone.webp", "river-straight.webp",
+                "road-teahouse.webp", "road-pagoda.webp", "road-landing.webp",
                 "road-stone-texture.webp", "canal-water-texture.webp", *MOTIFS]
 SOURCE = {p: Image.open(SRC / p).convert("RGB") for p in SOURCE_FILES}
 BOATS = False
@@ -67,9 +68,13 @@ def reflect_tile(patch: Image.Image, target: int = SIZE) -> Image.Image:
 
 # Grass is sampled from a standalone square road painting; there is no crop
 # from a panoramic scene and this texture contains no humans or boats.
-grass = reflect_tile(SOURCE["road-straight.webp"].crop((75, 40, 370, 335)))
-stone = reflect_tile(SOURCE["road-stone-texture.webp"])
-water = reflect_tile(SOURCE["canal-water-texture.webp"])
+# Use genuine material-only fragments for connection surfaces. The older
+# texture images included WHOLE PATH SHAPES; mirroring those introduced an
+# unmistakable repeating diamond in every road. This samples real stone and
+# clear water instead, so no route geometry is baked into the texture.
+grass = SOURCE["garden-courtyard.webp"].copy()
+stone = reflect_tile(SOURCE["road-straight.webp"].crop((481, 276, 553, 367)))
+water = reflect_tile(SOURCE["river-straight.webp"].crop((467, 312, 598, 452)))
 
 
 def rough_mask(mask: Image.Image, seed: int, blur: float = 15) -> Image.Image:
@@ -175,23 +180,38 @@ def route_mask(edges: str, type_: str, width: int, blur: float = 1.5) -> Image.I
 
 
 def landscape(kind: str, edges: str, seed: int) -> Image.Image:
-    bg = grass.copy()
+    """One complete richly painted 1024px square, not an assembled patchwork.
+
+    The original multi-quadrant sketch made repeated mirrored willows,
+    square blending frames and implausible landscape. The ground is now one
+    self-contained illustrated square master, to preserve genuine brush detail.
+    Routes are drawn only after its composition has been selected.
+    """
+    choices = {
+        "causeway": ["road-straight.webp"],
+        "lake": ["river-straight.webp"],
+        "tea": ["road-teahouse.webp","garden-teahouse.webp"],
+        "pagoda": ["garden-rockery.webp","garden-blossoms.webp"],
+        "five": ["bridge-stone.webp"],
+        "landing": ["road-landing.webp","garden-courtyard.webp"],
+        "garden": ["garden-courtyard.webp","garden-willow.webp","garden-blossoms.webp"],
+        "market": ["garden-teahouse.webp","road-landing.webp"],
+        "street": ["road-straight.webp","garden-willow.webp","garden-courtyard.webp"],
+        "canal": ["river-straight.webp","garden-rockery.webp","garden-riverside.webp"],
+        "bridge": ["bridge-stone.webp"],
+        "court": ["garden-courtyard.webp","garden-teahouse.webp"],
+    }
+    options=choices.get(kind,MOTIFS)
+    # Deterministically vary variants while keeping every building upright.
+    chosen=options[(seed // 7) % len(options)]
+    bg=SOURCE[chosen].copy()
     rng = np.random.default_rng(seed*119 + 5)
-    # Tiny, ink-like warm/cool flecks preserve a painted rather than flat look.
-    values = np.asarray(bg, dtype=np.int16)
-    yy, xx = np.indices((SIZE, SIZE))
-    mottling = (4*np.sin(xx*.017+seed)+4*np.cos(yy*.019-seed)+
-                rng.normal(0, 1.7, size=(SIZE, SIZE)))
-    values = np.clip(values + mottling[:,:,None], 0, 255).astype("uint8")
-    bg = Image.fromarray(values, "RGB")
-    # Exclude both possible transportation networks from architecture.
-    blocked = Image.new("L", (SIZE, SIZE), 0)
-    for typ in ("W", "S"):
-        if typ in edges:
-            width = PORT[typ] + 55
-            blocked = ImageChops.lighter(blocked, route_mask(edges, typ, width))
-    bg = stamps(bg, kind, seed, blocked)
-    return bg
+    arr=np.asarray(bg,dtype=np.int16)
+    yy,xx=np.indices((SIZE,SIZE))
+    mottling=(2*np.sin(xx*.017+seed)+2*np.cos(yy*.019-seed)+
+              rng.normal(0, .9, size=(SIZE,SIZE)))
+    arr=np.clip(arr + mottling[:,:,None],0,255).astype("uint8")
+    return Image.fromarray(arr,"RGB")
 
 
 def decorate_routes(im: Image.Image, edges: str, seed: int) -> Image.Image:
@@ -390,7 +410,7 @@ def main():
                              "port_world_units":{"land":0,"stone_road":44,"navigable_water":88},
                              "center_world_units":WORLD/2},
         "source":"original painted square source studies in assets/tiles, never starter panorama",
-        "method":"painted motif/ground composition, separately cropped architectural silhouettes, protected route geometry, no painted people or boats",
+        "method":"one original richly painted square underlay per topology with stone/water network and separate architectural silhouettes; no mirrored collage",
         "entries":ENTRIES,
         "limits":["Original square sources are artistic interpretations rather than historical reconstructions.",
                   "Formal aesthetic sign-off is still required at high zoom, especially at land-to-road blending.",
