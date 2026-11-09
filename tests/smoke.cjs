@@ -9,6 +9,12 @@ const artwork=fs.readFileSync('artwork.js','utf8');
 const ambient=fs.readFileSync('ambient.js','utf8');
 const living=fs.readFileSync('living-scene.js','utf8');
 const edges=fs.readFileSync('edge-art.js','utf8');
+const tiles=fs.readFileSync('tile-system.js','utf8');
+new vm.Script(tiles,{filename:'tile-system.js'});
+assert(html.includes('<script src="tile-system.js"></script>'),'The new square-tile art renderer must load');
+assert(!html.includes('drawStarterAtlas(ctx'),'A full starter panorama must never be drawn as the board');
+assert(tiles.includes('const S=220')&&tiles.includes('network(c,t.edges'),
+       'Every square image must share topology-aware connection geometry');
 new vm.Script(edges,{filename:'edge-art.js'});
 assert(html.includes('<script src="edge-art.js"></script>'),'Universal edge painter should load');
 assert(edges.includes('drawStarterPerimeter')&&edges.includes('drawBands'),
@@ -63,7 +69,7 @@ function frame(count=1){for(let i=0;i<count;i++){
 let framesRun=0;
 execute(artwork,'artwork.js');
 execute(scripts[0],'game-inline.js');
-execute(ambient,'ambient.js');
+// The old continuous ambient backplate is intentionally retired.
 frame(2);
 
 const game=window.YangzhouDebug;
@@ -144,10 +150,10 @@ for(const ft of fixed)for(let d=0;d<4;d++){
 }
 assert.equal(perimeter.size,10,'3 x 2 starter must have ten expansion positions');
 const ports=[...perimeter.values()].map(z=>z.port);
-assert.equal(ports.filter(p=>p==='S').length,0,'No forced streets through existing painted buildings');
+assert.equal(ports.filter(p=>p==='S').length,4,'Four outward roads built into individual starter tiles');
 assert.equal(ports.filter(p=>p==='W').length,2,'North and south canal exits');
-assert.equal(ports.filter(p=>p==='L').length,8,'Eight garden/landscape expansion slots');
-const preferred={'W':'Mooring basin','L':'Garden pavilion'};
+assert.equal(ports.filter(p=>p==='L').length,4,'Four natural garden/landscape borders');
+const preferred={'S':'Stone-paved street','W':'Mooring basin','L':'Garden pavilion'};
 const ring=[...perimeter.values()].sort((a,b)=>a.y-b.y||a.x-b.x);
 for(const cell of ring){
   // Check any tile may match even before a suggested choice is made.
@@ -174,4 +180,4 @@ for(const t of game.board.values())for(let i=0;i<4;i++){
   if(other)assert.equal(t.edges[i],other.edges[(i+2)%4],
     'Ring neighbour edges must match: '+t.x+','+t.y);
 }
-console.log('Yangzhou smoke tests passed: 13 tile archetypes, all 10 perimeter slots, full expansion ring, camera and placement.');
+console.log('Yangzhou smoke tests passed: six stand-alone tile masters, 13 archetypes, all 10 ring slots, camera and placement.');
