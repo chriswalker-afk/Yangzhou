@@ -21,8 +21,8 @@
     const side=Math.min(w,h)*portion;
     const jx=(hash(seed,3)-.5)*Math.min(24,w-side);
     const jy=(hash(seed,7)-.5)*Math.min(24,h-side);
-    const sx=Math.max(0,Math.min(w-side,cx*w-side/1-side/2+jx));
-    const sy=Math.max(0,Math.min(h-side,cy*h-side/1-side/2+jy));
+    const sx=Math.max(0,Math.min(w-side,cx*w-side/2+jx));
+    const sy=Math.max(0,Math.min(h-side,cy*h-side/2+jy));
     c.drawImage(img,sx,sy,side,side,0,0,S,S);
   }
   function pattern(c,img,rect){
