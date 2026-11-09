@@ -39,6 +39,12 @@
     bridge:['bridge-stone'],gate:['garden-courtyard'],
   };
   function masterFor(t){
+    // Fixed starter cells refer to independently authored full-square assets,
+    // never a crop of the six-cell artwork. The master remains upright.
+    if(t.master){
+      if(!NAMES.includes(t.master))throw Error('Unknown Yangzhou tile master '+t.master);
+      return t.master;
+    }
     const sig=t.edges.join('');
     // A complete standalone painting owns the whole square. The central
     // road/canal is illustrated in the master, not drawn as a broad overlay.
@@ -159,14 +165,14 @@
       // Unsupplied topologies remain playable prototypes, but are not yet
       // signed off as production artwork. Geometry is always legal.
       if(W){
-        network(c,t.edges,'W',84,'#849479a0');
-        network(c,t.edges,'W',78,'#cfceb4a7');
-        network(c,t.edges,'W',72,water);
+        network(c,t.edges,'W',98,'#849479a0');
+        network(c,t.edges,'W',92,'#cfceb4a7');
+        network(c,t.edges,'W',88,water);
       }
       if(R){
-        network(c,t.edges,'S',35,'#8c846aa8');
-        network(c,t.edges,'S',31,'#d5c4a9d9');
-        network(c,t.edges,'S',27,road);
+        network(c,t.edges,'S',50,'#8c846aa8');
+        network(c,t.edges,'S',46,'#d5c4a9d9');
+        network(c,t.edges,'S',44,road);
       }
       if(W&&R){
         const ns=t.edges[0]==='W'&&t.edges[2]==='W';
@@ -181,7 +187,9 @@
     if(t.kind==='garden'||t.kind==='court'){
       for(let k=0;k<5;k++)plant(c,24+((k*73)%175),21+((k*41)%165),4,k+t.seed);
     }
-    window.YangzhouEdgeArt?.drawCaps?.(c,t.edges);
+    // Normalise every side, including fixed-to-fixed joins. A master painting
+    // alone cannot guarantee identical bank/curb widths at its cut edges.
+    window.YangzhouEdgeArt?.drawBands?.(c,t.edges);
     c.restore();
   }
   function raster(t,resolution){
@@ -191,7 +199,7 @@
   function draw(c,t,time,scale=1){
     if(!ok(baseFor(t)))return false;
     const detail=scale>=2.7?5:4;
-    const k=[t.kind,t.edges.join(''),t.seed||0,detail].join(':');
+    const k=[t.master||'',t.kind,t.edges.join(''),t.seed||0,detail].join(':');
     let can=cache.get(k);
     if(!can){can=raster(t,detail);cache.set(k,can);if(cache.size>MAX_CACHE)cache.delete(cache.keys().next().value);}
     else{cache.delete(k);cache.set(k,can);}
@@ -204,7 +212,7 @@
   }
   window.YangzhouTiles={draw,drawBridgeOccluders,ready:()=>NAMES.every(ok),
     assetsReady:()=>NAMES.filter(ok),errors:()=>errors.slice(),
-    stats:()=>({cached:cache.size,loaded:populated(),mode:'individual-square-tile-masters'}),
+    stats:()=>({cached:cache.size,loaded:populated(),mode:'individual-square-tile-masters',canonicalWidths:{street:44,water:88}}),
     tileSize:S,sourceFor:baseFor,clear:()=>cache.clear()};
   load();
 })();
