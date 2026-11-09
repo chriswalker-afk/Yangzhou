@@ -2,29 +2,29 @@
 
 A calm, tile-laying city-builder inspired by the everyday stories of eighteenth-century Yangzhou. The intended game combines a high, readable illustrated city view with rewarding close inspection, small ambient animations and activity-based scoring.
 
-## Living Painting proof of concept · Pass 4
+## Modular tile proof of concept · Pass 4
 
-Open **index.html** in a modern browser (or host the repository as a static site). No build step, account, external dependency or network connection is required.
+Open **index.html** in a modern browser (or host the repository as a static site). No build step, account or external runtime dependency is required. Open **tile-review.html** to inspect the independent starter artwork and a fully populated expansion ring without the game interface.
 
 This prototype now includes:
-- **A genuinely separate, edge-compatible clean-plate image** generated from the original Slender West Lake painting. Marked static people and boats are removed and the revealed ground/water is reconstructed; unfinished retouching is documented.
-- **Independent transparent artwork layers:** two boats, three painted walking residents, the Five-Pavilion Bridge foreground and willow branches. Boats render beneath the bridge layer while walkers move across the bridge.
-- **Tileable terrain edges:** one shared painter controls the 44-unit street and 88-unit water openings at the exact centre of every 220-unit edge, with the same geometry used by the game tile schema and independent-square renderer. All ten starter-neighbour positions have a selectable example, and the full perimeter can be filled together (eight garden gateways with streets opening outwards, two mooring basins). The natural starter painting is not cut by invented street entrances. The starter perimeter and newly placed tiles use identical boundary pixels, preserving visual compatibility after rotation.
-- **Clean plate / Living city toggle:** instantly switch between the unoccupied background and its independently animated inhabitants, with the same pan/zoom camera.
+- **Six separate square artwork files** make up the fixed Slender West Lake starting board (3 × 2). Its older panorama/clean-plate image remains a reference and sprite source, not the game map.
+- **Independent animated elements:** demo boats and three painted walking residents use tile-world coordinates. Legacy bridge/willow extraction assets are preserved, but clean, per-tile foreground masks and dynamic occlusion still need an art pass.
+- **Matching connectors:** one shared painter controls 44-unit street and 88-unit water openings at the exact centre of every 220-unit edge, including the five internal starter joins. All ten exterior locations have legal matching tiles and can be occupied together. A narrow paint feather standardises the seam pixels, but **does not yet guarantee visibly seamless interior artwork**.
+- **Clean plate / Living city toggle:** hide or restore independent moving sprites above the square-tile board without changing the static base paintings.
 - An editable/reproducible asset pipeline and QA screenshots covering the two-layer states.
 
 This prototype includes:
-- Six connected Slender West Lake **individually authored square paintings**, arranged in a **3 × 2** grid. Every fixed and placeable tile uses the same rules in `tile-topology.js` and `edge-art.js`; the panorama is only an optional close-up reference in the gallery.
+- Six connected Slender West Lake **distinct square tile masters**, arranged in a **3 × 2** grid. Every fixed and placeable tile uses the shared `tile-topology.js` and `edge-art.js` rules. Some current masters recompose material from shared source paintings: they remain placeholders for six genuinely bespoke production illustrations.
 - Three further full-resolution painted scenes of the Five-Pavilion Bridge, canal-side breakfast and White Pagoda Garden, inspectable from the **Paintings** button and relevant tiles in Explore mode.
 - A high starting camera with smooth easing, pointer-anchored zoom, one-finger pan / two-finger pinch, keyboard pan/zoom, Fit City and quick City / Street / Detail views.
 - Thirteen hand-coded tile archetypes with 90-degree rotation and exact edge matching (street, water, land).
 - Valid-placement outlines, selectable spaces and a Place tile action.
-- Real painted local image assets in `assets/painted/`, with a documented manifest and no temporary CDN links. The high-resolution panorama is drawn seamlessly; the three detail paintings are used for close inspection and as feathered motifs in selected new tile designs.
-- Newly placed, rotatable tiles use individual square masters where possible, with provisional topology-aware overlays for unpainted variants. Logical rotation does not turn painted buildings sideways. The procedural renderer remains a fallback until every topology has bespoke painted assets.
+- Locally stored generated artwork in `assets/tiles/` for gameplay and `assets/painted/` for historical-style concept/reference illustrations. The panorama is no longer drawn underneath the live board; the three detailed scenes remain available in the gallery.
+- Newly placed, rotatable tiles share the square-master renderer and connector rules, with provisional topology-aware painting where bespoke variations are missing. Logical rotation does not turn painted buildings sideways. The procedural renderer remains a fallback.
 - An Explore artwork mode that hides placement guides for unobstructed viewing, plus a separate ambient layer demonstrating journeys across the starter scene's seams.
 - Toggleable motion and support for the browser's reduced-motion preference.
 
-**The painted artwork is integrated, but not all art is finished.** The starter lake and three detailed subjects now use real locally stored generated illustrations rather than procedural vector approximations. The composited playable tiles still require unique, fully hand-painted, topology-matching variants; cultural/historical review and polished actor animation are also outstanding. Scoring, multiplayer and deck randomisation are not implemented.
+**Artwork acceptance is not complete.** Browser screenshots expose repeated architectural compositions and unnatural path, bank and bridge transitions just inside some joins. The shared edge geometry and asset architecture are implemented, not yet the bespoke painting standard in the visual reference. The next artwork pass should produce six clean square originals and topology-specific deck variants (1024 × 1024 minimum) before scoring, multiplayer or deck randomisation.
 
 ## Controls
 
@@ -55,10 +55,13 @@ This prototype includes:
 - [Pass 4: **Living Painting Architecture**, clean background, independent actors, occlusion and next steps](docs/LIVING-PAINTING.md)
 - [Mandatory **tileable artwork-edge contract** and seam acceptance tests](docs/TILE-EDGE-CONTRACT.md)
 - [One shared tile topology schema and six independent starter masters](tile-topology.js)
+- [Visual artwork review studio: six-tile scene, 16-tile ring, zoom and connector overlays](tile-review.html)
+- [Tile master art contract and remaining repainting tasks](assets/tiles/manifest.json)
+- [Deterministic topology tests](tests/tile-topology.cjs) (`node tests/tile-topology.cjs`)
 - [Painted asset manifest](assets/painted/manifest.json)
 - [Dependency-free gameplay and camera smoke tests](tests/smoke.cjs) (`node tests/smoke.cjs`)
 
-**Next:** inspect and manually retouch the reconstructed clean scene, then create painterly multi-frame animation sprites and dynamic street/canal routes connecting newly placed tiles. Expand the layered art to all 12 tile archetypes before activity scoring. Afterwards, build the turn manager, six-person pools, activity completion rules and score-once tests.
+**Next:** author **six genuinely distinct, topology-matched square originals** in the approved overhead handscroll style, starting with the Five-Pavilion Bridge and neighbouring waterways. Use the [tile review studio](tile-review.html) to approve starter seams and 16-tile expansion at overview and detail zoom. Then produce additional curved/junction/dead-end masters, independent per-tile foreground masks, dynamic street/canal routes and full actor animation. Scoring and the six-person token system follow those foundations.
 
 ## Rights and reference policy
 The four local WebP assets are newly generated project illustrations. The original painted references and museum photographs are research sources, not copied into the game. The imagery requires historical/cultural review before claims of authenticity; original source files and checksums are recorded in the manifest. Production artwork and any external sources must have documented usage rights.
