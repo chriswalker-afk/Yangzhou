@@ -22,7 +22,7 @@ aside p,aside label,.tip{font:13px/1.5 system-ui,sans-serif;color:#645e52}
 .actions{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 20px}
 .actions button{font-size:13px}
 label{display:block;margin:14px 0 6px}
-input{width:100%;accent-color:#476c60}
+input[type=range]{width:100%;accent-color:#476c60}input[type=checkbox]{width:16px;height:16px;vertical-align:middle;accent-color:#476c60}
 .note{border-top:1px solid #d5c9b2;padding-top:15px;margin-top:20px}
 #status{position:absolute;left:14px;bottom:14px;background:#f7eedeea;padding:9px 12px;border:1px solid #d4c5a9;font:12px system-ui,sans-serif}
 .pill{display:inline-block;background:#e1e9dc;padding:3px 8px;border-radius:30px;font:12px system-ui,sans-serif}
@@ -44,7 +44,7 @@ input{width:100%;accent-color:#476c60}
 <label for="zoom">Magnification</label><input type="range" id="zoom" min="35" max="350" value="100" step="5">
 <label><input type="checkbox" id="grid"> Show tile boundaries</label>
 <label><input type="checkbox" id="ports"> Show N/E/S/W ports</label>
-<p class="tip">Drag to pan, scroll or pinch to zoom. At high magnification, check whether banks, paving and buildings continue naturally across the joins.</p>
+<p class="tip">Drag to pan, scroll or use the magnification slider to zoom. At high magnification, check whether banks, paving and buildings continue naturally across the joins.</p>
 <div class="note"><h2>Acceptance contract</h2>
 <p>All tile edges are centred at world coordinate 110. Roads use 44 world units; water uses 88; landscape has no port. Streets join streets, water joins water, and landscape joins landscape. Buildings remain upright when tiles are rotated.</p>
 <p>Passing edge-pixel tests is necessary but not sufficient. Look for duplicated scenery, abrupt transitions, displaced bridges, unnatural banks and buildings obstructing connections.</p></div>
