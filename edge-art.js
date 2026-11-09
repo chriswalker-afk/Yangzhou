@@ -81,6 +81,50 @@
   function drawTile(c,t){
     c.save();c.translate(t.x*SIDE,t.y*SIDE);drawBands(c,t.edges);c.restore();
   }
+  function drawStarterLeadIn(c,type,index){
+    // These ramps make a genuine road or water entrance visible, rather than
+    // hiding an arbitrary underlying painting behind a narrow beige band.
+    // They fade into the interior to preserve the detailed handscroll.
+    if(type==='L')return;
+    c.save();transform(c,index);
+    const half=PORT[type]/2,inside=type==='W'?33:17,depth=105;
+    const g=c.createLinearGradient(0,0,0,depth);
+    if(type==='W'){
+      g.addColorStop(0,'#88aaa2f7');g.addColorStop(.34,'#87aaa2df');
+      g.addColorStop(.67,'#87aaa285');g.addColorStop(1,'#87aaa200');
+    }else{
+      g.addColorStop(0,'#c9ba9cfa');g.addColorStop(.34,'#c9ba9cdb');
+      g.addColorStop(.66,'#c9ba9c85');g.addColorStop(1,'#c9ba9c00');
+    }
+    c.beginPath();c.moveTo(SIDE/2-half,0);
+    c.bezierCurveTo(SIDE/2-half,35,SIDE/2-inside-2,77,SIDE/2-inside,depth);
+    c.lineTo(SIDE/2+inside,depth);
+    c.bezierCurveTo(SIDE/2+inside+2,77,SIDE/2+half,35,SIDE/2+half,0);
+    c.closePath();c.fillStyle=g;c.fill();
+    c.save();c.strokeStyle=type==='W'?'#c7d2b1a8':'#9b917987';c.lineWidth=1;
+    // The banks/curbs must visibly lead into the actual tile painting.
+    for(const sign of [-1,1]){
+      c.beginPath();c.moveTo(110+sign*half,0);
+      c.bezierCurveTo(110+sign*half,35,110+sign*(inside+2),70,110+sign*inside,depth);
+      c.stroke();
+    }
+    if(type==='S'){
+      c.lineWidth=.6;c.strokeStyle='#81775e80';
+      for(let j=0;j<10;j++){
+        const y=10+j*9,alpha=1-y/depth;
+        c.globalAlpha=Math.max(0,alpha);
+        c.beginPath();c.moveTo(110-13+((j%2)*3),y);
+        c.lineTo(110+12-((j%3)*2),y+1);c.stroke();
+      }
+    }else{
+      c.strokeStyle='#e5e4c29c';c.lineWidth=1.2;
+      for(let j=0;j<10;j++){
+        const y=7+j*10;c.globalAlpha=Math.max(0,1-y/depth)*.7;
+        c.beginPath();c.ellipse(110+(j%3-1)*12,y,5+(j%3)*3,1,0,0,Math.PI);c.stroke();
+      }
+    }
+    c.restore();c.restore();
+  }
   function drawStarterPerimeter(c,board){
     if(!board)return;
     const offset=[[0,-1],[1,0],[0,1],[-1,0]];
@@ -96,12 +140,13 @@
       }
       if(exposed.length){
         c.save();c.translate(t.x*SIDE,t.y*SIDE);
+        for(const i of exposed)drawStarterLeadIn(c,t.edges[i],i);
         drawBands(c,t.edges,exposed);c.restore();
       }
     }
   }
   window.YangzhouEdgeArt={
-    drawEdge,drawBands,drawTile,drawStarterPerimeter,
+    drawEdge,drawBands,drawTile,drawStarterPerimeter,drawStarterLeadIn,
     spec:Object.freeze({tileSize:SIDE,apron:DEPTH,exits:Object.freeze({...PORT}),
       center:SIDE/2,directions:['north','east','south','west']})
   };
