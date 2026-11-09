@@ -10,6 +10,27 @@ const ambient=fs.readFileSync('ambient.js','utf8');
 const living=fs.readFileSync('living-scene.js','utf8');
 const edges=fs.readFileSync('edge-art.js','utf8');
 const tiles=fs.readFileSync('tile-system.js','utf8');
+const topology=fs.readFileSync('tile-topology.js','utf8');
+const schema=require('../tile-topology.js');
+assert.equal(schema.portWidth.S,44);
+assert.equal(schema.portWidth.W,88);
+assert.equal(schema.center,110);
+assert.equal(schema.starter.length,6);
+assert.equal(new Set(schema.starter.map(t=>t.master)).size,6);
+assert.deepEqual(schema.validateBoard(schema.starter),[]);
+for(const t of schema.starter){
+  for(let k=0;k<4;k++)assert.equal(schema.rotateEdges(t.edges,k).length,4);
+}
+for(const a of schema.archetypes){
+  assert.equal(schema.rotateEdges(a.edges,4).join(''),a.edges.join(''));
+  assert.equal(schema.rotateEdges(a.edges,-1).join(''),schema.rotateEdges(a.edges,3).join(''));
+}
+const bad=schema.starter.map(t=>({...t,edges:t.edges.slice()}));
+bad[0].edges[1]='W';
+assert(schema.validateBoard(bad).length>0,'Invalid adjacent topology must be rejected');
+new vm.Script(topology,{filename:'tile-topology.js'});
+assert(edges.includes('S:44,W:88')||edges.includes('S:44,W:88'),'Shared edge art must use canonical port widths');
+
 new vm.Script(tiles,{filename:'tile-system.js'});
 assert(html.includes('<script src="tile-system.js"></script>'),'The new square-tile art renderer must load');
 assert(!html.includes('drawStarterAtlas(ctx'),'A full starter panorama must never be drawn as the board');
@@ -68,6 +89,7 @@ function frame(count=1){for(let i=0;i<count;i++){
 }}
 let framesRun=0;
 execute(artwork,'artwork.js');
+execute(topology,'tile-topology.js');
 execute(scripts[0],'game-inline.js');
 // The old continuous ambient backplate is intentionally retired.
 frame(2);
@@ -76,6 +98,8 @@ const game=window.YangzhouDebug;
 assert(game,'Game debug API should exist');
 assert.equal(game.board.size,6);
 assert.equal(game.archetypes.length,13);
+assert.equal(game.topology,window.YangzhouTileTopology);
+assert.equal(game.board.get('1,1').master,'bridge-stone');
 const dirs=[[0,-1],[1,0],[0,1],[-1,0]];
 for(const tile of game.board.values()){
  for(let i=0;i<4;i++){const other=game.board.get((tile.x+dirs[i][0])+','+(tile.y+dirs[i][1]));
@@ -180,4 +204,6 @@ for(const t of game.board.values())for(let i=0;i<4;i++){
   if(other)assert.equal(t.edges[i],other.edges[(i+2)%4],
     'Ring neighbour edges must match: '+t.x+','+t.y);
 }
-console.log('Yangzhou smoke tests passed: six stand-alone tile masters, 13 archetypes, all 10 ring slots, camera and placement.');
+assert.deepEqual(schema.validateBoard([...game.board.values()]),[],
+  'Expanded painted city must preserve topology on every internal seam');
+console.log('Yangzhou smoke tests passed: shared schema, six standalone tile masters, 44/88 ports, rotations, 13 archetypes, ring and camera.');
