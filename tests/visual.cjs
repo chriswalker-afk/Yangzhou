@@ -131,16 +131,18 @@ async function main(){
       const slots=new Map();
       for(const t of fixed)for(let i=0;i<4;i++){
         const x=t.x+dirs[i][0],y=t.y+dirs[i][1],k=x+','+y;
-        if(!board.has(k))slots.set(k,{x,y,port:t.edges[i]});
+        if(!board.has(k))slots.set(k,{x,y,side:i,port:t.edges[i]});
       }
-      const types={S:'Stone-paved street',W:'Mooring basin',L:'Garden enclosure'};
+      const types={W:'Mooring basin',L:'Garden pavilion'};
       const results=[];
       for(const slot of [...slots.values()].sort((a,b)=>a.y-b.y||a.x-b.x)){
         const arch=g.archetypes.find(t=>t.name===types[slot.port]);
         if(!arch)throw Error('No art archetype for '+slot.port);
         const choices=[];
-        for(let rotation=0;rotation<4;rotation++)if(g.canPlace(
-          slot.x,slot.y,g.rotEdges(arch.edges,rotation)))choices.push(rotation);
+        for(let rotation=0;rotation<4;rotation++){
+          const edges=g.rotEdges(arch.edges,rotation);
+          if(g.canPlace(slot.x,slot.y,edges)&&(slot.port!=='L'||edges[slot.side]==='S'))choices.push(rotation);
+        }
         if(!choices.length)throw Error('Cannot fill boundary position '+slot.x+','+slot.y);
         const rotation=choices[0],edges=g.rotEdges(arch.edges,rotation);
         board.set(slot.x+','+slot.y,{x:slot.x,y:slot.y,edges,
@@ -151,7 +153,8 @@ async function main(){
     });
     assert.equal(expansion.count,16,'Ten painted tiles must surround six-tile lake');
     assert.equal(expansion.slots.length,10);
-    assert.equal(expansion.slots.filter(x=>x.port==='S').length,4);
+    assert.equal(expansion.slots.filter(x=>x.port==='S').length,0);
+    assert.equal(expansion.slots.filter(x=>x.port==='L').length,8);
     assert.equal(expansion.slots.filter(x=>x.port==='W').length,2);
     await page.click('#fit');
     await page.waitForTimeout(750);
