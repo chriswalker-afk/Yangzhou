@@ -89,5 +89,5 @@
     c.save();c.translate(t.x*S,t.y*S);c.imageSmoothingQuality='high';
     c.drawImage(img,0,0,S,S);c.restore();return true;
   }
-  window.YangzhouTileArt={draw,clear:()=>cache.clear()};
+  window.YangzhouTileArt={draw,clear:()=>cache.clear(),stats:()=>({cached:cache.size})};
 })();
