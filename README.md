@@ -13,11 +13,11 @@ This prototype includes:
 - Twelve hand-coded tile archetypes with 90-degree rotation and exact edge matching (street, water, land).
 - Valid-placement outlines, selectable spaces and a Place tile action.
 - Real painted local image assets in `assets/painted/`, with a documented manifest and no temporary CDN links. The high-resolution panorama is drawn seamlessly; the three detail paintings are used for close inspection and as feathered motifs in selected new tile designs.
-- The previous procedural renderer remains available as a fallback and still supplies the exact street/water/land connection geometry for rotatable, newly placed tiles.
+- Newly placed, rotatable tiles now receive image-based artwork composites as well: the tile renderer combines painted building/garden crops with water and street strips positioned by the edge-connection rules. The procedural renderer remains a fallback until every topology has bespoke painted assets.
 - An Explore artwork mode that hides placement guides for unobstructed viewing, plus a separate ambient layer demonstrating journeys across the starter scene's seams.
 - Toggleable motion and support for the browser's reduced-motion preference.
 
-**The painted artwork is integrated, but not all art is finished.** The starter lake and three detailed subjects now use real locally stored generated illustrations rather than procedural vector approximations. The full deck of rotatable tiles still requires individual painted, topology-matching variants; cultural/historical review and polished actor animation are also outstanding. Scoring, multiplayer and deck randomisation are not implemented.
+**The painted artwork is integrated, but not all art is finished.** The starter lake and three detailed subjects now use real locally stored generated illustrations rather than procedural vector approximations. The composited playable tiles still require unique, fully hand-painted, topology-matching variants; cultural/historical review and polished actor animation are also outstanding. Scoring, multiplayer and deck randomisation are not implemented.
 
 ## Controls
 
