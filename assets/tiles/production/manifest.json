@@ -1,0 +1,724 @@
+{
+  "version": "production-geometry-1",
+  "status": "high-resolution individual painted tile masters; human art-direction review required",
+  "tile_size_px": 1024,
+  "world_size": 220,
+  "connection_schema": {
+    "N/E/S/W": [
+      "L",
+      "S",
+      "W"
+    ],
+    "port_world_units": {
+      "land": 0,
+      "stone_road": 44,
+      "navigable_water": 88
+    },
+    "center_world_units": 110.0
+  },
+  "source": "original painted square source studies in assets/tiles, never starter panorama",
+  "method": "painted motif/ground composition, separately cropped architectural silhouettes, protected route geometry, no painted people or boats",
+  "entries": [
+    {
+      "file": "starter-01.webp",
+      "kind": "causeway",
+      "edges": "SLSL",
+      "seed": 117,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "d0d1200405756a2baa7e7286fe145a0bfa193acb220a26da2dfa20fd98046614",
+      "bytes": 303894
+    },
+    {
+      "file": "starter-02.webp",
+      "kind": "lake",
+      "edges": "WLWL",
+      "seed": 134,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "fd128e15b4eaa73c72f1bf4a18fb02176e6354148321390e1aec493cad0ceb14",
+      "bytes": 291000
+    },
+    {
+      "file": "starter-03.webp",
+      "kind": "tea",
+      "edges": "SLSL",
+      "seed": 151,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "2f7e031b8e28c9a25ea69673282c84f7e783a37fbeb647d0eb95a7aaff316fc8",
+      "bytes": 306380
+    },
+    {
+      "file": "starter-04.webp",
+      "kind": "pagoda",
+      "edges": "SSSL",
+      "seed": 168,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "8371d32007210447218fb22d84ba17627135e1eff962e2dc8e38156bbcd7687f",
+      "bytes": 319020
+    },
+    {
+      "file": "starter-05.webp",
+      "kind": "five",
+      "edges": "WSWS",
+      "seed": 185,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "7e9cc0a441ab979180cbb3a62cfad75459d614e71853920fd597eec7ed7c2ebb",
+      "bytes": 304938
+    },
+    {
+      "file": "starter-06.webp",
+      "kind": "landing",
+      "edges": "SSSS",
+      "seed": 202,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "31e1d413b767d14f569f70d0dfe8999de4ffe8ef1d531f7a4e249cb3cea1d0d8",
+      "bytes": 322846
+    },
+    {
+      "file": "archetype-00-r0.webp",
+      "kind": "tea",
+      "edges": "LWLS",
+      "seed": 300,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "a54c96a54dacacf88e37c59061f7cbc8306ce738014c101a1d0f35dc5d4ec319",
+      "bytes": 304578
+    },
+    {
+      "file": "archetype-00-r1.webp",
+      "kind": "tea",
+      "edges": "SLWL",
+      "seed": 307,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "701a097728bc412b1c55cd690ca9c7b832c9030e916cef7d8cdc225b4e24d91c",
+      "bytes": 295988
+    },
+    {
+      "file": "archetype-00-r2.webp",
+      "kind": "tea",
+      "edges": "LSLW",
+      "seed": 314,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "5af8d1af89854deb394432e00e6711eaef01e4422f7a01b82011cfd2ad11fb65",
+      "bytes": 301714
+    },
+    {
+      "file": "archetype-00-r3.webp",
+      "kind": "tea",
+      "edges": "WLSL",
+      "seed": 321,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "7ff0fbbcb268693f2f673df76f0a7ba0b94da601bf94c290cbb9f637b85c9adc",
+      "bytes": 295102
+    },
+    {
+      "file": "archetype-01-r0.webp",
+      "kind": "street",
+      "edges": "SLSL",
+      "seed": 331,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "2f215c2cefd410d35774335e6cd94883841158b1b265778cd00482f69fc21747",
+      "bytes": 300898
+    },
+    {
+      "file": "archetype-01-r1.webp",
+      "kind": "street",
+      "edges": "LSLS",
+      "seed": 338,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "e9da3f03a960ddd116e12953e569d92743226efcf11f54998153932702628dbe",
+      "bytes": 306726
+    },
+    {
+      "file": "archetype-01-r2.webp",
+      "kind": "street",
+      "edges": "SLSL",
+      "seed": 345,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "7d5fcff86f4093b597c1d628c5c1fcf0deacd783a3491a27907e030090d633c9",
+      "bytes": 303468
+    },
+    {
+      "file": "archetype-01-r3.webp",
+      "kind": "street",
+      "edges": "LSLS",
+      "seed": 352,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "46109cf9061e0847b588be70962a96416451b6389f6b60a11e492ba59ba0b5b0",
+      "bytes": 307630
+    },
+    {
+      "file": "archetype-02-r0.webp",
+      "kind": "canal",
+      "edges": "WWLL",
+      "seed": 362,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "b08b9c436d7b1a3ef6a472b5bf1a4a320dde2b4a67d1204e5f8cd0183825ba5d",
+      "bytes": 296152
+    },
+    {
+      "file": "archetype-02-r1.webp",
+      "kind": "canal",
+      "edges": "LWWL",
+      "seed": 369,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "1687593c0cc2cfdea58d0983f4b2fab3d7faf7bbf5634c4741c6af257fae1a2b",
+      "bytes": 293654
+    },
+    {
+      "file": "archetype-02-r2.webp",
+      "kind": "canal",
+      "edges": "LLWW",
+      "seed": 376,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "c184cebc04037a8de67483265d1bb181622da437faf8e0f8f1025d273a8b56e3",
+      "bytes": 292904
+    },
+    {
+      "file": "archetype-02-r3.webp",
+      "kind": "canal",
+      "edges": "WLLW",
+      "seed": 383,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "83a79b201c24bff6dcfbe627c9e2fb9652f35223e3ea4a7783dbe5d35273ee79",
+      "bytes": 296720
+    },
+    {
+      "file": "archetype-03-r0.webp",
+      "kind": "landing",
+      "edges": "LWLW",
+      "seed": 393,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "2e3169b80eb39045a992d50c3d5456b0a0d7eb090bb97b6441eb79735a109fc9",
+      "bytes": 302528
+    },
+    {
+      "file": "archetype-03-r1.webp",
+      "kind": "landing",
+      "edges": "WLWL",
+      "seed": 400,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "082fad59f3f9eeee4279d988d4b5f4e37952b586d31f9f418c104bc4987c488f",
+      "bytes": 295188
+    },
+    {
+      "file": "archetype-03-r2.webp",
+      "kind": "landing",
+      "edges": "LWLW",
+      "seed": 407,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "34bed711373d5f7ab0e6b29ce2004ab07e96264d2dc8dcb72b35dc4ff20a6502",
+      "bytes": 302970
+    },
+    {
+      "file": "archetype-03-r3.webp",
+      "kind": "landing",
+      "edges": "WLWL",
+      "seed": 414,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "4cba59242148c6583a7d8876af97e2cb23e31aa75de32609b35da3ca9f9718f0",
+      "bytes": 293666
+    },
+    {
+      "file": "archetype-04-r0.webp",
+      "kind": "garden",
+      "edges": "LLLL",
+      "seed": 424,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "3d7dba7dc11f6ef255e8c0037580cb228063dbed89a7d214d4e925e76f9764f4",
+      "bytes": 300654
+    },
+    {
+      "file": "archetype-04-r1.webp",
+      "kind": "garden",
+      "edges": "LLLL",
+      "seed": 431,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "76205f0ce837f079ce0e82bb7d92ebe0b612e2f093ce2c1c2ec793d4156fcd06",
+      "bytes": 301406
+    },
+    {
+      "file": "archetype-04-r2.webp",
+      "kind": "garden",
+      "edges": "LLLL",
+      "seed": 438,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "ed1a1dcbce62503fb1c5055b50161d8fbbf79b26e3aeb8398890d7cd1041d47f",
+      "bytes": 299194
+    },
+    {
+      "file": "archetype-04-r3.webp",
+      "kind": "garden",
+      "edges": "LLLL",
+      "seed": 445,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "c812e1270cd9da4fcd841ce97fcab63ccdc42b86fac46ad9a6f8c3d962461e4d",
+      "bytes": 298556
+    },
+    {
+      "file": "archetype-05-r0.webp",
+      "kind": "market",
+      "edges": "SSSS",
+      "seed": 455,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "71ac8fc77a6060a8782780e5bed87a0a01066ceb445a6944c728709c77272106",
+      "bytes": 323342
+    },
+    {
+      "file": "archetype-05-r1.webp",
+      "kind": "market",
+      "edges": "SSSS",
+      "seed": 462,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "b09bf87a8550b54350dd3624ce106b0e35af0968ee05e08114359bdb51e5043c",
+      "bytes": 315476
+    },
+    {
+      "file": "archetype-05-r2.webp",
+      "kind": "market",
+      "edges": "SSSS",
+      "seed": 469,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "e6f9c2aca3169a622df2c454920a9bac24c3b54d3cfd7e551aac8313130428fd",
+      "bytes": 322058
+    },
+    {
+      "file": "archetype-05-r3.webp",
+      "kind": "market",
+      "edges": "SSSS",
+      "seed": 476,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "c417bb598ce39a15f32a909d64bb506bfb207d8818a0581b3cbe102afa64131c",
+      "bytes": 321252
+    },
+    {
+      "file": "archetype-06-r0.webp",
+      "kind": "canal",
+      "edges": "WWWW",
+      "seed": 486,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "dea2c67aed472a71e51351a52e6c7f56ace6216c8b6c69bb4a5735667cd5383f",
+      "bytes": 295200
+    },
+    {
+      "file": "archetype-06-r1.webp",
+      "kind": "canal",
+      "edges": "WWWW",
+      "seed": 493,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "7063f31818c48fb2c4e0e7409c08a06fcb1bbac8229a00d5b22f91979265683a",
+      "bytes": 296748
+    },
+    {
+      "file": "archetype-06-r2.webp",
+      "kind": "canal",
+      "edges": "WWWW",
+      "seed": 500,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "f5b89f6143933e5a2b329f0a00678b64aead60b0a816582de19819972959e0f8",
+      "bytes": 297154
+    },
+    {
+      "file": "archetype-06-r3.webp",
+      "kind": "canal",
+      "edges": "WWWW",
+      "seed": 507,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "cdad61c884518d242fe64eb996b028ea356aa310bd150d07f1aea6b10b76a771",
+      "bytes": 296166
+    },
+    {
+      "file": "archetype-07-r0.webp",
+      "kind": "street",
+      "edges": "SSLL",
+      "seed": 517,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "f1c38ac20e4d812468c31df9adc4b32b456a67a6a959146dd0cedfb2e85ada42",
+      "bytes": 306434
+    },
+    {
+      "file": "archetype-07-r1.webp",
+      "kind": "street",
+      "edges": "LSSL",
+      "seed": 524,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "4f29b9c2557f967d9ae913c146e3a82d380150601e69ba80d2693e76826b8183",
+      "bytes": 303972
+    },
+    {
+      "file": "archetype-07-r2.webp",
+      "kind": "street",
+      "edges": "LLSS",
+      "seed": 531,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "1a4cf0eba705c242fac79e64b80bbce8254ce2e37a323ff21e8c0f633940c7f4",
+      "bytes": 307914
+    },
+    {
+      "file": "archetype-07-r3.webp",
+      "kind": "street",
+      "edges": "SLLS",
+      "seed": 538,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "d22266961f90752f10a5b4d021b2861575ea460345e09b9906c176f5952c7cf3",
+      "bytes": 302010
+    },
+    {
+      "file": "archetype-08-r0.webp",
+      "kind": "bridge",
+      "edges": "WSWS",
+      "seed": 548,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "24425c5b1e6cdee8858067499b1601ce826df434507aed121accd5d6fbb7ab5e",
+      "bytes": 310418
+    },
+    {
+      "file": "archetype-08-r1.webp",
+      "kind": "bridge",
+      "edges": "SWSW",
+      "seed": 555,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "5a8465521bc873ca6c80f26675f2c278d59986cce7c80234680bfb75d11dce28",
+      "bytes": 310538
+    },
+    {
+      "file": "archetype-08-r2.webp",
+      "kind": "bridge",
+      "edges": "WSWS",
+      "seed": 562,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "e14971e147a9c2b5a9749a2b4f5a6fc329e01e92db72be6bed63b82e5943149b",
+      "bytes": 309374
+    },
+    {
+      "file": "archetype-08-r3.webp",
+      "kind": "bridge",
+      "edges": "SWSW",
+      "seed": 569,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "054a4f16821e8607e134f4e67985b184ee8887a8019423771b6e290774845a54",
+      "bytes": 308380
+    },
+    {
+      "file": "archetype-09-r0.webp",
+      "kind": "garden",
+      "edges": "LSLL",
+      "seed": 579,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "2186f2383bb5f150bd65e60aa85ad0699f3d3f6e35a22f039d9ea4e668b8a596",
+      "bytes": 307762
+    },
+    {
+      "file": "archetype-09-r1.webp",
+      "kind": "garden",
+      "edges": "LLSL",
+      "seed": 586,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "432da13558a55f3603096150fd86dabda38246a7dfc44692ba2729d7bb9b470f",
+      "bytes": 301482
+    },
+    {
+      "file": "archetype-09-r2.webp",
+      "kind": "garden",
+      "edges": "LLLS",
+      "seed": 593,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "119a2c7694979613c01a4e47b7ca3c15a2d99220bb3b11529550763239ced9ef",
+      "bytes": 310122
+    },
+    {
+      "file": "archetype-09-r3.webp",
+      "kind": "garden",
+      "edges": "SLLL",
+      "seed": 600,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "150e1338c52ac286abf47d445ee2ac01d41f2d7318c178bee018d98bf37ec0e5",
+      "bytes": 303594
+    },
+    {
+      "file": "archetype-10-r0.webp",
+      "kind": "court",
+      "edges": "SLLL",
+      "seed": 610,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "237e682e073044d2d902b1c1ee04c8f1db566cf7653e40ec6747c9df9b6c2d83",
+      "bytes": 304870
+    },
+    {
+      "file": "archetype-10-r1.webp",
+      "kind": "court",
+      "edges": "LSLL",
+      "seed": 617,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "d0fc1cb9411f60d62602cebe40a94f935cfa622efd69b31054d1a28f7f658eba",
+      "bytes": 306896
+    },
+    {
+      "file": "archetype-10-r2.webp",
+      "kind": "court",
+      "edges": "LLSL",
+      "seed": 624,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "64b916755cba33e93aff0ba94422c44cf5d11c8d5fd75a7d437bddbcb0c85620",
+      "bytes": 302274
+    },
+    {
+      "file": "archetype-10-r3.webp",
+      "kind": "court",
+      "edges": "LLLS",
+      "seed": 631,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "5f7202aa6473099546d0e40a6b7a43ce1c11b1074e3e4a82211ab638aacfdd26",
+      "bytes": 306268
+    },
+    {
+      "file": "archetype-11-r0.webp",
+      "kind": "canal",
+      "edges": "WWWL",
+      "seed": 641,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "9bceddc39c546e785f1932f7a683ca33eb1b711e8f860386f20627bb517d1676",
+      "bytes": 289896
+    },
+    {
+      "file": "archetype-11-r1.webp",
+      "kind": "canal",
+      "edges": "LWWW",
+      "seed": 648,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "28c681fef5df24f9a0c88dbde50d5c2c02711ce62c707c1047aea649aede25ce",
+      "bytes": 295882
+    },
+    {
+      "file": "archetype-11-r2.webp",
+      "kind": "canal",
+      "edges": "WLWW",
+      "seed": 655,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "dfa3bda48d4d8b53db086aed4d962c2975d5d297953c34d20a79c04e3b7d85df",
+      "bytes": 296180
+    },
+    {
+      "file": "archetype-11-r3.webp",
+      "kind": "canal",
+      "edges": "WWLW",
+      "seed": 662,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "a58c0dfe61e085d49c35ea9cd85957d44320d60ae450259dc911203d972dde25",
+      "bytes": 296886
+    },
+    {
+      "file": "archetype-12-r0.webp",
+      "kind": "landing",
+      "edges": "WLLL",
+      "seed": 672,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "b20e1da2aede7457fed152e0e243a16a501ac9d6ba3aa8cfde5f10fb729136a3",
+      "bytes": 291074
+    },
+    {
+      "file": "archetype-12-r1.webp",
+      "kind": "landing",
+      "edges": "LWLL",
+      "seed": 679,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "e0cc9c7fce5781e0da9ee1b22b3515011bf89e972da9cbea562b675c98a1d509",
+      "bytes": 294984
+    },
+    {
+      "file": "archetype-12-r2.webp",
+      "kind": "landing",
+      "edges": "LLWL",
+      "seed": 686,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "0aca1f6c751ae399916215794c2ea73fe12014d2e84cee90dc0ff9f69d452254",
+      "bytes": 291980
+    },
+    {
+      "file": "archetype-12-r3.webp",
+      "kind": "landing",
+      "edges": "LLLW",
+      "seed": 693,
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "be07d9c43391bbfaffbc234ab46f6b0603f1497b300c558b334b3be8470e0790",
+      "bytes": 301410
+    }
+  ],
+  "limits": [
+    "Original square sources are artistic interpretations rather than historical reconstructions.",
+    "Formal aesthetic sign-off is still required at high zoom, especially at land-to-road blending.",
+    "All portrait-like characters and boats must remain separate animated layers."
+  ]
+}
