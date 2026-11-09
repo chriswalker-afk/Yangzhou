@@ -254,7 +254,8 @@ function motion(c,t,time){if(!window.YangzhouDebug?.state.motion)return;
  if(t.kind==='tea'||t.kind==='market'){c.save();for(let i=0;i<4;i++){let rise=(time*.018+i*17)%39;c.strokeStyle='#eee6d39a';c.lineWidth=1.25;c.beginPath();c.moveTo(50+i*5,144-rise*.2);c.quadraticCurveTo(44+i*5,139-rise,50+i*5+Math.sin(time*.001+i)*3,130-rise);c.stroke();}c.restore();}
  if(t.kind==='garden'||t.kind==='pagoda'){const x=70+Math.sin(time*.0006+seed)*5,y=177+(time*.005%22);oval(c,x,y,1.1,2.5,'#c99b8caa',null,0,time*.001);}
 }
-function draw(c,t,time,zoom=1){c.save();c.translate(t.x*S,t.y*S);
+function draw(c,t,time,zoom=1){if(!t.fixed&&window.YangzhouTileArt?.draw(c,t))return;
+ c.save();c.translate(t.x*S,t.y*S);
  const base=getBase(t,zoom);c.drawImage(base,0,0,S,S);
  if(!t.fixed)window.YangzhouPainted?.drawMotif(c,t);
  if(zoom>=1.35)fineDetail(c,t);
