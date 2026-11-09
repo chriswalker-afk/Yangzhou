@@ -74,7 +74,9 @@
     c.save();c.globalAlpha=.10;
     for(let i=0;i<65;i++){const x=hash(i,13)*220,y=hash(i,29)*220;
       c.fillStyle=i%2?'#f4edd7':'#627c70';c.beginPath();c.arc(x,y,hash(i,7)*1.25,0,Math.PI*2);c.fill();}
-    c.restore();c.restore();return el;
+    c.restore();c.restore();
+    if(window.YangzhouEdgeArt?.drawBands)window.YangzhouEdgeArt.drawBands(c,t.edges);
+    return el;
   }
   function draw(c,t){
     if(t.fixed)return false;
