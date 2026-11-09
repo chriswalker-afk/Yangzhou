@@ -11,6 +11,9 @@ const living=fs.readFileSync('living-scene.js','utf8');
 const edges=fs.readFileSync('edge-art.js','utf8');
 const tiles=fs.readFileSync('tile-system.js','utf8');
 const topology=fs.readFileSync('tile-topology.js','utf8');
+new vm.Script(topology,{filename:'tile-topology.js'});
+assert(html.includes('<script src="tile-topology.js"></script>'),'Shared topology must precede renderer');
+const topology=fs.readFileSync('tile-topology.js','utf8');
 const schema=require('../tile-topology.js');
 assert.equal(schema.portWidth.S,44);
 assert.equal(schema.portWidth.W,88);
@@ -97,6 +100,10 @@ frame(2);
 const game=window.YangzhouDebug;
 assert(game,'Game debug API should exist');
 assert.equal(game.board.size,6);
+assert.equal(window.YangzhouTileTopology.portWidth.S,44);
+assert.equal(window.YangzhouTileTopology.portWidth.W,88);
+assert.equal(new Set([...game.board.values()].map(t=>t.master)).size,6);
+assert.equal(window.YangzhouTileTopology.validateBoard(game.board.values()).length,0);
 assert.equal(game.archetypes.length,13);
 assert.equal(game.topology,window.YangzhouTileTopology);
 assert.equal(game.board.get('1,1').master,'bridge-stone');
@@ -199,6 +206,7 @@ for(const cell of ring){
   });
 }
 assert.equal(game.board.size,16,'All ten starter perimeter locations should be placeable simultaneously');
+assert.equal(window.YangzhouTileTopology.validateBoard(game.board.values()).length,0);
 for(const t of game.board.values())for(let i=0;i<4;i++){
   const d=directions[i],other=game.board.get((t.x+d[0])+','+(t.y+d[1]));
   if(other)assert.equal(t.edges[i],other.edges[(i+2)%4],
