@@ -69,7 +69,7 @@ frame(2);
 const game=window.YangzhouDebug;
 assert(game,'Game debug API should exist');
 assert.equal(game.board.size,6);
-assert.equal(game.archetypes.length,12);
+assert.equal(game.archetypes.length,13);
 const dirs=[[0,-1],[1,0],[0,1],[-1,0]];
 for(const tile of game.board.values()){
  for(let i=0;i<4;i++){const other=game.board.get((tile.x+dirs[i][0])+','+(tile.y+dirs[i][1]));
@@ -131,4 +131,47 @@ canvas.events.touchend({preventDefault(){},touches:[]});
 
 elements.get('motion').onclick();assert.equal(st.motion,false);
 elements.get('motion').onclick();assert.equal(st.motion,true);
-console.log('Yangzhou smoke tests passed: starter edges, 12 tiles, placement, explore, zoom anchoring, fit, pinch and motion.');
+// Contract: EVERY position adjacent to the original six-tile lake must be
+// able to accept at least one real deck archetype at a legal orientation.
+// Stronger than edge labels alone: fill the entire 10-tile outside ring at once.
+game.board.delete(site.join(','));
+assert.equal(game.board.size,6,'Return to fixed starter before perimeter test');
+const fixed=[...game.board.values()];
+const perimeter=new Map(),directions=[[0,-1],[1,0],[0,1],[-1,0]];
+for(const ft of fixed)for(let d=0;d<4;d++){
+  const x=ft.x+directions[d][0],y=ft.y+directions[d][1],k=x+','+y;
+  if(!game.board.has(k))perimeter.set(k,{x,y,side:d,port:ft.edges[d]});
+}
+assert.equal(perimeter.size,10,'3 x 2 starter must have ten expansion positions');
+const ports=[...perimeter.values()].map(z=>z.port);
+assert.equal(ports.filter(p=>p==='S').length,4,'Four playable street exits');
+assert.equal(ports.filter(p=>p==='W').length,2,'North and south canal exits');
+assert.equal(ports.filter(p=>p==='L').length,4,'Four landscaping exits');
+const preferred={'S':'Stone-paved street','W':'Mooring basin','L':'Garden enclosure'};
+const ring=[...perimeter.values()].sort((a,b)=>a.y-b.y||a.x-b.x);
+for(const cell of ring){
+  // Check any tile may match even before a suggested choice is made.
+  const all=[];
+  for(const arch of game.archetypes)for(let rotation=0;rotation<4;rotation++){
+    const edges=game.rotEdges(arch.edges,rotation);
+    if(game.canPlace(cell.x,cell.y,edges))all.push({name:arch.name,rotation});
+  }
+  assert(all.length>0,'No deck tile fits '+JSON.stringify(cell));
+  // Place an explicitly chosen, easy-to-recognize candidate. The entire
+  // outer ring must remain compatible with previously placed neighbours.
+  const arch=game.archetypes.find(a=>a.name===preferred[cell.port]);
+  assert(arch,'Missing archetype for '+cell.port);
+  const rotation=[0,1,2,3].find(r=>game.canPlace(cell.x,cell.y,game.rotEdges(arch.edges,r)));
+  assert.notEqual(rotation,undefined,'No suitable '+arch.name+' at '+cell.x+','+cell.y);
+  game.board.set(cell.x+','+cell.y,{
+    x:cell.x,y:cell.y,edges:game.rotEdges(arch.edges,rotation),
+    kind:arch.kind,name:arch.name,seed:31+game.board.size,rotation,fixed:false
+  });
+}
+assert.equal(game.board.size,16,'All ten starter perimeter locations should be placeable simultaneously');
+for(const t of game.board.values())for(let i=0;i<4;i++){
+  const d=directions[i],other=game.board.get((t.x+d[0])+','+(t.y+d[1]));
+  if(other)assert.equal(t.edges[i],other.edges[(i+2)%4],
+    'Ring neighbour edges must match: '+t.x+','+t.y);
+}
+console.log('Yangzhou smoke tests passed: 13 tile archetypes, all 10 perimeter slots, full expansion ring, camera and placement.');
