@@ -13,7 +13,8 @@
   const NAMES=[
     'road-straight','bridge-stone','garden-willow','garden-courtyard',
     'garden-rockery','garden-blossoms','garden-riverside','garden-teahouse',
-    'road-stone-texture','canal-water-texture','five-pavilion-foreground'
+    'road-stone-texture','canal-water-texture','five-pavilion-foreground',
+    'river-straight','road-teahouse','road-pagoda','road-landing'
   ];
   const imgs={};const cache=new Map();let errors=[];
   function load(){
@@ -37,7 +38,21 @@
     street:['garden-willow','garden-blossoms'],canal:['garden-riverside','garden-rockery'],
     bridge:['bridge-stone'],gate:['garden-courtyard'],
   };
-  function baseFor(t){const a=skin[t.kind]||['garden-blossoms','garden-rockery'];return a[Math.abs(t.seed||0)%a.length];}
+  function masterFor(t){
+    const sig=t.edges.join('');
+    // A complete standalone painting owns the whole square. The central
+    // road/canal is illustrated in the master, not drawn as a broad overlay.
+    if(t.kind==='five'&&sig==='WSWS')return 'bridge-stone';
+    if(t.kind==='bridge'&&sig==='WSWS')return 'bridge-stone';
+    if(t.kind==='lake'&&sig==='WLWL')return 'river-straight';
+    if(t.kind==='canal'&&sig==='WLWL')return 'river-straight';
+    if(t.kind==='pagoda'&&sig==='SSSL')return 'road-pagoda';
+    if(t.kind==='landing'&&sig==='SSSS')return 'road-landing';
+    if(t.kind==='tea'&&sig==='SLSL')return 'road-teahouse';
+    if((t.kind==='street'||t.kind==='causeway')&&sig==='SLSL')return 'road-straight';
+    return null;
+  }
+  function baseFor(t){const master=masterFor(t);if(master)return master;const a=skin[t.kind]||['garden-blossoms','garden-rockery'];return a[Math.abs(t.seed||0)%a.length];}
   function imageOr(c,name,x,y,w,h){if(!ok(name))return false;c.drawImage(imgs[name],x,y,w,h);return true;}
   function edgePoint(i){return [110+dirs[i][0]*110,110+dirs[i][1]*110];}
   function network(c,edges,type,width,paint){
@@ -124,41 +139,49 @@
   }
   function paint(c,t){
     c.save();c.beginPath();c.rect(0,0,S,S);c.clip();
-    const base=baseFor(t);
+    const master=masterFor(t),base=baseFor(t);
     if(!imageOr(c,base,0,0,S,S)){
-      c.fillStyle='#b2b78b';c.fillRect(0,0,S,S);
+      c.fillStyle='#adb68d';c.fillRect(0,0,S,S);
     }
     const W=t.edges.includes('W'),R=t.edges.includes('S');
-    // A waterway is its own navigable network. It is always below streets.
-    if(W){
-      network(c,t.edges,'W',106,'#7d8d76b0');   // rough painted bank underwash
-      network(c,t.edges,'W',94,'#d1d0b394');    // stone margin
-      network(c,t.edges,'W',88,texturedPaint(c,'canal-water-texture','#87afa7'));
-      network(c,t.edges,'W',79,'#8cb5ad2b');
-    }
-    if(R){
-      network(c,t.edges,'S',54,'#8c8b70a0');
-      network(c,t.edges,'S',48,'#d7c7a9');
-      network(c,t.edges,'S',44,texturedPaint(c,'road-stone-texture','#cebca0'));
-      network(c,t.edges,'S',39,'#f1e5ca12');
-    }
-    if(W&&R){
-      // Separate raised pedestrian bridge over water, with stone railings.
-      const northSouth=t.edges[0]==='W'&&t.edges[2]==='W';
-      c.save();c.strokeStyle='#796d5ac3';c.lineWidth=2.2;
-      if(northSouth){
-        c.beginPath();c.moveTo(40,96);c.lineTo(180,96);c.moveTo(40,123);c.lineTo(180,123);c.stroke();
-      }else{
-        c.beginPath();c.moveTo(96,40);c.lineTo(96,180);c.moveTo(123,40);c.lineTo(123,180);c.stroke();
+    const road=texturedPaint(c,'road-stone-texture','#c8b495');
+    const water=texturedPaint(c,'canal-water-texture','#82aaa5');
+    if(master){
+      // On a finished tile the path is part of the painting. Only missing
+      // branches are added as *narrow* extensions of its existing road.
+      if(t.kind==='pagoda'||t.kind==='landing'){
+        const spur=t.kind==='pagoda'?['L','S','L','L']:['L','S','L','S'];
+        network(c,spur,'S',33,'#a89474a7');
+        network(c,spur,'S',29,'#d5c4a4d5');
+        network(c,spur,'S',25,road);
       }
-      c.restore();
+    }else{
+      // Unsupplied topologies remain playable prototypes, but are not yet
+      // signed off as production artwork. Geometry is always legal.
+      if(W){
+        network(c,t.edges,'W',84,'#849479a0');
+        network(c,t.edges,'W',78,'#cfceb4a7');
+        network(c,t.edges,'W',72,water);
+      }
+      if(R){
+        network(c,t.edges,'S',35,'#8c846aa8');
+        network(c,t.edges,'S',31,'#d5c4a9d9');
+        network(c,t.edges,'S',27,road);
+      }
+      if(W&&R){
+        const ns=t.edges[0]==='W'&&t.edges[2]==='W';
+        c.save();c.strokeStyle='#7d715dbe';c.lineWidth=1.5;
+        if(ns){c.beginPath();c.moveTo(52,99);c.lineTo(168,99);c.moveTo(52,122);c.lineTo(168,122);c.stroke();}
+        else {c.beginPath();c.moveTo(99,52);c.lineTo(99,168);c.moveTo(122,52);c.lineTo(122,168);c.stroke();}
+        c.restore();
+      }
     }
-    // Local architecture never controls the geometry of a road/canal exit.
-    drawLocalArchitecture(c,t);
-    if(t.kind==='garden'||t.kind==='pagoda'||t.kind==='court'){
-      for(let k=0;k<6;k++)plant(c,17+((k*73)%187),24+((k*41)%168),5,k+t.seed);
+    // Architectural detail is a separate stationary layer with no people.
+    if(t.kind==='five'||t.kind==='pagoda'||t.kind==='tea'||t.kind==='market')drawLocalArchitecture(c,t);
+    if(t.kind==='garden'||t.kind==='court'){
+      for(let k=0;k<5;k++)plant(c,24+((k*73)%175),21+((k*41)%165),4,k+t.seed);
     }
-    perimeter(c,t);
+    window.YangzhouEdgeArt?.drawCaps?.(c,t.edges);
     c.restore();
   }
   function raster(t,resolution){
