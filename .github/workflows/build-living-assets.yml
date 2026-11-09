@@ -37,6 +37,15 @@ jobs:
             alpha=im.getchannel('A'); assert alpha.getextrema()[0]==0 and alpha.getextrema()[1]>0,fn
           print('All layered illustration assets generated and checked')
           PY
+      - name: Keep editable layered-art QA artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: living-painting-source-and-plates
+          path: |
+            scripts/build_living_assets.py
+            assets/living/
+          retention-days: 7
       - name: Commit built assets into the feature branch
         run: |
           git config user.name "github-actions[bot]"
