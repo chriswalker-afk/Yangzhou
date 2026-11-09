@@ -7,6 +7,13 @@ const assert=require('node:assert/strict');
 const html=fs.readFileSync('index.html','utf8');
 const artwork=fs.readFileSync('artwork.js','utf8');
 const ambient=fs.readFileSync('ambient.js','utf8');
+const living=fs.readFileSync('living-scene.js','utf8');
+new vm.Script(living,{filename:'living-scene.js'});
+assert(html.includes('<script src="living-scene.js"></script>'),'Living painting module should be loaded');
+assert(html.includes('id="livingToggle"'),'Clean-plate comparison control should exist');
+assert(living.includes('bridge-foreground.png')&&living.includes('starter-clean.webp'),
+       'Layer system must load a clean plate and separate bridge foreground');
+
 const scripts=[...html.matchAll(/<script(?: [^>]*)?>([\s\S]*?)<\/script>/g)]
   .map(x=>x[1]).filter(x=>x.trim());
 assert.equal(scripts.length,1,'Expected one inline main game script');
