@@ -95,7 +95,7 @@
     if(t.kind==='tea'||t.kind==='market'||t.kind==='landing')return 'breakfast';
     return 'panorama';
   }
-  window.YangzhouPainted={drawStarterAtlas,drawMotif,open,close,sceneForTile,ready:()=>!!images.panorama,manifest:descriptions};
+  window.YangzhouPainted={drawStarterAtlas,drawMotif,open,close,sceneForTile,ready:()=>!!images.panorama,getImage:key=>images[key]||null,manifest:descriptions};
   function bind(){
     document.getElementById('scenes')?.addEventListener('click',()=>open('panorama'));
     document.getElementById('closePaintings')?.addEventListener('click',close);
