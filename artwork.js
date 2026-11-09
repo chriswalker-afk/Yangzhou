@@ -260,6 +260,7 @@ function draw(c,t,time,zoom=1){if(!t.fixed&&window.YangzhouTileArt?.draw(c,t))re
  if(!t.fixed)window.YangzhouPainted?.drawMotif(c,t);
  if(zoom>=1.35)fineDetail(c,t);
  motion(c,t,time);
+ if(!t.fixed)window.YangzhouEdgeArt?.drawBands(c,t.edges);
  c.restore();}
 window.YangzhouArt={draw,renderBase,clearCache:()=>{CACHE.clear();cachePixels=0;}};
 })();
