@@ -135,9 +135,9 @@
        waterSouth?.edges[0]==='W'&&waterSouth.edges[2]==='W'){
       const y=((timestamp*.015)%490)-25;
       // The hull passes beneath the crossing at (330,330), not on top.
-      if(y<289||y>372)drawSprite(c,'upper',centerWaterX+Math.sin(y*.01)*7,y,39,31,Math.PI/2,0);
+      if(y>=25&&y<=415&&(y<289||y>372))drawSprite(c,'upper',centerWaterX+Math.sin(y*.01)*7,y,39,31,Math.PI/2,0);
       const y2=445-((timestamp*.010+130)%475);
-      if(y2<289||y2>372)drawSprite(c,'lower',centerWaterX+Math.sin(y2*.01)*6,y2,43,34,Math.PI/2,0);
+      if(y2>=25&&y2<=415&&(y2<289||y2>372))drawSprite(c,'lower',centerWaterX+Math.sin(y2*.01)*6,y2,43,34,Math.PI/2,0);
     }
     const bridge=board.get('1,1');
     const west=board.get('0,1'),east=board.get('2,1');
