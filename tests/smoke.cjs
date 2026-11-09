@@ -144,10 +144,10 @@ for(const ft of fixed)for(let d=0;d<4;d++){
 }
 assert.equal(perimeter.size,10,'3 x 2 starter must have ten expansion positions');
 const ports=[...perimeter.values()].map(z=>z.port);
-assert.equal(ports.filter(p=>p==='S').length,4,'Four playable street exits');
+assert.equal(ports.filter(p=>p==='S').length,0,'No forced streets through existing painted buildings');
 assert.equal(ports.filter(p=>p==='W').length,2,'North and south canal exits');
-assert.equal(ports.filter(p=>p==='L').length,4,'Four landscaping exits');
-const preferred={'S':'Stone-paved street','W':'Mooring basin','L':'Garden enclosure'};
+assert.equal(ports.filter(p=>p==='L').length,8,'Eight garden/landscape expansion slots');
+const preferred={'W':'Mooring basin','L':'Garden pavilion'};
 const ring=[...perimeter.values()].sort((a,b)=>a.y-b.y||a.x-b.x);
 for(const cell of ring){
   // Check any tile may match even before a suggested choice is made.
@@ -161,7 +161,7 @@ for(const cell of ring){
   // outer ring must remain compatible with previously placed neighbours.
   const arch=game.archetypes.find(a=>a.name===preferred[cell.port]);
   assert(arch,'Missing archetype for '+cell.port);
-  const rotation=[0,1,2,3].find(r=>game.canPlace(cell.x,cell.y,game.rotEdges(arch.edges,r)));
+  const rotation=[0,1,2,3].find(r=>{const e=game.rotEdges(arch.edges,r);return game.canPlace(cell.x,cell.y,e)&&(cell.port!=='L'||e[cell.side]==='S');});
   assert.notEqual(rotation,undefined,'No suitable '+arch.name+' at '+cell.x+','+cell.y);
   game.board.set(cell.x+','+cell.y,{
     x:cell.x,y:cell.y,edges:game.rotEdges(arch.edges,rotation),
