@@ -82,26 +82,35 @@ button{font:inherit;cursor:pointer;color:inherit}button:focus-visible{outline:3p
  .action{min-width:74px;gap:4px}
  .action .btn{min-height:27px;padding:4px;font-size:10px}
 }
+
+/* The layer comparison is deliberately visible during the architecture pass. */
+.status #livingToggle{white-space:nowrap}
+@media(max-width:680px){
+ .status #livingToggle{min-height:32px;padding:5px 7px;font-size:10px}
+}
 </style>
 </head>
 <body>
 <canvas id="scene" aria-label="Interactive Yangzhou city canvas; use the controls to zoom, rotate and place tiles"></canvas>
 <div class="shell header"><div class="brand"><span class="han" lang="zh">揚州</span><h1>Yangzhou</h1><p>A Living Scroll · painted city prototype</p></div></div>
-<div class="shell status"><div class="chip" id="counter">6 tiles · Slender West Lake</div><div class="chip zoom-label" id="zoomLabel">City overview</div><button class="btn" id="scenes" title="Inspect the detailed painted scenes">Paintings</button><button class="btn" id="motion" aria-pressed="true" title="Toggle environmental animation">Motion on</button></div>
+<div class="shell status"><div class="chip" id="counter">6 tiles · Slender West Lake</div><div class="chip zoom-label" id="zoomLabel">City overview</div><button class="btn" id="scenes" title="Inspect the detailed painted scenes">Paintings</button><button class="btn" id="livingToggle" aria-pressed="false" title="Show clean background without the animated city">Clean plate</button><button class="btn" id="motion" aria-pressed="true" title="Toggle environmental animation">Motion on</button></div>
 <div class="shell controls"><button class="btn" id="zoomIn" title="Zoom in" aria-label="Zoom in">+</button><button class="btn" id="zoomOut" title="Zoom out" aria-label="Zoom out">−</button><button class="btn" id="fit" title="Fit the whole city">Fit</button><button class="btn preset" id="viewCity" title="Overview (1)">City</button><button class="btn preset" id="viewNear" title="Neighbourhood (2)">Street</button><button class="btn preset" id="viewDetail" title="Close inspection (3)">Detail</button><button class="btn" id="explore" title="Hide or show placement guides" aria-pressed="false">Explore artwork</button><button class="btn" id="help" title="Show instructions">?</button></div>
 <div class="shell notice" id="notice" role="status">Explore Yangzhou from above. Zoom in, or open Paintings for close-up scenes.</div>
 <div class="legend" id="legend"><b>Placement edges</b><span><i class="mark" style="background:#7daba6"></i>Water · canal or lake</span><span><i class="mark" style="background:#c1af93"></i>Street · walking route</span><span><i class="mark" style="background:#c6c5a3"></i>Land · garden or district</span></div>
 <div class="shell bottom"><div class="panel tile-panel"><canvas id="preview" class="tile-preview" width="140" height="140" aria-label="Current tile preview"></canvas><div class="tile-description"><div class="eyebrow">Your next tile</div><strong id="tileName">Canal-side teahouse</strong><div class="hint" id="tileDesc">Place next to a matching edge</div></div><div class="tile-actions"><button class="btn" id="previous" aria-label="Previous tile">‹</button><button class="btn" id="next" aria-label="Next tile">›</button><button class="btn" id="rotate" title="Rotate tile clockwise">↻ Rotate</button></div></div><div class="panel action"><button class="btn primary" id="place" disabled>Place tile</button><button class="btn" id="cancel">Clear selection</button></div></div>
-<div class="shell footer"><span id="assetStatus">Loading painted artwork…</span> · Edge geometry remains a prototype · Scoring is planned for a later pass</div>
+<div class="shell footer"><span id="assetStatus">Loading clean painted background…</span> · Edge geometry remains a prototype · Scoring is planned for a later pass</div>
 <dialog id="artDialog" class="art-dialog" aria-labelledby="artTitle" aria-describedby="artDescription">
  <div class="art-head"><div><span class="eyebrow">Yangzhou · Painted scenes</span><h2 id="artTitle">Slender West Lake</h2><p id="artSubtitle">A living handscroll</p></div><button type="button" class="btn" id="closePaintings" aria-label="Close painting">Close ✕</button></div>
  <img id="artImage" src="assets/painted/starter-panorama.webp" alt="Historical-style painted scene of Slender West Lake and the Yangzhou city."/>
- <div class="art-foot"><p id="artDescription">The six starting tiles form one continuous illustrated landscape. Details have not yet been independently reviewed for historical accuracy.</p>
+ <div class="art-foot"><p id="artDescription">The board starts with six individually painted square tiles. This panorama remains a separate artistic reference, not the board texture. Details require historical review.</p>
  <div class="art-nav"><button type="button" class="btn" id="artPrevious" aria-label="Previous painting">‹</button><span id="artCount">1 / 4</span><button type="button" class="btn" id="artNext" aria-label="Next painting">›</button></div></div>
 </dialog>
 <script src="painted-assets.js"></script>
-<script src="painted-tiles.js"></script>
+<script src="edge-art.js"></script>
 <script src="artwork.js"></script>
+<script src="tile-topology.js"></script>
+<script src="tile-system.js"></script>
+<script src="living-scene.js"></script>
 <script>
 (() => {
 'use strict';
@@ -109,31 +118,12 @@ const TILE=220, canvas=document.getElementById('scene'), ctx=canvas.getContext('
 const preview=document.getElementById('preview'), pc=preview.getContext('2d');
 const $=id=>document.getElementById(id);
 const kinds={L:'land',S:'street',W:'water'};
-const archetypes=[
-{name:'Canal-side teahouse',note:'Warm food, tea, passing boats',edges:['L','W','L','S'],kind:'tea'},
-{name:'Stone-paved street',note:'A peaceful road through Yangzhou',edges:['S','L','S','L'],kind:'street'},
-{name:'Willow canal bend',note:'Water and softly moving willows',edges:['W','W','L','L'],kind:'canal'},
-{name:'Waterfront landing',note:'Where small boats pause to moor',edges:['L','W','L','W'],kind:'landing'},
-{name:'Garden enclosure',note:'Bamboo, rockery and quiet pathways',edges:['L','L','L','L'],kind:'garden'},
-{name:'Market crossroads',note:'Stalls, visitors and tiled roofs',edges:['S','S','S','S'],kind:'market'},
-{name:'Canal crossroads',note:'A meeting place for waterways',edges:['W','W','W','W'],kind:'canal'},
-{name:'Street corner',note:'Shops beside a turning road',edges:['S','S','L','L'],kind:'street'},
-{name:'Small stone bridge',note:'A walkway over a navigable canal',edges:['W','S','W','S'],kind:'bridge'},
-{name:'Garden pavilion',note:'A place to admire the scenery',edges:['L','S','L','L'],kind:'garden'},
-{name:'Walled courtyard',note:'A composed domestic garden',edges:['S','L','L','L'],kind:'court'},
-{name:'Canal junction',note:'A new branch for passing boats',edges:['W','W','W','L'],kind:'canal'}
-];
-const starter=[
-{x:0,y:0,edges:['L','L','S','L'],kind:'causeway',name:'Willow Causeway',fixed:true,rotation:0,seed:1},
-{x:1,y:0,edges:['W','L','W','L'],kind:'lake',name:'Northern Lake',fixed:true,rotation:0,seed:2},
-{x:2,y:0,edges:['L','L','S','L'],kind:'tea',name:'Lakeside Gardens and Teahouses',fixed:true,rotation:0,seed:3},
-{x:0,y:1,edges:['S','S','L','L'],kind:'pagoda',name:'White Pagoda Garden',fixed:true,rotation:0,seed:4},
-{x:1,y:1,edges:['W','S','W','S'],kind:'five',name:'Five-Pavilion Bridge',fixed:true,rotation:0,seed:5},
-{x:2,y:1,edges:['S','L','L','S'],kind:'landing',name:'Southern Landing and Breakfast House',fixed:true,rotation:0,seed:6}
-];
+// Game and renderer share the exact same six independent tile definitions.
+const archetypes=window.YangzhouTileTopology.archetypes;
+const starter=window.YangzhouTileTopology.starter;
 const board=new Map(starter.map(t=>[t.x+','+t.y,t]));
 const state={type:0,rotation:0,selected:null,hover:null,scale:1.0,offsetX:0,offsetY:0,motion:!matchMedia('(prefers-reduced-motion: reduce)').matches,showSites:true,drag:null,time:0,w:0,h:0,dirty:true};
-const rotEdges=(a,r)=>a.map((_,i)=>a[(i-r+4)%4]);
+const rotEdges=window.YangzhouTileTopology.rotateEdges;
 const edge=(t,i)=>t.edges[i]; const dirs=[[0,-1],[1,0],[0,1],[-1,0]];
 const key=(x,y)=>x+','+y;
 function canPlace(x,y,edges){if(board.has(key(x,y)))return false;let touching=false;for(let i=0;i<4;i++){let n=board.get(key(x+dirs[i][0],y+dirs[i][1]));if(n){touching=true;if(edge(n,(i+2)%4)!==edges[i])return false;}}return touching;}
@@ -151,7 +141,7 @@ function pagoda(c,x,y){c.save();c.translate(x,y);c.fillStyle='#ddd6c6';c.strokeS
 function route(c,edges){let center=110; if(edges.includes('S')){c.strokeStyle='#b7aa92';c.lineWidth=37;c.lineCap='butt';for(let i=0;i<4;i++)if(edges[i]==='S'){c.beginPath();c.moveTo(110,110);c.lineTo([110,220,110,0][i],[0,110,220,110][i]);c.stroke();}c.strokeStyle='#d6c8b1';c.lineWidth=1;for(let i=0;i<4;i++)if(edges[i]==='S'){c.beginPath();c.moveTo(110,110);c.lineTo([110,220,110,0][i],[0,110,220,110][i]);c.stroke();}}}
 function water(c,edges,t){if(!edges.includes('W'))return;c.strokeStyle='#9cafa0';c.lineWidth=86;c.lineCap='butt';for(let i=0;i<4;i++)if(edges[i]==='W'){c.beginPath();c.moveTo(110,110);c.lineTo([110,220,110,0][i],[0,110,220,110][i]);c.stroke();}c.strokeStyle='#8bb2ac';c.lineWidth=80;for(let i=0;i<4;i++)if(edges[i]==='W'){c.beginPath();c.moveTo(110,110);c.lineTo([110,220,110,0][i],[0,110,220,110][i]);c.stroke();}
 c.strokeStyle='#c9d5bd9c';c.lineWidth=1.6;for(let i=0;i<15;i++){let yy=hash(i,2)*214,xx=90+(hash(i,3)-.5)*60+Math.sin(t*.0006+i)*2;c.beginPath();c.ellipse(xx,yy,5+hash(i,4)*7,1.6,-.14,0,Math.PI*1.1);c.stroke();}}
-function drawTile(c,t,time,showBorder=false){if(window.YangzhouArt){window.YangzhouArt.draw(c,t,time,state.scale);if(showBorder){c.save();c.translate(t.x*TILE,t.y*TILE);c.strokeStyle='#b99a58';c.lineWidth=2/Math.max(state.scale,.2);c.strokeRect(1,1,TILE-2,TILE-2);c.restore();}return;}c.save();c.translate(t.x*TILE,t.y*TILE);c.fillStyle='#d9dfc9';c.fillRect(0,0,TILE,TILE);
+function drawTile(c,t,time,showBorder=false){if(window.YangzhouTiles?.draw(c,t,time,state.scale))return;if(window.YangzhouArt){window.YangzhouArt.draw(c,t,time,state.scale);if(showBorder){c.save();c.translate(t.x*TILE,t.y*TILE);c.strokeStyle='#b99a58';c.lineWidth=2/Math.max(state.scale,.2);c.strokeRect(1,1,TILE-2,TILE-2);c.restore();}return;}c.save();c.translate(t.x*TILE,t.y*TILE);c.fillStyle='#d9dfc9';c.fillRect(0,0,TILE,TILE);
 const h=t.seed||1;for(let i=0;i<45;i++){let x=hash(i,h)*220,y=hash(i,h+11)*220;c.fillStyle=i%2?'#b9c5a04d':'#e4d9bd65';c.beginPath();c.ellipse(x,y,10+hash(i,h+2)*18,6+hash(i,h+3)*12,hash(i,h+4),0,Math.PI*2);c.fill();}
 const ed=t.edges;route(c,ed);water(c,ed,time);
 if(t.kind==='five'||t.kind==='bridge'){c.fillStyle='#c8b8a0';c.fillRect(0,97,220,27);c.strokeStyle='#827666';c.lineWidth=2;c.beginPath();c.moveTo(0,98);c.lineTo(220,98);c.moveTo(0,124);c.lineTo(220,124);c.stroke();for(let i=0;i<5;i++){let x=20+i*45;pavilion(c,x,98,35);}}
@@ -191,8 +181,10 @@ function cameraTick(now){let dt=camera.last?Math.min(40,now-camera.last):16;came
 }
 function draw(){if(!state.motion&&!state.dirty)return;state.dirty=false;ctx.clearRect(0,0,state.w,state.h);paper();ctx.save();ctx.translate(state.offsetX,state.offsetY);ctx.scale(state.scale,state.scale);
 const wx0=-state.offsetX/state.scale-TILE,wy0=-state.offsetY/state.scale-TILE,wx1=(state.w-state.offsetX)/state.scale+TILE,wy1=(state.h-state.offsetY)/state.scale+TILE;
-const paintedStarter=window.YangzhouPainted?.drawStarterAtlas(ctx,state.time)===true;
-for(const t of board.values())if((!t.fixed||!paintedStarter)&&t.x*TILE<wx1&&(t.x+1)*TILE>wx0&&t.y*TILE<wy1&&(t.y+1)*TILE>wy0)drawTile(ctx,t,state.time,false);
+// Every fixed and player-placed tile is a separate square image built from
+// the same terrain connector geometry; no six-tile panoramic backplate.
+for(const t of board.values())if(t.x*TILE<wx1&&(t.x+1)*TILE>wx0&&t.y*TILE<wy1&&(t.y+1)*TILE>wy0)drawTile(ctx,t,state.time,false);
+window.YangzhouLiving?.drawActors?.(ctx,state.time,board,state.motion);
 if(state.showSites){const possible=candidates();for(const [x,y] of possible){if(x*TILE>=wx1||(x+1)*TILE<=wx0||y*TILE>=wy1||(y+1)*TILE<=wy0)continue;let p={x:x*TILE,y:y*TILE},picked=state.selected&&state.selected[0]===x&&state.selected[1]===y;ctx.fillStyle=picked?'#eddfac6a':'#f4ead529';ctx.fillRect(p.x+1,p.y+1,TILE-2,TILE-2);ctx.strokeStyle=picked?'#956d36':'#ad997bb0';ctx.lineWidth=(picked?2.6:1.2)/state.scale;ctx.setLineDash([6/state.scale,7/state.scale]);ctx.strokeRect(p.x+2/state.scale,p.y+2/state.scale,TILE-4/state.scale,TILE-4/state.scale);ctx.setLineDash([]);}}
 if(state.showSites&&state.selected){let a=archetypes[state.type], edges=rotEdges(a.edges,state.rotation);ctx.save();ctx.globalAlpha=.82;drawTile(ctx,{x:state.selected[0],y:state.selected[1],edges,kind:a.kind,seed:22},state.time,true);ctx.restore();}
 ctx.restore();}
@@ -234,13 +226,13 @@ $('explore').onclick=()=>{state.showSites=!state.showSites;$('explore').textCont
 $('zoomIn').onclick=()=>zoomBy(1.35);$('zoomOut').onclick=()=>zoomBy(1/1.35);$('fit').onclick=()=>fit();$('rotate').onclick=()=>{state.rotation=(state.rotation+1)%4;state.selected=null;refresh();};$('previous').onclick=()=>{state.type=(state.type+archetypes.length-1)%archetypes.length;state.selected=null;state.rotation=0;refresh();};$('next').onclick=()=>{state.type=(state.type+1)%archetypes.length;state.selected=null;state.rotation=0;refresh();};$('place').onclick=place;$('cancel').onclick=()=>{state.selected=null;refresh();};
 $('motion').onclick=()=>{state.motion=!state.motion;$('motion').textContent='Motion '+(state.motion?'on':'off');$('motion').setAttribute('aria-pressed',String(state.motion));state.dirty=true;};
 $('help').onclick=()=>{$('notice').textContent='Drag to pan; scroll or pinch to zoom; Fit to return. Choose a tile, rotate it, click a dotted matching space, then Place tile. All four touching edges must match. Arrow keys pan; 1/2/3 choose zoom views; + and - zoom; R rotates. Explore hides placement guides.';};
-window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();pan((e.key==='ArrowLeft'?45:e.key==='ArrowRight'?-45:0),(e.key==='ArrowUp'?45:e.key==='ArrowDown'?-45:0));}else if(e.key.toLowerCase()==='r')$('rotate').click();else if(e.key==='+')zoomBy(1.35);else if(e.key==='-')zoomBy(1/1.35);else if(e.key==='Escape')$('cancel').click();else if(e.key==='1')fit();else if(e.key==='2')zoomTo(1.55);else if(e.key==='3')zoomTo(3.35);});
+window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();pan((e.key==='ArrowLeft'?45:e.key==='ArrowRight'?-45:0),(e.key==='ArrowUp'?45:e.key==='ArrowDown'?-45:0));}else if(e.key.toLowerCase()==='r')$('rotate').click();else if(e.key==='+')zoomBy(1.35);else if(e.key==='-')zoomBy(1/1.35);else if(e.key==='Escape')$('cancel').click();else if(e.key==='1')fit();else if(e.key==='2')zoomTo(1.55);else if(e.key==='3')zoomTo(3.35);else if(e.key.toLowerCase()==='l')window.YangzhouLiving?.toggle();});
 window.addEventListener('resize',resize);
 function frame(now){cameraTick(now);if(state.motion)state.time=now;draw();if(state.motion&&Math.floor(now/200)!==Math.floor((now-16)/200))drawPreview();requestAnimationFrame(frame);}
 resize();refresh();requestAnimationFrame(frame);
-window.YangzhouDebug={board,archetypes,canPlace,rotEdges,candidates,state};
+window.YangzhouDebug={board,archetypes,canPlace,rotEdges,candidates,state,topology:window.YangzhouTileTopology};
 })();
 </script>
-<script src="ambient.js"></script>
+<!-- Legacy ambient overlay retired: actors use shared tile coordinates. -->
 </body>
 </html>

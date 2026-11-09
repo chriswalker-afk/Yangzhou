@@ -8,7 +8,8 @@ This prototype is a **functional interaction sketch**, not finished commissioned
 - Drag the canvas; camera pans; controls remain fixed. Use arrow keys for keyboard pan.
 - Wheel over a specific building; zoom should keep that location under the pointer. Verify smooth easing and bounds. Press Fit/City (1) to restore board framing; test Street (2) and Detail (3).
 - On mobile, test one-finger pan/tap and two-finger pinch with no duplicate pointer gestures. Check viewport size/orientation, zoom controls and the bottom panel.
-- Use Next / Previous to inspect all 12 archetypes. Rotate through 0/90/180/270 degrees and confirm the edge orientations follow the preview. Tile selection resets on rotation or archetype change.
+- Use Next / Previous to inspect all 13 archetypes. Rotate through 0/90/180/270 degrees and confirm the edge orientations follow the preview. Tile selection resets on rotation or archetype change.
+- Inspect the `all-ten-perimeter-joins.png` browser artifact: a street, water or garden tile must be attached at all ten sides of the original 3×2 starter without obstructing the bridge or showing an abrupt river termination.
 - Click a dashed candidate space. Place tile should become enabled only for valid matching edges. Clicking an occupied tile should never overwrite it.
 - After placement, the tile count increases by one and another tile becomes selected in the panel. Zoom/pan still work with an expanded city.
 - Motion on/off freezes or resumes subtle water/foliage accents. At normal/detail zoom, confirm that old simple vector figures do **not** float over the painting. Test operating-system reduced-motion preference.

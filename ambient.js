@@ -38,7 +38,7 @@ function along(points,f){let lengths=[],total=0;
  return points[points.length-1];
 }
 function draw(now){requestAnimationFrame(draw);const g=game();if(!g)return;
- const s=g.state;resize(s.w,s.h);c.clearRect(0,0,s.w,s.h);if(!s.motion)return;
+ const s=g.state;resize(s.w,s.h);c.clearRect(0,0,s.w,s.h);if(!s.motion||window.YangzhouLiving?.ready())return;
  c.save();c.translate(s.offsetX,s.offsetY);c.scale(s.scale,s.scale);
  c.beginPath();c.rect(0,0,660,440);c.clip();
  const painted=window.YangzhouPainted?.ready()===true;

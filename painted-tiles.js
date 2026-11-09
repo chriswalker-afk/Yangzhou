@@ -6,20 +6,28 @@
   const directions=[[0,-1],[1,0],[0,1],[-1,0]];
   const hash=(a,b)=>{const n=Math.sin((a+1)*143.87+(b+1)*317.19)*14569.17;return n-Math.floor(n);};
   // Fixed, orientation-neutral image samples: buildings never rotate sideways.
+  // Normalized focus points in the unpopulated 1200x800 starter plate.
+  // The feature identity now comes from the correct part of the painting,
+  // rather than arbitrarily reusing the canal/bridge for a teahouse.
   const crops={
-    tea:['breakfast',.47,.50,.80],market:['breakfast',.57,.42,.74],
-    bridge:['bridge',.49,.47,.83],garden:['pagoda',.38,.46,.83],
-    court:['pagoda',.61,.47,.73],street:['panorama',.25,.46,.66],
-    landing:['panorama',.66,.58,.58],canal:['panorama',.55,.49,.53]
-  },fallback=['panorama',.49,.43,.69];
+    tea:['breakfast',.83,.77,.42],market:['breakfast',.17,.43,.43],
+    bridge:['bridge',.51,.38,.63],garden:['panorama',.83,.22,.42],
+    court:['pagoda',.85,.61,.50],street:['panorama',.20,.42,.47],
+    landing:['panorama',.50,.72,.40],canal:['panorama',.52,.61,.52]
+  },fallback=['panorama',.49,.43,.57];
+  const gardenVariants=[
+    ['panorama',.83,.22,.42], // eastern walled gardens
+    ['panorama',.18,.21,.42], // western courtyards and blossoms
+    ['panorama',.76,.69,.40]  // canal-side garden architecture
+  ];
   function crop(c,img,kind,seed){
-    const [,cx,cy,portion]=crops[kind]||fallback;
+    const [,cx,cy,portion]=kind==='garden' ? gardenVariants[Math.abs(seed)%gardenVariants.length] : (crops[kind]||fallback);
     const w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
     const side=Math.min(w,h)*portion;
-    const jx=(hash(seed,3)-.5)*Math.min(90,w-side)*.65;
-    const jy=(hash(seed,7)-.5)*Math.min(60,h-side)*.65;
-    const sx=Math.max(0,Math.min(w-side,cx*w-side*.5+jx));
-    const sy=Math.max(0,Math.min(h-side,cy*h-side*.5+jy));
+    const jx=(hash(seed,3)-.5)*Math.min(24,w-side);
+    const jy=(hash(seed,7)-.5)*Math.min(24,h-side);
+    const sx=Math.max(0,Math.min(w-side,cx*w-side/2+jx));
+    const sy=Math.max(0,Math.min(h-side,cy*h-side/2+jy));
     c.drawImage(img,sx,sy,side,side,0,0,S,S);
   }
   function pattern(c,img,rect){
@@ -54,9 +62,11 @@
     const water=pattern(c,images.panorama,[530,350,150,150]);
     const road=pattern(c,images.breakfast,[740,560,140,140]);
     if(t.edges.includes('W')){
-      stroke(c,t.edges,'W',96,'#668f85e5');
-      stroke(c,t.edges,'W',85,water);
-      stroke(c,t.edges,'W',78,'#91b6a632');
+      // Avoid a large flat turquoise capsule: let real painted water
+      // show through the canal. Shared edge art owns the final port colour.
+      stroke(c,t.edges,'W',94,'#72968e9c');
+      c.save();c.globalAlpha=.58;stroke(c,t.edges,'W',84,water);c.restore();
+      stroke(c,t.edges,'W',74,'#91b6a620');
       detail(c,t.edges,'W');
     }
     if(t.edges.includes('S')){
@@ -74,14 +84,17 @@
     c.save();c.globalAlpha=.10;
     for(let i=0;i<65;i++){const x=hash(i,13)*220,y=hash(i,29)*220;
       c.fillStyle=i%2?'#f4edd7':'#627c70';c.beginPath();c.arc(x,y,hash(i,7)*1.25,0,Math.PI*2);c.fill();}
-    c.restore();c.restore();return el;
+    c.restore();c.restore();
+    if(window.YangzhouEdgeArt?.drawBands)window.YangzhouEdgeArt.drawBands(c,t.edges);
+    return el;
   }
   function draw(c,t){
     if(t.fixed)return false;
-    const lib=window.YangzhouPainted;
-    if(!lib?.getImage)return false;
-    const images={panorama:lib.getImage('panorama'),bridge:lib.getImage('bridge'),breakfast:lib.getImage('breakfast'),pagoda:lib.getImage('pagoda')};
-    if(Object.values(images).some(v=>!v))return false;
+    // Animation architecture rule: never use old paintings containing fixed
+    // people or boats as the source of a newly placed tile. Use only clean art.
+    const clean=window.YangzhouLiving?.getCleanImage?.();
+    if(!clean)return false;
+    const images={panorama:clean,bridge:clean,breakfast:clean,pagoda:clean};
     const k=t.kind+'|'+t.edges.join('')+'|'+(t.seed||1);
     let img=cache.get(k);
     if(!img){img=raster(t,images);if(!img)return false;cache.set(k,img);
@@ -89,5 +102,5 @@
     c.save();c.translate(t.x*S,t.y*S);c.imageSmoothingQuality='high';
     c.drawImage(img,0,0,S,S);c.restore();return true;
   }
-  window.YangzhouTileArt={draw,clear:()=>cache.clear(),stats:()=>({cached:cache.size})};
+  window.YangzhouTileArt={draw,clear:()=>cache.clear(),stats:()=>({cached:cache.size,source:'clean-plate'})};
 })();
