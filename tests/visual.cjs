@@ -187,6 +187,25 @@ async function main(){
     console.log('All starter boundary tile candidates:',expansion.slots);
 
 
+    // Review the *same renderer* outside the game HUD. These screenshots
+    // expose repeated buildings and terrain seams that boundary pixel tests
+    // alone cannot catch. The ten-tile ring uses actual placeable archetypes.
+    const review=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:1});
+    review.on('pageerror',e=>errors.push('tile-review: '+String(e)));
+    await review.goto('http://127.0.0.1:8765/tile-review.html',{waitUntil:'load'});
+    await review.waitForFunction(()=>document.getElementById('status').textContent.includes('All tile images loaded'),{timeout:25000});
+    await review.screenshot({path:OUT+'/tile-review-six.png'});
+    await review.click('#ring');
+    await review.waitForFunction(()=>document.getElementById('status').textContent.includes('16 independent tiles'));
+    await review.locator('#zoom').evaluate(el=>{
+      el.value='185';el.dispatchEvent(new Event('input',{bubbles:true}));
+    });
+    await review.screenshot({path:OUT+'/tile-review-ring.png'});
+    await review.click('#grid');
+    await review.click('#ports');
+    await review.screenshot({path:OUT+'/tile-review-ports.png'});
+    await review.close();
+
     const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2,isMobile:true,hasTouch:true});
     await visit(mobile);
     await mobile.click('#explore');
