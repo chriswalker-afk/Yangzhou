@@ -36,18 +36,23 @@ async function main(){
     await page.waitForTimeout(500);
     await page.click('#explore');
     assert.equal(await page.evaluate(()=>window.YangzhouDebug.state.showSites),true,'Place mode restored');
-    // Place a tile via the same selection/canvas event path used by players.
+    // Zoom out to include neighboring candidate spaces, then test an actual canvas click.
+    await page.mouse.move(715,450);
+    await page.mouse.wheel(0,650);
+    await page.waitForTimeout(780);
     const target=await page.evaluate(()=>{
       const g=window.YangzhouDebug,s=g.state;
       for(const [x,y] of g.candidates()){
         const px=(x*220+110)*s.scale+s.offsetX,py=(y*220+110)*s.scale+s.offsetY;
-        if(px>25&&px<innerWidth-25&&py>120&&py<innerHeight-155)return {px,py};
+        if(px>60&&px<innerWidth-110&&py>155&&py<innerHeight-170)return {px,py};
       }
       return null;
     });
-    if(target){await page.mouse.click(target.px,target.py);await page.click('#place');
-      assert.equal(await page.evaluate(()=>window.YangzhouDebug.board.size),7,'Tile placement must still work');
-    }
+    assert(target,'At least one candidate should be clickable after zooming out');
+    await page.mouse.click(target.px,target.py);
+    assert.equal(await page.locator('#place').isDisabled(),false,'Canvas click should select a legal tile');
+    await page.click('#place');
+    assert.equal(await page.evaluate(()=>window.YangzhouDebug.board.size),7,'Tile placement must still work');
     await page.screenshot({path:OUT+'/desktop-placement.png'});
     const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2,isMobile:true,hasTouch:true});
     await visit(mobile);
