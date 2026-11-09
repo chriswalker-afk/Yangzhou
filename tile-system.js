@@ -154,7 +154,10 @@
     // all internal feathering while bespoke independent paintings are made.
     // It is explicitly a temporary atlas fallback, not final tile artwork.
     const useAtlas=t.fixed&&t.x>=0&&t.x<3&&t.y>=0&&t.y<2&&lakeAtlas.complete&&lakeAtlas.naturalWidth>0;
-    if(useAtlas){
+    const useOrthographic=t.fixed&&window.YangzhouOrthographic?.ready?.();
+    if(useOrthographic){
+      window.YangzhouOrthographic.draw(c,t);
+    }else if(useAtlas){
       const w=lakeAtlas.naturalWidth/3,h=lakeAtlas.naturalHeight/2;
       c.drawImage(lakeAtlas,t.x*w,t.y*h,w,h,0,0,S,S);
     }else if(!imageOr(c,base,0,0,S,S)){
@@ -163,7 +166,7 @@
     const W=t.edges.includes('W'),R=t.edges.includes('S');
     const road=texturedPaint(c,'road-stone-texture','#c8b495');
     const water=texturedPaint(c,'canal-water-texture','#82aaa5');
-    if(master||useAtlas){
+    if(master||useAtlas||useOrthographic){
       // Full-square master is the art layer. Its topology is already encoded
       // in the painting; do not lay a translucent vector road over roofs.
     }else{
@@ -191,7 +194,7 @@
     // The full-square bridge and pagoda masters already contain architecture.
     // Never paste a second pavilion/stupa over the hand-painted landmark.
     // Procedural landmark sketches are reserved for tiles without a master.
-    if(!master&&!useAtlas&&(t.kind==='five'||t.kind==='pagoda'||t.kind==='tea'||t.kind==='market'))drawLocalArchitecture(c,t);
+    if(!master&&!useAtlas&&!useOrthographic&&(t.kind='five'||t.kind==='pagoda'||t.kind==='tea'||t.kind==='market'))drawLocalArchitecture(c,t);
     if(t.kind==='garden'||t.kind==='court'){
       for(let k=0;k<5;k++)plant(c,24+((k*73)%175),21+((k*41)%165),4,k+t.seed);
     }
@@ -199,7 +202,7 @@
     // alone cannot guarantee identical bank/curb widths at its cut edges.
     // A coherent starter composition already joins pixel-for-pixel across
     // internal seams. Painting a translucent apron would reintroduce blur.
-    if(!useAtlas)window.YangzhouEdgeArt?.drawBands?.(c,t.edges);
+    if(!useAtlas&&!useOrthographic)window.YangzhouEdgeArt?.drawBands?.(c,t.edges);
     c.restore();
   }
   function raster(t,resolution){
@@ -209,7 +212,7 @@
   function draw(c,t,time,scale=1){
     if(!ok(baseFor(t))&&!(t.fixed&&lakeAtlas.complete&&lakeAtlas.naturalWidth))return false;
     const detail=scale>=2.7?5:4;
-    const k=[t.master||'',t.kind,t.edges.join(''),t.seed||0,detail,lakeAtlas.complete&&lakeAtlas.naturalWidth?'atlas':'fallback'].join(':');
+    const k=[t.master||'',t.kind,t.edges.join(''),t.seed||0,detail,window.YangzhouOrthographic?.ready?.()?'ortho':lakeAtlas.complete&&lakeAtlas.naturalWidth?'atlas':'fallback'].join(':');
     let can=cache.get(k);
     if(!can){can=raster(t,detail);cache.set(k,can);if(cache.size>MAX_CACHE)cache.delete(cache.keys().next().value);}
     else{cache.delete(k);cache.set(k,can);}
