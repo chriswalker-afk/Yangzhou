@@ -157,7 +157,7 @@
     load();
   }
   window.YangzhouLiving={
-    drawScene,ready:()=>ready,active:()=>active,toggle,
+    drawScene,getCleanImage:()=>ready?images.clean:null,ready:()=>ready,active:()=>active,toggle,
     setActive:v=>{active=!!v;invalidate();},
     inspect:()=>({ready,active,loadError,world,
       images:Object.fromEntries(Object.entries(images).map(([k,v])=>[k,!!v.naturalWidth])),
