@@ -1,7 +1,7 @@
 # Camera and art proof-of-concept QA
 
 ## Scope and limits
-This prototype is a **functional interaction sketch**, not finished commissioned artwork or a complete game. The fixed six-tile lake and three detailed scenes now use actual generated painted images stored locally in `assets/painted/`. Other rotatable tiles still rely on procedurally drawn geometry with feathered image motifs. Historical and architectural authenticity has not been independently reviewed. Full painted actor movement and general connected traffic remain future work.
+This prototype is a **functional interaction sketch**, not finished commissioned artwork or a complete game. The fixed six-tile lake and three detailed scenes now use actual generated painted images stored locally in `assets/painted/`. Rotatable tiles use painterly source-image composites with procedurally enforced water/street edge geometry. These remain transitional and have not yet been painted individually. Historical and architectural authenticity has not been independently reviewed. Full painted actor movement and general connected traffic remain future work.
 
 ## Manual checks to perform in a browser
 - Open index.html on a desktop browser; there should be a single seamless **3 × 2** painted lake composition covering six fixed tiles, with an underlying centre-column north/south canal. No external libraries or network are required.
@@ -25,10 +25,10 @@ This prototype is a **functional interaction sketch**, not finished commissioned
 
 ## Known limitations / next pass
 - Cross-tile pedestrians and boats currently demonstrate the starter spine; general pathfinding through newly placed tiles is not built.
-- Drawings are procedural placeholders of the intended handscroll approach rather than final high-resolution painted assets.
+- The starter and four gallery views use real high-resolution painted images; rotatable tiles currently reuse cropped painted imagery, and are not yet individually illustrated or historically validated.
 - Character animation is basic and does not have destination-based AI or production-quality environmental motion.
 - No player turn manager, score state, token pool, feature completion or saved games.
 - Current selection highlights are simplified. No completed network graph visualization.
 - The conceptual archetype deck is not balanced or randomised; player manually cycles tile types for art testing. Most playable tile families still lack independent painted variants.
-- Starter image is seamless **inside** its six-tile region, but seams may remain where procedural new tiles touch it.
+- Starter image is seamless **inside** its six-tile region, but seams may remain where composited new tiles touch it.
 - Playwright desktop/mobile screenshot QA is available in `.github/workflows/visual-qa.yml`; review the screenshots manually before merging. Device performance and cultural accuracy still require independent review.
