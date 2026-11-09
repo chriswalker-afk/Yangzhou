@@ -121,6 +121,46 @@ async function main(){
     console.log('Tileable painted edges (horizontal/vertical, L/S/W):',edges);
 
     await page.screenshot({path:OUT+'/desktop-placement.png'});
+    // End-to-end expansion proof: attach a real, rotated, painted tile to
+    // all 10 positions around the original lake at once. This catches
+    // incompatible corner neighbours that a one-site legality test misses.
+    const expansion=await page.evaluate(()=>{
+      const g=window.YangzhouDebug,board=g.board;
+      for(const [key,t] of board)if(!t.fixed)board.delete(key);
+      const fixed=[...board.values()],dirs=[[0,-1],[1,0],[0,1],[-1,0]];
+      const slots=new Map();
+      for(const t of fixed)for(let i=0;i<4;i++){
+        const x=t.x+dirs[i][0],y=t.y+dirs[i][1],k=x+','+y;
+        if(!board.has(k))slots.set(k,{x,y,port:t.edges[i]});
+      }
+      const types={S:'Stone-paved street',W:'Mooring basin',L:'Garden enclosure'};
+      const results=[];
+      for(const slot of [...slots.values()].sort((a,b)=>a.y-b.y||a.x-b.x)){
+        const arch=g.archetypes.find(t=>t.name===types[slot.port]);
+        if(!arch)throw Error('No art archetype for '+slot.port);
+        const choices=[];
+        for(let rotation=0;rotation<4;rotation++)if(g.canPlace(
+          slot.x,slot.y,g.rotEdges(arch.edges,rotation)))choices.push(rotation);
+        if(!choices.length)throw Error('Cannot fill boundary position '+slot.x+','+slot.y);
+        const rotation=choices[0],edges=g.rotEdges(arch.edges,rotation);
+        board.set(slot.x+','+slot.y,{x:slot.x,y:slot.y,edges,
+          kind:arch.kind,name:arch.name,rotation,seed:40+results.length,fixed:false});
+        results.push({x:slot.x,y:slot.y,port:slot.port,name:arch.name,rotation});
+      }
+      g.state.dirty=true;return {count:board.size,slots:results};
+    });
+    assert.equal(expansion.count,16,'Ten painted tiles must surround six-tile lake');
+    assert.equal(expansion.slots.length,10);
+    assert.equal(expansion.slots.filter(x=>x.port==='S').length,4);
+    assert.equal(expansion.slots.filter(x=>x.port==='W').length,2);
+    await page.click('#fit');
+    await page.waitForTimeout(750);
+    await page.click('#explore');
+    await page.waitForTimeout(360);
+    await page.screenshot({path:OUT+'/all-ten-perimeter-joins.png'});
+    console.log('All starter boundary tile candidates:',expansion.slots);
+
+
     const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2,isMobile:true,hasTouch:true});
     await visit(mobile);
     await mobile.click('#explore');
