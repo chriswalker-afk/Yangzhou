@@ -7,7 +7,7 @@ permissions:
   contents: write
 concurrency:
   group: yangzhou-production-art
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   paint:
     if: "!contains(github.event.head_commit.message, '[production-art]')"
