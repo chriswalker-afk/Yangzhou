@@ -1,0 +1,67 @@
+name: Generate production-style Yangzhou tile masters
+on:
+  push:
+    branches: [feat/production-tile-artwork]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: yangzhou-production-art
+  cancel-in-progress: false
+jobs:
+  paint:
+    if: "!contains(github.event.head_commit.message, '[production-art]')"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install painting compositor
+        run: python -m pip install --disable-pip-version-check "Pillow>=10,<13" "numpy>=1.26,<3"
+      - name: Paint and validate independent square masters
+        run: python scripts/build_production_tiles.py
+      - name: Confirm canonical edge pixel geometry on every master
+        run: |
+          python - <<'PY'
+          import json
+          import numpy as np
+          from pathlib import Path
+          from PIL import Image
+          root=Path("assets/tiles/production")
+          data=json.loads((root/"manifest.json").read_text())
+          edges={}
+          for item in data["entries"]:
+              im=np.asarray(Image.open(root/item["file"]).convert("RGB"))
+              assert im.shape==(1024,1024,3),item["file"]
+              for side,typ in enumerate(item["edges"]):
+                  pix=[im[0,:,:],im[:,-1,:],im[-1,:,:],im[:,0,:]][side]
+                  key=(typ,side)
+                  if key in edges:
+                      # WebP is lossy: exact baked edges may change slightly
+                      # after encoding but must stay visually indistinguishable.
+                      diff=np.abs(pix.astype(int)-edges[key].astype(int))
+                      assert float(diff.mean())<3.0,(item["file"],key,float(diff.mean()))
+                      assert int(diff.max())<40,(item["file"],key,int(diff.max()))
+                  else:edges[key]=pix.copy()
+          print("Validated 58 square artworks and 12 edge profiles")
+          PY
+      - name: Keep reviewable art contact sheets
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yangzhou-production-art-review
+          path: artifacts/production/
+          retention-days: 14
+      - name: Commit the actual painted WebP tile assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/tiles/production/
+          if ! git diff --cached --quiet; then
+            git commit -m "Generate fifty-eight independent topology-constrained tile masters [production-art]"
+            git push origin "HEAD:$GITHUB_REF_NAME"
+          fi
