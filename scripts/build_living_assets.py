@@ -52,7 +52,7 @@ ACTORS = {
 
 def rgba_cutout(name: str, bounds, points) -> None:
     x0,y0,x1,y1 = bounds
-    src = np.asarray(im.crop(bounds).convert("RGBA"))
+    src = np.array(im.crop(bounds).convert("RGBA"),copy=True)
     mask = Image.new("L", (x1-x0, y1-y0), 0)
     d = ImageDraw.Draw(mask)
     d.polygon([(x-x0,y-y0) for x,y in points], fill=255)
