@@ -47,6 +47,15 @@ This prototype includes:
 | Escape / Clear | Cancel preview |
 | Motion on/off | Pause and resume atmospheric animation |
 
+## Production tile-art pass (in review)
+- `scripts/build_production_tiles.py` produces **58 independent 1024 x 1024 painted squares**: six fixed starting masters plus thirteen archetypes in four explicit compass orientations. Generated files are committed under `assets/tiles/production/`.
+- Every square has measured centre-aligned road and water openings, with common outermost pixels and gradual painted blending inward. The tiles stay upright; only the logical route topology is rotated. Boat and pedestrian sprites remain separate from the clean ground art.
+- A browser-art cache loads the correct master for the chosen and placed archetype; the previous image-composite painter remains a fallback if an image is unavailable.
+- `.github/workflows/production-art.yml` generates and checks the art, and stores a **six-tile starter montage**, complete tile-deck contact sheet, and joined starter image for visual inspection.
+- The current source paintings are professionally detailed but are **artist-generated visual studies, not hand-reviewed historical material or independently repainted assets for every topology**. Each output is a topology-specific painting composite; manual art direction is still required to approve roofs, lake banks, architectural plausibility and the slightly softened join zones before calling the art final.
+
+See [Production artwork QA & authoring contract](docs/PRODUCTION-TILE-ART.md).
+
 ## Design and next steps
 - [Full historical/art bible, map, game mechanics and architecture](docs/DESIGN.md)
 - [Prototype QA checklist and honest limitations](docs/PROTOTYPE-QA.md)
