@@ -9,7 +9,7 @@ Open **index.html** in a modern browser (or host the repository as a static site
 This prototype now includes:
 - **A genuinely separate, edge-compatible clean-plate image** generated from the original Slender West Lake painting. Marked static people and boats are removed and the revealed ground/water is reconstructed; unfinished retouching is documented.
 - **Independent transparent artwork layers:** two boats, three painted walking residents, the Five-Pavilion Bridge foreground and willow branches. Boats render beneath the bridge layer while walkers move across the bridge.
-- **Tileable terrain edges:** one shared painter controls the 44-unit street and 88-unit water openings at the exact centre of every 220-unit edge. The starter perimeter and newly placed tiles use identical boundary pixels, preserving visual compatibility after rotation.
+- **Tileable terrain edges:** one shared painter controls the 44-unit street and 88-unit water openings at the exact centre of every 220-unit edge. All ten starter-neighbour positions have a selectable example, and the full perimeter can be filled together (four street, two water, four landscape). The starter perimeter and newly placed tiles use identical boundary pixels, preserving visual compatibility after rotation.
 - **Clean plate / Living city toggle:** instantly switch between the unoccupied background and its independently animated inhabitants, with the same pan/zoom camera.
 - An editable/reproducible asset pipeline and QA screenshots covering the two-layer states.
 
@@ -17,7 +17,7 @@ This prototype includes:
 - Six connected Slender West Lake starting tiles arranged in a **3 × 2** grid; a single continuous handscroll-style WebP painting covers the full starter scene without internal grid seams.
 - Three further full-resolution painted scenes of the Five-Pavilion Bridge, canal-side breakfast and White Pagoda Garden, inspectable from the **Paintings** button and relevant tiles in Explore mode.
 - A high starting camera with smooth easing, pointer-anchored zoom, one-finger pan / two-finger pinch, keyboard pan/zoom, Fit City and quick City / Street / Detail views.
-- Twelve hand-coded tile archetypes with 90-degree rotation and exact edge matching (street, water, land).
+- Thirteen hand-coded tile archetypes with 90-degree rotation and exact edge matching (street, water, land).
 - Valid-placement outlines, selectable spaces and a Place tile action.
 - Real painted local image assets in `assets/painted/`, with a documented manifest and no temporary CDN links. The high-resolution panorama is drawn seamlessly; the three detail paintings are used for close inspection and as feathered motifs in selected new tile designs.
 - Newly placed, rotatable tiles now receive image-based artwork composites as well: the tile renderer combines painted building/garden crops with water and street strips positioned by the edge-connection rules. The procedural renderer remains a fallback until every topology has bespoke painted assets.
