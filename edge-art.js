@@ -18,7 +18,7 @@
   function gradient(c,from,to,start=0,end=DEPTH){
     const g=c.createLinearGradient(0,start,0,end);
     g.addColorStop(0,from);
-    g.addColorStop(.42,from);
+    g.addColorStop(.11,from);
     g.addColorStop(1,to);
     return g;
   }
@@ -48,8 +48,8 @@
     }c.restore();
     // Banks and curbs always terminate at precisely the same x on both
     // faces of a legal join. They are not authored independently per tile.
-    c.lineWidth=type==='W'?2.2:1.4;
     for(const x of [left,right]){
+      c.lineWidth=type==='W'?2.2:1.4;
       c.strokeStyle=type==='W'?'#c7cbb0':'#938977';
       c.beginPath();c.moveTo(x,0);c.lineTo(x,DEPTH*.42);c.stroke();
       c.strokeStyle=type==='W'?'#c7cbb000':'#93897700';
