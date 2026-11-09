@@ -9,7 +9,7 @@
 (() => {
   'use strict';
   const SIDE=220, DEPTH=22;
-  const PORT={L:0,S:44,W:88};
+  const PORT={L:0,S:28,W:72};
   const STYLE={
     L:{land:'#aab58c',base:'#abb58f',ink:'#6e8d6b'},
     S:{land:'#aab58c',base:'#ccba9e',ink:'#8f8369'},
@@ -145,8 +145,36 @@
       }
     }
   }
+  function drawCap(c,type,index){
+    c.save();transform(c,index);
+    // Only the last 10 world units near the actual join are standardized.
+    // A 34px opaque edge apron disguised mismatched artwork but looked like
+    // a stripe; it is deliberately NOT used by the tile renderer anymore.
+    if(type==='S'||type==='W'){
+      const half=PORT[type]/2,ink=type==='S'?'#c5b391':'#83ada5';
+      const fade=c.createLinearGradient(0,0,0,12);
+      fade.addColorStop(0,ink);fade.addColorStop(.18,ink);
+      fade.addColorStop(1,ink+'00');
+      c.fillStyle=fade;c.fillRect(110-half,0,PORT[type],12);
+      c.strokeStyle=type==='S'?'#a99b8188':'#c6cdb188';c.lineWidth=.85;
+      for(const side of [-1,1]){
+        c.beginPath();c.moveTo(110+side*half,0);c.lineTo(110+side*half,7);c.stroke();
+      }
+    } else {
+      // Landscape does not need a false 'road' or 'water' band.
+      // A hint of common green washes away only the pixel-row seam.
+      const fade=c.createLinearGradient(0,0,0,5);
+      fade.addColorStop(0,'#a9b4875c');fade.addColorStop(1,'#a9b48700');
+      c.fillStyle=fade;c.fillRect(0,0,SIDE,5);
+    }
+    c.restore();
+  }
+  function drawCaps(c,edges){
+    if(!Array.isArray(edges)||edges.length!==4)throw Error('Expected four terrain edges');
+    for(let i=0;i<4;i++)drawCap(c,edges[i],i);
+  }
   window.YangzhouEdgeArt={
-    drawEdge,drawBands,drawTile,drawStarterPerimeter,drawStarterLeadIn,
+    drawEdge,drawBands,drawTile,drawStarterPerimeter,drawStarterLeadIn,drawCaps,drawCap,
     spec:Object.freeze({tileSize:SIDE,apron:DEPTH,exits:Object.freeze({...PORT}),
       center:SIDE/2,directions:['north','east','south','west']})
   };
