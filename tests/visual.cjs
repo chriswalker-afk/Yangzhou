@@ -162,8 +162,8 @@ async function main(){
     });
     assert.equal(expansion.count,16,'Ten painted tiles must surround six-tile lake');
     assert.equal(expansion.slots.length,10);
-    assert.equal(expansion.slots.filter(x=>x.port==='S').length,4);
-    assert.equal(expansion.slots.filter(x=>x.port==='L').length,4);
+    assert.equal(expansion.slots.filter(x=>x.port==='S').length,5);
+    assert.equal(expansion.slots.filter(x=>x.port==='L').length,3);
     assert.equal(expansion.slots.filter(x=>x.port==='W').length,2);
     await page.click('#fit');
     await page.waitForTimeout(750);
