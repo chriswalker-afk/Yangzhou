@@ -131,7 +131,7 @@ input[type=range]{width:100%;accent-color:#476c60}input[type=checkbox]{width:16p
  function mode(r){
    state.ring=r;$('six').setAttribute('aria-pressed',String(!r));$('ring').setAttribute('aria-pressed',String(r));
    makeBoard();fit();
-   status.textContent=r?'16 independent tiles · 10 legal neighbour placements':'6 independent Slender West Lake tiles';
+   awaitArt();
  }
  $('six').onclick=()=>mode(false);$('ring').onclick=()=>mode(true);$('fit').onclick=fit;
  $('grid').onchange=e=>{state.grid=e.target.checked;draw();};
@@ -144,9 +144,30 @@ input[type=range]{width:100%;accent-color:#476c60}input[type=checkbox]{width:16p
  canvas.addEventListener('pointercancel',()=>state.drag=null);
  addEventListener('resize',()=>{measure();fit();});
  measure();makeBoard();fit();
+ let artTimer=null;
  function awaitArt(){
-   if(art()?.ready()){status.textContent='All tile images loaded · '+tiles.length+' independently rendered squares';draw();}
-   else setTimeout(awaitArt,120);
+   if(artTimer!==null)clearTimeout(artTimer);
+   artTimer=null;
+   const renderer=art();
+   if(!renderer?.ready()){
+     status.textContent='Loading painted square sources…';
+     artTimer=setTimeout(awaitArt,140);return;
+   }
+   // draw() requests the actual orientation-specific 1024px masters.
+   // Image.onload does not invalidate this standalone studio, so repeat
+   // until the production images—not just the fallback sources—have decoded.
+   draw();
+   const unique=new Set(tiles.map(t=>renderer.productionPath?.(t)).filter(Boolean));
+   const stat=renderer.stats();
+   if(unique.size&&stat.productionLoaded<unique.size&&!stat.productionErrors?.length){
+     status.textContent='Loading high-resolution masters '+stat.productionLoaded+'/'+unique.size+'…';
+     artTimer=setTimeout(awaitArt,150);return;
+   }
+   if(stat.productionErrors?.length){
+     status.textContent='Some production paintings unavailable · fallback used';
+     return;
+   }
+   status.textContent='All tile images loaded · '+tiles.length+' independent high-resolution squares';
  }
  awaitArt();
 })();
