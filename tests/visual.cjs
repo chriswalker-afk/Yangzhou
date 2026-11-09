@@ -12,6 +12,14 @@ async function main(){
     page.on('pageerror',e=>errors.push(String(e)));
     await page.goto('http://127.0.0.1:8765/',{waitUntil:'load'});
     await page.waitForFunction(()=>window.YangzhouPainted?.ready()===true,{timeout:25000});
+    await page.waitForFunction(()=>window.YangzhouLiving?.ready()===true,{timeout:25000});
+    const layers=await page.evaluate(()=>window.YangzhouLiving.inspect());
+    assert(layers.ready,'Clean layered painted scene should be ready');
+    assert(layers.images.clean&&layers.images.bridge&&layers.images.willow,'Background and foreground layers missing');
+    assert(layers.images.upper&&layers.images.lower,'Boats must load as separate transparent images');
+    assert(layers.images.blue&&layers.images.rose,'Independent resident sprites missing');
+    assert.equal(layers.residentCount,3);
+
     const size=await page.evaluate(()=>window.YangzhouDebug.board.size);
     assert.equal(size,6,'Six fixed starter tiles should be present');
     const image=await page.locator('#artImage').evaluate(el=>({complete:el.complete,naturalWidth:el.naturalWidth}));
@@ -23,6 +31,24 @@ async function main(){
     await page.click('#explore');
     await page.waitForTimeout(650);
     await page.screenshot({path:OUT+'/desktop-overview.png'});
+    // The very same camera must show an unpopulated plate when the life layer is disabled.
+    await page.click('#livingToggle');
+    assert.equal(await page.evaluate(()=>window.YangzhouLiving.active()),false);
+    await page.screenshot({path:OUT+'/clean-plate.png'});
+    await page.click('#livingToggle');
+    assert.equal(await page.evaluate(()=>window.YangzhouLiving.active()),true);
+    await page.screenshot({path:OUT+'/living-plate.png'});
+    // Foreground PNGs must be transparent away from painted bridge objects.
+    const alpha=await page.evaluate(async()=>{
+      const img=new Image();img.src='assets/living/bridge-foreground.png';
+      await img.decode();const el=document.createElement('canvas');
+      el.width=img.naturalWidth;el.height=img.naturalHeight;let c=el.getContext('2d');
+      c.drawImage(img,0,0);return [c.getImageData(10,10,1,1).data[3],
+                                      c.getImageData(637,230,1,1).data[3]];
+    });
+    assert.equal(alpha[0],0,'Bridge foreground must be transparent over blank landscape');
+    assert(alpha[1]>0,'Bridge foreground must contain separate painted roof pixels');
+
     await page.click('#viewDetail');
     await page.waitForTimeout(700);
     await page.screenshot({path:OUT+'/desktop-closeup.png'});
