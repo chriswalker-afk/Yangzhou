@@ -1,0 +1,132 @@
+{
+  "version": "0.5.0-prototype",
+  "purpose": "Independently placeable square tile art for Yangzhou; do not use the starter panorama as the gameplay board",
+  "world_units_per_tile": 220,
+  "recommended_authoring_size_px": [
+    1024,
+    1024
+  ],
+  "edge_contract": {
+    "order": [
+      "N",
+      "E",
+      "S",
+      "W"
+    ],
+    "types": {
+      "L": "land",
+      "S": "street",
+      "W": "water"
+    },
+    "port_center": 110,
+    "street_width": 44,
+    "water_width": 88,
+    "runtime_seam_feather": 6
+  },
+  "art_status": "prototype-composite; topology validated, not visually approved",
+  "starter": [
+    {
+      "cell": [
+        0,
+        0
+      ],
+      "name": "Willow Causeway",
+      "file": "road-straight.webp",
+      "edges": [
+        "S",
+        "L",
+        "S",
+        "L"
+      ]
+    },
+    {
+      "cell": [
+        1,
+        0
+      ],
+      "name": "Northern Lake",
+      "file": "river-straight.webp",
+      "edges": [
+        "W",
+        "L",
+        "W",
+        "L"
+      ]
+    },
+    {
+      "cell": [
+        2,
+        0
+      ],
+      "name": "Lakeside Gardens and Teahouses",
+      "file": "road-teahouse.webp",
+      "edges": [
+        "S",
+        "L",
+        "S",
+        "L"
+      ]
+    },
+    {
+      "cell": [
+        0,
+        1
+      ],
+      "name": "White Pagoda Garden",
+      "file": "road-pagoda.webp",
+      "edges": [
+        "S",
+        "S",
+        "S",
+        "L"
+      ]
+    },
+    {
+      "cell": [
+        1,
+        1
+      ],
+      "name": "Five-Pavilion Bridge",
+      "file": "bridge-stone.webp",
+      "edges": [
+        "W",
+        "S",
+        "W",
+        "S"
+      ]
+    },
+    {
+      "cell": [
+        2,
+        1
+      ],
+      "name": "Southern Market Crossroads",
+      "file": "road-landing.webp",
+      "edges": [
+        "S",
+        "S",
+        "S",
+        "S"
+      ]
+    }
+  ],
+  "gallery_panorama": "assets/painted/starter-panorama.webp",
+  "pipeline": "scripts/build_tile_masters.py",
+  "review_tool": "tile-review.html",
+  "artist_requirements": [
+    "Author each topology as its own complete clean square; do not slice a multi-tile panorama",
+    "Use identical centred road and water openings with stable paving/bank detail 30px into each edge",
+    "Keep architecture upright under logical 90-degree rotation; author compass variants for lighting-sensitive tiles",
+    "Keep people, boats, steam, wakes and other moving objects out of the base; supply independent transparent layers",
+    "Bridge roads and waterways remain distinct route networks separated by height",
+    "After replacing shared-source composites, inspect all starter internal joins and rotated perimeter matches",
+    "Obtain cultural and architectural review before historical-authenticity claims"
+  ],
+  "known_gaps": [
+    "Some starter masters recompose elements from the same two source paintings; duplicated architecture is visible",
+    "Shared boundary pixels and legal edge labels do not guarantee natural banks or uninterrupted cobbled routes 20-100 units inside the tile",
+    "Five-Pavilion foreground is a transitional extracted cut-out and needs a bespoke overhead version",
+    "The source clean plate and its foreground masks were built for the earlier panorama and are not per-tile production masks",
+    "Boats and residents have demo paths, not a dynamic navigation graph"
+  ]
+}
