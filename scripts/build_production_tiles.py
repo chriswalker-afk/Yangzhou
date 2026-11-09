@@ -204,6 +204,18 @@ def landscape(kind: str, edges: str, seed: int) -> Image.Image:
     options=choices.get(kind,MOTIFS)
     # Deterministically vary variants while keeping every building upright.
     chosen=options[(seed // 7) % len(options)]
+    # Preserve entire paintings wherever their illustrated route already has
+    # the correct topology; overlaying them hid beautiful bridge masonry.
+    illustrated={
+       ("causeway","SLSL"):"road-straight.webp",
+       ("lake","WLWL"):"river-straight.webp",
+       ("five","WSWS"):"bridge-stone.webp",
+       ("tea","SLSL"):"road-teahouse.webp",
+       ("street","SLSL"):"road-straight.webp",
+       ("canal","WLWL"):"river-straight.webp",
+       ("bridge","WSWS"):"bridge-stone.webp",
+    }
+    chosen=illustrated.get((kind,edges),chosen)
     bg=SOURCE[chosen].copy()
     rng = np.random.default_rng(seed*119 + 5)
     arr=np.asarray(bg,dtype=np.int16)
@@ -344,7 +356,15 @@ def create(kind: str, signature: str, seed: int, name: str):
     if len(signature)!=4 or not set(signature).issubset({"L","S","W"}):
         raise ValueError("Invalid edge signature: "+signature)
     result=landscape(kind,signature,seed)
-    result=decorate_routes(result,signature,seed)
+    # Avoid repainting the authentic path/bridge already present inside
+    # a complete square study. Its edges still receive the shared contract.
+    already_illustrated={
+       ("causeway","SLSL"),("lake","WLWL"),("five","WSWS"),
+       ("tea","SLSL"),("street","SLSL"),("canal","WLWL"),
+       ("bridge","WSWS"),
+    }
+    if (kind,signature) not in already_illustrated:
+        result=decorate_routes(result,signature,seed)
     result=landmarks(result,kind,seed)
     result=canonical_edges(result,signature)
     path=DEST/name
