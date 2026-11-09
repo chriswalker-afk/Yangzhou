@@ -8,7 +8,7 @@
  */
 (() => {
   'use strict';
-  const SIDE=220, DEPTH=22; // Minimal wash: avoid masking valuable original painting
+  const SIDE=220, DEPTH=6; // Six-unit seam feather; never obscure an entire garden strip
   const PORT={L:0,S:44,W:88};
   const STYLE={
     L:{land:'#aab58c',base:'#abb58f',ink:'#6e8d6b'},
@@ -28,8 +28,10 @@
     c.fillStyle=gradient(c,'#abb58f','#abb58f00',0,DEPTH);
     c.fillRect(0,0,SIDE,DEPTH);
     if(type==='L'){
-      c.strokeStyle='#9e97783a';c.lineWidth=.7;
-      for(let i=0;i<12;i++){const u=(i+1)*17,v=9+(i%3)*5;
+      // No repetitive decorative strokes near a landscape seam. They form
+      // artificial parallel bands when two independently painted tiles meet.
+      c.strokeStyle='#9e977822';c.lineWidth=.45;
+      for(let i=0;i<7;i++){const u=(i+1)*27,v=2+(i%3);
         c.beginPath();c.moveTo(u-4,v);c.quadraticCurveTo(u,v-2,u+4,v);c.stroke();}
       return;
     }
