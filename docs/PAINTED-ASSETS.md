@@ -10,14 +10,14 @@
 ## Starter tile topology (N, E, S, W)
 | (x,y) | Scene | Edges |
 |---|---|---|
-| (0,0) | Willow Causeway | S, L, S, S |
+| (0,0) | Willow Causeway | L, L, S, L |
 | (1,0) | Northern Lake | W, L, W, L |
-| (2,0) | Lakeside Gardens and Teahouses | L, S, S, L |
+| (2,0) | Lakeside Gardens and Teahouses | L, L, S, L |
 | (0,1) | White Pagoda Garden | S, S, L, L |
 | (1,1) | Five-Pavilion Bridge | W, S, W, S |
-| (2,1) | Southern Landing and Breakfast House | S, S, L, S |
+| (2,1) | Southern Landing and Breakfast House | S, L, L, S |
 
-The canal runs through the centre column. The bridge tile connects the walking route across the lower row, with the waterway passing under it. Four paved-street exits, two canal exits and four garden/landscape edges are available around the ten neighbouring cells. The starter border and placeable tiles now use shared painted connectors, including faint paths that extend inward from road/canal ports. Gameplay connectivity remains independent of exact imagery; final bespoke art must still make the transition convincing beyond the boundary band.
+The canal runs through the centre column. The bridge tile connects the walking route across the lower row, with the waterway passing under it. Eight natural landscape edges and two canal exits are available around the ten neighbouring cells. A rotated garden pavilion, with a path heading *away* from the lake, can fit each landscape edge and introduce a future street, while a one-port mooring basin matches either canal exit. The starter border and placeable tiles now use shared painted connectors, including faint paths that extend inward from road/canal ports. Gameplay connectivity remains independent of exact imagery; final bespoke art must still make the transition convincing beyond the boundary band.
 
 ## Rendering and memory
 - `painted-assets.js` asynchronously loads all four local WebP images and invalidates the main canvas when they arrive.
