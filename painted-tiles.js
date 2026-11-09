@@ -11,12 +11,17 @@
   // rather than arbitrarily reusing the canal/bridge for a teahouse.
   const crops={
     tea:['breakfast',.83,.77,.42],market:['breakfast',.17,.43,.43],
-    bridge:['bridge',.51,.38,.63],garden:['pagoda',.22,.73,.45],
+    bridge:['bridge',.51,.38,.63],garden:['panorama',.83,.22,.42],
     court:['pagoda',.85,.61,.50],street:['panorama',.20,.42,.47],
-    landing:['panorama',.78,.72,.47],canal:['panorama',.52,.61,.52]
+    landing:['panorama',.50,.72,.40],canal:['panorama',.52,.61,.52]
   },fallback=['panorama',.49,.43,.57];
+  const gardenVariants=[
+    ['panorama',.83,.22,.42], // eastern walled gardens
+    ['panorama',.18,.21,.42], // western courtyards and blossoms
+    ['panorama',.76,.69,.40]  // canal-side garden architecture
+  ];
   function crop(c,img,kind,seed){
-    const [,cx,cy,portion]=crops[kind]||fallback;
+    const [,cx,cy,portion]=kind==='garden' ? gardenVariants[Math.abs(seed)%gardenVariants.length] : (crops[kind]||fallback);
     const w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
     const side=Math.min(w,h)*portion;
     const jx=(hash(seed,3)-.5)*Math.min(24,w-side);
@@ -57,9 +62,11 @@
     const water=pattern(c,images.panorama,[530,350,150,150]);
     const road=pattern(c,images.breakfast,[740,560,140,140]);
     if(t.edges.includes('W')){
-      stroke(c,t.edges,'W',96,'#668f85e5');
-      stroke(c,t.edges,'W',85,water);
-      stroke(c,t.edges,'W',78,'#91b6a632');
+      // Avoid a large flat turquoise capsule: let real painted water
+      // show through the canal. Shared edge art owns the final port colour.
+      stroke(c,t.edges,'W',94,'#72968e9c');
+      c.save();c.globalAlpha=.58;stroke(c,t.edges,'W',84,water);c.restore();
+      stroke(c,t.edges,'W',74,'#91b6a620');
       detail(c,t.edges,'W');
     }
     if(t.edges.includes('S')){
