@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yangzhou · Tile Artwork Review</title>
+<style>
+:root{color-scheme:light;--paper:#f2eadb;--ink:#403b33;--faint:#ded0b9;--pine:#476c60}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 Georgia,"Noto Serif",serif}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 22px;border-bottom:1px solid var(--faint);background:#f8f2e6}
+h1{font-size:23px;margin:0}header p{margin:2px 0 0;color:#776e5d;font-size:12px;font-family:system-ui,sans-serif}
+a{color:var(--pine)}button{font:inherit;color:inherit;cursor:pointer;background:#fff9eb;border:1px solid #c3b49b;padding:8px 13px;border-radius:4px}
+button[aria-pressed=true]{background:var(--pine);color:#fff;border-color:var(--pine)}
+button:focus-visible{outline:3px solid #b59a55;outline-offset:2px}
+main{display:grid;grid-template-columns:minmax(0,1fr) 280px;min-height:calc(100vh - 83px)}
+.stage{position:relative;min-height:520px;overflow:hidden;background:#ece2cf}
+#view{display:block;width:100%;height:calc(100vh - 84px);min-height:520px;cursor:grab;touch-action:none}
+#view:active{cursor:grabbing}
+aside{border-left:1px solid var(--faint);padding:20px;background:#f6eedf}
+aside h2{font-size:19px;margin:5px 0 12px}
+aside p,aside label,.tip{font:13px/1.5 system-ui,sans-serif;color:#645e52}
+.actions{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 20px}
+.actions button{font-size:13px}
+label{display:block;margin:14px 0 6px}
+input{width:100%;accent-color:#476c60}
+.note{border-top:1px solid #d5c9b2;padding-top:15px;margin-top:20px}
+#status{position:absolute;left:14px;bottom:14px;background:#f7eedeea;padding:9px 12px;border:1px solid #d4c5a9;font:12px system-ui,sans-serif}
+.pill{display:inline-block;background:#e1e9dc;padding:3px 8px;border-radius:30px;font:12px system-ui,sans-serif}
+@media(max-width:800px){header{padding:12px;align-items:flex-start}header h1{font-size:18px}main{display:flex;flex-direction:column}aside{order:-1;border-left:0;border-bottom:1px solid var(--faint);padding:10px 15px}.stage{min-height:55vh}#view{height:60vh;min-height:350px}.actions{margin:8px 0}aside .note{display:none}}
+</style>
+</head>
+<body>
+<header><div><h1>揚州 · Tile artwork review</h1><p>One square painting per tile · Slender West Lake · Visual acceptance studio</p></div><a href="index.html">Back to game</a></header>
+<main>
+<div class="stage"><canvas id="view" aria-label="Zoomable view of independent painted Yangzhou tiles"></canvas><span id="status" role="status">Loading tile masters…</span></div>
+<aside>
+<span class="pill">Production art study</span><h2>Inspect the joins</h2>
+<p>These are the same square assets and edge masks used by the game—not a panorama or a separate illustration.</p>
+<div class="actions">
+<button id="six" aria-pressed="true">Six starting tiles</button>
+<button id="ring" aria-pressed="false">10-tile expansion</button>
+<button id="fit">Fit</button>
+</div>
+<label for="zoom">Magnification</label><input type="range" id="zoom" min="35" max="350" value="100" step="5">
+<label><input type="checkbox" id="grid"> Show tile boundaries</label>
+<label><input type="checkbox" id="ports"> Show N/E/S/W ports</label>
+<p class="tip">Drag to pan, scroll or pinch to zoom. At high magnification, check whether banks, paving and buildings continue naturally across the joins.</p>
+<div class="note"><h2>Acceptance contract</h2>
+<p>All tile edges are centred at world coordinate 110. Roads use 44 world units; water uses 88; landscape has no port. Streets join streets, water joins water, and landscape joins landscape. Buildings remain upright when tiles are rotated.</p>
+<p>Passing edge-pixel tests is necessary but not sufficient. Look for duplicated scenery, abrupt transitions, displaced bridges, unnatural banks and buildings obstructing connections.</p></div>
+</aside>
+</main>
+<script src="edge-art.js"></script>
+<script src="tile-topology.js"></script>
+<script src="tile-system.js"></script>
+<script>
+(()=>{
+ 'use strict';
+ const model=window.YangzhouTileTopology,art=()=>window.YangzhouTiles;
+ const canvas=document.getElementById('view'),ctx=canvas.getContext('2d');
+ const status=document.getElementById('status');
+ const $=id=>document.getElementById(id),dirs=model.directions;
+ const state={ring:false,grid:false,ports:false,zoom:1,panX:0,panY:0,drag:null,resize:true};
+ let tiles=[],w=0,h=0;
+ function makeBoard(){
+   tiles=model.starter.map(t=>({...t}));if(!state.ring)return;
+   const board=new Map(tiles.map(t=>[t.x+','+t.y,t])),slots=new Map();
+   for(const t of tiles)for(let i=0;i<4;i++){
+     const x=t.x+dirs[i][0],y=t.y+dirs[i][1],k=x+','+y;
+     if(!board.has(k))slots.set(k,{x,y,side:i,expected:t.edges[i]});
+   }
+   const choice={S:'Stone-paved street',W:'Mooring basin',L:'Garden pavilion'};
+   for(const slot of [...slots.values()].sort((a,b)=>a.y-b.y||a.x-b.x)){
+     const a=model.archetypes.find(a=>a.name===choice[slot.expected]);if(!a)continue;
+     const fits=e=>dirs.every(([dx,dy],i)=>{
+       const n=board.get((slot.x+dx)+','+(slot.y+dy));
+       return !n||n.edges[(i+2)%4]===e[i];
+     });
+     const rotations=[0,1,2,3].filter(r=>fits(model.rotateEdges(a.edges,r)));
+     if(!rotations.length)throw Error('No legal surrounding tile at '+slot.x+','+slot.y);
+     const rotation=rotations[0],edges=model.rotateEdges(a.edges,rotation);
+     const tile={x:slot.x,y:slot.y,...a,edges,rotation,seed:40+tiles.length};
+     board.set(tile.x+','+tile.y,tile);tiles.push(tile);
+   }
+   const issues=model.validateBoard(board.values());
+   if(issues.length)throw Error(issues.join('; '));
+ }
+ function measure(){
+   const rect=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);
+   w=rect.width;h=rect.height;canvas.width=Math.ceil(w*dpr);canvas.height=Math.ceil(h*dpr);
+   ctx.setTransform(dpr,0,0,dpr,0,0);
+ }
+ function fit(){
+   const xs=tiles.map(t=>t.x),ys=tiles.map(t=>t.y);
+   const minX=Math.min(...xs)*220,maxX=(Math.max(...xs)+1)*220;
+   const minY=Math.min(...ys)*220,maxY=(Math.max(...ys)+1)*220;
+   state.zoom=Math.min((w-55)/(maxX-minX),(h-55)/(maxY-minY),2.2);
+   state.panX=w/2-(minX+maxX)/2*state.zoom;
+   state.panY=h/2-(minY+maxY)/2*state.zoom;
+   $('zoom').value=Math.round(state.zoom*100);
+   draw();
+ }
+ function draw(){
+   ctx.clearRect(0,0,w,h);ctx.fillStyle='#e9dfca';ctx.fillRect(0,0,w,h);
+   ctx.save();ctx.translate(state.panX,state.panY);ctx.scale(state.zoom,state.zoom);
+   for(const t of tiles){
+     art()?.draw(ctx,t,0,state.zoom);
+     if(state.grid){
+       ctx.strokeStyle='#4e4a3dba';ctx.lineWidth=1/Math.max(.1,state.zoom);
+       ctx.strokeRect(t.x*220+.5,t.y*220+.5,219,219);
+     }
+     if(state.ports){
+       for(let i=0;i<4;i++){
+         const type=t.edges[i],dx=dirs[i][0],dy=dirs[i][1];
+         const x=t.x*220+110+dx*101,y=t.y*220+110+dy*101;
+         ctx.save();ctx.fillStyle=type==='W'?'#286f83':type==='S'?'#9a6031':'#777d66';
+         ctx.beginPath();ctx.arc(x,y,10,0,Math.PI*2);ctx.fill();
+         ctx.fillStyle='white';ctx.font='bold 11px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(type,x,y);
+         ctx.restore();
+       }
+     }
+   }
+   ctx.restore();
+ }
+ function zoomTo(z,sx=w/2,sy=h/2){
+   z=Math.max(.35,Math.min(3.5,z));
+   const wx=(sx-state.panX)/state.zoom,wy=(sy-state.panY)/state.zoom;
+   state.zoom=z;state.panX=sx-wx*z;state.panY=sy-wy*z;
+   $('zoom').value=Math.round(z*100);draw();
+ }
+ function mode(r){
+   state.ring=r;$('six').setAttribute('aria-pressed',String(!r));$('ring').setAttribute('aria-pressed',String(r));
+   makeBoard();fit();
+   status.textContent=r?'16 independent tiles · 10 legal neighbour placements':'6 independent Slender West Lake tiles';
+ }
+ $('six').onclick=()=>mode(false);$('ring').onclick=()=>mode(true);$('fit').onclick=fit;
+ $('grid').onchange=e=>{state.grid=e.target.checked;draw();};
+ $('ports').onchange=e=>{state.ports=e.target.checked;draw();};
+ $('zoom').oninput=e=>zoomTo(+e.target.value/100);
+ canvas.addEventListener('wheel',e=>{e.preventDefault();const r=canvas.getBoundingClientRect();zoomTo(state.zoom*Math.exp(-e.deltaY*.001),e.clientX-r.left,e.clientY-r.top);},{passive:false});
+ canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);state.drag={x:e.clientX,y:e.clientY};});
+ canvas.addEventListener('pointermove',e=>{if(!state.drag)return;state.panX+=e.clientX-state.drag.x;state.panY+=e.clientY-state.drag.y;state.drag={x:e.clientX,y:e.clientY};draw();});
+ canvas.addEventListener('pointerup',()=>state.drag=null);
+ canvas.addEventListener('pointercancel',()=>state.drag=null);
+ addEventListener('resize',()=>{measure();fit();});
+ measure();makeBoard();fit();
+ function awaitArt(){
+   if(art()?.ready()){status.textContent='All tile images loaded · '+tiles.length+' independently rendered squares';draw();}
+   else setTimeout(awaitArt,120);
+ }
+ awaitArt();
+})();
+</script>
+</body>
+</html>
