@@ -239,6 +239,49 @@ def decorate_routes(im: Image.Image, edges: str, seed: int) -> Image.Image:
     return im
 
 
+
+def landmarks(im: Image.Image, kind: str, seed: int) -> Image.Image:
+    """Keep Yangzhou's signature architecture crisp and free of painted crowds.
+
+    Only isolated architectural details are used from standalone reference art;
+    the large starter panorama is never used as a tile source.
+    """
+    if kind == "pagoda":
+        src = Image.open(ROOT/"assets/painted/white-pagoda-garden.webp").convert("RGBA")
+        # The bottle-shaped White Pagoda itself: omit surrounding pedestrians.
+        crop = src.crop((455, 0, 653, 285))
+        silhouette = Image.new("L", crop.size, 0)
+        d = ImageDraw.Draw(silhouette)
+        d.polygon([(104,0),(117,0),(127,37),(133,66),(132,83),
+                   (145,106),(163,143),(172,176),(170,198),
+                   (151,214),(158,243),(161,283),(37,283),
+                   (41,246),(50,219),(35,200),(36,176),
+                   (48,144),(63,103),(72,81),(72,61),(83,33),
+                   (90,7)],fill=255)
+        silhouette=silhouette.filter(ImageFilter.GaussianBlur(3))
+        crop.putalpha(silhouette)
+        crop.thumbnail((280,390),Image.Resampling.LANCZOS)
+        on=Image.new("RGBA",(SIZE,SIZE),(0,0,0,0))
+        on.alpha_composite(crop,(108,258))
+        return Image.alpha_composite(im.convert("RGBA"),on).convert("RGB")
+    if kind == "five":
+        src = Image.open(SRC/"five-pavilion-foreground.png").convert("RGBA")
+        # Crop only FIVE ROOFS, not the crowd/boats/bridge underlayer.
+        roof = src.crop((0,0,src.width,min(81,src.height)))
+        roof = roof.resize((790,160),Image.Resampling.LANCZOS)
+        a=roof.getchannel("A")
+        band=Image.new("L",roof.size,255)
+        grad=np.zeros((roof.height,roof.width),dtype=np.uint8)
+        for y in range(roof.height):
+            grad[y,:]=int(255*min(1,max(0,(roof.height-y)/34)))
+        a=ImageChops.multiply(a,Image.fromarray(grad,"L"))
+        roof.putalpha(a)
+        on=Image.new("RGBA",(SIZE,SIZE),(0,0,0,0))
+        on.alpha_composite(roof,(116,295))
+        return Image.alpha_composite(im.convert("RGBA"),on).convert("RGB")
+    return im
+
+
 def edge_color(type_: str, u: np.ndarray) -> np.ndarray:
     """Exactly one canonical symmetric pixel profile for all N/E/S/W joins."""
     uv = np.minimum(u, SIZE-1-u).astype(np.float32)
@@ -282,6 +325,7 @@ def create(kind: str, signature: str, seed: int, name: str):
         raise ValueError("Invalid edge signature: "+signature)
     result=landscape(kind,signature,seed)
     result=decorate_routes(result,signature,seed)
+    result=landmarks(result,kind,seed)
     result=canonical_edges(result,signature)
     path=DEST/name
     result.save(path,"WEBP",quality=85,method=5)
@@ -346,7 +390,7 @@ def main():
                              "port_world_units":{"land":0,"stone_road":44,"navigable_water":88},
                              "center_world_units":WORLD/2},
         "source":"original painted square source studies in assets/tiles, never starter panorama",
-        "method":"painted motif/ground composition with protected route geometry, no people or boats baked in",
+        "method":"painted motif/ground composition, separately cropped architectural silhouettes, protected route geometry, no painted people or boats",
         "entries":ENTRIES,
         "limits":["Original square sources are artistic interpretations rather than historical reconstructions.",
                   "Formal aesthetic sign-off is still required at high zoom, especially at land-to-road blending.",
