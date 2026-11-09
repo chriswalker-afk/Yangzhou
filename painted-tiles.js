@@ -6,20 +6,23 @@
   const directions=[[0,-1],[1,0],[0,1],[-1,0]];
   const hash=(a,b)=>{const n=Math.sin((a+1)*143.87+(b+1)*317.19)*14569.17;return n-Math.floor(n);};
   // Fixed, orientation-neutral image samples: buildings never rotate sideways.
+  // Normalized focus points in the unpopulated 1200x800 starter plate.
+  // The feature identity now comes from the correct part of the painting,
+  // rather than arbitrarily reusing the canal/bridge for a teahouse.
   const crops={
-    tea:['breakfast',.47,.50,.80],market:['breakfast',.57,.42,.74],
-    bridge:['bridge',.49,.47,.83],garden:['pagoda',.38,.46,.83],
-    court:['pagoda',.61,.47,.73],street:['panorama',.25,.46,.66],
-    landing:['panorama',.66,.58,.58],canal:['panorama',.55,.49,.53]
-  },fallback=['panorama',.49,.43,.69];
+    tea:['breakfast',.83,.77,.42],market:['breakfast',.17,.43,.43],
+    bridge:['bridge',.51,.38,.63],garden:['pagoda',.22,.73,.45],
+    court:['pagoda',.85,.61,.50],street:['panorama',.20,.42,.47],
+    landing:['panorama',.78,.72,.47],canal:['panorama',.52,.61,.52]
+  },fallback=['panorama',.49,.43,.57];
   function crop(c,img,kind,seed){
     const [,cx,cy,portion]=crops[kind]||fallback;
     const w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
     const side=Math.min(w,h)*portion;
-    const jx=(hash(seed,3)-.5)*Math.min(90,w-side)*.65;
-    const jy=(hash(seed,7)-.5)*Math.min(60,h-side)*.65;
-    const sx=Math.max(0,Math.min(w-side,cx*w-side*.5+jx));
-    const sy=Math.max(0,Math.min(h-side,cy*h-side*.5+jy));
+    const jx=(hash(seed,3)-.5)*Math.min(24,w-side);
+    const jy=(hash(seed,7)-.5)*Math.min(24,h-side);
+    const sx=Math.max(0,Math.min(w-side,cx*w-side/1-side/2+jx));
+    const sy=Math.max(0,Math.min(h-side,cy*h-side/1-side/2+jy));
     c.drawImage(img,sx,sy,side,side,0,0,S,S);
   }
   function pattern(c,img,rect){
