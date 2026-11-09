@@ -35,14 +35,14 @@
   ];
   // Six bespoke square paintings; one fixed starting tile = one art file.
   // Masters are compass-upright, so the buildings never rotate sideways.
-  // The N/S lake and E/W bridge each connect through the tile centre.
+  // The N/S lake and E/W bridge each connect through the tile centre.\n  // The bridge ends at the pagoda garden and southern landing; no external street exits.
   const starter=[
-    {x:0,y:0,edges:['S','L','S','L'],kind:'causeway',name:'Willow Causeway',master:'road-straight',fixed:true,rotation:0,seed:1},
-    {x:1,y:0,edges:['W','L','W','L'],kind:'lake',name:'Northern Lake',master:'river-straight',fixed:true,rotation:0,seed:2},
-    {x:2,y:0,edges:['S','L','S','L'],kind:'tea',name:'Lakeside Gardens and Teahouses',master:'road-teahouse',fixed:true,rotation:0,seed:3},
-    {x:0,y:1,edges:['S','S','S','L'],kind:'pagoda',name:'White Pagoda Garden',master:'road-pagoda',fixed:true,rotation:0,seed:4},
-    {x:1,y:1,edges:['W','S','W','S'],kind:'five',name:'Five-Pavilion Bridge',master:'bridge-stone',fixed:true,rotation:0,seed:5},
-    {x:2,y:1,edges:['S','S','S','S'],kind:'landing',name:'Southern Market Crossroads',master:'road-landing',fixed:true,rotation:0,seed:6}
+    {x:0,y:0,edges:['L','L','L','L'],kind:'causeway',name:'Willow Garden',master:'road-straight',fixed:true,rotation:0,seed:1,artStatus:'requires-repaint'},
+    {x:1,y:0,edges:['W','L','W','L'],kind:'lake',name:'Northern Lake',master:'river-straight',fixed:true,rotation:0,seed:2,artStatus:'prototype'},
+    {x:2,y:0,edges:['L','L','L','L'],kind:'tea',name:'Lakeside Gardens and Teahouses',master:'road-teahouse',fixed:true,rotation:0,seed:3,artStatus:'requires-repaint'},
+    {x:0,y:1,edges:['L','S','L','L'],kind:'pagoda',name:'White Pagoda Garden',master:'road-pagoda',fixed:true,rotation:0,seed:4,artStatus:'requires-repaint'},
+    {x:1,y:1,edges:['W','S','W','S'],kind:'five',name:'Five-Pavilion Bridge',master:'bridge-stone',fixed:true,rotation:0,seed:5,artStatus:'prototype'},
+    {x:2,y:1,edges:['L','L','L','S'],kind:'landing',name:'Southern Landing and Breakfast House',master:'road-landing',fixed:true,rotation:0,seed:6,artStatus:'requires-repaint'}
   ];
   function validateBoard(tiles){
     const all=new Map();

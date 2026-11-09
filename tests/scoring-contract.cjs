@@ -5,6 +5,24 @@ const scoring=require('../scoring-tile-spec.cjs');
 const audit=scoring.auditStarter();
 assert(audit.valid);
 assert.equal(audit.report.length,6);
+const starters=topology.starter;
+const at=(x,y)=>starters.find(t=>t.x===x&&t.y===y);
+const outer=[];
+for(const t of starters)for(let i=0;i<4;i++){
+ const [dx,dy]=topology.directions[i];
+ if(!at(t.x+dx,t.y+dy))outer.push(t.edges[i]);
+}
+assert.equal(outer.length,10);
+assert.equal(outer.filter(e=>e==='L').length,8);
+assert.equal(outer.filter(e=>e==='W').length,2);
+assert.equal(outer.filter(e=>e==='S').length,0);
+assert.deepEqual(at(0,1).edges,['L','S','L','L']);
+assert.deepEqual(at(1,1).edges,['W','S','W','S']);
+assert.deepEqual(at(2,1).edges,['L','L','L','S']);
+assert.equal(scoring.makeSpec(at(0,1)).routes[0].ports.join(','),'1');
+assert.equal(scoring.makeSpec(at(2,1)).routes[0].ports.join(','),'3');
+assert.equal(scoring.makeSpec(at(1,1)).routes.length,2);
+
 for(const tile of topology.starter)assert.deepEqual(scoring.validate(tile,scoring.makeSpec(tile)),[]);
 for(const arch of topology.archetypes){
  const tile={...arch,fixed:false};
