@@ -30,8 +30,8 @@
   const dirs=[[0,-1],[1,0],[0,1],[-1,0]];
   const skin={
     causeway:['road-straight'],lake:['garden-riverside'],
-    tea:['garden-teahouse','garden-courtyard'],
-    pagoda:['garden-willow'],five:['bridge-stone'],landing:['garden-riverside','garden-teahouse'],
+    tea:['garden-courtyard','garden-teahouse'],
+    pagoda:['garden-willow'],five:['bridge-stone'],landing:['garden-teahouse','garden-riverside'],
     garden:['garden-willow','garden-courtyard','garden-rockery','garden-blossoms'],
     court:['garden-courtyard','garden-teahouse'],market:['garden-teahouse','garden-courtyard'],
     street:['garden-willow','garden-blossoms'],canal:['garden-riverside','garden-rockery'],
