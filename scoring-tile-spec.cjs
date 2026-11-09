@@ -7,12 +7,12 @@ const DIR=topology.directions;
 const segment=(type,ports)=>({type,ports});
 const feature=(id,type,x,y,extras={})=>({id,type,x,y,...extras});
 const specs={
-  causeway:{routes:[segment('street',[0,2])],features:[]},
+  causeway:{routes:[],features:[feature('willow-garden','garden',.5,.5,{boundary:'landscaped'})]},
   lake:{routes:[segment('water',[0,2])],features:[feature('lake-view','lake',.5,.5)]},
-  tea:{routes:[segment('street',[0,2])],features:[feature('tea-house','teahouse',.76,.35,{access:'street',amenities:['tea']})]},
-  pagoda:{routes:[segment('street',[0,1,2])],features:[feature('white-pagoda','viewpoint',.28,.65,{access:'street',views:['garden','water']})]},
+  tea:{routes:[],features:[feature('tea-house','teahouse',.76,.35,{access:'local-path',amenities:['tea']})]},
+  pagoda:{routes:[segment('street',[1])],features:[feature('white-pagoda','viewpoint',.28,.65,{access:'street',views:['garden','water']})]},
   five:{routes:[segment('water',[0,2]),segment('street',[1,3])],features:[feature('five-pavilion-bridge','scenic-bridge',.5,.5)]},
-  landing:{routes:[segment('street',[0,1,2,3])],features:[feature('market-landing','market',.72,.7,{access:'street',amenities:['food']})]},
+  landing:{routes:[segment('street',[3])],features:[feature('breakfast-house','teahouse',.72,.7,{access:'street',amenities:['food']})]},
   street:{routes:[segment('street',[0,2])],features:[]},
   canal:{routes:[segment('water',[0,1])],features:[]},
   garden:{routes:[],features:[feature('garden-area','garden',.5,.5,{boundary:'enclosed'})]},
