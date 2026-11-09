@@ -256,6 +256,7 @@ function motion(c,t,time){if(!window.YangzhouDebug?.state.motion)return;
 }
 function draw(c,t,time,zoom=1){c.save();c.translate(t.x*S,t.y*S);
  const base=getBase(t,zoom);c.drawImage(base,0,0,S,S);
+ if(!t.fixed)window.YangzhouPainted?.drawMotif(c,t);
  if(zoom>=1.35)fineDetail(c,t);
  motion(c,t,time);
  c.restore();}
