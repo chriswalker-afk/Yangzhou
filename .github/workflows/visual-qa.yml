@@ -1,0 +1,33 @@
+name: Painted artwork visual QA
+on:
+  push:
+    branches: [main, "feat/**"]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install browser tester
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Render and test desktop and mobile
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/yangzhou-http.log 2>&1 &
+          sleep 2
+          node tests/visual.cjs
+      - name: Preserve visual screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: painted-yangzhou-screenshots
+          path: artifacts/visual/
+          retention-days: 7

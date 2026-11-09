@@ -31,18 +31,37 @@ function boat(x,y,t){c.save();c.translate(x,y);c.rotate(Math.PI/2);
  c.fillStyle='#55574a';c.beginPath();c.arc(-15,0,3,0,Math.PI*2);c.fill();
  c.strokeStyle='#6a5943';c.lineWidth=1.4;c.beginPath();c.moveTo(15,1);c.lineTo(27,21+Math.sin(t*.0018)*2);c.stroke();
  c.restore();}
-function draw(now){requestAnimationFrame(draw);const g=game();if(!g)return;const s=g.state;resize(s.w,s.h);c.clearRect(0,0,s.w,s.h);if(!s.motion)return;c.save();c.translate(s.offsetX,s.offsetY);c.scale(s.scale,s.scale);
- // A boat crosses all three connected starter-water tiles; this will be generalized by the route-graph pass.
- if(g.board.has('1,0')&&g.board.has('1,1')&&g.board.has('1,2')){let p=((now*.028)%750)-45;
-   // The boat passes beneath the Five-Pavilion Bridge (scene y=220+110=330).
-   // Hide the hull while it is under the stone structure instead of painting it on top.
-   if(p<305||p>355)boat(330+Math.sin(p*.014)*4,p,now);
-   else {c.save();c.globalAlpha=.18;c.strokeStyle='#e0e0c5';c.beginPath();c.ellipse(330,p,9,4,0,0,Math.PI*2);c.stroke();c.restore();}
+function along(points,f){let lengths=[],total=0;
+ for(let i=1;i<points.length;i++){const a=points[i-1],b=points[i],len=Math.hypot(b[0]-a[0],b[1]-a[1]);lengths.push(len);total+=len;}
+ let remain=((f%1)+1)%1*total;
+ for(let i=0;i<lengths.length;i++){if(remain<=lengths[i]){const a=points[i],b=points[i+1],u=remain/lengths[i];return [a[0]+u*(b[0]-a[0]),a[1]+u*(b[1]-a[1])];}remain-=lengths[i];}
+ return points[points.length-1];
+}
+function draw(now){requestAnimationFrame(draw);const g=game();if(!g)return;
+ const s=g.state;resize(s.w,s.h);c.clearRect(0,0,s.w,s.h);if(!s.motion)return;
+ c.save();c.translate(s.offsetX,s.offsetY);c.scale(s.scale,s.scale);
+ c.beginPath();c.rect(0,0,660,440);c.clip();
+ const painted=window.YangzhouPainted?.ready()===true;
+ // At close zoom preserve the painted style; production actor sprites are future artwork.
+ if(!painted||s.scale<.78){
+ // Painting-aligned illustration paths: real graph navigation for placed tiles follows in next pass.
+ if(g.board.has('1,0')&&g.board.has('1,1')){
+   const p=(now*.017%530)-45,x=393+Math.sin(p*.016)*10;
+   // Pass underneath, never over the elevated Five-Pavilion Bridge.
+   if(p<180||p>270)boat(x,p,now);
+   else {c.save();c.strokeStyle='rgba(225,231,204,.24)';c.lineWidth=1;
+     c.beginPath();c.ellipse(x,p,7,2.2,0,0,Math.PI*2);c.stroke();c.restore();}
  }
- // Figures use the bridge route spanning the 03/04 seam, rather than isolated per-tile animation.
- if(g.board.has('0,1')&&g.board.has('1,1')){for(let i=0;i<3;i++){let x=((now*.015+i*160)%510)-35;person(x,329+(i%2)*10,now,i);}}
- // A few occasional, delicate glints travel with the central waterway.
- c.strokeStyle='#e4dfba80';c.lineWidth=1.4;for(let i=0;i<8;i++){let y=(now*.011+i*99)%680;c.beginPath();c.ellipse(326+Math.sin(i*3+y*.012)*13,y,5,1,0,0,Math.PI);c.stroke();}
+ if(g.board.has('0,1')&&g.board.has('1,1')&&g.board.has('2,1')){
+   const walk=[[45,330],[115,290],[210,244],[265,220],[335,202],[425,215],[504,248],[570,297],[622,320]];
+   for(let i=0;i<3;i++){const f=(now*.000015+(i/3))%1,p=along(walk,i===1?1-f:f);
+     person(p[0],p[1],now,i+2);}
+ }
+ }
+ // Small ink-and-watercolour glints; keep these subtle at every zoom level.
+ c.strokeStyle='rgba(244,237,208,.22)';c.lineWidth=.9;
+ for(let i=0;i<8;i++){let y=(now*.008+i*74)%475,x=375+Math.sin(i*4+y*.009)*14;
+   c.beginPath();c.ellipse(x,y,4+i%3*2,1,0,0,Math.PI);c.stroke();}
  c.restore();}
 requestAnimationFrame(draw);
 })();

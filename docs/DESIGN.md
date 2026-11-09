@@ -31,16 +31,16 @@ A calm, competitive 2–4-player tile-laying game in an eighteenth-century Yangz
 - Settings for full, reduced and minimal motion; honor prefers-reduced-motion.
 - No abrupt zoom snaps or seams between artwork layers.
 
-## Starter scene: six fixed tiles (2 x 3)
-Coordinates (x,y), x east, y south. Edge signatures are North/East/South/West:
+## Starter scene: six fixed tiles (3 × 2)
+The game opens around one seamlessly painted Slender West Lake landscape, fitted without distortion into a three-column, two-row atlas. World coordinates: x increases east, y increases south. Edge signatures N / E / S / W:
 1. (0,0) Willow Causeway: L L S L
 2. (1,0) Northern Lake: W L W L
-3. (0,1) Bridge Approach: S S S S
-4. (1,1) Five-Pavilion Bridge: W S W S
-5. (0,2) White Pagoda Garden: S S L L
-6. (1,2) Southern Landing: W L L S
+3. (2,0) Lakeside Gardens and Teahouses: L L S L
+4. (0,1) White Pagoda Garden: S S L L
+5. (1,1) Five-Pavilion Bridge: W S W S
+6. (2,1) Southern Landing and Breakfast House: S L L S
 
-All internal touching edges match. This is a compressed, illustrated geography, **not** a map at scale. Six starting tiles are neutral. Bridge (1,1) carries an elevated pedestrian route from west to east over a separate, vertically navigable waterway. Water shapes should curve visually while crossing tile bounds at fixed middle points. Five distinct pavilion roofs and the correct White Pagoda silhouette are visual acceptance criteria.
+All six are neutral; internal contacting edges match. Water extends north-to-south through the centre column; a walking path crosses the bridge between the lower left and lower right scenes. The starter artwork is a **stylised illustration**, not a scale map: image content and logical paths are intentionally separate so placement remains deterministic. Future topology-aware painted tiles must align visible water and street exits, particularly at the starter perimeter. Refer to [painted asset specifications](PAINTED-ASSETS.md).
 
 ## Tile system
 - Square orthogonal grid; all contacting edge types match after 90-degree rotation.
@@ -73,7 +73,7 @@ Three layers:
 2. Connected journeys — boats traverse canal graph; residents traverse street graph across tile seams and bridge elevations.
 3. Citywide density — connected markets/teahouses support more visitors while gardens remain calm.
 - Ambient traffic has no effect on scoring. Simulated people require plausible starts/destinations and should be occluded by buildings.
-- Prototype currently has independent local motion and a few demonstrated crossing routes over starter tiles. **General graph-based traffic is future work.**
+- The painted starter currently has subtle glints and foliage motion. Older vector character and boat demonstrations are suppressed at normal/close view to avoid style clashes; **painterly moving actor sprites and general graph navigation remain future work.**
 - End-of-game scroll tour along the water and across the finished city (future enhancement).
 
 ## Product and engineering

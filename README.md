@@ -2,20 +2,22 @@
 
 A calm, tile-laying city-builder inspired by the everyday stories of eighteenth-century Yangzhou. The intended game combines a high, readable illustrated city view with rewarding close inspection, small ambient animations and activity-based scoring.
 
-## Camera and art proof of concept · Pass 2
+## Painted Slender West Lake prototype · Pass 3
 
 Open **index.html** in a modern browser (or host the repository as a static site). No build step, account, external dependency or network connection is required.
 
 This prototype includes:
-- Six fixed Slender West Lake starter tiles, including a stylised Five-Pavilion Bridge and bottle-shaped White Pagoda.
+- Six connected Slender West Lake starting tiles arranged in a **3 × 2** grid; a single continuous handscroll-style WebP painting covers the full starter scene without internal grid seams.
+- Three further full-resolution painted scenes of the Five-Pavilion Bridge, canal-side breakfast and White Pagoda Garden, inspectable from the **Paintings** button and relevant tiles in Explore mode.
 - A high starting camera with smooth easing, pointer-anchored zoom, one-finger pan / two-finger pinch, keyboard pan/zoom, Fit City and quick City / Street / Detail views.
 - Twelve hand-coded tile archetypes with 90-degree rotation and exact edge matching (street, water, land).
 - Valid-placement outlines, selectable spaces and a Place tile action.
-- A richer, layered ink-and-wash procedural renderer: detailed roofs, lattice screens, rockeries, blossom trees, willow branches, garden enclosures, teahouse details and boat scenes. Adaptive 2x/4x/6x detail caches and viewport culling support close inspection.
+- Real painted local image assets in `assets/painted/`, with a documented manifest and no temporary CDN links. The high-resolution panorama is drawn seamlessly; the three detail paintings are used for close inspection and as feathered motifs in selected new tile designs.
+- Newly placed, rotatable tiles now receive image-based artwork composites as well: the tile renderer combines painted building/garden crops with water and street strips positioned by the edge-connection rules. The procedural renderer remains a fallback until every topology has bespoke painted assets.
 - An Explore artwork mode that hides placement guides for unobstructed viewing, plus a separate ambient layer demonstrating journeys across the starter scene's seams.
 - Toggleable motion and support for the browser's reduced-motion preference.
 
-**This is a painterly proof of concept, not final authentic artwork.** Current artwork is generated with Canvas 2D primitives, not commissioned or historically vetted painted assets. Boats and pedestrians traversing newly placed routes, activity scoring, multiplayer and deck randomisation are planned but not implemented.
+**The painted artwork is integrated, but not all art is finished.** The starter lake and three detailed subjects now use real locally stored generated illustrations rather than procedural vector approximations. The composited playable tiles still require unique, fully hand-painted, topology-matching variants; cultural/historical review and polished actor animation are also outstanding. Scoring, multiplayer and deck randomisation are not implemented.
 
 ## Controls
 
@@ -27,7 +29,9 @@ This prototype includes:
 | Street / 2 | Examine a neighbourhood |
 | Detail / 3 | Inspect buildings and small painted features |
 | Double click | Zoom toward the selected detail |
-| Explore artwork | Hide placement guides; click to inspect a tile |
+| Explore artwork | Hide placement guides; zoom in and select a tile to inspect the painting |
+| Paintings | Open the four detailed local artworks and browse them |
+| Gallery ← / → | Previous / next painting; Escape closes |
 | Previous / Next | Choose prototype tile archetype |
 | Rotate or R | Rotate clockwise |
 | Click dotted space | Preview valid placement |
@@ -38,10 +42,12 @@ This prototype includes:
 ## Design and next steps
 - [Full historical/art bible, map, game mechanics and architecture](docs/DESIGN.md)
 - [Prototype QA checklist and honest limitations](docs/PROTOTYPE-QA.md)
-- [Pass 2: detailed camera and art decisions, limitations, and production-art handoff](docs/ARTWORK-CAMERA-PASS.md)
+- [Pass 2: camera and procedural art prototype](docs/ARTWORK-CAMERA-PASS.md)
+- [Pass 3: painted asset architecture, starter topology, quality gates and future asset production](docs/PAINTED-ASSETS.md)
+- [Painted asset manifest](assets/painted/manifest.json)
 - [Dependency-free gameplay and camera smoke tests](tests/smoke.cjs) (`node tests/smoke.cjs`)
 
-**Next:** review and integrate production-grade, historically validated Yangzhou painting assets, then develop a **dynamic transport graph** for boats and residents across newly placed tiles. Afterwards, build the turn manager, six-person pools, activity completion rules and score-once tests.
+**Next:** draw **topology-aware painted variants** of the 12 playable tile archetypes to match the starter painting, then build a **dynamic transport graph** and painterly moving person/boat sprites. Afterwards, add player pools and activity scoring. Afterwards, build the turn manager, six-person pools, activity completion rules and score-once tests.
 
 ## Rights and reference policy
-All Canvas illustration code here is newly authored for this project. Historical images and paintings referenced in the design documentation are *research references*, not embedded in the game or assumed to be license-free. Production artwork and any external sources must have documented usage rights.
+The four local WebP assets are newly generated project illustrations. The original painted references and museum photographs are research sources, not copied into the game. The imagery requires historical/cultural review before claims of authenticity; original source files and checksums are recorded in the manifest. Production artwork and any external sources must have documented usage rights.
