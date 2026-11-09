@@ -81,6 +81,44 @@ async function main(){
     assert.equal(await page.evaluate(()=>window.YangzhouDebug.board.size),7,'Tile placement must still work');
     await page.waitForTimeout(330);
     assert((await page.evaluate(()=>window.YangzhouTileArt?.stats().cached||0))>0,'New tiles must use painted image composites, not procedural fallback');
+    // Actual pixel comparisons across every compatible edge type and
+    // orientation: two different underlying paintings must have a tiny
+    // measurable seam once their shared boundary aprons are rendered.
+    const edges=await page.evaluate(()=>{
+      const art=window.YangzhouEdgeArt;
+      const result=[];
+      if(!art)throw new Error('Shared edge module not loaded');
+      for(const type of ['L','S','W']){
+        for(const vertical of [false,true]){
+          const cv=document.createElement('canvas');
+          cv.width=vertical?220:440;cv.height=vertical?440:220;
+          const c=cv.getContext('2d');
+          c.fillStyle='#c15240';c.fillRect(0,0,vertical?220:220,vertical?220:220);
+          c.fillStyle='#3858a4';
+          if(vertical)c.fillRect(0,220,220,220);
+          else c.fillRect(220,0,220,220);
+          const a=vertical?['L','L',type,'L']:['L',type,'L','L'];
+          const b=vertical?[type,'L','L','L']:['L','L','L',type];
+          art.drawTile(c,{x:0,y:0,edges:a});
+          art.drawTile(c,{x:vertical?0:1,y:vertical?1:0,edges:b});
+          let total=0,max=0,n=0;
+          for(let p=5;p<215;p++){
+            const q1=vertical?c.getImageData(p,219,1,1).data:c.getImageData(219,p,1,1).data;
+            const q2=vertical?c.getImageData(p,220,1,1).data:c.getImageData(220,p,1,1).data;
+            const d=Math.max(Math.abs(q1[0]-q2[0]),Math.abs(q1[1]-q2[1]),Math.abs(q1[2]-q2[2]));
+            total+=d;max=Math.max(max,d);n++;
+          }
+          result.push({type,vertical,mean:total/n,max});
+        }
+      }
+      return result;
+    });
+    for(const item of edges){
+      assert(item.mean<14,'High visible paint seam for '+JSON.stringify(item));
+      assert(item.max<70,'Hard discontinuity at edge for '+JSON.stringify(item));
+    }
+    console.log('Tileable painted edges (horizontal/vertical, L/S/W):',edges);
+
     await page.screenshot({path:OUT+'/desktop-placement.png'});
     const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2,isMobile:true,hasTouch:true});
     await visit(mobile);
