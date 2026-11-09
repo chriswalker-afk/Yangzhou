@@ -16,6 +16,14 @@ assert.equal(schema.portWidth.S,44);
 assert.equal(schema.portWidth.W,88);
 assert.equal(schema.center,110);
 assert.equal(schema.starter.length,6);
+const renderer=fs.readFileSync('tile-system.js','utf8');
+const edgePainter=fs.readFileSync('edge-art.js','utf8');
+// A production landmark master must not be obscured by a second
+// procedurally drawn landmark or a translucent vector street.
+assert(renderer.includes("if(!master&&(t.kind==='five'"),'No duplicate landmarks over square art masters');
+assert(!renderer.includes("const spur=t.kind==='pagoda'"),'No fake road spurs across landmark paintings');
+assert(!edgePainter.includes('drawBands(c,t.edges,exposed)'), 'No doubled edge wash around starter');
+
 assert.equal(new Set(schema.starter.map(t=>t.master)).size,6);
 assert.deepEqual(schema.validateBoard(schema.starter),[]);
 for(const t of schema.starter){
