@@ -33,7 +33,7 @@ button{font:inherit;cursor:pointer;color:inherit}button:focus-visible{outline:3p
 .action{display:flex;flex-direction:column;justify-content:center;gap:6px}
 .action .btn{white-space:nowrap}.primary{background:#4c6d65;color:#fffaf0;border-color:#4c6d65}.primary:hover{background:#375b53}
 .footer{bottom:105px;left:20px;background:#f1e8d9d8;padding:8px 10px;font:11px system-ui,sans-serif;color:#6d695d}
-.notice{top:88px;left:20px;background:#f1e8d9f0;max-width:330px;padding:12px 16px;border:1px solid #c8baa3;font:13px/1.5 system-ui,sans-serif;transition:opacity .2s}
+.notice{top:124px;left:20px;background:#f1e8d9f0;max-width:330px;padding:12px 16px;border:1px solid #c8baa3;font:13px/1.5 system-ui,sans-serif;transition:opacity .2s}
 .legend{position:fixed;left:20px;bottom:125px;z-index:2;background:#f3eadae8;padding:10px 12px;border:1px solid #c8baa3;font:12px/1.7 system-ui,sans-serif}
 .legend b{font-weight:600}.legend span{display:block}
 .mark{display:inline-block;width:10px;height:10px;margin-right:7px;border-radius:2px}
@@ -186,7 +186,7 @@ function cameraTick(now){let dt=camera.last?Math.min(40,now-camera.last):16;came
   let ds=camera.ts-state.scale,dx=camera.tx-state.offsetX,dy=camera.ty-state.offsetY;
   if(Math.abs(ds)>0.0001||Math.abs(dx)>.05||Math.abs(dy)>.05){state.scale+=ds*alpha;state.offsetX+=dx*alpha;state.offsetY+=dy*alpha;state.dirty=true;}
   else if(ds||dx||dy){state.scale=camera.ts;state.offsetX=camera.tx;state.offsetY=camera.ty;state.dirty=true;}
-  const label=state.scale<.85?'City overview':state.scale<1.9?'Neighbourhood view':'Close-up detail';
+  const label=state.scale<1.35?'City overview':state.scale<2.65?'Street / neighbourhood':'Close-up detail';
   const el=$('zoomLabel');if(el){const caption=label+' · '+Math.round(state.scale*100)+'%';if(el.textContent!==caption)el.textContent=caption;}
 }
 function draw(){if(!state.motion&&!state.dirty)return;state.dirty=false;ctx.clearRect(0,0,state.w,state.h);paper();ctx.save();ctx.translate(state.offsetX,state.offsetY);ctx.scale(state.scale,state.scale);
