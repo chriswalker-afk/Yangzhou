@@ -107,8 +107,8 @@ button{font:inherit;cursor:pointer;color:inherit}button:focus-visible{outline:3p
 </dialog>
 <script src="painted-assets.js"></script>
 <script src="edge-art.js"></script>
-<script src="painted-tiles.js"></script>
 <script src="artwork.js"></script>
+<script src="tile-system.js"></script>
 <script src="living-scene.js"></script>
 <script>
 (() => {
@@ -133,12 +133,12 @@ const archetypes=[
 {name:'Mooring basin',note:'A calm end to the canal with a place to dock',edges:['W','L','L','L'],kind:'landing'}
 ];
 const starter=[
-{x:0,y:0,edges:['L','L','S','L'],kind:'causeway',name:'Willow Causeway',fixed:true,rotation:0,seed:1},
+{x:0,y:0,edges:['S','L','S','L'],kind:'causeway',name:'Willow Causeway',fixed:true,rotation:0,seed:1},
 {x:1,y:0,edges:['W','L','W','L'],kind:'lake',name:'Northern Lake',fixed:true,rotation:0,seed:2},
-{x:2,y:0,edges:['L','L','S','L'],kind:'tea',name:'Lakeside Gardens and Teahouses',fixed:true,rotation:0,seed:3},
-{x:0,y:1,edges:['S','S','L','L'],kind:'pagoda',name:'White Pagoda Garden',fixed:true,rotation:0,seed:4},
+{x:2,y:0,edges:['S','L','S','L'],kind:'tea',name:'Lakeside Gardens and Teahouses',fixed:true,rotation:0,seed:3},
+{x:0,y:1,edges:['S','S','S','L'],kind:'pagoda',name:'White Pagoda Garden',fixed:true,rotation:0,seed:4},
 {x:1,y:1,edges:['W','S','W','S'],kind:'five',name:'Five-Pavilion Bridge',fixed:true,rotation:0,seed:5},
-{x:2,y:1,edges:['S','L','L','S'],kind:'landing',name:'Southern Landing and Breakfast House',fixed:true,rotation:0,seed:6}
+{x:2,y:1,edges:['S','S','L','S'],kind:'landing',name:'Southern Breakfast Courtyard',fixed:true,rotation:0,seed:6}
 ];
 const board=new Map(starter.map(t=>[t.x+','+t.y,t]));
 const state={type:0,rotation:0,selected:null,hover:null,scale:1.0,offsetX:0,offsetY:0,motion:!matchMedia('(prefers-reduced-motion: reduce)').matches,showSites:true,drag:null,time:0,w:0,h:0,dirty:true};
@@ -160,7 +160,7 @@ function pagoda(c,x,y){c.save();c.translate(x,y);c.fillStyle='#ddd6c6';c.strokeS
 function route(c,edges){let center=110; if(edges.includes('S')){c.strokeStyle='#b7aa92';c.lineWidth=37;c.lineCap='butt';for(let i=0;i<4;i++)if(edges[i]==='S'){c.beginPath();c.moveTo(110,110);c.lineTo([110,220,110,0][i],[0,110,220,110][i]);c.stroke();}c.strokeStyle='#d6c8b1';c.lineWidth=1;for(let i=0;i<4;i++)if(edges[i]==='S'){c.beginPath();c.moveTo(110,110);c.lineTo([110,220,110,0][i],[0,110,220,110][i]);c.stroke();}}}
 function water(c,edges,t){if(!edges.includes('W'))return;c.strokeStyle='#9cafa0';c.lineWidth=86;c.lineCap='butt';for(let i=0;i<4;i++)if(edges[i]==='W'){c.beginPath();c.moveTo(110,110);c.lineTo([110,220,110,0][i],[0,110,220,110][i]);c.stroke();}c.strokeStyle='#8bb2ac';c.lineWidth=80;for(let i=0;i<4;i++)if(edges[i]==='W'){c.beginPath();c.moveTo(110,110);c.lineTo([110,220,110,0][i],[0,110,220,110][i]);c.stroke();}
 c.strokeStyle='#c9d5bd9c';c.lineWidth=1.6;for(let i=0;i<15;i++){let yy=hash(i,2)*214,xx=90+(hash(i,3)-.5)*60+Math.sin(t*.0006+i)*2;c.beginPath();c.ellipse(xx,yy,5+hash(i,4)*7,1.6,-.14,0,Math.PI*1.1);c.stroke();}}
-function drawTile(c,t,time,showBorder=false){if(window.YangzhouArt){window.YangzhouArt.draw(c,t,time,state.scale);if(showBorder){c.save();c.translate(t.x*TILE,t.y*TILE);c.strokeStyle='#b99a58';c.lineWidth=2/Math.max(state.scale,.2);c.strokeRect(1,1,TILE-2,TILE-2);c.restore();}return;}c.save();c.translate(t.x*TILE,t.y*TILE);c.fillStyle='#d9dfc9';c.fillRect(0,0,TILE,TILE);
+function drawTile(c,t,time,showBorder=false){if(window.YangzhouTiles?.draw(c,t,time,state.scale))return;if(window.YangzhouArt){window.YangzhouArt.draw(c,t,time,state.scale);if(showBorder){c.save();c.translate(t.x*TILE,t.y*TILE);c.strokeStyle='#b99a58';c.lineWidth=2/Math.max(state.scale,.2);c.strokeRect(1,1,TILE-2,TILE-2);c.restore();}return;}c.save();c.translate(t.x*TILE,t.y*TILE);c.fillStyle='#d9dfc9';c.fillRect(0,0,TILE,TILE);
 const h=t.seed||1;for(let i=0;i<45;i++){let x=hash(i,h)*220,y=hash(i,h+11)*220;c.fillStyle=i%2?'#b9c5a04d':'#e4d9bd65';c.beginPath();c.ellipse(x,y,10+hash(i,h+2)*18,6+hash(i,h+3)*12,hash(i,h+4),0,Math.PI*2);c.fill();}
 const ed=t.edges;route(c,ed);water(c,ed,time);
 if(t.kind==='five'||t.kind==='bridge'){c.fillStyle='#c8b8a0';c.fillRect(0,97,220,27);c.strokeStyle='#827666';c.lineWidth=2;c.beginPath();c.moveTo(0,98);c.lineTo(220,98);c.moveTo(0,124);c.lineTo(220,124);c.stroke();for(let i=0;i<5;i++){let x=20+i*45;pavilion(c,x,98,35);}}
@@ -200,11 +200,10 @@ function cameraTick(now){let dt=camera.last?Math.min(40,now-camera.last):16;came
 }
 function draw(){if(!state.motion&&!state.dirty)return;state.dirty=false;ctx.clearRect(0,0,state.w,state.h);paper();ctx.save();ctx.translate(state.offsetX,state.offsetY);ctx.scale(state.scale,state.scale);
 const wx0=-state.offsetX/state.scale-TILE,wy0=-state.offsetY/state.scale-TILE,wx1=(state.w-state.offsetX)/state.scale+TILE,wy1=(state.h-state.offsetY)/state.scale+TILE;
-const paintedStarter=window.YangzhouLiving?.drawScene(ctx,state.time,state.scale,state.motion)===true || window.YangzhouPainted?.drawStarterAtlas(ctx,state.time)===true;
-// Do not slice the six starter paintings into disconnected tiles; adapt only the
-// outer perimeter to the universal connector contract shared by placed tiles.
-if(paintedStarter)window.YangzhouEdgeArt?.drawStarterPerimeter(ctx,board);
-for(const t of board.values())if((!t.fixed||!paintedStarter)&&t.x*TILE<wx1&&(t.x+1)*TILE>wx0&&t.y*TILE<wy1&&(t.y+1)*TILE>wy0)drawTile(ctx,t,state.time,false);
+// Every fixed and player-placed tile is a separate square image built from
+// the same terrain connector geometry; no six-tile panoramic backplate.
+for(const t of board.values())if(t.x*TILE<wx1&&(t.x+1)*TILE>wx0&&t.y*TILE<wy1&&(t.y+1)*TILE>wy0)drawTile(ctx,t,state.time,false);
+window.YangzhouLiving?.drawActors?.(ctx,state.time,board,state.motion);
 if(state.showSites){const possible=candidates();for(const [x,y] of possible){if(x*TILE>=wx1||(x+1)*TILE<=wx0||y*TILE>=wy1||(y+1)*TILE<=wy0)continue;let p={x:x*TILE,y:y*TILE},picked=state.selected&&state.selected[0]===x&&state.selected[1]===y;ctx.fillStyle=picked?'#eddfac6a':'#f4ead529';ctx.fillRect(p.x+1,p.y+1,TILE-2,TILE-2);ctx.strokeStyle=picked?'#956d36':'#ad997bb0';ctx.lineWidth=(picked?2.6:1.2)/state.scale;ctx.setLineDash([6/state.scale,7/state.scale]);ctx.strokeRect(p.x+2/state.scale,p.y+2/state.scale,TILE-4/state.scale,TILE-4/state.scale);ctx.setLineDash([]);}}
 if(state.showSites&&state.selected){let a=archetypes[state.type], edges=rotEdges(a.edges,state.rotation);ctx.save();ctx.globalAlpha=.82;drawTile(ctx,{x:state.selected[0],y:state.selected[1],edges,kind:a.kind,seed:22},state.time,true);ctx.restore();}
 ctx.restore();}
@@ -253,6 +252,6 @@ resize();refresh();requestAnimationFrame(frame);
 window.YangzhouDebug={board,archetypes,canPlace,rotEdges,candidates,state};
 })();
 </script>
-<script src="ambient.js"></script>
+<!-- Legacy ambient overlay retired: actors use shared tile coordinates. -->
 </body>
 </html>
