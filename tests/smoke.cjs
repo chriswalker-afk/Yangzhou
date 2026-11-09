@@ -20,10 +20,10 @@ const renderer=fs.readFileSync('tile-system.js','utf8');
 const edgePainter=fs.readFileSync('edge-art.js','utf8');
 // A production landmark master must not be obscured by a second
 // procedurally drawn landmark or a translucent vector street.
-assert(renderer.includes("if(!master&&!useAtlas&&(t.kind==='five'"),'No duplicate landmarks over square art masters');
+assert(renderer.includes("if(!master&&!useAtlas&&!useOrthographic&&(t.kind='five'"),'No duplicate landmarks over square art masters');
 assert(!renderer.includes("const spur=t.kind==='pagoda'"),'No fake road spurs across landmark paintings');
 assert(!edgePainter.includes('drawBands(c,t.edges,exposed)'), 'No doubled edge wash around starter');
-assert(renderer.includes('if(!useAtlas)window.YangzhouEdgeArt?.drawBands?.(c,t.edges)'), 'Coherent lake tiles must not receive feathered edge washes');
+assert(renderer.includes('if(!useAtlas&&!useOrthographic)window.YangzhouEdgeArt?.drawBands?.(c,t.edges)'), 'Coherent lake tiles must not receive feathered edge washes');
 
 assert.equal(new Set(schema.starter.map(t=>t.master)).size,6);
 assert.deepEqual(schema.validateBoard(schema.starter),[]);
@@ -216,3 +216,8 @@ for(const t of game.board.values())for(let i=0;i<4;i++){
 assert.deepEqual(schema.validateBoard([...game.board.values()]),[],
   'Expanded painted city must preserve topology on every internal seam');
 console.log('Yangzhou smoke tests passed: shared schema, six standalone tile masters, 44/88 ports, rotations, 13 archetypes, ring and camera.');
+
+const ortho=fs.readFileSync(path.join(ROOT,'orthographic-lake.js'),'utf8');
+assert(ortho.includes('viewBox='),'Orthographic artwork is clipped by square viewBoxes');
+assert(ortho.includes('286 0')&&ortho.includes('374 440'),'Water ports are centred and 88 units wide');
+assert(html.includes('orthographic-lake.js'),'Orthographic artwork loaded by game');
