@@ -21,6 +21,19 @@ async function main(){
     assert.equal(individual.tiles,6);
     assert.equal(new Set(individual.sources).size,6,'Six different square art masters must form the starter, not a sliced panorama');
     assert.equal(individual.mode,'individual-square-tile-masters');
+    const contract=await page.evaluate(()=>({
+      logic:window.YangzhouTileTopology.portWidth,
+      painter:window.YangzhouEdgeArt.spec.exits,
+      renderer:window.YangzhouTiles.stats().canonicalWidths,
+      errors:window.YangzhouTileTopology.validateBoard([...window.YangzhouDebug.board.values()])
+    }));
+    assert.equal(contract.logic.S,44);
+    assert.equal(contract.logic.W,88);
+    assert.equal(contract.painter.S,44,'Painter and game road width must agree');
+    assert.equal(contract.painter.W,88,'Painter and game water width must agree');
+    assert.equal(contract.renderer.street,44);
+    assert.equal(contract.renderer.water,88);
+    assert.equal(contract.errors.length,0);
     await page.waitForFunction(()=>window.YangzhouLiving?.ready()===true,{timeout:25000});
     const layers=await page.evaluate(()=>window.YangzhouLiving.inspect());
     assert(layers.ready,'Clean layered painted scene should be ready');
@@ -161,6 +174,7 @@ async function main(){
       g.state.dirty=true;return {count:board.size,slots:results};
     });
     assert.equal(expansion.count,16,'Ten painted tiles must surround six-tile lake');
+    assert.deepEqual(await page.evaluate(()=>window.YangzhouTileTopology.validateBoard([...window.YangzhouDebug.board.values()])),[]);
     assert.equal(expansion.slots.length,10);
     assert.equal(expansion.slots.filter(x=>x.port==='S').length,5);
     assert.equal(expansion.slots.filter(x=>x.port==='L').length,3);
