@@ -81,6 +81,7 @@ async function main(){
     assert.equal(await page.evaluate(()=>window.YangzhouDebug.board.size),7,'Tile placement must still work');
     await page.waitForTimeout(330);
     assert((await page.evaluate(()=>window.YangzhouTileArt?.stats().cached||0))>0,'New tiles must use painted image composites, not procedural fallback');
+    assert.equal(await page.evaluate(()=>window.YangzhouTileArt.stats().source),'clean-plate','Placed tiles must use a background without baked-in actors');
     // Actual pixel comparisons across every compatible edge type and
     // orientation: two different underlying paintings must have a tiny
     // measurable seam once their shared boundary aprons are rendered.
