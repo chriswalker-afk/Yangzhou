@@ -36,6 +36,10 @@ assert(html.includes('<script src="tile-system.js"></script>'),'The new square-t
 assert(!html.includes('drawStarterAtlas(ctx'),'A full starter panorama must never be drawn as the board');
 assert(tiles.includes('const S=220')&&tiles.includes('network(c,t.edges'),
        'Every square image must share topology-aware connection geometry');
+assert(tiles.includes('productionPath(t)')&&tiles.includes("assets/tiles/production/"),
+       'High-resolution masters should be selected per archetype and orientation');
+assert(html.includes('artId:state.type,rotation:state.rotation'),
+       'Placed tiles must preserve the correct painted quarter turn');
 new vm.Script(edges,{filename:'edge-art.js'});
 assert(html.includes('<script src="edge-art.js"></script>'),'Universal edge painter should load');
 assert(edges.includes('drawStarterPerimeter')&&edges.includes('drawBands'),
@@ -100,6 +104,8 @@ assert.equal(game.board.size,6);
 assert.equal(game.archetypes.length,13);
 assert.equal(game.topology,window.YangzhouTileTopology);
 assert.equal(game.board.get('1,1').master,'bridge-stone');
+assert(tiles.includes("'starter-'")&&tiles.includes("'archetype-'"),
+       'Game must load square starter and gameplay tile art files');
 const dirs=[[0,-1],[1,0],[0,1],[-1,0]];
 for(const tile of game.board.values()){
  for(let i=0;i<4;i++){const other=game.board.get((tile.x+dirs[i][0])+','+(tile.y+dirs[i][1]));
