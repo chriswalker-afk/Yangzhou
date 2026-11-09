@@ -150,9 +150,9 @@ for(const ft of fixed)for(let d=0;d<4;d++){
 }
 assert.equal(perimeter.size,10,'3 x 2 starter must have ten expansion positions');
 const ports=[...perimeter.values()].map(z=>z.port);
-assert.equal(ports.filter(p=>p==='S').length,4,'Four outward roads built into individual starter tiles');
+assert.equal(ports.filter(p=>p==='S').length,5,'Five outward roads have their own painted source-tile exits');
 assert.equal(ports.filter(p=>p==='W').length,2,'North and south canal exits');
-assert.equal(ports.filter(p=>p==='L').length,4,'Four natural garden/landscape borders');
+assert.equal(ports.filter(p=>p==='L').length,3,'Three natural garden/landscape borders');
 const preferred={'S':'Stone-paved street','W':'Mooring basin','L':'Garden pavilion'};
 const ring=[...perimeter.values()].sort((a,b)=>a.y-b.y||a.x-b.x);
 for(const cell of ring){
