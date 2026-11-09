@@ -21,6 +21,42 @@ async function main(){
     assert.equal(individual.tiles,6);
     assert.equal(new Set(individual.sources).size,6,'Six different square art masters must form the starter, not a sliced panorama');
     assert.equal(individual.mode,'individual-square-tile-masters');
+    const styleManifest=await page.evaluate(async()=>{
+      const response=await fetch('assets/tiles/production/manifest.json');
+      if(!response.ok)return null;
+      return response.json();
+    });
+    if(styleManifest){
+      assert.equal(styleManifest.entries.length,58,'Production deck must contain six starters and 52 rotatable tile masters');
+      await page.waitForFunction(()=>window.YangzhouTiles.productionReady(),{timeout:30000});
+      const styleCheck=await page.evaluate(async()=>{
+        const g=window.YangzhouDebug,tiles=window.YangzhouTiles,board=[...g.board.values()];
+        const images=await Promise.all(board.map(async t=>{
+          const im=new Image();im.src=tiles.productionPath(t);await im.decode();
+          const cv=document.createElement('canvas');
+          cv.width=cv.height=1024;cv.getContext('2d').drawImage(im,0,0,1024,1024);
+          return cv.getContext('2d').getImageData(0,0,1024,1024).data;
+        }));
+        const coords=[[0,1,1,3],[1,2,1,3],[3,4,1,3],[4,5,1,3],[0,3,2,0],[1,4,2,0],[2,5,2,0]];
+        let highest=0,average=0,count=0;
+        const pix=(img,x,y)=>{let off=(y*1024+x)*4;return [img[off],img[off+1],img[off+2]];};
+        for(const [a,b,sideA] of coords){
+          for(let p=12;p<1012;p++){
+            const c1=sideA===1?pix(images[a],1023,p):pix(images[a],p,1023);
+            const c2=sideA===1?pix(images[b],0,p):pix(images[b],p,0);
+            const delta=Math.max(...c1.map((x,i)=>Math.abs(x-c2[i])));
+            highest=Math.max(highest,delta);average+=delta;count++;
+          }
+        }
+        return {masterCount:images.length,highest,mean:average/count,
+           errors:window.YangzhouTileTopology.validateBoard(board)};
+      });
+      assert.equal(styleCheck.masterCount,6);
+      assert.equal(styleCheck.errors.length,0);
+      assert(styleCheck.mean<12,'Art seam mean too large: '+JSON.stringify(styleCheck));
+      assert(styleCheck.highest<100,'Art seam worst pixel too large: '+JSON.stringify(styleCheck));
+      console.log('Individual painted starter square seams:',styleCheck);
+    }
     const contract=await page.evaluate(()=>({
       logic:window.YangzhouTileTopology.portWidth,
       painter:window.YangzhouEdgeArt.spec.exits,
