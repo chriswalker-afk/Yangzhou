@@ -17,6 +17,42 @@
     'river-straight','road-teahouse','road-pagoda','road-landing'
   ];
   const imgs={};const cache=new Map();let errors=[];
+  const PRODUCTION_ROOT='assets/tiles/production/';
+  const production=new Map(),PRODUCTION_LIMIT=24;
+  const productErrors=new Set();
+  function productionPath(t){
+    if(t.fixed && Number.isInteger(t.seed) && t.seed>=1 && t.seed<=6)
+      return PRODUCTION_ROOT+'starter-'+String(t.seed).padStart(2,'0')+'.webp';
+    const topology=window.YangzhouTileTopology;
+    if(!topology)return null;
+    let index=Number.isInteger(t.artId)?t.artId:
+      topology.archetypes.findIndex(a=>a.name===t.name);
+    if(index<0||index>=topology.archetypes.length){
+      index=topology.archetypes.findIndex(a=>a.kind===t.kind &&
+        Array.from({length:4},(_,r)=>topology.rotateEdges(a.edges,r).join('')).includes(t.edges.join('')));
+    }
+    if(index<0)return null;
+    const a=topology.archetypes[index];
+    const turn=Number.isInteger(t.rotation)&&topology.rotateEdges(a.edges,t.rotation).join('')===t.edges.join('') ?
+      t.rotation : [0,1,2,3].find(r=>topology.rotateEdges(a.edges,r).join('')===t.edges.join(''));
+    if(turn===undefined)return null;
+    return PRODUCTION_ROOT+'archetype-'+String(index).padStart(2,'0')+'-r'+turn+'.webp';
+  }
+  function loadProduction(path){
+    if(!path||productErrors.has(path))return null;
+    let img=production.get(path);
+    if(!img){
+      img=new Image();img.decoding='async';
+      img.onload=()=>{if(window.YangzhouDebug?.state)window.YangzhouDebug.state.dirty=true;};
+      img.onerror=()=>{productErrors.add(path);
+        if(window.YangzhouDebug?.state)window.YangzhouDebug.state.dirty=true;};
+      img.src=path;
+      production.set(path,img);
+      if(production.size>PRODUCTION_LIMIT)production.delete(production.keys().next().value);
+    }else{production.delete(path);production.set(path,img);}
+    return img?.complete&&img.naturalWidth?img:null;
+  }
+
   function load(){
     for(const name of NAMES){
       const img=new Image();imgs[name]=img;
@@ -197,6 +233,16 @@
     const c=can.getContext('2d');c.scale(resolution,resolution);paint(c,t);return can;
   }
   function draw(c,t,time,scale=1){
+    // The complete high-resolution painted master is the first-choice image.
+    // It is authored at the requested orientation: never rotate the image
+    // itself, which would leave roofs and shadows sideways.
+    const path=productionPath(t),master=loadProduction(path);
+    if(master){
+      c.save();c.translate(t.x*S,t.y*S);
+      c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';
+      c.drawImage(master,0,0,S,S);c.restore();return true;
+    }
+    // Fallback only while the production asset loads or if it is unavailable.
     if(!ok(baseFor(t)))return false;
     const detail=scale>=2.7?5:4;
     const k=[t.master||'',t.kind,t.edges.join(''),t.seed||0,detail].join(':');
@@ -212,7 +258,15 @@
   }
   window.YangzhouTiles={draw,drawBridgeOccluders,ready:()=>NAMES.every(ok),
     assetsReady:()=>NAMES.filter(ok),errors:()=>errors.slice(),
-    stats:()=>({cached:cache.size,loaded:populated(),mode:'individual-square-tile-masters',canonicalWidths:{street:44,water:88}}),
-    tileSize:S,sourceFor:baseFor,clear:()=>cache.clear()};
+    stats:()=>({cached:cache.size,loaded:populated(),mode:'individual-square-tile-masters',
+      canonicalWidths:{street:44,water:88},
+      productionLoaded:[...production.values()].filter(im=>im.complete&&im.naturalWidth).length,
+      productionErrors:[...productErrors],productionRequests:production.size}),
+    productionPath,productionReady:()=>[1,2,3,4,5,6].every(n=>{
+      const p=PRODUCTION_ROOT+'starter-'+String(n).padStart(2,'0')+'.webp';
+      const img=production.get(p);return !!(img?.complete&&img?.naturalWidth);
+    }),
+    tileSize:S,sourceFor:t=>productionPath(t)||baseFor(t),
+    clear:()=>{cache.clear();production.clear();productErrors.clear();}};
   load();
 })();
