@@ -70,7 +70,7 @@
     const m=motif(t.kind);if(!m)return false;
     c.save();c.globalAlpha=.77;
     // Leave >=30px unpainted around edges, preserving consistent game connector geometry.
-    c.drawImage(m,t.x*220+x,t.y*220+y,220-x*2,220-y*2);
+    c.drawImage(m,x,y,220-x*2,220-y*2);
     c.restore();return true;
   }
   const scenes=['panorama','bridge','breakfast','pagoda'];let current='panorama';
