@@ -8,12 +8,12 @@
  */
 (() => {
   'use strict';
-  const SIDE=220, DEPTH=34;
+  const SIDE=220, DEPTH=22;
   const PORT={L:0,S:44,W:88};
   const STYLE={
-    L:{land:'#ddd5be',base:'#e8dfc9',ink:'#b9aa8b'},
-    S:{land:'#ddd5be',base:'#c7b79b',ink:'#8f8369'},
-    W:{land:'#ddd5be',base:'#85aaa3',ink:'#6e8e87'}
+    L:{land:'#aab58c',base:'#abb58f',ink:'#6e8d6b'},
+    S:{land:'#aab58c',base:'#ccba9e',ink:'#8f8369'},
+    W:{land:'#aab58c',base:'#85aca5',ink:'#6e8e87'}
   };
   function gradient(c,from,to,start=0,end=DEPTH){
     const g=c.createLinearGradient(0,start,0,end);
@@ -25,7 +25,7 @@
   function wash(c,type){
     // The full 220px edge becomes a common painted-paper tone at the seam.
     // Alpha then decays inward to reveal the unique painted tile.
-    c.fillStyle=gradient(c,'#ddd5be','#ddd5be00',0,DEPTH);
+    c.fillStyle=gradient(c,'#abb58f','#abb58f00',0,DEPTH);
     c.fillRect(0,0,SIDE,DEPTH);
     if(type==='L'){
       c.strokeStyle='#9e97783a';c.lineWidth=.7;
