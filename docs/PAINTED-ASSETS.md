@@ -3,7 +3,7 @@
 ## What's in the game now
 - A **seamless six-tile starter painting** built from `starter-panorama.webp` and rendered as one world-space image. The start layout is 3 columns × 2 rows so the painting's native 3:2 crop can be drawn without stretching or a visible grid.
 - Three detailed 1024 × 768 painted views for the Five-Pavilion Bridge, canal-side breakfast and White Pagoda garden, available from the **Paintings** button and when inspecting matching tiles in Explore mode.
-- New, rotatable tile archetypes retain their procedural edge geometry. For tea/market/bridge/garden/courtyard, centre-only painterly motifs blend into the illustration with feathered edges. This is **transitional**: many non-landmark tile types are still procedurally drawn.
+- New, rotatable tile archetypes now use `painted-tiles.js` to create full-tile composites from the four approved painted assets, with textured canal and street strips aligned to the edges demanded by the placement rules. The older procedural renderer remains the fallback if paintings cannot load. **These composites are a bridge to bespoke production artwork:** they reuse image fragments, so some junctions and architecture may still be visually imperfect.
 - Water glints and subtle foliage motion continue. Mismatched vector demo actors are hidden over the full painting at normal/detail zoom until painted character sprites are made.
 - The artwork is local to the GitHub repository; no expiry-prone image URLs, external API calls or cookies.
 
@@ -22,14 +22,14 @@ The canal runs through the centre column. The bridge tile connects the walking r
 ## Rendering and memory
 - `painted-assets.js` asynchronously loads all four local WebP images and invalidates the main canvas when they arrive.
 - `YangzhouPainted.drawStarterAtlas` renders the starter as one image in world coordinates `(0,0)…(660,440)`. This prevents internal tile seams even while zooming and panning.
-- `YangzhouArt` remains a fallback if an image fails to load, and still paints new tiles at adaptive resolution.
-- `YangzhouPainted.drawMotif` adds a feathered photo-illustrated centre to selected new tile types, leaving connection edges exposed.
+- `YangzhouTileArt.draw` caches a 3× raster for new tile archetypes, combining locally stored painted source crops with geometric edge-aligned water/road texture bands, retaining placement validation and 90° rotation.
+- `YangzhouArt` remains a fallback if an image cannot load; it also paints the tile preview before assets become available.
 - The HTML `<dialog>` gallery loads full-resolution image variants and supports previous/next navigation and keyboard close.
 
 ## Limitations and quality gates
 1. **Cultural accuracy:** These images are newly generated *style demonstrations* rather than verified depictions of an actual historic street. No original Qing painting or museum photograph is embedded. Complete a regional and period-specific source review before calling them historically authentic.
 2. **Illustration consistency:** The starter panorama and close-up pictures are separate illustrations, not pixel-perfect crops of the same 3D scene. Their colour and motifs match, but object positions should not be treated as historically exact.
-3. **Rotatable tile seams:** The fixed starter is seamless internally. New tiles can still have illustration-to-illustration seams even when their road/canal edge types legally match. Production topology-aware painted tiles are still required.
+3. **Rotatable tile seams:** The fixed starter is seamless internally. New tiles now receive full-bleed painted source imagery with edge-accurate texture strips, but different samples can still leave visible illustration-to-illustration or starter-perimeter seams. Bespoke paints for every topology are still required.
 4. **Life animation:** The scene has subtle environmental motion. A proper set of animated, painterly people and boat sprites with network-based destinations is the next step.
 5. **Mobile:** Keep the view high and the controls minimal; the user should be able to pinch into close detail without losing the location.
 6. **Performance:** Verify frame time and memory on at least one midrange mobile device when adding full tile sets.
