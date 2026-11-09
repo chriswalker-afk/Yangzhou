@@ -133,12 +133,12 @@ const archetypes=[
 {name:'Mooring basin',note:'A calm end to the canal with a place to dock',edges:['W','L','L','L'],kind:'landing'}
 ];
 const starter=[
-{x:0,y:0,edges:['S','L','S','S'],kind:'causeway',name:'Willow Causeway',fixed:true,rotation:0,seed:1},
+{x:0,y:0,edges:['L','L','S','L'],kind:'causeway',name:'Willow Causeway',fixed:true,rotation:0,seed:1},
 {x:1,y:0,edges:['W','L','W','L'],kind:'lake',name:'Northern Lake',fixed:true,rotation:0,seed:2},
-{x:2,y:0,edges:['L','S','S','L'],kind:'tea',name:'Lakeside Gardens and Teahouses',fixed:true,rotation:0,seed:3},
+{x:2,y:0,edges:['L','L','S','L'],kind:'tea',name:'Lakeside Gardens and Teahouses',fixed:true,rotation:0,seed:3},
 {x:0,y:1,edges:['S','S','L','L'],kind:'pagoda',name:'White Pagoda Garden',fixed:true,rotation:0,seed:4},
 {x:1,y:1,edges:['W','S','W','S'],kind:'five',name:'Five-Pavilion Bridge',fixed:true,rotation:0,seed:5},
-{x:2,y:1,edges:['S','S','L','S'],kind:'landing',name:'Southern Landing and Breakfast House',fixed:true,rotation:0,seed:6}
+{x:2,y:1,edges:['S','L','L','S'],kind:'landing',name:'Southern Landing and Breakfast House',fixed:true,rotation:0,seed:6}
 ];
 const board=new Map(starter.map(t=>[t.x+','+t.y,t]));
 const state={type:0,rotation:0,selected:null,hover:null,scale:1.0,offsetX:0,offsetY:0,motion:!matchMedia('(prefers-reduced-motion: reduce)').matches,showSites:true,drag:null,time:0,w:0,h:0,dirty:true};
