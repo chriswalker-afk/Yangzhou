@@ -1,15 +1,15 @@
 /* Shared terrain-edge contract for every Yangzhou tile.
  * The fixed painted handscroll and newly placed painted tiles must have the
  * same boundary pixels when their logical edges match. This file owns those
- * pixels: no artwork may paint through the 28px boundary apron without it.
+ * pixels: no artwork may paint through the shared boundary apron without it.
  *
  * Types: L=land, S=street, W=water. Exits are centred on the tile edge.
  * Terrain is deliberately compass-neutral so 90° tile rotations remain valid.
  */
 (() => {
   'use strict';
-  const SIDE=220, DEPTH=22;
-  const PORT={L:0,S:28,W:72};
+  const SIDE=220, DEPTH=22; // Minimal wash: avoid masking valuable original painting
+  const PORT={L:0,S:44,W:88};
   const STYLE={
     L:{land:'#aab58c',base:'#abb58f',ink:'#6e8d6b'},
     S:{land:'#aab58c',base:'#ccba9e',ink:'#8f8369'},
