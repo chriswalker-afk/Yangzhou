@@ -53,6 +53,8 @@ async function main(){
     assert.equal(await page.locator('#place').isDisabled(),false,'Canvas click should select a legal tile');
     await page.click('#place');
     assert.equal(await page.evaluate(()=>window.YangzhouDebug.board.size),7,'Tile placement must still work');
+    await page.waitForTimeout(330);
+    assert((await page.evaluate(()=>window.YangzhouTileArt?.stats().cached||0))>0,'New tiles must use painted image composites, not procedural fallback');
     await page.screenshot({path:OUT+'/desktop-placement.png'});
     const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2,isMobile:true,hasTouch:true});
     await visit(mobile);
