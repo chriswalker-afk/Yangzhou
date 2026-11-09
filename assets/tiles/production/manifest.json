@@ -28,8 +28,8 @@
         1024,
         1024
       ],
-      "sha256": "7667894143b1b4d9880a2b2c0a46efcee967e353e3f392de7f58be62cd38acb0",
-      "bytes": 323186
+      "sha256": "c8a8fc1a658e86ab86d34d2f8d311f050a6308b7c5842ccb66e911dd8268dfa4",
+      "bytes": 398968
     },
     {
       "file": "starter-02.webp",
@@ -40,8 +40,8 @@
         1024,
         1024
       ],
-      "sha256": "81811e464d15d27469e55ce793488620042d4654ab26e8b36b673ff2795a6242",
-      "bytes": 262414
+      "sha256": "117833b39f03b7bc76c1b3c70d067258f5780e66dcec1eb671503049f9ba6712",
+      "bytes": 391436
     },
     {
       "file": "starter-03.webp",
@@ -52,8 +52,8 @@
         1024,
         1024
       ],
-      "sha256": "b9c44e2f22cb65923866ce67a8b56f44a511a4cf7e1c130415e219d993bfd2b6",
-      "bytes": 209050
+      "sha256": "66b6d15e905e011effb1419c5680204820e2b93b8a1bf387bee461fd8cb39868",
+      "bytes": 393470
     },
     {
       "file": "starter-04.webp",
@@ -76,8 +76,8 @@
         1024,
         1024
       ],
-      "sha256": "3d7f87580dc557ef416a2f0f88870d3f7bf8176f0d62626e314a2748f3d357c9",
-      "bytes": 245256
+      "sha256": "4a0f7e0d05ee5bd289df549e5542b239becd6da7d51b5e5899ee603a4d588032",
+      "bytes": 423126
     },
     {
       "file": "starter-06.webp",
@@ -148,8 +148,8 @@
         1024,
         1024
       ],
-      "sha256": "d6414287a9ba424281bd77b13cc5e29443504faaf5c4b50b08f590c5422b0fcb",
-      "bytes": 194008
+      "sha256": "c2532fe0f0d1f8c7822856a9677fb05ee9d9e5e57a80189498f15f9f2b04d393",
+      "bytes": 398602
     },
     {
       "file": "archetype-01-r1.webp",
@@ -172,8 +172,8 @@
         1024,
         1024
       ],
-      "sha256": "4af15de996731ed33896ca2f362d9d9e952f7c3c0fe47aeee0127a922083aaab",
-      "bytes": 185526
+      "sha256": "b87f15feac6a33677c97d996d1c58ec0c93ab386a1de4b9a2161571725597b67",
+      "bytes": 398120
     },
     {
       "file": "archetype-01-r3.webp",
@@ -484,8 +484,8 @@
         1024,
         1024
       ],
-      "sha256": "eb70c97a09a10de5525c9ac67af1562f0e50b500608f119420ae852f8a16084a",
-      "bytes": 236734
+      "sha256": "1d0ab9bb16ffbe06ae0ba084544b578ff60e6220ea23cd49b99d1e3eba829edc",
+      "bytes": 427688
     },
     {
       "file": "archetype-08-r1.webp",
@@ -508,8 +508,8 @@
         1024,
         1024
       ],
-      "sha256": "f7d1357e4a173cc3eae5a074cd3396871fddf44edda1674e06855bf910fddcdf",
-      "bytes": 236800
+      "sha256": "e355c4a7afb1ba59c153fe82c1bf00607e65371157b1dcde18aa7dfaee32777e",
+      "bytes": 427656
     },
     {
       "file": "archetype-08-r3.webp",
