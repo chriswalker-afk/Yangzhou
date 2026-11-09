@@ -15,9 +15,6 @@ jobs:
           node-version: "22"
       - name: Validate JavaScript and run canvas interaction smoke tests
         run: |
-          node --check tile-topology.js
-          node --check tile-system.js
-          node --check edge-art.js
           node --check artwork.js
           node --check tile-topology.js
           node --check tile-system.js
