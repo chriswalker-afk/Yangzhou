@@ -124,6 +124,34 @@
     });
     c.restore();
   }
+  function drawActors(c,time,board,motion=true){
+    // Unlike the retired 3x2 panorama actor simulation, every position is
+    // in game-tile world coordinates (220 units per square).
+    if(!ready||!active)return false;
+    const timestamp=motion?time:0;
+    const centerWaterX=1*220+110;
+    const waterNorth=board.get('1,0'),waterSouth=board.get('1,1');
+    if(waterNorth?.edges[0]==='W'&&waterNorth.edges[2]==='W'&&
+       waterSouth?.edges[0]==='W'&&waterSouth.edges[2]==='W'){
+      const y=((timestamp*.015)%490)-25;
+      // The hull passes beneath the crossing at (330,330), not on top.
+      if(y<289||y>372)drawSprite(c,'upper',centerWaterX+Math.sin(y*.01)*7,y,39,31,Math.PI/2,0);
+      const y2=445-((timestamp*.010+130)%475);
+      if(y2<289||y2>372)drawSprite(c,'lower',centerWaterX+Math.sin(y2*.01)*6,y2,43,34,Math.PI/2,0);
+    }
+    const bridge=board.get('1,1');
+    const west=board.get('0,1'),east=board.get('2,1');
+    if(bridge?.kind==='five'&&west?.edges[1]==='S'&&east?.edges[3]==='S'){
+      for(let i=0;i<3;i++){
+        let p=((timestamp*.000022+i*.33)%1);
+        if(i===1)p=1-p;
+        const x=210+p*245,y=332+Math.sin(p*Math.PI*2+i)*4;
+        const src=['blue','rose','ochre'][i];
+        drawSprite(c,src,x,y,10,21,0,motion?Math.sin(time*.011+i)*.65:0);
+      }
+    }
+    return true;
+  }
   function drawScene(c,time,scale=1,motion=true){
     if(!ready)return false;
     c.save();c.scale(660/1200,440/800);
@@ -157,7 +185,7 @@
     load();
   }
   window.YangzhouLiving={
-    drawScene,getCleanImage:()=>ready?images.clean:null,ready:()=>ready,active:()=>active,toggle,
+    drawScene,drawActors,getCleanImage:()=>ready?images.clean:null,ready:()=>ready,active:()=>active,toggle,
     setActive:v=>{active=!!v;invalidate();},
     inspect:()=>({ready,active,loadError,world,
       images:Object.fromEntries(Object.entries(images).map(([k,v])=>[k,!!v.naturalWidth])),
