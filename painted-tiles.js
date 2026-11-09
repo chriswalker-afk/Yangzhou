@@ -80,10 +80,11 @@
   }
   function draw(c,t){
     if(t.fixed)return false;
-    const lib=window.YangzhouPainted;
-    if(!lib?.getImage)return false;
-    const images={panorama:lib.getImage('panorama'),bridge:lib.getImage('bridge'),breakfast:lib.getImage('breakfast'),pagoda:lib.getImage('pagoda')};
-    if(Object.values(images).some(v=>!v))return false;
+    // Animation architecture rule: never use old paintings containing fixed
+    // people or boats as the source of a newly placed tile. Use only clean art.
+    const clean=window.YangzhouLiving?.getCleanImage?.();
+    if(!clean)return false;
+    const images={panorama:clean,bridge:clean,breakfast:clean,pagoda:clean};
     const k=t.kind+'|'+t.edges.join('')+'|'+(t.seed||1);
     let img=cache.get(k);
     if(!img){img=raster(t,images);if(!img)return false;cache.set(k,img);
@@ -91,5 +92,5 @@
     c.save();c.translate(t.x*S,t.y*S);c.imageSmoothingQuality='high';
     c.drawImage(img,0,0,S,S);c.restore();return true;
   }
-  window.YangzhouTileArt={draw,clear:()=>cache.clear(),stats:()=>({cached:cache.size})};
+  window.YangzhouTileArt={draw,clear:()=>cache.clear(),stats:()=>({cached:cache.size,source:'clean-plate'})};
 })();
