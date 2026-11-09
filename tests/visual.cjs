@@ -223,6 +223,26 @@ async function main(){
     console.log('All starter boundary tile candidates:',expansion.slots);
 
 
+    // Visual acceptance studio uses the live production-master renderer.
+    // A hard edge pixel test cannot catch repeated architecture or scenery
+    // that fails to compose naturally beyond the immediate boundary.
+    const review=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:1});
+    review.on('pageerror',e=>errors.push('tile-review: '+String(e)));
+    await review.goto('http://127.0.0.1:8765/tile-review.html',{waitUntil:'load'});
+    await review.waitForFunction(()=>document.getElementById('status').textContent.includes('All tile images loaded'),{timeout:35000});
+    await review.screenshot({path:OUT+'/tile-review-six.png'});
+    await review.click('#ring');
+    await review.waitForFunction(()=>document.getElementById('status').textContent.includes('All tile images loaded') &&
+      document.getElementById('status').textContent.includes('16 independent'),{timeout:35000});
+    await review.screenshot({path:OUT+'/tile-review-ring.png'});
+    await review.click('#grid');
+    await review.click('#ports');
+    await review.screenshot({path:OUT+'/tile-review-ports.png'});
+    const reviewAssets=await review.evaluate(()=>window.YangzhouTiles?.stats());
+    assert(reviewAssets.productionLoaded>=6,'Artwork review must display decoded high-resolution masters, not fallback crops');
+    assert.equal(reviewAssets.productionErrors.length,0,'Production artwork should not have image download errors');
+    await review.close();
+
     const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2,isMobile:true,hasTouch:true});
     await visit(mobile);
     await mobile.click('#explore');
