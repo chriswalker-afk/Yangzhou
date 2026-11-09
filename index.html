@@ -102,12 +102,13 @@ button{font:inherit;cursor:pointer;color:inherit}button:focus-visible{outline:3p
 <dialog id="artDialog" class="art-dialog" aria-labelledby="artTitle" aria-describedby="artDescription">
  <div class="art-head"><div><span class="eyebrow">Yangzhou · Painted scenes</span><h2 id="artTitle">Slender West Lake</h2><p id="artSubtitle">A living handscroll</p></div><button type="button" class="btn" id="closePaintings" aria-label="Close painting">Close ✕</button></div>
  <img id="artImage" src="assets/painted/starter-panorama.webp" alt="Historical-style painted scene of Slender West Lake and the Yangzhou city."/>
- <div class="art-foot"><p id="artDescription">The six starting tiles form one continuous illustrated landscape. Details have not yet been independently reviewed for historical accuracy.</p>
+ <div class="art-foot"><p id="artDescription">The board starts with six individually painted square tiles. This panorama remains a separate artistic reference, not the board texture. Details require historical review.</p>
  <div class="art-nav"><button type="button" class="btn" id="artPrevious" aria-label="Previous painting">‹</button><span id="artCount">1 / 4</span><button type="button" class="btn" id="artNext" aria-label="Next painting">›</button></div></div>
 </dialog>
 <script src="painted-assets.js"></script>
 <script src="edge-art.js"></script>
 <script src="artwork.js"></script>
+<script src="tile-topology.js"></script>
 <script src="tile-system.js"></script>
 <script src="living-scene.js"></script>
 <script>
@@ -117,32 +118,12 @@ const TILE=220, canvas=document.getElementById('scene'), ctx=canvas.getContext('
 const preview=document.getElementById('preview'), pc=preview.getContext('2d');
 const $=id=>document.getElementById(id);
 const kinds={L:'land',S:'street',W:'water'};
-const archetypes=[
-{name:'Canal-side teahouse',note:'Warm food, tea, passing boats',edges:['L','W','L','S'],kind:'tea'},
-{name:'Stone-paved street',note:'A peaceful road through Yangzhou',edges:['S','L','S','L'],kind:'street'},
-{name:'Willow canal bend',note:'Water and softly moving willows',edges:['W','W','L','L'],kind:'canal'},
-{name:'Waterfront landing',note:'Where small boats pause to moor',edges:['L','W','L','W'],kind:'landing'},
-{name:'Garden enclosure',note:'Bamboo, rockery and quiet pathways',edges:['L','L','L','L'],kind:'garden'},
-{name:'Market crossroads',note:'Stalls, visitors and tiled roofs',edges:['S','S','S','S'],kind:'market'},
-{name:'Canal crossroads',note:'A meeting place for waterways',edges:['W','W','W','W'],kind:'canal'},
-{name:'Street corner',note:'Shops beside a turning road',edges:['S','S','L','L'],kind:'street'},
-{name:'Small stone bridge',note:'A walkway over a navigable canal',edges:['W','S','W','S'],kind:'bridge'},
-{name:'Garden pavilion',note:'A place to admire the scenery',edges:['L','S','L','L'],kind:'garden'},
-{name:'Walled courtyard',note:'A composed domestic garden',edges:['S','L','L','L'],kind:'court'},
-{name:'Canal junction',note:'A new branch for passing boats',edges:['W','W','W','L'],kind:'canal'},
-{name:'Mooring basin',note:'A calm end to the canal with a place to dock',edges:['W','L','L','L'],kind:'landing'}
-];
-const starter=[
-{x:0,y:0,edges:['S','L','S','L'],kind:'causeway',name:'Willow Causeway',fixed:true,rotation:0,seed:1},
-{x:1,y:0,edges:['W','L','W','L'],kind:'lake',name:'Northern Lake',fixed:true,rotation:0,seed:2},
-{x:2,y:0,edges:['S','L','S','L'],kind:'tea',name:'Lakeside Gardens and Teahouses',fixed:true,rotation:0,seed:3},
-{x:0,y:1,edges:['S','S','S','L'],kind:'pagoda',name:'White Pagoda Garden',fixed:true,rotation:0,seed:4},
-{x:1,y:1,edges:['W','S','W','S'],kind:'five',name:'Five-Pavilion Bridge',fixed:true,rotation:0,seed:5},
-{x:2,y:1,edges:['S','S','S','S'],kind:'landing',name:'Southern Market Crossroads',fixed:true,rotation:0,seed:6}
-];
+// Game and renderer share the exact same six independent tile definitions.
+const archetypes=window.YangzhouTileTopology.archetypes;
+const starter=window.YangzhouTileTopology.starter;
 const board=new Map(starter.map(t=>[t.x+','+t.y,t]));
 const state={type:0,rotation:0,selected:null,hover:null,scale:1.0,offsetX:0,offsetY:0,motion:!matchMedia('(prefers-reduced-motion: reduce)').matches,showSites:true,drag:null,time:0,w:0,h:0,dirty:true};
-const rotEdges=(a,r)=>a.map((_,i)=>a[(i-r+4)%4]);
+const rotEdges=window.YangzhouTileTopology.rotateEdges;
 const edge=(t,i)=>t.edges[i]; const dirs=[[0,-1],[1,0],[0,1],[-1,0]];
 const key=(x,y)=>x+','+y;
 function canPlace(x,y,edges){if(board.has(key(x,y)))return false;let touching=false;for(let i=0;i<4;i++){let n=board.get(key(x+dirs[i][0],y+dirs[i][1]));if(n){touching=true;if(edge(n,(i+2)%4)!==edges[i])return false;}}return touching;}
@@ -249,7 +230,7 @@ window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','Arr
 window.addEventListener('resize',resize);
 function frame(now){cameraTick(now);if(state.motion)state.time=now;draw();if(state.motion&&Math.floor(now/200)!==Math.floor((now-16)/200))drawPreview();requestAnimationFrame(frame);}
 resize();refresh();requestAnimationFrame(frame);
-window.YangzhouDebug={board,archetypes,canPlace,rotEdges,candidates,state};
+window.YangzhouDebug={board,archetypes,canPlace,rotEdges,candidates,state,topology:window.YangzhouTileTopology};
 })();
 </script>
 <!-- Legacy ambient overlay retired: actors use shared tile coordinates. -->
