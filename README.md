@@ -1,71 +1,38 @@
 # Yangzhou · A Living Scroll
 
-A calm, tile-laying city-builder inspired by the everyday stories of eighteenth-century Yangzhou. The intended game combines a high, readable illustrated city view with rewarding close inspection, small ambient animations and activity-based scoring.
+A peaceful tile-laying game inspired by historic Yangzhou and Carcassonne. The aim is a connected **top-down city painting** that looks beautiful at overview and close zoom, with authentic Jiangnan garden and waterside details.
 
-## Living Painting proof of concept · Pass 4
+## Artwork reset — 10 November 2026
 
-Open **index.html** in a modern browser (or host the repository as a static site). No build step, account, external dependency or network connection is required.
+The earlier tile-art generators, sliced panorama fallback, texture overlays and reconstructed clean-plate/actor demonstrations were retired on the **artwork V2 feature branch**. They remain recoverable through Git history; they are not loaded into the new prototype. We are keeping the camera, legal N/E/S/W placement rules, and the scoring *design*.
 
-This prototype now includes:
-- **A genuinely separate, edge-compatible clean-plate image** generated from the original Slender West Lake painting. Marked static people and boats are removed and the revealed ground/water is reconstructed; unfinished retouching is documented.
-- **Independent transparent artwork layers:** two boats, three painted walking residents, the Five-Pavilion Bridge foreground and willow branches. Boats render beneath the bridge layer while walkers move across the bridge.
-- **Tileable terrain edges:** one shared painter controls the 44-unit street and 88-unit water openings at the exact centre of every 220-unit edge, with the same geometry used by the game tile schema and independent-square renderer. All ten starter-neighbour positions have a selectable example, and the full perimeter can be filled together (eight garden gateways with streets opening outwards, two mooring basins). The natural starter painting is not cut by invented street entrances. The starter perimeter and newly placed tiles use identical boundary pixels, preserving visual compatibility after rotation.
-- **Clean plate / Living city toggle:** instantly switch between the unoccupied background and its independently animated inhabitants, with the same pan/zoom camera.
-- An editable/reproducible asset pipeline and QA screenshots covering the two-layer states.
+**[Open the playable tile-layout study](index.html)** · **[Inspect all eight compositions and the 16-square ring](tile-lab-v2.html)**
 
-This prototype includes:
-- Six connected Slender West Lake **individually authored square paintings**, arranged in a **3 × 2** grid. Every fixed and placeable tile uses the same rules in `tile-topology.js` and `edge-art.js`; the panorama is only an optional close-up reference in the gallery.
-- Three further full-resolution painted scenes of the Five-Pavilion Bridge, canal-side breakfast and White Pagoda Garden, inspectable from the **Paintings** button and relevant tiles in Explore mode.
-- A high starting camera with smooth easing, pointer-anchored zoom, one-finger pan / two-finger pinch, keyboard pan/zoom, Fit City and quick City / Street / Detail views.
-- Thirteen hand-coded tile archetypes with 90-degree rotation and exact edge matching (street, water, land).
-- Valid-placement outlines, selectable spaces and a Place tile action.
-- Real painted local image assets in `assets/painted/`, with a documented manifest and no temporary CDN links. The high-resolution panorama is drawn seamlessly; the three detail paintings are used for close inspection and as feathered motifs in selected new tile designs.
-- Newly placed, rotatable tiles use individual square masters where possible, with provisional topology-aware overlays for unpainted variants. Logical rotation does not turn painted buildings sideways. The procedural renderer remains a fallback until every topology has bespoke painted assets.
-- An Explore artwork mode that hides placement guides for unobstructed viewing, plus a separate ambient layer demonstrating journeys across the starter scene's seams.
-- Toggleable motion and support for the browser's reduced-motion preference.
+This is deliberately **not a finished painterly tileset**. The eight new layouts are original *composition studies*, drawn specifically for their own street/canal connection signatures. They contain no crop of the previous painting and do not claim to be watercolour originals. The six detailed existing Slender West Lake tiles remain an **art-direction benchmark and provisional starter scene** while its exact external water mouths and other artistic issues are reviewed. We will not silently swap the game to a low-quality art fallback again.
 
-**The painted artwork is integrated, but not all art is finished.** The starter lake and three detailed subjects now use real locally stored generated illustrations rather than procedural vector approximations. The composited playable tiles still require unique, fully hand-painted, topology-matching variants; cultural/historical review and polished actor animation are also outstanding. Scoring, multiplayer and deck randomisation are not implemented.
+### What is in this proof of concept
 
-## Controls
+- Eight deliberately small tile archetypes, each with four distinct compass orientations: garden, straight street, turning street, market crossroads, straight canal, canal bend, bridge, canal junction.
+- Exact edge contracts: `L` landscape, `S` 44/220-wide street, `W` 88/220-wide navigable water; routes join at edge midpoints. Bridges have separate road and water graphs.
+- Six fixed Slender West Lake **reference paintings** with eight land-only exterior edges and north/south navigable outlets. The ring inspector assembles all ten immediate neighbours without inventing streets through the lake.
+- A live preview and gallery that distinguish **layout study** from independently painted production artwork.
+- An explicit manifest for **32 commissioned square masters**. All slots currently say `needs-independent-painting`: no fake claims of 52 production-ready pictures.
 
-| Input | Action |
-|---|---|
-| Drag canvas / arrow keys | Pan |
-| Wheel, pinch, + / − | Zoom |
-| Fit or City / 1 | Frame the full city |
-| Street / 2 | Examine a neighbourhood |
-| Detail / 3 | Inspect buildings and small painted features |
-| Double click | Zoom toward the selected detail |
-| Explore artwork | Hide placement guides; zoom in and select a tile to inspect the painting |
-| Clean plate / Living city (or L) | Toggle between the unoccupied background and independent animated sprites |
-| Paintings | Open the four detailed reference artworks and browse them |
-| Gallery ← / → | Previous / next painting; Escape closes |
-| Previous / Next | Choose prototype tile archetype |
-| Rotate or R | Rotate clockwise |
-| Click dotted space | Preview valid placement |
-| Place tile | Commit chosen placement |
-| Escape / Clear | Cancel preview |
-| Motion on/off | Pause and resume atmospheric animation |
+### Controls
 
-## Design and next steps
-- [Painted Slender West Lake artwork upgrade, strict port QA, and six-square asset loader](docs/LAKE-PAINTED-ARTWORK-PASS.md)
+Drag or arrow keys to pan. Wheel/pinch to zoom, Fit to show the city, 1/2/3 for overview/street/detail views. Select a tile with Previous/Next, rotate it with R, select a dotted matching space, and click **Place tile**. Explore city hides placement hints. [Tile studies](tile-lab-v2.html) opens the new composition QA studio.
 
-- [Canonical Slender West Lake natural shoreline and six SVG painting templates](docs/SLENDER-WEST-LAKE-TEMPLATES.md)
-- [Scoring rules v1: seven activities, claims, completion and score-once behaviour](docs/SCORING-RULES-V1.md)
-- [Scoring-aware tile route/anchor schema](scoring-tile-spec.cjs) and [contract tests](tests/scoring-contract.cjs)
-- [Six-tile Slender West Lake scoring and perimeter audit](docs/STARTER-SCORING-AUDIT.md)
+### Developer verification
 
-- [Full historical/art bible, map, game mechanics and architecture](docs/DESIGN.md)
-- [Prototype QA checklist and honest limitations](docs/PROTOTYPE-QA.md)
-- [Pass 2: camera and procedural art prototype](docs/ARTWORK-CAMERA-PASS.md)
-- [Pass 3: painted asset architecture, starter topology, quality gates and future asset production](docs/PAINTED-ASSETS.md)
-- [Pass 4: **Living Painting Architecture**, clean background, independent actors, occlusion and next steps](docs/LIVING-PAINTING.md)
-- [Mandatory **tileable artwork-edge contract** and seam acceptance tests](docs/TILE-EDGE-CONTRACT.md)
-- [One shared tile topology schema and six independent starter masters](tile-topology.js)
-- [Painted asset manifest](assets/painted/manifest.json)
-- [Dependency-free gameplay and camera smoke tests](tests/smoke.cjs) (`node tests/smoke.cjs`)
+```bash
+node tests/smoke.cjs
+node tests/v2-contract.cjs
+```
 
-**Next:** inspect and manually retouch the reconstructed clean scene, then create painterly multi-frame animation sprites and dynamic street/canal routes connecting newly placed tiles. Expand the layered art to all 12 tile archetypes before activity scoring. Afterwards, build the turn manager, six-person pools, activity completion rules and score-once tests.
+Browser QA runs with the Playwright workflow `.github/workflows/visual-qa.yml`. A successful test run checks *mechanics and geometry only*, never art quality. See [artwork V2 and acceptance criteria](docs/ARTWORK-V2.md) and [game design](docs/DESIGN.md).
 
-## Rights and reference policy
-The four local WebP assets are newly generated project illustrations. The original painted references and museum photographs are research sources, not copied into the game. The imagery requires historical/cultural review before claims of authenticity; original source files and checksums are recorded in the manifest. Production artwork and any external sources must have documented usage rights.
+**No production-art approval has been given.** No scoring engine, multiplayer, final actors or finished expansion painting set exists yet. Make a human-reviewed painting for one tile at four orientations, prove it joins beautifully in several real layouts, and only then extend the deck.
+
+## Historical and art direction
+
+The setting is late eighteenth-century Yangzhou. The White Pagoda has the silhouette of a bottle-form stupa; Five-Pavilion Bridge crosses navigable water with a separate elevated pedestrian route. Avoid generic fantasy architectural elements and later-period anachronisms. The six lake paintings are a visual target, not permission to reproduce their fragments. Before release, the result requires art and local historical review. The painted references and the project's original research notes are preserved in Git history.

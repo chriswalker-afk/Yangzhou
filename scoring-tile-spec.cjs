@@ -24,6 +24,18 @@ const specs={
   gardenGate:{routes:[segment('street',[1])],features:[feature('garden-gate','gate',.72,.5,{access:'street'}),feature('pavilion','viewpoint',.38,.5,{access:'street',views:['garden']})]},
   roadEnd:{routes:[segment('street',[0])],features:[feature('road-destination','gate',.5,.58,{access:'street'})]}
 };
+// V2 pilot: route and scoring anchors belong to each independently designed
+// square topology. These are contracts, NOT an implemented scoring engine.
+const v2Specs={
+  'garden-grove':{routes:[],features:[feature('private-grove','garden',.45,.57,{boundary:'enclosed'})]},
+  'street-straight':{routes:[segment('street',[0,2])],features:[feature('quiet-street','destination',.3,.45)]},
+  'street-bend':{routes:[segment('street',[0,1])],features:[feature('courtyard-corner','gate',.65,.72,{access:'street'})]},
+  'market-cross':{routes:[segment('street',[0,1,2,3])],features:[feature('four-quarter-market','food',.31,.32,{access:'street',amenities:['food']})]},
+  'canal-straight':{routes:[segment('water',[0,2])],features:[feature('canal-houses','viewpoint',.25,.45,{views:['water']})]},
+  'canal-bend':{routes:[segment('water',[0,1])],features:[feature('willow-bank','garden',.23,.72)]},
+  'stone-bridge':{routes:[segment('water',[0,2]),segment('street',[1,3])],features:[feature('stone-footbridge','scenic-bridge',.5,.5)]},
+  'canal-junction':{routes:[segment('water',[0,1,2])],features:[feature('canal-confluence','water',.5,.5)]}
+};
 const byName={
   'Canal-side teahouse':'teaCanal','Stone-paved street':'street',
   'Willow canal bend':'canal','Waterfront landing':'landingBasin',
@@ -64,9 +76,9 @@ function validate(tile,spec){
 }
 function makeSpec(tile){
   const key=tile.fixed?tile.kind:byName[tile.name]||tile.kind;
-  const base=specs[key];
+  const base=(!tile.fixed&&v2Specs[tile.id])||specs[key];
   if(!base)throw Error('Missing feature specification for '+tile.name);
-  const groups=tile.fixed?base.routes.map(r=>r.ports):overrides[tile.name]||base.routes.map(r=>r.ports);
+  const groups=(tile.fixed||v2Specs[tile.id])?base.routes.map(r=>r.ports):(overrides[tile.name]||base.routes.map(r=>r.ports));
   const types=groups.map(g=>tile.edges[g[0]]==='W'?'water':'street');
   const result={routes:groups.map((g,i)=>segment(types[i],g)),features:base.features};
   const errors=validate(tile,result);

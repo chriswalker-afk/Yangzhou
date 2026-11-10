@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#eae0ca">
-<title>Yangzhou · A Living Scroll | Living artwork prototype</title>
+<title>Yangzhou · A Living Scroll | V2 tile-layout study</title>
 <style>
 :root{--paper:#f0e6d1;--ink:#39413c;--muted:#697069;--jade:#739e99;--red:#a46c52;--gold:#aa8753}*{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:Georgia,"Noto Serif",serif}
@@ -20,7 +20,7 @@ button{font:inherit;cursor:pointer;color:inherit}button:focus-visible{outline:3p
 .chip,.btn{background:#f2e9d8f2;border:1px solid #cabcaa;border-radius:4px;box-shadow:0 3px 12px #55473318}
 .chip{font:12px system-ui,sans-serif;padding:10px 13px}
 .btn{padding:10px 13px;min-height:38px}
-.btn:hover{background:#fff8e9}.btn:disabled{opacity:.45;cursor:not-allowed}
+#tileLab{font:12px system-ui,sans-serif;text-decoration:none;display:inline-flex;align-items:center;justify-content:center} .btn:hover{background:#fff8e9}.btn:disabled{opacity:.45;cursor:not-allowed}
 .controls{right:18px;top:74px;display:flex;flex-direction:column;gap:6px}
 .controls .btn{min-width:43px;font-family:system-ui,sans-serif}
 .bottom{left:50%;transform:translateX(-50%);bottom:18px;width:min(900px,calc(100vw - 28px));display:flex;align-items:stretch;gap:10px}
@@ -42,18 +42,6 @@ button{font:inherit;cursor:pointer;color:inherit}button:focus-visible{outline:3p
 @media(max-width:680px){.header{top:8px;left:8px}.brand{padding:8px 10px}.brand .han{font-size:19px}.brand h1{font-size:13px}.brand p{font-size:10px}.status{right:8px;top:8px}.status .chip{padding:7px;font-size:10px}.status .chip:first-child{display:none}.controls{right:8px;top:53px}.bottom{bottom:8px;gap:5px}.tile-panel{padding:7px;gap:6px}.tile-preview{width:45px;height:45px}.tile-description strong{font-size:13px}.hint{font-size:10px}.action{padding:7px}.btn{padding:7px 9px;min-height:34px}.tile-actions{flex-wrap:wrap;justify-content:center}.footer,.legend{display:none}.notice{left:8px;top:83px;font-size:11px;max-width:230px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 
-/* Painted scene inspection gallery */
-.art-dialog{width:min(1000px,94vw);max-height:calc(100vh - 32px);border:1px solid #a99b82;border-radius:8px;padding:0;background:#f0e7d3;color:#3c4139;box-shadow:0 18px 80px #1c302a69;overflow:auto}
-.art-dialog::backdrop{background:rgba(26,38,32,.72);backdrop-filter:blur(4px)}
-.art-head{display:flex;justify-content:space-between;gap:20px;align-items:start;padding:19px 24px 12px}
-.art-head h2{font-size:25px;font-weight:normal;margin:5px 0 0}
-.art-head p{font:12px system-ui,sans-serif;color:#777061;margin:5px 0 0}
-.art-dialog img{display:block;width:100%;height:auto;max-height:min(67vh,760px);object-fit:contain;background:#eee2ca;border-top:1px solid #d5c7b0;border-bottom:1px solid #d5c7b0}
-.art-foot{padding:12px 24px 17px;display:flex;gap:14px;align-items:center;justify-content:space-between}
-.art-foot p{font:13px/1.5 system-ui,sans-serif;color:#575b51;flex:1;margin:0}
-.art-nav{display:flex;align-items:center;gap:7px}.art-nav span{font:11px system-ui,sans-serif;color:#77716a;min-width:32px;text-align:center}
-@media(max-width:680px){.art-head{padding:13px}.art-head h2{font-size:18px}.art-dialog img{max-height:52vh}.art-foot{padding:12px;flex-direction:column;align-items:stretch}.art-nav{justify-content:space-between}.status #scenes{font-size:11px;padding:7px}.status #motion{display:none}}
-
 /* Compact mobile chrome: the painting stays central and discoverable. */
 @media(max-width:680px){
  .header{top:7px;left:7px}
@@ -62,8 +50,8 @@ button{font:inherit;cursor:pointer;color:inherit}button:focus-visible{outline:3p
  .brand h1{font-size:12px;margin-top:0}
  .brand p{display:none}
  .status{top:7px;right:7px;gap:4px}
- .status #counter,.status #zoomLabel,.status #motion{display:none}
- .status #scenes{min-height:32px;font-size:11px;padding:5px 8px}
+ .status #counter,.status #zoomLabel{display:none}
+ .status #tileLab{min-height:32px;font-size:11px;padding:5px 8px}
  .controls{top:48px;right:7px;gap:4px}
  .controls .btn{min-width:36px;min-height:32px;padding:4px 7px;font-size:12px}
  .controls #viewCity,.controls #viewNear,.controls #viewDetail,.controls #help{display:none}
@@ -83,36 +71,20 @@ button{font:inherit;cursor:pointer;color:inherit}button:focus-visible{outline:3p
  .action .btn{min-height:27px;padding:4px;font-size:10px}
 }
 
-/* The layer comparison is deliberately visible during the architecture pass. */
-.status #livingToggle{white-space:nowrap}
-@media(max-width:680px){
- .status #livingToggle{min-height:32px;padding:5px 7px;font-size:10px}
-}
 </style>
 </head>
 <body>
 <canvas id="scene" aria-label="Interactive Yangzhou city canvas; use the controls to zoom, rotate and place tiles"></canvas>
-<div class="shell header"><div class="brand"><span class="han" lang="zh">揚州</span><h1>Yangzhou</h1><p>A Living Scroll · painted city prototype</p></div></div>
-<div class="shell status"><div class="chip" id="counter">6 tiles · Slender West Lake</div><div class="chip zoom-label" id="zoomLabel">City overview</div><button class="btn" id="scenes" title="Inspect the detailed painted scenes">Paintings</button><button class="btn" id="livingToggle" aria-pressed="false" title="Show clean background without the animated city">Clean plate</button><button class="btn" id="motion" aria-pressed="true" title="Toggle environmental animation">Motion on</button></div>
-<div class="shell controls"><button class="btn" id="zoomIn" title="Zoom in" aria-label="Zoom in">+</button><button class="btn" id="zoomOut" title="Zoom out" aria-label="Zoom out">−</button><button class="btn" id="fit" title="Fit the whole city">Fit</button><button class="btn preset" id="viewCity" title="Overview (1)">City</button><button class="btn preset" id="viewNear" title="Neighbourhood (2)">Street</button><button class="btn preset" id="viewDetail" title="Close inspection (3)">Detail</button><button class="btn" id="explore" title="Hide or show placement guides" aria-pressed="false">Explore artwork</button><button class="btn" id="help" title="Show instructions">?</button></div>
-<div class="shell notice" id="notice" role="status">Explore Yangzhou from above. Zoom in, or open Paintings for close-up scenes.</div>
+<div class="shell header"><div class="brand"><span class="han" lang="zh">揚州</span><h1>Yangzhou</h1><p>A Living Scroll · V2 composition study</p></div></div>
+<div class="shell status"><div class="chip" id="counter">6 tiles · Slender West Lake</div><div class="chip zoom-label" id="zoomLabel">City overview</div><a class="btn" id="tileLab" href="tile-lab-v2.html" title="Inspect all eight new tile composition studies">Tile studies</a></div>
+<div class="shell controls"><button class="btn" id="zoomIn" title="Zoom in" aria-label="Zoom in">+</button><button class="btn" id="zoomOut" title="Zoom out" aria-label="Zoom out">−</button><button class="btn" id="fit" title="Fit the whole city">Fit</button><button class="btn preset" id="viewCity" title="Overview (1)">City</button><button class="btn preset" id="viewNear" title="Neighbourhood (2)">Street</button><button class="btn preset" id="viewDetail" title="Close inspection (3)">Detail</button><button class="btn" id="explore" title="Hide or show placement guides" aria-pressed="false">Explore city</button><button class="btn" id="help" title="Show instructions">?</button></div>
+<div class="shell notice" id="notice" role="status">New artwork is at composition-study stage. Place tiles to check routes and city composition.</div>
 <div class="legend" id="legend"><b>Placement edges</b><span><i class="mark" style="background:#7daba6"></i>Water · canal or lake</span><span><i class="mark" style="background:#c1af93"></i>Street · walking route</span><span><i class="mark" style="background:#c6c5a3"></i>Land · garden or district</span></div>
-<div class="shell bottom"><div class="panel tile-panel"><canvas id="preview" class="tile-preview" width="140" height="140" aria-label="Current tile preview"></canvas><div class="tile-description"><div class="eyebrow">Your next tile</div><strong id="tileName">Canal-side teahouse</strong><div class="hint" id="tileDesc">Place next to a matching edge</div></div><div class="tile-actions"><button class="btn" id="previous" aria-label="Previous tile">‹</button><button class="btn" id="next" aria-label="Next tile">›</button><button class="btn" id="rotate" title="Rotate tile clockwise">↻ Rotate</button></div></div><div class="panel action"><button class="btn primary" id="place" disabled>Place tile</button><button class="btn" id="cancel">Clear selection</button></div></div>
-<div class="shell footer"><span id="assetStatus">Loading clean painted background…</span> · Edge geometry remains a prototype · Scoring is planned for a later pass</div>
-<dialog id="artDialog" class="art-dialog" aria-labelledby="artTitle" aria-describedby="artDescription">
- <div class="art-head"><div><span class="eyebrow">Yangzhou · Painted scenes</span><h2 id="artTitle">Slender West Lake</h2><p id="artSubtitle">A living handscroll</p></div><button type="button" class="btn" id="closePaintings" aria-label="Close painting">Close ✕</button></div>
- <img id="artImage" src="assets/painted/starter-panorama.webp" alt="Historical-style painted scene of Slender West Lake and the Yangzhou city."/>
- <div class="art-foot"><p id="artDescription">The board starts with six individually painted square tiles. This panorama remains a separate artistic reference, not the board texture. Details require historical review.</p>
- <div class="art-nav"><button type="button" class="btn" id="artPrevious" aria-label="Previous painting">‹</button><span id="artCount">1 / 4</span><button type="button" class="btn" id="artNext" aria-label="Next painting">›</button></div></div>
-</dialog>
-<script src="painted-assets.js"></script>
-<script src="edge-art.js"></script>
-<script src="artwork.js"></script>
+<div class="shell bottom"><div class="panel tile-panel"><canvas id="preview" class="tile-preview" width="140" height="140" aria-label="Current tile preview"></canvas><div class="tile-description"><div class="eyebrow">Your next tile</div><strong id="tileName">Willow garden</strong><div class="hint" id="tileDesc">Place next to a matching edge</div></div><div class="tile-actions"><button class="btn" id="previous" aria-label="Previous tile">‹</button><button class="btn" id="next" aria-label="Next tile">›</button><button class="btn" id="rotate" title="Rotate tile clockwise">↻ Rotate</button></div></div><div class="panel action"><button class="btn primary" id="place" disabled>Place tile</button><button class="btn" id="cancel">Clear selection</button></div></div>
+<div class="shell footer"><span id="assetStatus">Artwork V2: eight layout studies, six lake references — NOT production art</span> · Edge geometry remains a prototype · Scoring is planned for a later pass</div>
+
 <script src="tile-topology.js"></script>
-<script src="orthographic-lake.js"></script>
-<script src="painted-lake.js"></script>
-<script src="tile-system.js"></script>
-<script src="living-scene.js"></script>
+<script src="tile-art-v2.js"></script>
 <script>
 (() => {
 'use strict';
@@ -130,32 +102,14 @@ const edge=(t,i)=>t.edges[i]; const dirs=[[0,-1],[1,0],[0,1],[-1,0]];
 const key=(x,y)=>x+','+y;
 function canPlace(x,y,edges){if(board.has(key(x,y)))return false;let touching=false;for(let i=0;i<4;i++){let n=board.get(key(x+dirs[i][0],y+dirs[i][1]));if(n){touching=true;if(edge(n,(i+2)%4)!==edges[i])return false;}}return touching;}
 function candidates(){let sites=new Set();for(const t of board.values())for(const d of dirs)sites.add(key(t.x+d[0],t.y+d[1]));return [...sites].map(s=>s.split(',').map(Number)).filter(([x,y])=>canPlace(x,y,rotEdges(archetypes[state.type].edges,state.rotation)));}
-const hash=(a,b,c=0)=>{let v=Math.sin(a*127.1+b*311.7+c*74.7)*43758.5453;return v-Math.floor(v);};
-function paper(){ctx.fillStyle='#e9dfca';ctx.fillRect(0,0,state.w,state.h);ctx.strokeStyle='#9d947f19';ctx.lineWidth=1;for(let i=0;i<state.w+state.h;i+=28){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i-state.h,state.h);ctx.stroke();}}
-function pLine(c,points,width=1){c.strokeStyle=points.color||'#5f6257';c.lineWidth=width;c.beginPath();c.moveTo(points[0][0],points[0][1]);for(let i=1;i<points.length;i++)c.lineTo(points[i][0],points[i][1]);c.stroke();}
-function tree(c,x,y,r,t,seed=0){c.save();let sway=state.motion?Math.sin(t*.0007+seed*2)*2:0;c.translate(x,y);c.strokeStyle='#756e55';c.lineWidth=2;c.beginPath();c.moveTo(0,10);c.lineTo(sway,-r*.5);c.stroke();for(let i=0;i<7;i++){let a=i*Math.PI*2/7;let xx=Math.cos(a)*r*.52+sway,yy=Math.sin(a)*r*.45-r*.4;c.fillStyle=i%2?'#99a77eaa':'#708c78ba';c.beginPath();c.ellipse(xx,yy,r*.42,r*.33,a,0,Math.PI*2);c.fill();c.strokeStyle='#6b826375';c.lineWidth=.65;c.stroke();}c.restore();}
-function willow(c,x,y,t,s=1){c.save();c.translate(x,y);c.scale(s,s);c.strokeStyle='#7e7a5b';c.lineWidth=3;c.beginPath();c.moveTo(0,18);c.lineTo(-2,-22);c.stroke();for(let i=0;i<9;i++){let a=(i-4)*.36;let drift=state.motion?Math.sin(t*.001+i*.8)*3:0;let ex=Math.sin(a)*39+drift, ey=-22+Math.abs(i-4)*5+28;c.strokeStyle='#7b9572b5';c.lineWidth=2;c.beginPath();c.moveTo(-2,-20);c.quadraticCurveTo(ex*.65,-34,ex,ey);c.stroke();for(let k=0;k<4;k++){let yy=-9+k*8,xx=ex*(k+1)/5;c.fillStyle='#91a978c9';c.beginPath();c.ellipse(xx,yy,2.2,6,a,0,Math.PI*2);c.fill();}}c.restore();}
-function roof(c,x,y,w,h,variant=0){c.save();c.fillStyle='#eee3d1';c.strokeStyle='#927e6b';c.lineWidth=1.5;c.fillRect(x+5,y+h*.3,w-10,h*.65);c.strokeRect(x+5,y+h*.3,w-10,h*.65);c.fillStyle=variant?'#6c7770':'#636d67';c.beginPath();c.moveTo(x-5,y+h*.35);c.lineTo(x+w*.5,y-6);c.lineTo(x+w+5,y+h*.35);c.quadraticCurveTo(x+w*.85,y+h*.32,x+w*.7,y+h*.37);c.lineTo(x+w*.3,y+h*.37);c.quadraticCurveTo(x+w*.13,y+h*.32,x-5,y+h*.35);c.fill();c.strokeStyle='#4b5552';c.stroke();c.strokeStyle='#b8b0a0';c.lineWidth=.8;for(let i=1;i<8;i++){let p=i/8;c.beginPath();c.moveTo(x+w*.5,y-6);c.lineTo(x+w*p,y+h*.35);c.stroke();}c.fillStyle='#7c5c48';for(let i=0;i<3;i++)c.fillRect(x+14+i*(w-25)/3,y+h*.53,5,10);c.restore();}
-function person(c,x,y,t,i=0){let bob=state.motion?Math.sin(t*.003+i)*1.3:0;c.save();c.translate(x,y+bob);c.fillStyle=i%3===0?'#b4765c':i%3===1?'#58746c':'#8c8e73';c.beginPath();c.moveTo(-3,2);c.lineTo(4,2);c.lineTo(6,12);c.lineTo(-6,12);c.fill();c.fillStyle='#b9a184';c.beginPath();c.arc(0,0,3.5,0,Math.PI*2);c.fill();c.fillStyle='#454a44';c.beginPath();c.ellipse(0,-2,3.6,1.7,0,Math.PI,Math.PI*2);c.fill();c.restore();}
-function boat(c,x,y,a,t,seed=0){c.save();c.translate(x,y);c.rotate(a);c.fillStyle='#755d45';c.beginPath();c.moveTo(-19,-6);c.quadraticCurveTo(0,-12,19,-6);c.lineTo(14,7);c.quadraticCurveTo(0,11,-14,7);c.closePath();c.fill();c.strokeStyle='#4e493d';c.stroke();c.fillStyle='#c8b18c';c.fillRect(-9,-4,16,8);c.fillStyle='#877b59';c.beginPath();c.moveTo(-11,-5);c.lineTo(-2,-13);c.lineTo(11,-5);c.fill();c.strokeStyle='#695943';c.beginPath();c.moveTo(14,-1);c.lineTo(25,13+Math.sin(t*.001+seed)*2);c.stroke();c.restore();}
-function pavilion(c,x,y,w=48){c.save();c.fillStyle='#d6c4a5';c.fillRect(x-w*.39,y,w*.78,w*.36);c.strokeStyle='#835f4b';c.lineWidth=3;for(let i of [-.31,.31]){c.beginPath();c.moveTo(x+w*i,y+w*.1);c.lineTo(x+w*i,y+w*.37);c.stroke();}c.fillStyle='#b69c64';c.beginPath();c.moveTo(x-w*.55,y+2);c.lineTo(x,y-w*.32);c.lineTo(x+w*.55,y+2);c.closePath();c.fill();c.strokeStyle='#6c5948';c.lineWidth=1.5;c.stroke();c.beginPath();c.moveTo(x-w*.5,y-2);c.quadraticCurveTo(x-w*.4,y-w*.1,x,y-w*.35);c.quadraticCurveTo(x+w*.4,y-w*.1,x+w*.5,y-2);c.stroke();c.restore();}
-function pagoda(c,x,y){c.save();c.translate(x,y);c.fillStyle='#ddd6c6';c.strokeStyle='#7c7868';c.lineWidth=2;c.beginPath();c.moveTo(-23,48);c.lineTo(-21,20);c.quadraticCurveTo(-18,-8,-10,-18);c.quadraticCurveTo(-5,-26,-5,-37);c.lineTo(5,-37);c.quadraticCurveTo(5,-26,10,-18);c.quadraticCurveTo(18,-8,21,20);c.lineTo(23,48);c.closePath();c.fill();c.stroke();for(let i=0;i<3;i++){let yy=13+i*12;c.beginPath();c.ellipse(0,yy,21+i*1.8,4,0,0,Math.PI*2);c.stroke();}c.fillStyle='#ab8752';c.fillRect(-4,-44,8,7);c.beginPath();c.arc(0,-48,3,0,Math.PI*2);c.fill();c.restore();}
-function route(c,edges){let center=110; if(edges.includes('S')){c.strokeStyle='#b7aa92';c.lineWidth=37;c.lineCap='butt';for(let i=0;i<4;i++)if(edges[i]==='S'){c.beginPath();c.moveTo(110,110);c.lineTo([110,220,110,0][i],[0,110,220,110][i]);c.stroke();}c.strokeStyle='#d6c8b1';c.lineWidth=1;for(let i=0;i<4;i++)if(edges[i]==='S'){c.beginPath();c.moveTo(110,110);c.lineTo([110,220,110,0][i],[0,110,220,110][i]);c.stroke();}}}
-function water(c,edges,t){if(!edges.includes('W'))return;c.strokeStyle='#9cafa0';c.lineWidth=86;c.lineCap='butt';for(let i=0;i<4;i++)if(edges[i]==='W'){c.beginPath();c.moveTo(110,110);c.lineTo([110,220,110,0][i],[0,110,220,110][i]);c.stroke();}c.strokeStyle='#8bb2ac';c.lineWidth=80;for(let i=0;i<4;i++)if(edges[i]==='W'){c.beginPath();c.moveTo(110,110);c.lineTo([110,220,110,0][i],[0,110,220,110][i]);c.stroke();}
-c.strokeStyle='#c9d5bd9c';c.lineWidth=1.6;for(let i=0;i<15;i++){let yy=hash(i,2)*214,xx=90+(hash(i,3)-.5)*60+Math.sin(t*.0006+i)*2;c.beginPath();c.ellipse(xx,yy,5+hash(i,4)*7,1.6,-.14,0,Math.PI*1.1);c.stroke();}}
-function drawTile(c,t,time,showBorder=false){if(window.YangzhouTiles?.draw(c,t,time,state.scale))return;if(window.YangzhouArt){window.YangzhouArt.draw(c,t,time,state.scale);if(showBorder){c.save();c.translate(t.x*TILE,t.y*TILE);c.strokeStyle='#b99a58';c.lineWidth=2/Math.max(state.scale,.2);c.strokeRect(1,1,TILE-2,TILE-2);c.restore();}return;}c.save();c.translate(t.x*TILE,t.y*TILE);c.fillStyle='#d9dfc9';c.fillRect(0,0,TILE,TILE);
-const h=t.seed||1;for(let i=0;i<45;i++){let x=hash(i,h)*220,y=hash(i,h+11)*220;c.fillStyle=i%2?'#b9c5a04d':'#e4d9bd65';c.beginPath();c.ellipse(x,y,10+hash(i,h+2)*18,6+hash(i,h+3)*12,hash(i,h+4),0,Math.PI*2);c.fill();}
-const ed=t.edges;route(c,ed);water(c,ed,time);
-if(t.kind==='five'||t.kind==='bridge'){c.fillStyle='#c8b8a0';c.fillRect(0,97,220,27);c.strokeStyle='#827666';c.lineWidth=2;c.beginPath();c.moveTo(0,98);c.lineTo(220,98);c.moveTo(0,124);c.lineTo(220,124);c.stroke();for(let i=0;i<5;i++){let x=20+i*45;pavilion(c,x,98,35);}}
-else if(t.kind==='pagoda'){roof(c,6,130,75,45);pagoda(c,126,91);willow(c,34,58,time,1);tree(c,177,164,32,time,4);person(c,178,108,time,4);person(c,62,104,time,8);}
-else if(t.kind==='causeway'||t.kind==='approach'){for(let i=0;i<5;i++)tree(c,22+(i%2)*160,20+i*45,23+i%2*3,time,i);roof(c,28,46,65,48);person(c,112,66,time,2);person(c,110,160,time,6);}
-else if(t.kind==='lake'||t.kind==='canal'){willow(c,32,65,time,.8);tree(c,188,45,27,time,h);if(ed.filter(e=>e==='W').length>1)boat(c,108,105,-Math.PI/2,time,h);}
-else if(t.kind==='landing'){roof(c,5,20,62,40);pavilion(c,173,50,45);tree(c,182,177,29,time,h);boat(c,113,155,-Math.PI/2,time,h);person(c,158,112,time,8);}
-else if(t.kind==='tea'||t.kind==='market'){roof(c,13,13,98,62);roof(c,119,132,82,54,1);willow(c,173,39,time,.75);for(let i=0;i<4;i++)person(c,36+i*27,106+i%2*13,time,i+h);c.fillStyle='#b7a184';for(let i=0;i<3;i++){c.beginPath();c.arc(34+i*30,136,10,0,Math.PI*2);c.fill();}}
-else if(t.kind==='garden'||t.kind==='court'){pavilion(c,107,87,66);for(let i=0;i<7;i++)tree(c,20+i%3*83,20+Math.floor(i/3)*86,23,time,i);person(c,124,153,time,3);}
-else {roof(c,13,20,76,56);roof(c,128,126,78,52,1);tree(c,172,37,26,time,h);for(let i=0;i<3;i++)person(c,80+i*35,110,time,i);}
-if(showBorder){c.strokeStyle='#a9977755';c.lineWidth=1;c.strokeRect(.5,.5,TILE-1,TILE-1);}
-c.restore();}
+// Only the independent V2 artwork contract can render a square. There is
+// no procedural production-art fallback and no atlas cropping.
+function paper(){ctx.fillStyle='#e9dfca';ctx.fillRect(0,0,state.w,state.h);ctx.strokeStyle='#9d947f19';ctx.lineWidth=1;
+ for(let i=0;i<state.w+state.h;i+=28){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i-state.h,state.h);ctx.stroke();}}
+function drawTile(c,t,time,showBorder=false){
+  if(!window.YangzhouArtV2?.draw(c,t))throw Error('V2 tile artist unavailable');
+  if(showBorder){c.save();c.strokeStyle='#917752';c.lineWidth=2/Math.max(state.scale,.2);
+    c.strokeRect(t.x*TILE+2,t.y*TILE+2,TILE-4,TILE-4);c.restore();}}
 function worldScreen(x,y){return {x:x*state.scale+state.offsetX,y:y*state.scale+state.offsetY};}
 function worldPoint(x,y){return {x:(x-state.offsetX)/state.scale,y:(y-state.offsetY)/state.scale};}
 const camera={tx:0,ty:0,ts:1,last:0,ready:false,reduced:matchMedia('(prefers-reduced-motion: reduce)').matches};
@@ -186,17 +140,16 @@ const wx0=-state.offsetX/state.scale-TILE,wy0=-state.offsetY/state.scale-TILE,wx
 // Every fixed and player-placed tile is a separate square image built from
 // the same terrain connector geometry; no six-tile panoramic backplate.
 for(const t of board.values())if(t.x*TILE<wx1&&(t.x+1)*TILE>wx0&&t.y*TILE<wy1&&(t.y+1)*TILE>wy0)drawTile(ctx,t,state.time,false);
-window.YangzhouLiving?.drawActors?.(ctx,state.time,board,state.motion);
+// Actor animation is deliberately disabled until it follows real V2 route graphs.
 if(state.showSites){const possible=candidates();for(const [x,y] of possible){if(x*TILE>=wx1||(x+1)*TILE<=wx0||y*TILE>=wy1||(y+1)*TILE<=wy0)continue;let p={x:x*TILE,y:y*TILE},picked=state.selected&&state.selected[0]===x&&state.selected[1]===y;ctx.fillStyle=picked?'#eddfac6a':'#f4ead529';ctx.fillRect(p.x+1,p.y+1,TILE-2,TILE-2);ctx.strokeStyle=picked?'#956d36':'#ad997bb0';ctx.lineWidth=(picked?2.6:1.2)/state.scale;ctx.setLineDash([6/state.scale,7/state.scale]);ctx.strokeRect(p.x+2/state.scale,p.y+2/state.scale,TILE-4/state.scale,TILE-4/state.scale);ctx.setLineDash([]);}}
-if(state.showSites&&state.selected){let a=archetypes[state.type], edges=rotEdges(a.edges,state.rotation);ctx.save();ctx.globalAlpha=.82;drawTile(ctx,{x:state.selected[0],y:state.selected[1],edges,kind:a.kind,seed:22},state.time,true);ctx.restore();}
+if(state.showSites&&state.selected){let a=archetypes[state.type], edges=rotEdges(a.edges,state.rotation);ctx.save();ctx.globalAlpha=.82;drawTile(ctx,{x:state.selected[0],y:state.selected[1],edges,kind:a.kind,id:a.id,rotation:state.rotation,seed:22},state.time,true);ctx.restore();}
 ctx.restore();}
-function drawPreview(){pc.clearRect(0,0,140,140);pc.save();pc.scale(140/TILE,140/TILE);let a=archetypes[state.type];drawTile(pc,{x:0,y:0,kind:a.kind,edges:rotEdges(a.edges,state.rotation),seed:22},state.time,true);pc.restore();}
+function drawPreview(){pc.clearRect(0,0,140,140);pc.save();pc.scale(140/TILE,140/TILE);let a=archetypes[state.type];drawTile(pc,{x:0,y:0,kind:a.kind,edges:rotEdges(a.edges,state.rotation),id:a.id,rotation:state.rotation,seed:22},state.time,true);pc.restore();}
 function refresh(){let a=archetypes[state.type];$('tileName').textContent=a.name;$('tileDesc').textContent=a.note+' · '+['0°','90°','180°','270°'][state.rotation];$('place').disabled=!state.selected||!state.showSites;$('counter').textContent=board.size+' tiles · '+(board.size===6?'Slender West Lake':'Living city');drawPreview();state.dirty=true;}
-function selectAt(sx,sy){if(!state.showSites){let p=worldPoint(sx,sy),x=Math.floor(p.x/TILE),y=Math.floor(p.y/TILE);const t=board.get(key(x,y));if(t){$('notice').textContent=t.name+' · explore the painterly scene.';
-  if(state.scale>=1.4&&window.YangzhouPainted?.open)window.YangzhouPainted.open(window.YangzhouPainted.sceneForTile(t));
-  else zoomBy(1.75,sx,sy);
+function selectAt(sx,sy){if(!state.showSites){let p=worldPoint(sx,sy),x=Math.floor(p.x/TILE),y=Math.floor(p.y/TILE);const t=board.get(key(x,y));if(t){$('notice').textContent=t.name+' · inspect the tile layout and routes.';
+  zoomBy(1.75,sx,sy);
 }return;}let p=worldPoint(sx,sy),x=Math.floor(p.x/TILE),y=Math.floor(p.y/TILE);if(canPlace(x,y,rotEdges(archetypes[state.type].edges,state.rotation))){state.selected=[x,y];$('notice').textContent='This tile fits. Select Place tile to add it to Yangzhou.';}else if(board.has(key(x,y))){let t=board.get(key(x,y));$('notice').textContent=t.name||'An illustrated neighbourhood';state.selected=null;}else{$('notice').textContent='That space needs matching water, street and land edges.';state.selected=null;}refresh();}
-function place(){if(!state.selected)return;let [x,y]=state.selected,a=archetypes[state.type],edges=rotEdges(a.edges,state.rotation);if(!canPlace(x,y,edges))return;board.set(key(x,y),{x,y,edges,kind:a.kind,name:a.name,seed:board.size+11});state.selected=null;$('notice').textContent=a.name+' has joined the living city. Watch the details, or place another tile.';state.type=(state.type+1)%archetypes.length;state.rotation=0;refresh();}
+function place(){if(!state.selected)return;let [x,y]=state.selected,a=archetypes[state.type],edges=rotEdges(a.edges,state.rotation);if(!canPlace(x,y,edges))return;board.set(key(x,y),{x,y,edges,kind:a.kind,id:a.id,rotation:state.rotation,name:a.name,seed:board.size+11});state.selected=null;$('notice').textContent=a.name+' has joined the living city. Watch the details, or place another tile.';state.type=(state.type+1)%archetypes.length;state.rotation=0;refresh();}
 function resize(){const oldW=state.w,oldH=state.h,prevCenter=oldW?worldPoint(oldW/2,oldH/2):null;
   let dpr=Math.min(devicePixelRatio||1,2);state.w=window.innerWidth;state.h=window.innerHeight;
   canvas.width=Math.ceil(state.w*dpr);canvas.height=Math.ceil(state.h*dpr);canvas.style.width=state.w+'px';canvas.style.height=state.h+'px';ctx.setTransform(dpr,0,0,dpr,0,0);
@@ -223,12 +176,11 @@ canvas.addEventListener('touchend',e=>{e.preventDefault();if(e.touches.length===
 },{passive:false});
 canvas.addEventListener('touchcancel',()=>{touch=null;},{passive:false});
 $('viewCity').onclick=()=>fit();$('viewNear').onclick=()=>zoomTo(1.55);$('viewDetail').onclick=()=>zoomTo(3.35);
-$('explore').onclick=()=>{state.showSites=!state.showSites;$('explore').textContent=state.showSites?'Explore artwork':'Place tiles';$('explore').setAttribute('aria-pressed',String(!state.showSites));state.selected=null;
-  $('legend').classList.toggle('hidden',!state.showSites);$('notice').textContent=state.showSites?'Choose a dotted space to place a tile.':'Explore mode: placement guides hidden. Click a scene to zoom in, then click again for a painted close-up.';refresh();};
+$('explore').onclick=()=>{state.showSites=!state.showSites;$('explore').textContent=state.showSites?'Explore city':'Place tiles';$('explore').setAttribute('aria-pressed',String(!state.showSites));state.selected=null;
+  $('legend').classList.toggle('hidden',!state.showSites);$('notice').textContent=state.showSites?'Choose a dotted space to place a tile.':'Explore mode: placement guides hidden. Click a scene to inspect a tile-layout study.';refresh();};
 $('zoomIn').onclick=()=>zoomBy(1.35);$('zoomOut').onclick=()=>zoomBy(1/1.35);$('fit').onclick=()=>fit();$('rotate').onclick=()=>{state.rotation=(state.rotation+1)%4;state.selected=null;refresh();};$('previous').onclick=()=>{state.type=(state.type+archetypes.length-1)%archetypes.length;state.selected=null;state.rotation=0;refresh();};$('next').onclick=()=>{state.type=(state.type+1)%archetypes.length;state.selected=null;state.rotation=0;refresh();};$('place').onclick=place;$('cancel').onclick=()=>{state.selected=null;refresh();};
-$('motion').onclick=()=>{state.motion=!state.motion;$('motion').textContent='Motion '+(state.motion?'on':'off');$('motion').setAttribute('aria-pressed',String(state.motion));state.dirty=true;};
 $('help').onclick=()=>{$('notice').textContent='Drag to pan; scroll or pinch to zoom; Fit to return. Choose a tile, rotate it, click a dotted matching space, then Place tile. All four touching edges must match. Arrow keys pan; 1/2/3 choose zoom views; + and - zoom; R rotates. Explore hides placement guides.';};
-window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();pan((e.key==='ArrowLeft'?45:e.key==='ArrowRight'?-45:0),(e.key==='ArrowUp'?45:e.key==='ArrowDown'?-45:0));}else if(e.key.toLowerCase()==='r')$('rotate').click();else if(e.key==='+')zoomBy(1.35);else if(e.key==='-')zoomBy(1/1.35);else if(e.key==='Escape')$('cancel').click();else if(e.key==='1')fit();else if(e.key==='2')zoomTo(1.55);else if(e.key==='3')zoomTo(3.35);else if(e.key.toLowerCase()==='l')window.YangzhouLiving?.toggle();});
+window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();pan((e.key==='ArrowLeft'?45:e.key==='ArrowRight'?-45:0),(e.key==='ArrowUp'?45:e.key==='ArrowDown'?-45:0));}else if(e.key.toLowerCase()==='r')$('rotate').click();else if(e.key==='+')zoomBy(1.35);else if(e.key==='-')zoomBy(1/1.35);else if(e.key==='Escape')$('cancel').click();else if(e.key==='1')fit();else if(e.key==='2')zoomTo(1.55);else if(e.key==='3')zoomTo(3.35);});
 window.addEventListener('resize',resize);
 function frame(now){cameraTick(now);if(state.motion)state.time=now;draw();if(state.motion&&Math.floor(now/200)!==Math.floor((now-16)/200))drawPreview();requestAnimationFrame(frame);}
 resize();refresh();requestAnimationFrame(frame);

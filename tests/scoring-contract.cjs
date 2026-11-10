@@ -38,4 +38,4 @@ assert.equal(bridge.routes.length,2);
 assert.notEqual(bridge.routes[0].type,bridge.routes[1].type);
 const bad={...topology.starter[0],edges:['S','L','S','L']};
 assert(scoring.validate(bad,{routes:[{type:'street',ports:[0]}],features:[]}).length>0);
-console.log('Scoring-aware tile contract passed: six fixed starters, thirteen archetypes, four rotations and bridge isolation');
+console.log('Scoring-aware tile contract passed: six fixed starters, eight V2 archetypes, four rotations and bridge isolation');

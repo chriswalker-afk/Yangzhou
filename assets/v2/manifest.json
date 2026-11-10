@@ -1,0 +1,274 @@
+{
+  "version": "v2-layout-studies-1",
+  "status": "composition-study",
+  "source": "Eight independently planned tile compositions, not generated from the lake art",
+  "worldUnits": 220,
+  "requiredArtworkPixels": 1024,
+  "reviewPolicy": "All 32 compass-upright paintings require human review; the studies are never production artwork.",
+  "tiles": [
+    {
+      "id": "garden-grove",
+      "name": "Willow garden",
+      "kind": "garden",
+      "edges": "LLLL",
+      "brief": "An enclosed garden with willows and rockery",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "LLLL",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 1,
+          "edges": "LLLL",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 2,
+          "edges": "LLLL",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 3,
+          "edges": "LLLL",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        }
+      ]
+    },
+    {
+      "id": "street-straight",
+      "name": "Stone-paved street",
+      "kind": "street",
+      "edges": "SLSL",
+      "brief": "A quiet street with separate courtyards",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "SLSL",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 1,
+          "edges": "LSLS",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 2,
+          "edges": "SLSL",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 3,
+          "edges": "LSLS",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        }
+      ]
+    },
+    {
+      "id": "street-bend",
+      "name": "Street corner",
+      "kind": "street",
+      "edges": "SSLL",
+      "brief": "A turning paved lane with enclosed houses",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "SSLL",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 1,
+          "edges": "LSSL",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 2,
+          "edges": "LLSS",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 3,
+          "edges": "SLLS",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        }
+      ]
+    },
+    {
+      "id": "market-cross",
+      "name": "Market crossroads",
+      "kind": "market",
+      "edges": "SSSS",
+      "brief": "A crossroads flanked by four market quarters",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "SSSS",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 1,
+          "edges": "SSSS",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 2,
+          "edges": "SSSS",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 3,
+          "edges": "SSSS",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        }
+      ]
+    },
+    {
+      "id": "canal-straight",
+      "name": "Straight canal",
+      "kind": "canal",
+      "edges": "WLWL",
+      "brief": "A navigable willow-lined waterway",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "WLWL",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 1,
+          "edges": "LWLW",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 2,
+          "edges": "WLWL",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 3,
+          "edges": "LWLW",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        }
+      ]
+    },
+    {
+      "id": "canal-bend",
+      "name": "Willow canal bend",
+      "kind": "canal",
+      "edges": "WWLL",
+      "brief": "A curved bank and riverside garden",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "WWLL",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 1,
+          "edges": "LWWL",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 2,
+          "edges": "LLWW",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 3,
+          "edges": "WLLW",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        }
+      ]
+    },
+    {
+      "id": "stone-bridge",
+      "name": "Small stone footbridge",
+      "kind": "bridge",
+      "edges": "WSWS",
+      "brief": "A walking street above a separate canal route",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "WSWS",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 1,
+          "edges": "SWSW",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 2,
+          "edges": "WSWS",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 3,
+          "edges": "SWSW",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        }
+      ]
+    },
+    {
+      "id": "canal-junction",
+      "name": "Canal junction",
+      "kind": "canal",
+      "edges": "WWWL",
+      "brief": "Three waterways meet around landscaped banks",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "WWWL",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 1,
+          "edges": "LWWW",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 2,
+          "edges": "WLWW",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        },
+        {
+          "rotation": 3,
+          "edges": "WWLW",
+          "artwork": null,
+          "status": "needs-independent-painting"
+        }
+      ]
+    }
+  ]
+}
