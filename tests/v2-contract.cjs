@@ -122,7 +122,9 @@ for(const [x,y,edges] of [[1,0,paintedRoad],[-1,0,paintedRoad],[0,-1,grove.edges
 assert(neighborLab.includes('NO INDEPENDENT PAINTING'),'Missing second image must never be shown as finished art');
 assert(neighborLab.includes("crypto.subtle.digest('SHA-256',bytes)"),'Second painting must be checked for exact source duplication');
 assert(neighborLab.includes('seamMetric(original,neighbor.image,mode)'),'A real two-source seam diagnostic must be calculated');
-assert(neighborLab.includes("if(hash===referenceHash)"),'Identical first painting cannot pass as new painting');
+assert(neighborLab.includes("blockedHashes.has(hash)"),'Original and archived first painting cannot pass as new independent artwork');
+assert(neighborLab.includes("getMaster('street-straight:3')"),'The second committed original must autoload in the pair join laboratory');
+assert(stagedPairPage.includes('street-east-west-repaint.png')&&stagedPairPage.includes('street-east-west-neighbour.png'),'Both distinct painted masters must appear in the new pair studio');
 assert(neighborLab.includes('widthAccepted')&&neighborLab.includes('historicalAccepted'),'Artwork gate must remain a human task');
 assert(neighborLab.includes('44 / 220'),'Exact street mouth width must be visible to reviewer');
 

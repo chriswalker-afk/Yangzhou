@@ -12,7 +12,8 @@ async function run(){
   await desktop.goto('http://127.0.0.1:8765/',{waitUntil:'load'});
   await desktop.waitForFunction(()=>window.YangzhouArtV2?.ready(),{timeout:30000});
   await desktop.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:1')?.naturalWidth===1254,{timeout:30000});
-  await desktop.screenshot({path:'artifacts/v2/original-painted-street-game-rack.png',fullPage:true});
+  await desktop.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:3')?.naturalWidth===1254,{timeout:30000});
+  await desktop.screenshot({path:'artifacts/v2/two-painted-streets-game-rack.png',fullPage:true});
   const status=await desktop.evaluate(()=>({
    size:window.YangzhouDebug.board.size,
    names:window.YangzhouDebug.archetypes.map(t=>t.id),
@@ -22,7 +23,14 @@ async function run(){
   assert.equal(status.size,6);
   assert.equal(status.names.length,8);
   assert.equal(status.art.lakeReferencesLoaded,6);
-  assert.equal(status.art.paintingVariantsLoaded,1,'The original committed image must load automatically');
+  assert.equal(status.art.paintingVariantsLoaded,2,'Both independently painted street variants must load by default');
+  const activeMasters=await desktop.evaluate(()=>({
+    repaint:window.YangzhouArtV2.getMaster('street-straight:1')?.src,
+    neighbour:window.YangzhouArtV2.getMaster('street-straight:3')?.src
+  }));
+  assert.match(activeMasters.repaint,/street-east-west-repaint\.png/);
+  assert.match(activeMasters.neighbour,/street-east-west-neighbour\.png/);
+  assert.notEqual(activeMasters.repaint,activeMasters.neighbour,'Two different original paintings, not a duplicated image');
   assert.equal(status.art.manifestStatus,'review');
   assert.equal(await desktop.evaluate(()=>window.YangzhouDebug.archetypes[window.YangzhouDebug.state.type].id),'street-straight');
   assert.equal(await desktop.evaluate(()=>window.YangzhouDebug.state.rotation),1);
@@ -52,7 +60,7 @@ async function run(){
   lab.on('pageerror',e=>errors.push('lab: '+String(e)));
   await lab.goto('http://127.0.0.1:8765/tile-lab-v2.html',{waitUntil:'load'});
   await lab.waitForFunction(()=>window.YangzhouArtV2?.ready(),{timeout:30000});
-  await lab.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:1')?.naturalWidth===1254,{timeout:30000});
+  await lab.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:1')?.naturalWidth===1254&&window.YangzhouArtV2?.getMaster?.('street-straight:3')?.naturalWidth===1254,{timeout:30000});
   assert.equal(await lab.locator('.variant canvas').count(),32);
   assert.match(await lab.locator('#ringCheck').textContent(),/16\/16 tiles legally connected/);
   await lab.screenshot({path:'artifacts/v2/tile-gallery-desktop.png',fullPage:true});
@@ -66,7 +74,7 @@ async function run(){
   mobile.on('pageerror',e=>errors.push('mobile: '+String(e)));
   await mobile.goto('http://127.0.0.1:8765/',{waitUntil:'load'});
   await mobile.waitForFunction(()=>window.YangzhouArtV2?.ready(),{timeout:30000});
-  await mobile.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:1')?.naturalWidth===1254,{timeout:30000});
+  await mobile.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:1')?.naturalWidth===1254&&window.YangzhouArtV2?.getMaster?.('street-straight:3')?.naturalWidth===1254,{timeout:30000});
   assert.equal(await mobile.locator('#tileLab').count(),1);
   await mobile.screenshot({path:'artifacts/v2/playable-mobile.png',fullPage:true});
   // PR13 technical integration: the fixture is NOT claimed to be original
@@ -89,7 +97,7 @@ async function run(){
   await pilotPage.waitForFunction(()=>window.YangzhouArtV2?.ready(),{timeout:30000});
   await pilotPage.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:1')?.naturalWidth===1254,{timeout:30000});
   await pilotPage.waitForFunction(()=>document.getElementById('sizeValue')?.textContent==='1254×1254',{timeout:30000});
-  assert.match(await pilotPage.locator('#assetStatus').textContent(),/Original street painting loaded from GitHub/);
+  assert.match(await pilotPage.locator('#assetStatus').textContent(),/Repainted street painting loaded from GitHub/);
   assert.match(await pilotPage.locator('#geometryVerdict').textContent(),/outstanding/);
   await pilotPage.locator('#zoom').selectOption('1');
   await pilotPage.screenshot({path:'artifacts/v2/original-painted-street-1x.png',fullPage:true});
@@ -111,7 +119,7 @@ async function run(){
   const imgStatus=await pilotPage.locator('#sizeValue').textContent();
   assert.equal(imgStatus,'1254×1254','Restoring must show the committed original, not a sketch');
   assert.equal(await pilotPage.evaluate(()=>window.YangzhouArtV2.getMaster('street-straight:1')?.naturalWidth),1254);
-  assert.match(await pilotPage.locator('#assetStatus').textContent(),/Original street painting loaded from GitHub/);
+  assert.match(await pilotPage.locator('#assetStatus').textContent(),/Repainted street painting loaded from GitHub/);
   await desktop.locator('#pilotUpload').setInputFiles(fileFixture);
   await desktop.waitForFunction(()=>window.YangzhouArtV2.inspect().temporaryReviewKeys.length===1);
   const selected=await desktop.evaluate(()=>{
@@ -122,44 +130,56 @@ async function run(){
   assert.deepEqual(selected,{id:'street-straight',rotation:1,edges:'LSLS'});
   await desktop.screenshot({path:'artifacts/v2/pr13-playable-pilot-fixture.png',fullPage:true});
 
-  // Independent-original joining lab: must withhold all seam approval without
-  // a truly second painting. Synthetic fixtures validate interface logic only.
+  // Real two-original painting lab. It loads both committed images directly,
+  // while synthetic local fixtures are only used to exercise the override UX.
+  const pairReview=await browser.newPage({viewport:{width:1400,height:940},deviceScaleFactor:1});
+  pairReview.on('pageerror',e=>errors.push('pair: '+String(e)));
+  await pairReview.goto('http://127.0.0.1:8765/street-pair-review.html',{waitUntil:'load'});
+  await pairReview.waitForFunction(()=>document.getElementById('status')?.textContent?.includes('2/2 full-resolution'),{timeout:30000});
+  assert.match(await pairReview.locator('#status').textContent(),/2\/2 full-resolution originals available/);
+  await pairReview.locator('#ports').click();
+  assert.equal(await pairReview.locator('#ports').getAttribute('aria-pressed'),'true');
+  await pairReview.screenshot({path:'artifacts/v2/real-street-pair-1x.png',fullPage:true});
+  await pairReview.locator('#zoom').selectOption('3');
+  await pairReview.screenshot({path:'artifacts/v2/real-street-pair-3x.png',fullPage:true});
+  await pairReview.locator('#swap').click();
+  await pairReview.screenshot({path:'artifacts/v2/real-street-pair-swapped.png',fullPage:true});
+
   const neighbourLab=await browser.newPage({viewport:{width:1400,height:920},deviceScaleFactor:1});
   neighbourLab.on('pageerror',e=>errors.push('neighbour: '+String(e)));
   await neighbourLab.goto('http://127.0.0.1:8765/painted-neighbour-lab.html',{waitUntil:'load'});
-  await neighbourLab.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:1')?.naturalWidth===1254,{timeout:30000});
-  assert.match(await neighbourLab.locator('#originalStatus').textContent(),/Original 1254px painted street loaded/);
-  assert.match(await neighbourLab.locator('#neighbourStatus').textContent(),/No independent painted neighbour loaded/);
-  assert.equal(await neighbourLab.locator('#edgeDelta').textContent(),'—','No seam result without second original');
+  await neighbourLab.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:1')?.naturalWidth===1254&&window.YangzhouArtV2?.getMaster?.('street-straight:3')?.naturalWidth===1254,{timeout:30000});
+  assert.match(await neighbourLab.locator('#originalStatus').textContent(),/Repainted 1254px street loaded from GitHub/);
+  assert.match(await neighbourLab.locator('#neighbourStatus').textContent(),/Independent neighbour loaded from GitHub/);
+  assert(Number(await neighbourLab.locator('#edgeDelta').textContent())>=0,'Real two-original edge metric must load');
   assert.match(await neighbourLab.locator('#humanStatus').textContent(),/Not approved/);
-  await neighbourLab.screenshot({path:'artifacts/v2/original-neighbour-lab-awaiting-independent-art.png',fullPage:true});
+  await neighbourLab.screenshot({path:'artifacts/v2/two-original-neighbour-lab.png',fullPage:true});
   await neighbourLab.locator('#neighbourFile').setInputFiles(fileFixture);
-  await neighbourLab.waitForFunction(()=>document.getElementById('edgeDelta').textContent!=='—');
-  assert.match(await neighbourLab.locator('#neighbourStatus').textContent(),/Independent candidate loaded locally/);
-  assert(Number(await neighbourLab.locator('#edgeDelta').textContent())>=0,'Real two-source metric is calculated');
-  await neighbourLab.locator('#zoom').selectOption('1');
-  await neighbourLab.screenshot({path:'artifacts/v2/neighbour-lab-1x-technical-fixture.png',fullPage:true});
+  await neighbourLab.waitForFunction(()=>document.getElementById('neighbourStatus')?.textContent.includes('Independent candidate loaded locally'));
+  assert(Number(await neighbourLab.locator('#edgeDelta').textContent())>=0,'A temporary different artwork can still be compared');
+  await neighbourLab.locator('#clearNeighbour').click();
+  assert.match(await neighbourLab.locator('#neighbourStatus').textContent(),/Independent neighbour loaded from GitHub/,'Reset must restore the real committed neighbour');
   await neighbourLab.locator('#zoom').selectOption('3');
-  await neighbourLab.screenshot({path:'artifacts/v2/neighbour-lab-3x-technical-fixture.png',fullPage:true});
+  await neighbourLab.screenshot({path:'artifacts/v2/two-original-neighbour-lab-3x.png',fullPage:true});
   await neighbourLab.locator('#neighbourPosition').selectOption('north');
-  assert.equal(await neighbourLab.locator('#edgeDelta').textContent(),'—','Changing from street to garden requires a new painting');
+  assert.equal(await neighbourLab.locator('#edgeDelta').textContent(),'—','No invented garden painting allowed');
   await neighbourLab.locator('#neighbourFile').setInputFiles(fileFixture);
   await neighbourLab.waitForFunction(()=>document.getElementById('edgeDelta').textContent!=='—');
   assert.match(await neighbourLab.locator('#geometryStatus').textContent(),/Legal connection \(north\)/);
   await neighbourLab.locator('#neighbourPosition').selectOption('east');
-  const sourceFile=fs.readFileSync('assets/v2/street-straight-east-west.png');
+  const sourceFile=fs.readFileSync('assets/v2/street-east-west-repaint.png');
   await neighbourLab.locator('#neighbourFile').setInputFiles({name:'duplicate.png',mimeType:'image/png',buffer:sourceFile});
   await neighbourLab.waitForFunction(()=>document.getElementById('neighbourStatus').textContent.startsWith('Rejected:'));
   assert.match(await neighbourLab.locator('#neighbourStatus').textContent(),/exact copy of the first street painting/);
-  assert.equal(await neighbourLab.locator('#edgeDelta').textContent(),'—');
+  assert(Number(await neighbourLab.locator('#edgeDelta').textContent())>=0,'Rejecting a duplicate must leave the committed second original visible');
   const mobileLab=await browser.newPage({viewport:{width:390,height:790},deviceScaleFactor:1,isMobile:true,hasTouch:true});
   mobileLab.on('pageerror',e=>errors.push('neighbour-mobile: '+String(e)));
   await mobileLab.goto('http://127.0.0.1:8765/painted-neighbour-lab.html',{waitUntil:'load'});
-  await mobileLab.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:1')?.naturalWidth===1254,{timeout:30000});
-  await mobileLab.screenshot({path:'artifacts/v2/neighbour-lab-mobile.png',fullPage:true});
+  await mobileLab.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:1')?.naturalWidth===1254&&window.YangzhouArtV2?.getMaster?.('street-straight:3')?.naturalWidth===1254,{timeout:30000});
+  await mobileLab.screenshot({path:'artifacts/v2/two-original-neighbour-lab-mobile.png',fullPage:true});
 
   assert.deepEqual(errors,[],'Browser JavaScript errors');
-  console.log('Painted street browser QA passed: original 1254px image autoload, correct LSLS tile, mobile/desktop, original 1x/3x seam previews, 32-variant gallery, and local revision/restore.');
+  console.log('Painted pair QA passed: two original 1254px images in correct LSLS slots, mobile/desktop, real 1x/3x seam comparison, gallery, override/restore, duplicate-source rejection.');
  }finally{await browser.close();}
 }
 run().catch(e=>{console.error(e);process.exit(1)});

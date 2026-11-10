@@ -4,6 +4,15 @@
 **Started:** 10 November 2026  
 **Branch:** `feat/artwork-v2-clean-reset`
 
+## Latest artwork stage — two independent east–west street paintings (PR #16)
+
+The original first PNG remains untouched in `assets/v2/street-straight-east-west.png`. Two new, full-resolution, **independently composed original paintings** are now imported:
+
+- `street-east-west-repaint.png` — 1254px, 3,804,335 bytes, SHA256 `6154a21f963d9d3d42253d2067faec3ff0f9f12b216515d0f90dbdb4c868036e`. Rendered for the `street-straight` variant at rotation **1**, `LSLS`.
+- `street-east-west-neighbour.png` — 1254px, 4,034,740 bytes, SHA256 `3ea085876ce7941525314b6a846989311bb5562bbfc14dc8098cda0fcbf49df3`. Rendered for the independently authored `street-straight` variant at rotation **3**, also `LSLS`.
+
+These separate compass-upright paintings are displayed directly, never rotated. [Street pair review](../street-pair-review.html) shows them joined at actual pixels; [painted neighbour QA](../painted-neighbour-lab.html) compares both, with precise port guides. Both are **review** assets, not production-approved images. Physical painted road mouth width (44/220 = 20%), border continuity at overview and 3×, and period historical detail still require human signoff. The other **30** orientation slots are layout sketches.
+
 ## Original pilot — preserved and permanently integrated
 
 The user-approved original 1254 × 1254 PNG is now `assets/v2/street-straight-east-west.png`, restored **byte-for-byte** from the user's genuine GitHub upload (4,108,283 bytes). The Git blob is `39c962c0e6a370a811e7c8535fef20581f14505c`; the SHA-256 is `bc8fc1cf37b0404dc6620385a6167576692e3aee11bbf7346da28edbb158b2c2`. A later accidental rename had created a corrupt two-byte non-PNG; that has been replaced with the original object. This is not a thumbnail or synthetic redrawing.
@@ -30,7 +39,7 @@ The [independent painted-neighbour QA page](../painted-neighbour-lab.html) check
 
 Our previous iterations cropped a broad landscape painting into many tiles or applied road/water geometry to an image afterwards. This repeatedly produced duplicated buildings, artificial rivers, conspicuous joins and artwork inconsistent with the camera. We have deleted those active pipelines and retained their history. **This stage designs *what each square must contain* before painting begins.**
 
-The 31 remaining `tile-art-v2.js` studies are *geometry and composition sketches only*; one imported square street painting is in review. The six older 512px lake paintings are kept because they are the closest benchmark to the desired style. Their own shore-port and historical details still require review.
+The 30 remaining `tile-art-v2.js` studies are *geometry and composition sketches only*; two imported independent square street paintings are in review. The six older 512px lake paintings are kept because they are the closest benchmark to the desired style. Their own shore-port and historical details still require review.
 
 ### Connections and space
 
@@ -61,7 +70,7 @@ The six 512×512 WebPs in `assets/lake/` are retained as a *reference, not an ap
 
 ### Asset file contract for the next pass
 
-`assets/v2/manifest.json` declares the eight tile IDs, their topologies and 4 compass-upright variants apiece (32 painting slots). One street variant now has a full-resolution PNG in status `review`; 31 others remain `artwork:null` and `status:needs-independent-painting`. Once art exists, export each original `webp` or `png` **as its own complete square** at >=1024 pixels, add an exact relative path and checksum/provenance; do not mark the full deck approved while slots are incomplete. The renderer may preview a review image when present, but the manifest's state remains `review` until human approval.
+`assets/v2/manifest.json` declares the eight tile IDs, their topologies and 4 compass-upright variants apiece (32 painting slots). Two independent street variants now have full-resolution PNGs in status `review`; 30 others remain `artwork:null` and `status:needs-independent-painting`. Once art exists, export each original `webp` or `png` **as its own complete square** at >=1024 pixels, add an exact relative path and checksum/provenance; do not mark the full deck approved while slots are incomplete. The renderer may preview a review image when present, but the manifest's state remains `review` until human approval.
 
 The `tile-lab-v2.html` gallery exposes all four rotations of every archetype. Its complete starter+10 ring demonstrates *logical* joining only; future proof must demonstrate **painterly continuity** at overview and close zoom on desktop and mobile, not simply pixel equality at a border.
 

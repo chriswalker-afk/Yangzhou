@@ -33,11 +33,11 @@ canvas{display:block}#board{max-width:none;height:auto}#edgeStrips{width:100%;he
 <body>
 <header><div class="eyebrow">Yangzhou · Artwork V2 · edge contract</div>
 <h1>Painted tile joining laboratory</h1>
-<p>Inspect the actual original painted street against a <em>different</em>, independently authored painting. This page never stretches, rotates, crops or repaints the game assets, and never claims that a matching topology guarantees beautiful seams.</p>
-<p><a href="./">Playable camera</a> · <a href="street-pilot-review.html">Original street pilot</a> · <a href="tile-lab-v2.html">32 composition slots</a></p>
+<p>Inspect the newly repainted street against its independently painted neighbour, both loaded directly from GitHub. A different garden can still be tested using a local image. This page never stretches, rotates, crops or repaints the game assets, and never claims that a matching topology guarantees beautiful seams.</p>
+<p><a href="./">Playable camera</a> · <a href="street-pair-review.html">Two-street comparison</a> · <a href="street-pilot-review.html">Repaint quality review</a> · <a href="tile-lab-v2.html">32 composition slots</a></p>
 </header>
 <main>
-<div class="note"><strong>Current result: original street under review.</strong> The east–west paved opening looks approximately 160–170px high near the outside edges, while our edge contract requires <strong>250.8px</strong> (20% of a 1254px square), centred at Y=627. Without genuine repainted endpoints and an independently painted neighbour, final seam approval remains unavailable.</div>
+<div class="note"><strong>Two new painted streets imported for review.</strong> The first street has been repainted and a distinct neighbour is now available for east/west comparisons. Exact border geometry must still satisfy <strong>250.8px</strong> of paving on a 1254px square (20%, centred at Y=627). The road and painted seam have not passed human acceptance.</div>
 <div class="controls">
 <label class="control" for="neighbourPosition">Neighbour position / legal connections
 <select id="neighbourPosition">
@@ -46,14 +46,14 @@ canvas{display:block}#board{max-width:none;height:auto}#edgeStrips{width:100%;he
 <option value="north">Garden north · LLLL meets land</option>
 <option value="south">Garden south · LLLL meets land</option>
 </select></label>
-<label class="upload" for="neighbourFile">Choose DIFFERENT painted neighbour<input id="neighbourFile" type="file" accept="image/png,image/webp,image/jpeg,image/avif"></label>
+<label class="upload" for="neighbourFile">Try a different local painted neighbour<input id="neighbourFile" type="file" accept="image/png,image/webp,image/jpeg,image/avif"></label>
 <label class="control" for="zoom">Inspection scale
 <select id="zoom"><option value="1" selected>Overview 1×</option><option value="2">Street 2×</option><option value="3">Detail 3×</option></select></label>
 <button id="ports" type="button" aria-pressed="true">Show street port guides</button>
-<button id="clearNeighbour" type="button">Clear neighbour</button>
+<button id="clearNeighbour" type="button">Restore committed neighbour</button>
 </div>
 <div id="originalStatus" role="status" class="sub">Loading committed street painting…</div>
-<div id="neighbourStatus" role="status" class="sub">No independent painted neighbour loaded. A labelled blank study slot is shown instead.</div>
+<div id="neighbourStatus" role="status" class="sub">Loading the new independent street from GitHub. Garden imagery still needs a separate painting.</div>
 <div class="layout">
 <section class="panel"><h3>Connected pair · original pixels</h3>
 <p class="sub">The overlay is for inspection only; no geometry changes are applied to the paintings. The pair is shown together at 1× by default; use 3× for close inspection and scroll horizontally when needed.</p>
@@ -68,7 +68,7 @@ canvas{display:block}#board{max-width:none;height:auto}#edgeStrips{width:100%;he
 <div class="stat"><strong id="edgeDelta">—</strong><span>Mean RGB difference along selected shared edge</span></div>
 </div>
 <canvas id="edgeStrips" width="660" height="320" aria-label="Zoomed artwork strips at the adjoining boundary"></canvas>
-<p id="seamStatus">A second independent artwork is required before the seam can be measured.</p>
+<p id="seamStatus">The two different committed paintings are compared at the real boundary. This metric cannot approve a seam.</p>
 <p class="tiny">Colour differences are a diagnostic, not an artwork score. A high difference can be intentional (flowers or rooftops); a low difference cannot prove natural continuity. The tile edge's exact content and perspective must be inspected by a human.</p>
 </section>
 </div>
@@ -83,13 +83,13 @@ canvas{display:block}#board{max-width:none;height:auto}#edgeStrips{width:100%;he
 </tbody></table>
 <p id="humanStatus" role="status">Awaiting the independent neighbour and visual review.</p>
 </section>
-<section class="panel"><h3>The next painting to produce</h3>
-<p><strong>Second east–west street:</strong> another complete square, with a continuous 44-unit-wide route entering exactly at the W/E midpoints; asymmetric Jiangnan garden walls, a stone lantern alcove, one quieter riverside house and smaller vegetation masses. Different building placement, no cut-and-paste from the existing street; no people or moving boats baked in.</p>
+<section class="panel"><h3>Next artwork challenge</h3>
+<p><strong>Two independent east–west paintings are now available.</strong> Review both road mouths and whether their walls, paving and vegetation meet naturally. Correct any seam problem by editing the original painting, not with a procedurally drawn border strip.</p>
 <p><strong>Alternatively, a garden above or below:</strong> LLLL all around, a wholly different full-square willow and rockery garden. The shared edge must be composed to meet the existing northern or southern land boundary naturally, without the garden hiding a mismatched roofline.</p>
-<p class="sub">Do not claim these images exist until an independent painting has actually been made. Paint both the boundary and its architecture together; do not repair the seam after rendering with an edge wash.</p>
+<p class="sub">The two committed street originals are real; the north/south garden remains unpainted. Future variants must be independently composed and historically reviewed.</p>
 </section>
 </div>
-<div class="footer">This tool reads one committed original painting and optionally one temporary local artwork. It does not persist or upload the local file. No drawing produced here is approved art; this is a deterministic diagnostic and human review interface.</div>
+<div class="footer">This tool loads the two distinct committed streets and can temporarily preview another local image. It never uploads a local image. No drawing produced here is approved art; this is a deterministic diagnostic and human review interface.</div>
 </main>
 <script src="tile-topology.js"></script>
 <script src="tile-art-v2.js"></script>
@@ -99,7 +99,9 @@ canvas{display:block}#board{max-width:none;height:auto}#edgeStrips{width:100%;he
 const $=x=>document.getElementById(x), art=window.YangzhouArtV2,top=window.YangzhouTileTopology;
 const street=top.archetypes.find(x=>x.id==='street-straight'),garden=top.archetypes.find(x=>x.id==='garden-grove');
 const streetEdges=top.rotateEdges(street.edges,1);if(streetEdges.join('')!=='LSLS')throw Error('East-west topology mismatch');
-const referenceHash='bc8fc1cf37b0404dc6620385a6167576692e3aee11bbf7346da28edbb158b2c2';
+const referenceHash='6154a21f963d9d3d42253d2067faec3ff0f9f12b216515d0f90dbdb4c868036e';
+const archivalHash='bc8fc1cf37b0404dc6620385a6167576692e3aee11bbf7346da28edbb158b2c2';
+const blockedHashes=new Set([referenceHash,archivalHash]);
 let neighbor=null,showPorts=true;
 const options={east:{x:1,y:0,id:'street-straight',rotation:1,edges:streetEdges},
  west:{x:-1,y:0,id:'street-straight',rotation:1,edges:streetEdges},
@@ -176,11 +178,24 @@ function review(){
  $('humanStatus').style.color=accepted?'#4a735e':'#8b5f48';
 }
 function render(){
- const original=art.getMaster('street-straight:1'),mode=$('neighbourPosition').value;
+ const mode=$('neighbourPosition').value;
+ const isStreet=mode==='east'||mode==='west';
+ if(isStreet && (!neighbor||neighbor.committed)){
+  const master=art.getMaster('street-straight:3');
+  if(master){
+   neighbor={image:master,filename:'street-east-west-neighbour.png',role:'street',sha256:'3ea085876ce7941525314b6a846989311bb5562bbfc14dc8098cda0fcbf49df3',committed:true};
+   $('neighbourStatus').textContent='Independent neighbour loaded from GitHub (1254px), second street · review only.';
+  }else{
+   neighbor=null;$('neighbourStatus').textContent='Loading the independently painted neighbour from the repository…';
+  }
+ }else if(!isStreet&&neighbor?.committed){
+  neighbor=null;$('neighbourStatus').textContent='No painted garden committed yet. Choose a local garden painting for this land edge.';
+ }
+ const original=art.getMaster('street-straight:1');
  const tiles=pair(),errs=top.validateBoard(tiles);
  $('geometryStatus').textContent=errs.length?'ERROR: '+errs.join('; '):'Legal connection ('+mode+'). Topology only: artistic continuity remains unapproved.';
  $('geometryStatus').style.color=errs.length?'#b43d36':'#517a62';
- $('originalStatus').textContent=original?'Original 1254px painted street loaded automatically from GitHub · east-west LSLS · 1 of 32 variants.':'Loading the committed original painted street…';
+ $('originalStatus').textContent=original?'Repainted 1254px street loaded from GitHub · east–west LSLS · two different paintings in review.':'Loading committed repainted street…';
  $('masterCount').textContent=art.inspect().paintingVariantsLoaded+' / 32';
  const scale=1.4*Number($('zoom').value),offset=16;
  const w=(mode==='east'||mode==='west')?440:220,h=(mode==='east'||mode==='west')?220:440;
@@ -197,22 +212,26 @@ function render(){
  $('seamStatus').textContent=neighbor&&original?'RGB edge difference above is a diagnostic. Inspect continuity at 1× and 3×; no automatic artwork approval.':'Awaiting one separate original painted tile. No seam quality result can be claimed yet.';
  strips(original,neighbor?.image,mode);review();
 }
-$('neighbourPosition').onchange=()=>{neighbor=null;$('neighbourFile').value='';$('neighbourStatus').textContent='Choose a new original painted neighbour appropriate to this connector.';render();};
+$('neighbourPosition').onchange=()=>{neighbor=null;$('neighbourFile').value='';$('neighbourStatus').textContent='Checking the painting for this connector…';render();};
 $('zoom').onchange=render;
 $('ports').onclick=()=>{showPorts=!showPorts;$('ports').setAttribute('aria-pressed',String(showPorts));render();};
-$('clearNeighbour').onclick=()=>{neighbor=null;$('neighbourFile').value='';$('neighbourStatus').textContent='No separate original painting loaded.';render();};
+$('clearNeighbour').onclick=()=>{neighbor=null;$('neighbourFile').value='';$('neighbourStatus').textContent='Restoring the committed independent painting…';render();};
 $('neighbourFile').onchange=async(event)=>{
  const file=event.target.files?.[0];if(!file)return;
  const original=art.getMaster('street-straight:1');if(!original){$('neighbourStatus').textContent='Original street still loading. Retry after it loads.';return;}
  const bytes=await file.arrayBuffer();const hashed=await crypto.subtle.digest('SHA-256',bytes);
  const hash=[...new Uint8Array(hashed)].map(x=>x.toString(16).padStart(2,'0')).join('');
- if(hash===referenceHash){neighbor=null;$('neighbourStatus').textContent='Rejected: this is an exact copy of the first street painting, not an independent neighbour.';render();return;}
+ if(blockedHashes.has(hash)){
+  neighbor=null;render();
+  $('neighbourStatus').textContent='Rejected: this is an exact copy of the first street painting or its archival draft, not an independent neighbour.';
+  return;
+ }
  const url=URL.createObjectURL(file),im=new Image();
  im.onload=()=>{
   URL.revokeObjectURL(url);
   if(im.naturalWidth!==im.naturalHeight||im.naturalWidth<1024){neighbor=null;$('neighbourStatus').textContent='Rejected: independently painted neighbour must be square, at least 1024px.';render();return;}
   const role=['east','west'].includes($('neighbourPosition').value)?'street':'garden';
-  neighbor={image:im,filename:file.name,role,sha256:hash};
+  neighbor={image:im,filename:file.name,role,sha256:hash,committed:false};
   $('neighbourStatus').textContent='Independent candidate loaded locally: '+file.name+' ('+im.naturalWidth+'×'+im.naturalHeight+'), '+role+'. Not committed and not approved.';
   render();
  };

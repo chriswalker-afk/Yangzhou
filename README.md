@@ -10,18 +10,15 @@ The earlier tile-art generators, sliced panorama fallback, texture overlays and 
 
 This is deliberately **not a finished painterly tileset**. The eight new layouts are original *composition studies*, drawn specifically for their own street/canal connection signatures. They contain no crop of the previous painting and do not claim to be watercolour originals. The six detailed existing Slender West Lake tiles remain an **art-direction benchmark and provisional starter scene** while their external water mouths and other artistic issues are reviewed. We will not silently swap the game to a low-quality art fallback again.
 
-### First original painted street master — restored and integrated
+### Two original painted street tiles — PR #16
 
-The original `1254 × 1254` image is now committed as **[`assets/v2/street-straight-east-west.png`](assets/v2/street-straight-east-west.png)**. Its full 4,108,283 bytes were recovered intact from the Git blob the user uploaded: the byte-for-byte SHA-256 is `bc8fc1cf37b0404dc6620385a6167576692e3aee11bbf7346da28edbb158b2c2`. A subsequent broken two-byte rename was replaced with the genuine original blob, without regenerating, recompressing or changing the painting.
+The two distinct full-resolution 1254 × 1254 PNG paintings have been integrated into the game: [repainted east–west street](assets/v2/street-east-west-repaint.png) and [independently painted neighbouring street](assets/v2/street-east-west-neighbour.png). The [first pilot painting](assets/v2/street-straight-east-west.png) is preserved **unchanged** as an archival reference.
 
-- The live [game camera](index.html) now starts with the original **east–west stone street** selected: `street-straight` rotation `1`, N/E/S/W `LSLS`. The rooftops are compass-upright; the actual artwork is never rotated.
-- [Review the original painting and its neighbours](street-pilot-review.html): automatic high-resolution loading, 20%-wide route mouth overlay, 1×/2×/3×, three-square repeat diagnostic and human quality checklist.
-- The 31 remaining atlas slots are unpainted; they continue to display labelled topology studies. The original road variant has **review** status, **NOT approved**.
-- "Try local revision" permits a temporary, session-only replacement for side-by-side comparison, and "Restore original painting" returns to the repository master without deleting it.
-- [Independent painted-neighbour joining laboratory](painted-neighbour-lab.html): compare the original against a **different full-square painting** above, below, left or right at 1×–3×, with legal edges, separate seam strips and a deliberately pending human approval gate. It refuses an exact duplicate of the first PNG.
-- [Street-edge acceptance brief](docs/STREET-EDGE-ACCEPTANCE.md): exact 44/220 mouth geometry, observed width shortfall, and distinctly composed neighbour painting briefs; **no mechanical road-strip fix**.
+The repaint displays at `street-straight` **rotation 1** (90°); the neighbour displays at **rotation 3** (270°). Both have the same **LSLS** topology (land north/south, paved street east/west). Each is a separate compass-upright illustration; buildings are never rotated.
 
-**A working import is not artistic acceptance.** The street currently appears narrower than the 44/220 contract at the exterior mouths (20% of the image = 250.8px, centred at Y≈502–752), and its seams have not yet been approved against *different original paintings*. Human 16/18 artwork scoring and historical signoff remain necessary.
+The [playable board](index.html) and [tile lab](tile-lab-v2.html) load both new masters automatically. [Pair review](street-pair-review.html) shows full original painted squares together at 1× and 3×. [Independent joining laboratory](painted-neighbour-lab.html) measures border discontinuity and offers an optional local test painting. [Street width review](street-pilot-review.html) displays required 20%-wide road port overlays.
+
+The files and their exact SHA-256 hashes are validated in `scripts/validate_street_pair.cjs`. **Both are review assets, not artistically approved**. Actual 44/220 mouth width, natural seam transitions, six-category 16/18 human artwork review and historical plausibility all remain quality gates. Exactly **30 other orientation slots** still show labelled layout studies.
 
 ### What is in this proof of concept
 
@@ -29,7 +26,7 @@ The original `1254 × 1254` image is now committed as **[`assets/v2/street-strai
 - Exact edge contracts: `L` landscape, `S` 44/220-wide street, `W` 88/220-wide navigable water; routes join at edge midpoints. Bridges have separate road and water graphs.
 - Six fixed Slender West Lake **reference paintings** with eight land-only exterior edges and north/south navigable outlets. The ring inspector assembles all ten immediate neighbours without inventing streets through the lake.
 - A live preview and gallery that distinguish **layout study** from independently painted production artwork.
-- An explicit manifest for **32 independently painted square masters**: one authentic 1254px original is imported for review, the other 31 slots need paintings.
+- An explicit manifest for **32 independently painted square masters**: two independent original 1254px street paintings are imported for review; the other 30 slots need paintings.
 
 ### Controls
 

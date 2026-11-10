@@ -1,6 +1,6 @@
 {
-  "version": "2026-11-10-pair-1",
-  "status": "awaiting-original-binary-upload",
+  "version": "2026-11-10-pair-2",
+  "status": "integrated-review",
   "topology": "LSLS",
   "archId": "street-straight",
   "imagePixels": [
@@ -10,7 +10,7 @@
   "requiredPortWidthWorld": 44,
   "tileWorldUnits": 220,
   "preserveExisting": "assets/v2/street-straight-east-west.png",
-  "instructions": "Upload each original PNG to assets/v2/ on branch feat/painterly-street-pair-v2; preserve the existing original. The actual manifest must not switch until the files exist and pass validation.",
+  "instructions": "Both full-resolution PNGs are committed and referenced by the active manifest. The historic original remains preserved. Road mouth painting and seam are NOT artistically approved.",
   "candidates": [
     {
       "role": "repaint",
@@ -19,8 +19,9 @@
       "edges": "LSLS",
       "bytes": 3804335,
       "sha256": "6154a21f963d9d3d42253d2067faec3ff0f9f12b216515d0f90dbdb4c868036e",
-      "state": "awaiting-upload",
-      "note": "Revised scene with wider road corridor, distinct architecture preserved. Do not claim exact border width until visual review."
+      "state": "integrated-review",
+      "note": "Revised scene with wider road corridor, distinct architecture preserved. Do not claim exact border width until visual review.",
+      "gitBlobSha": "a195f4152394b8b97dbdd1aca63828e35687fd49"
     },
     {
       "role": "independent-neighbour",
@@ -29,8 +30,9 @@
       "edges": "LSLS",
       "bytes": 4034740,
       "sha256": "3ea085876ce7941525314b6a846989311bb5562bbfc14dc8098cda0fcbf49df3",
-      "state": "awaiting-upload",
-      "note": "Independently composed garden and teahouse street, upright roofs; do not rotate the image. Same legal east-west topology as the repaint."
+      "state": "integrated-review",
+      "note": "Independently composed garden and teahouse street, upright roofs; do not rotate the image. Same legal east-west topology as the repaint.",
+      "gitBlobSha": "fd234e7907f0aecf9ef9fa983b0e5019351ffa6b"
     }
   ]
 }
