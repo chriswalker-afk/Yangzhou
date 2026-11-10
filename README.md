@@ -2,6 +2,19 @@
 
 A calm, tile-laying city-builder inspired by the everyday stories of eighteenth-century Yangzhou. The intended game combines a high, readable illustrated city view with rewarding close inspection, small ambient animations and activity-based scoring.
 
+## Current artwork — painterly review deck
+
+**The detailed watercolour art is now the on-screen default**, rather than the flat `orthographic-lake.js` placeholder. The fixed 3×2 Slender West Lake uses six individual 512px square paintings, including a corrected south water mouth. The expandable library has **13 distinct archetypes × 4 upright image variants = 52 painted squares**, stored as 13 independently authored 2×2 WebP loading atlases. `index.html` passes each tile's archetype identity and rotation to the painter. The old vector renderer is only a fallback while imagery loads.
+
+**Status is REVIEW, not production-approved.** The new deck uses hand-painted source material and authentic garden texture but still shows some repeated motifs and overly regular stone paths. Human screenshot review against the detailed Slender West Lake benchmark is required before changing the art manifests to `approved`. Technical tests do not replace the art review.
+
+- [Painterly art standard and release gates](docs/PAINTERLY-TILE-ART-STANDARD.md)
+- [Expansion artwork review log and known imperfections](docs/PAINTERLY-DECK-REVIEW.md)
+- [Deck atlas manifest](assets/tiles/painterly/manifest.json) and [reproducible source pipeline](scripts/build_painterly_deck.py)
+- Local QA: `python scripts/check_painterly_deck.py` and `node tests/smoke.cjs`
+- To compare the legacy composited expansion art only, use `?tileArt=legacy` (the detailed starter remains unless separately disabled).
+
+
 ## Living Painting proof of concept · Pass 4
 
 Open **index.html** in a modern browser (or host the repository as a static site). No build step, account, external dependency or network connection is required.
