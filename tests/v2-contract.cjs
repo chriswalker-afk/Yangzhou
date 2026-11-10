@@ -14,6 +14,20 @@ assert.equal(new Set(topology.starter.map(t=>t.artId)).size,6);
 assert.deepEqual(topology.validateBoard(topology.starter),[]);
 assert.equal(data.status,'review','One original painted master is under review, not approved');
 assert.equal(data.tiles.length,8);
+// The new second-original intake stays in a review branch until both original
+// full-resolution binaries exist; the production manifest is not falsified.
+const intake=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/v2/street-pair-intake.json'),'utf8'));
+assert.equal(intake.status,'awaiting-original-binary-upload');
+assert.equal(intake.candidates.length,2);
+assert.equal(intake.candidates[0].rotation,1);
+assert.equal(intake.candidates[1].rotation,3);
+assert(intake.candidates.every(c=>c.edges==='LSLS'));
+assert.notEqual(intake.candidates[0].sha256,intake.candidates[1].sha256);
+const stagedPairPage=fs.readFileSync(path.join(__dirname,'../street-pair-review.html'),'utf8');
+assert(stagedPairPage.includes('street-east-west-repaint.png'));
+assert(stagedPairPage.includes('street-east-west-neighbour.png'));
+assert(stagedPairPage.includes('Review')||stagedPairPage.includes('review'));
+
 let masterCount=0;
 for(let i=0;i<8;i++){
  const t=topology.archetypes[i],m=data.tiles[i];

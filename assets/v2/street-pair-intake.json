@@ -1,0 +1,36 @@
+{
+  "version": "2026-11-10-pair-1",
+  "status": "awaiting-original-binary-upload",
+  "topology": "LSLS",
+  "archId": "street-straight",
+  "imagePixels": [
+    1254,
+    1254
+  ],
+  "requiredPortWidthWorld": 44,
+  "tileWorldUnits": 220,
+  "preserveExisting": "assets/v2/street-straight-east-west.png",
+  "instructions": "Upload each original PNG to assets/v2/ on branch feat/painterly-street-pair-v2; preserve the existing original. The actual manifest must not switch until the files exist and pass validation.",
+  "candidates": [
+    {
+      "role": "repaint",
+      "file": "street-east-west-repaint.png",
+      "rotation": 1,
+      "edges": "LSLS",
+      "bytes": 3804335,
+      "sha256": "6154a21f963d9d3d42253d2067faec3ff0f9f12b216515d0f90dbdb4c868036e",
+      "state": "awaiting-upload",
+      "note": "Revised scene with wider road corridor, distinct architecture preserved. Do not claim exact border width until visual review."
+    },
+    {
+      "role": "independent-neighbour",
+      "file": "street-east-west-neighbour.png",
+      "rotation": 3,
+      "edges": "LSLS",
+      "bytes": 4034740,
+      "sha256": "3ea085876ce7941525314b6a846989311bb5562bbfc14dc8098cda0fcbf49df3",
+      "state": "awaiting-upload",
+      "note": "Independently composed garden and teahouse street, upright roofs; do not rotate the image. Same legal east-west topology as the repaint."
+    }
+  ]
+}
