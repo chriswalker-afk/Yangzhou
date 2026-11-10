@@ -20,13 +20,19 @@ The [playable board](index.html) and [tile lab](tile-lab-v2.html) load both new 
 
 The files and their exact SHA-256 hashes are validated in `scripts/validate_street_pair.cjs`. **Both are review assets, not artistically approved**. Actual 44/220 mouth width, natural seam transitions, six-category 16/18 human artwork review and historical plausibility all remain quality gates. Exactly **30 other orientation slots** still show labelled layout studies.
 
+### Expanding the painterly deck — Batch 01
+
+The two east–west streets are the accepted-for-play art baseline. Our next original is a **north–south stone-paved street** (1254px). The same batch also defines a genuine **turning street**, **enclosed garden**, and **north–south canal**, each with its own N/E/S/W connection contract. Their unpainted slots remain clearly marked; there is no cropped panorama or accidental infographic in the game.
+
+The original north–south painting has now been uploaded, verified and added to the live game as the third painted variant. Open the [interactive artwork expansion preview](tile-art-expansion.html) or read the [specific tile painting briefs](docs/ARTWORK-BATCH-01.md). The **street corner** is next; garden and canal remain honest unpainted studies.
+
 ### What is in this proof of concept
 
 - Eight deliberately small tile archetypes, each with four distinct compass orientations: garden, straight street, turning street, market crossroads, straight canal, canal bend, bridge, canal junction.
 - Exact edge contracts: `L` landscape, `S` 44/220-wide street, `W` 88/220-wide navigable water; routes join at edge midpoints. Bridges have separate road and water graphs.
 - Six fixed Slender West Lake **reference paintings** with eight land-only exterior edges and north/south navigable outlets. The ring inspector assembles all ten immediate neighbours without inventing streets through the lake.
 - A live preview and gallery that distinguish **layout study** from independently painted production artwork.
-- An explicit manifest for **32 independently painted square masters**: two independent original 1254px street paintings are imported for review; the other 30 slots need paintings.
+- An explicit manifest for **32 independently painted square masters**: three independent 1254px street paintings are imported for review; the other 29 slots need paintings.
 
 ### Controls
 

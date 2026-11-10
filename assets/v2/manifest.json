@@ -1,10 +1,10 @@
 {
-  "version": "v2-painted-street-pair-1",
+  "version": "v2-three-painted-streets-1",
   "status": "review",
-  "source": "Two independently painted 1254px east-west street variants committed intact; historic first PNG archived without alteration; remaining variants are layout studies.",
+  "source": "Three independent original painted street variants imported; full source PNGs retained; 29 other slots remain labelled geometric studies.",
   "worldUnits": 220,
   "requiredArtworkPixels": 1024,
-  "reviewPolicy": "The two original street PNGs are imported for review at rotation 1 and 3. No art is approved; exact port width, painted seam at overview/3x, and historical quality are pending.",
+  "reviewPolicy": "Three painted streets are accessible in play, not historically or painterly seam-certified. Original masters preserved. No unpainted art assigned to other 29 slots.",
   "tiles": [
     {
       "id": "garden-grove",
@@ -49,8 +49,16 @@
         {
           "rotation": 0,
           "edges": "SLSL",
-          "artwork": null,
-          "status": "needs-independent-painting"
+          "artwork": "street-straight-north-south.png",
+          "status": "review",
+          "note": "Original top-down north–south street painting, 1254px; designed specifically for SLSL. Accepted for play; exact painted mouth alignment and historical sign-off still pending.",
+          "sourceFilename": "street-straight-north-south.png",
+          "imageSource": "Independently painted complete-square Yangzhou north–south stone street produced for Batch 01 and uploaded by user to PR17.",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 4302868,
+          "sha256": "e73d1211c750589cb16a8e8020bb2670999a7ebc45332a4b09ad11019fe98ea2",
+          "gitBlobSha": "6271589707d00a9a4c5bd509fce94519a1225365"
         },
         {
           "rotation": 1,

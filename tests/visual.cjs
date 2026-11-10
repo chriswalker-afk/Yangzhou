@@ -12,8 +12,11 @@ async function run(){
   await desktop.goto('http://127.0.0.1:8765/',{waitUntil:'load'});
   await desktop.waitForFunction(()=>window.YangzhouArtV2?.ready(),{timeout:30000});
   await desktop.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:1')?.naturalWidth===1254,{timeout:30000});
-  await desktop.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:3')?.naturalWidth===1254,{timeout:30000});
+  await desktop.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:3')?.naturalWidth===1254 && window.YangzhouArtV2?.getMaster?.('street-straight:0')?.naturalWidth===1254,{timeout:30000});
   await desktop.screenshot({path:'artifacts/v2/two-painted-streets-game-rack.png',fullPage:true});
+  await desktop.evaluate(()=>{const game=window.YangzhouDebug;game.state.type=1;game.state.rotation=0;game.state.selected=null;});
+  await desktop.screenshot({path:'artifacts/v2/north-south-street-active.png',fullPage:true});
+  await desktop.evaluate(()=>{const game=window.YangzhouDebug;game.state.type=1;game.state.rotation=1;game.state.selected=null;});
   const status=await desktop.evaluate(()=>({
    size:window.YangzhouDebug.board.size,
    names:window.YangzhouDebug.archetypes.map(t=>t.id),
@@ -23,7 +26,7 @@ async function run(){
   assert.equal(status.size,6);
   assert.equal(status.names.length,8);
   assert.equal(status.art.lakeReferencesLoaded,6);
-  assert.equal(status.art.paintingVariantsLoaded,2,'Both independently painted street variants must load by default');
+  assert.equal(status.art.paintingVariantsLoaded,3,'Three independent street paintings must load from the active manifest');
   const activeMasters=await desktop.evaluate(()=>({
     repaint:window.YangzhouArtV2.getMaster('street-straight:1')?.src,
     neighbour:window.YangzhouArtV2.getMaster('street-straight:3')?.src
@@ -31,6 +34,7 @@ async function run(){
   assert.match(activeMasters.repaint,/street-east-west-repaint\.png/);
   assert.match(activeMasters.neighbour,/street-east-west-neighbour\.png/);
   assert.notEqual(activeMasters.repaint,activeMasters.neighbour,'Two different original paintings, not a duplicated image');
+  assert.match(await desktop.evaluate(()=>window.YangzhouArtV2.getMaster('street-straight:0')?.src),/street-straight-north-south\.png/);
   assert.equal(status.art.manifestStatus,'review');
   assert.equal(await desktop.evaluate(()=>window.YangzhouDebug.archetypes[window.YangzhouDebug.state.type].id),'street-straight');
   assert.equal(await desktop.evaluate(()=>window.YangzhouDebug.state.rotation),1);
@@ -177,6 +181,29 @@ async function run(){
   await mobileLab.goto('http://127.0.0.1:8765/painted-neighbour-lab.html',{waitUntil:'load'});
   await mobileLab.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:1')?.naturalWidth===1254&&window.YangzhouArtV2?.getMaster?.('street-straight:3')?.naturalWidth===1254,{timeout:30000});
   await mobileLab.screenshot({path:'artifacts/v2/two-original-neighbour-lab-mobile.png',fullPage:true});
+
+  // Artwork Batch 01: one new complete-square original has been generated;
+  // the page must keep missing paintings explicitly pending. Local file
+  // previews are technical fixtures only, not finished/new painterly artwork.
+  const batchPage=await browser.newPage({viewport:{width:1400,height:950},deviceScaleFactor:1});
+  batchPage.on('pageerror',e=>errors.push('art-batch: '+String(e)));
+  await batchPage.goto('http://127.0.0.1:8765/tile-art-expansion.html',{waitUntil:'load'});
+  await batchPage.waitForFunction(()=>document.querySelectorAll('#gallery .card').length===4 && document.getElementById('boardStatus')?.textContent.includes('4/4 topology joins valid'),{timeout:30000});
+  assert.equal(await batchPage.locator('#gallery .card').count(),4);
+  const pendingImage=fs.existsSync('assets/v2/street-straight-north-south.png');
+  assert.match(await batchPage.locator('#boardStatus').textContent(),new RegExp('New north–south paintings visible: '+(pendingImage?1:0)+'/1'));
+  assert.match(await batchPage.locator('#gallery').textContent(),/Composition brief only/);
+  assert.match(await batchPage.locator('#state-street-straight-0').textContent(),/Original artwork file loaded from GitHub/);
+  assert.equal(await batchPage.locator('#gallery .card').count(),4);
+  await batchPage.screenshot({path:'artifacts/v2/next-batch-four-art-slots.png',fullPage:true});
+  await batchPage.locator('#gallery .card').first().locator('input[type=file]').setInputFiles(fileFixture);
+  await batchPage.waitForFunction(()=>document.getElementById('state-street-straight-0').textContent.includes('Local image preview only'),{timeout:30000});
+  assert.match(await batchPage.locator('#boardStatus').textContent(),/New north–south paintings visible: 1\/1/);
+  await batchPage.locator('#showPorts').click();
+  assert.equal(await batchPage.locator('#showPorts').getAttribute('aria-pressed'),'true');
+  await batchPage.locator('#scale').selectOption('3');
+  assert.equal(await batchPage.locator('#board').getAttribute('width'),'1320');
+  await batchPage.screenshot({path:'artifacts/v2/next-batch-port-guide-and-connection.png',fullPage:true});
 
   assert.deepEqual(errors,[],'Browser JavaScript errors');
   console.log('Painted pair QA passed: two original 1254px images in correct LSLS slots, mobile/desktop, real 1x/3x seam comparison, gallery, override/restore, duplicate-source rejection.');

@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yangzhou · Artwork Expansion Batch 01</title>
+<style>
+:root{--paper:#f5ecdd;--ink:#34473f;--muted:#687669;--stroke:#c4b89e;--accent:#916144;--jade:#5c8072}
+*{box-sizing:border-box}body{margin:0;background:#e8e2d5;color:var(--ink);font:14px/1.5 system-ui,sans-serif}
+header{background:var(--paper);border-bottom:1px solid var(--stroke);padding:23px max(16px,calc((100vw - 1240px)/2))}
+main{max-width:1270px;margin:auto;padding:16px 18px 60px}
+h1,h2,h3{font-family:Georgia,serif;font-weight:400}h1{font-size:clamp(28px,3.5vw,44px);margin:5px 0 7px}
+h2{font-size:26px;margin:26px 0 10px}h3{font-size:21px;margin:3px 0 7px}
+p{margin:7px 0;max-width:960px}
+.eyebrow{font-size:11px;letter-spacing:.15em;color:var(--accent);font-weight:700;text-transform:uppercase}
+a{color:#805940}.message{background:#f4eadd;border-left:3px solid #b18b68;padding:12px 16px;margin:16px 0}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}
+.card,.panel{background:#f7efdf;border:1px solid var(--stroke);border-radius:6px;padding:12px;min-width:0}
+.card canvas{display:block;width:100%;height:auto;aspect-ratio:1;border:1px solid #b9ad96;background:#d8dbc4}
+.card p{font-size:12px}.card .status{font-size:12px;font-weight:600;color:#865a44}
+.caps{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--jade);font-weight:600}
+.controls{display:flex;align-items:center;gap:11px;flex-wrap:wrap;padding:11px 0}
+button,select,.filelabel{font:inherit;background:#fbf6ec;border:1px solid #ae9e83;border-radius:5px;color:var(--ink);padding:7px 10px;cursor:pointer}
+button[aria-pressed=true]{background:#dfe9de;border-color:#6f9888}
+.filelabel{display:inline-block;position:relative}.filelabel input{opacity:0;position:absolute;width:1px;height:1px}
+button:focus-visible,.filelabel:focus-within,select:focus-visible{outline:2px solid #75978a;outline-offset:2px}
+#boardWrap{max-width:100%;overflow:auto;border:1px solid var(--stroke);background:#e6dfd0}
+#board{display:block;width:auto;height:auto;max-width:none}
+#boardStatus{font-size:12px;color:var(--muted)}
+.meta{color:var(--muted);font-size:12px}
+#status{font-weight:600;color:#866246}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:490px){.cards{grid-template-columns:1fr 1fr;gap:8px}main{padding:12px}.card{padding:8px}.card h3{font-size:17px}.card p{font-size:11px}h2{font-size:23px}}
+</style>
+</head>
+<body><header><div class="eyebrow">Yangzhou · V2 painterly tile deck · incremental expansion</div>
+<h1>Artwork Batch 01 · Four tile slots</h1>
+<p>Expand the world using individual, complete-square original paintings. The two accepted east–west street paintings remain untouched; this batch begins with a north–south street and defines the next three compositions.</p>
+<p><a href="./">Yangzhou game</a> · <a href="street-pair-review.html">Accepted street pair</a> · <a href="docs/ARTWORK-V2.md">Art standards</a></p>
+</header><main>
+<div class="message">
+<strong>Artwork-production status, not game release.</strong> The new high-resolution north–south street has been uploaded and connected to the game as a playable review painting. The other three slots are composition briefs, not fictitious completed paintings. No unfinished image will silently become approved game art.
+<p>The north–south street is now permanently imported. The next painting is the <strong>north-to-east street corner</strong>, followed by the enclosed garden and straight canal. New paintings must be complete square originals.</p>
+</div>
+<div class="controls"><button id="showPorts" type="button" aria-pressed="false">Show exact route ports</button>
+<label for="scale">Inspection scale <select id="scale"><option value="1" selected>Overview · 1×</option><option value="2">Artwork · 2×</option><option value="3">Detail · 3×</option></select></label>
+<span id="status" role="status">Loading artwork manifest…</span></div>
+<h2>Four separately authored tile designs</h2>
+<div class="cards" id="gallery" aria-label="Four tile-art production slots"></div>
+<h2>How the streets will connect</h2>
+<p>A real playable 2 × 2 arrangement: north–south stone street, enclosed garden, a turning lane and an existing east–west painted street. The corner and garden remain labelled studies until completely new artwork is created.</p>
+<div class="panel">
+<div id="boardWrap"><canvas id="board" width="880" height="880" aria-label="Two-by-two connected tile sample showing north-south street, garden, street corner and existing east-west street"></canvas></div>
+<p id="boardStatus"></p>
+<p class="meta">All internal edge types are checked from the canonical N/E/S/W topology. A legal road network does not, by itself, prove painterly seam continuity. No art is rotated sideways.</p>
+</div>
+<h2>Artwork acceptance</h2><p>The new street must have a centred 44/220-wide stone road on its <strong>north and south</strong> edges (20% of its square, X≈502–752 at 1254px). The street corner needs that same width on the north and east; the garden has four land edges; the canal will need centred 88/220-wide water on its north and south (40%, X≈376–878 at 1254px).</p>
+<p>All images need visual review at 1× and 3× before they become production masters. Buildings, people and roofs must remain compass-upright. Do not use cropped artwork, blur collars, rotating pictures or generated overlays to disguise mismatched edges.</p>
+</main>
+<script src="tile-topology.js"></script><script src="tile-art-v2.js"></script>
+<script>
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+const top=window.YangzhouTileTopology,artist=window.YangzhouArtV2;
+const urls='assets/v2/';
+let batch=null,showPorts=false,candidateImages=new Map(),localUrls=new Map();
+const cells=[];
+function squareFor(slot,x=0,y=0){
+ const archetype=top.archetypes.find(a=>a.id===slot.archetype);
+ if(!archetype)throw Error('Unknown archetype '+slot.archetype);
+ const edges=top.rotateEdges(archetype.edges,slot.rotation);
+ if(edges.join('')!==slot.edges)throw Error('Bad port contract '+slot.id);
+ return {id:slot.archetype,name:archetype.name,kind:archetype.kind,rotation:slot.rotation,edges,x,y};
+}
+function portGuide(c,edges){
+ c.save();c.strokeStyle='#b54f37';c.lineWidth=1.7;c.setLineDash([4,3]);
+ c.strokeRect(0.8,0.8,218.4,218.4);c.setLineDash([]);
+ const W={S:44,W:88};
+ for(let i=0;i<4;i++){
+  const port=W[edges[i]];if(!port)continue;
+  const a=110-port/2;
+  c.fillStyle=edges[i]==='W'?'#5ea5a76e':'#e3c16a67';
+  if(i===0)c.fillRect(a,0,port,19);
+  if(i===1)c.fillRect(201,a,19,port);
+  if(i===2)c.fillRect(a,201,port,19);
+  if(i===3)c.fillRect(0,a,19,port);
+  c.fillStyle='#9b4237';c.font='bold 12px system-ui,sans-serif';
+  const positions=[[110,13],[204,110],[110,215],[9,110]];
+  c.fillText(edges[i],positions[i][0]-4,positions[i][1]+4);
+ }
+ c.restore();
+}
+function drawSquare(c,t){
+ c.save();c.translate(t.x*220,t.y*220);
+ const key=t.id+':'+t.rotation;
+ const im=candidateImages.get(key);
+ if(im?.complete&&im.naturalWidth>=1024&&im.naturalWidth===im.naturalHeight){
+  c.drawImage(im,0,0,220,220);
+ }else{
+  // Existing committed master images and explicit geometry-study fallback.
+  c.translate(-t.x*220,-t.y*220);
+  artist.draw(c,t);
+  c.translate(t.x*220,t.y*220);
+  if(batch?.slots.some(s=>s.id===key)){
+   c.fillStyle='#14221eb2';c.fillRect(10,171,202,28);
+   c.fillStyle='#fffaec';c.font='bold 12px system-ui,sans-serif';
+   c.fillText('PAINTING NOT YET LOADED',16,188);
+  }
+ }
+ if(showPorts)portGuide(c,t.edges);
+ c.restore();
+}
+function createCard(slot){
+ const panel=document.createElement('section');panel.className='card';
+ const cap=document.createElement('div');cap.className='caps';cap.textContent=slot.edges+' · '+slot.rotation*90+'° · '+slot.status.replaceAll('-',' ');
+ const heading=document.createElement('h3');heading.textContent=slot.label;
+ const canvas=document.createElement('canvas');canvas.width=canvas.height=380;
+ const status=document.createElement('p');status.className='status';status.id='state-'+slot.id.replace(':','-');status.textContent='Checking artwork…';
+ const brief=document.createElement('p');brief.textContent=slot.artBrief;
+ const upload=document.createElement('label');upload.className='filelabel';upload.textContent='Try local painting ';
+ const input=document.createElement('input');input.type='file';input.accept='image/png,image/webp,image/jpeg';input.setAttribute('aria-label','Load '+slot.label+' for this browser session');
+ input.addEventListener('change',()=>{
+  const f=input.files?.[0];if(!f)return;
+  const u=URL.createObjectURL(f),im=new Image();
+  im.onload=()=>{
+   if(im.naturalWidth!==im.naturalHeight||im.naturalWidth<1024){
+    status.textContent='Rejected: complete square image of at least 1024px required';URL.revokeObjectURL(u);return;
+   }
+   if(localUrls.has(slot.id))URL.revokeObjectURL(localUrls.get(slot.id));
+   localUrls.set(slot.id,u);candidateImages.set(slot.id,im);status.textContent='Local image preview only — not uploaded or approved';
+   redraw();
+  };
+  im.onerror=()=>{status.textContent='Unable to decode the selected file';URL.revokeObjectURL(u);};
+  im.src=u;
+ });
+ upload.append(input);
+ panel.append(cap,heading,canvas,status,brief,upload);
+ $('gallery').append(panel);cells.push({canvas,slot,status});
+ if(slot.status==='painted-awaiting-upload'||slot.status==='integrated-review'){
+  const img=new Image();
+  img.onload=()=>{
+   if(!localUrls.has(slot.id)){
+    if(img.naturalWidth===img.naturalHeight&&img.naturalWidth>=1024){
+     candidateImages.set(slot.id,img);status.textContent='Original artwork file loaded from GitHub · review pending';
+    }else status.textContent='Rejected: committed image too small or non-square';
+    redraw();
+   }
+  };
+  img.onerror=()=>{if(!localUrls.has(slot.id)){status.textContent='Original PNG could not load from the repository';redraw();}};
+  img.src=urls+slot.filename;
+ }else status.textContent='Composition brief only — new original artwork required';
+}
+function redraw(){
+ if(!batch)return;
+ for(const {canvas,slot} of cells){
+  const ctx=canvas.getContext('2d');ctx.setTransform(1,0,0,1,0,0);
+  ctx.fillStyle='#ddd5c7';ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.save();ctx.scale(canvas.width/220,canvas.height/220);
+  drawSquare(ctx,squareFor(slot));ctx.restore();
+ }
+ const ns=batch.slots.find(s=>s.id==='street-straight:0');
+ const garden=batch.slots.find(s=>s.id==='garden-grove:0');
+ const bend=batch.slots.find(s=>s.id==='street-bend:0');
+ const ew={archetype:'street-straight',id:'street-straight:1',rotation:1,edges:'LSLS'};
+ const layout=[squareFor(ns,0,0),squareFor(garden,1,0),squareFor(bend,0,1),squareFor(ew,1,1)];
+ const errors=top.validateBoard(layout);
+ const target=$('board'),c=target.getContext('2d');
+ const pixels=440*Number($('scale').value);
+ target.width=pixels;target.height=pixels;
+ c.fillStyle='#e8e1d4';c.fillRect(0,0,pixels,pixels);
+ c.save();c.scale(pixels/440,pixels/440);
+ for(const tile of layout)drawSquare(c,tile);
+ c.restore();
+ const painted=candidateImages.has('street-straight:0')||!!artist.getMaster('street-straight:0')?1:0;
+ $('boardStatus').textContent=errors.length?'Invalid tile joins: '+errors.join('; '):
+  '4/4 topology joins valid. New north–south paintings visible: '+painted+'/1. Corner/garden are still labelled layout studies.';
+ $('boardStatus').style.color=errors.length?'#9b453d':'#507c68';
+ $('status').textContent=painted?'Three permanent street paintings total; this batch has one new original and three unpainted briefs':'Original image is loading or missing; three other briefs remain unpainted';
+}
+async function start(){
+ const response=await fetch(urls+'art-batch-01.json');
+ if(!response.ok)throw Error('Art batch manifest missing');
+ batch=await response.json();
+ if(batch.slots?.length!==4)throw Error('Batch must contain four independent tile slots');
+ const ids=new Set();
+ for(const slot of batch.slots){
+  if(ids.has(slot.id))throw Error('Duplicate art slot');
+  ids.add(slot.id);squareFor(slot);createCard(slot);
+ }
+ window.addEventListener('yangzhou-art-v2-updated',redraw);
+ redraw();
+}
+$('showPorts').onclick=()=>{showPorts=!showPorts;$('showPorts').setAttribute('aria-pressed',String(showPorts));redraw();};
+$('scale').onchange=redraw;
+start().catch(e=>{$('status').textContent='Artwork-review setup failed: '+e.message;});
+})();
+</script></body></html>
