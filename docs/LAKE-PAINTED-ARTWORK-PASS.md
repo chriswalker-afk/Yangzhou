@@ -1,18 +1,18 @@
 # Slender West Lake — overhead painted artwork upgrade
 
 **Date:** 10 November 2026
-**Status:** New high-detail painted composition exported into six square WEBPs; **NOT YET DEPLOYED OR APPROVED** because the lake's visual shoreline does not fully meet the fixed gameplay port geometry.
+**Status:** All six high-detail WebP masters **committed to the GitHub artwork branch and hash-verified**; staged preview available, but **not yet activated by default** while exterior water-port QA and historical review remain outstanding.
 
 ## What was produced
 - A new, detailed, near-orthographic 1536×1024 ink-and-watercolour lake illustration, composed as a single coherent scene with **no visible tile grid and no boats or people**.
 - Six separate 512×512 WEBP tile exports (the exact files named in `assets/lake/manifest.json`) cropped along mathematically exact 3×2 boundaries. No blur, green collars or seam feathering are baked into any tile.
 - Recognisable features from overhead: White Pagoda in the southwest, five distinct pavilion roofs on an east–west bridge across the lower central lake, northeast tea pavilion and southeast courtyard/breakfast house.
-- A user-facing ZIP of master painting, individual tile files, and a **review-only** grid overlay. The ZIP is supplied in the ChatGPT conversation, rather than directly attached to this PR, because available GitHub write tools accept UTF-8 text files and Git blobs but cannot consume the generated local binary image files.
+- A user-facing ZIP of master painting, individual tile files, and a **review-only** grid overlay. The six WebP files were also imported as binary Git blobs, verified by comparing each server SHA against the local Git-blob SHA, and committed to `assets/lake/`.
 
 ## How the game integration works
 - `painted-lake.js` only loads the six image files if the manifest status is `approved` and its six filename/edge/coordinate entries match the playable topology exactly.
 - Every image must decode and be square with at least 512×512 pixels; the six are activated **atomically**. Partial upload never produces a broken collage.
-- When the manifest is `staged`, as it is in this PR, the current overhead generator remains in place.
+- When the manifest is `staged`, as it is in this PR, the current overhead generator remains in place by default. For **explicit opt-in visual inspection**, append `?lakeArt=preview` to the site URL. Preview mode loads all six images atomically but does not change the manifest or certify production quality.
 - `tile-system.js` uses the approved painted assets without transparent apron overlays or old panoramic slicing. It retains the orthographic generator as a safe fallback.
 - The page keeps separate boat/pedestrian actor layers; the new base art contains no moving people or vessels.
 
