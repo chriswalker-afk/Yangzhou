@@ -42,26 +42,40 @@ for x in [side,2*side]:
     check_seam(board[:,x-1,:],board[:,x,:],0,'vertical x='+str(x))
 check_seam(board[side-1,:,:],board[side,:,:],1,'horizontal y='+str(side))
 
-# Every N/S water edge is centred at x=1.5 tiles, width 88/220 tile.
+# Water and street ports must be aligned at the *external perimeter*.
+# The natural six-tile lake footprint may be wider at the internal W/W seam:
+# the scoreable navigation corridor is not the entire scenic shoreline.
 centre=1.5*side
 half=44/220*side
 port_left=int(round(centre-half));port_right=int(round(centre+half))
-# Compare bands within 5px of the game tile boundaries (north, middle, south).
-for y,label in [(0,'north'),(side,'middle, upper'),(2*side-1,'south')]:
+for y,label in [(0,'north external'),(2*side-1,'south external')]:
     strip=board[max(0,y-2):min(2*side,y+3)]
-    # A gentle median over adjacent pixels avoids interpreting individual ink specks as water.
     port=float(teal(strip[:,port_left+10:port_right-10]).mean())
     left=float(teal(strip[:,port_left-28:port_left-4]).mean())
     right=float(teal(strip[:,port_right+4:port_right+28]).mean())
     print('PORT',label,'inside',round(port,2),'left outside',round(left,2),'right outside',round(right,2))
     if port<.75:issues.append(label+' water opening is blocked or incorrectly positioned')
-    if left>.22 or right>.22:issues.append(label+' lake overruns canonical 88-unit opening')
-# Water must not cross a land/land tile seam at the E/W edge of the centre column.
-# Examine the full source join (especially where the canal broadens).
-for x,label in [(side,'west L/L seam'),(side*2,'east L/L seam')]:
-    fraction=float(teal(board[:,x-3:x+3,:]).mean())
-    print('LAND EDGE',label,'water fraction',round(fraction,3))
-    if fraction>.07:issues.append(label+' has too much open water at a no-port edge')
+    if left>.22 or right>.22:issues.append(label+' lake overruns 88-unit outer tile opening')
+# Centre-line water must remain navigable at the internal W/W join,
+# but the open lake may legitimately be wider than that 88-unit corridor.
+internal=float(teal(board[side-2:side+3,port_left+10:port_right-10]).mean())
+print('INTERNAL LAKE',round(internal,2))
+if internal<.75:issues.append('Centre lake channel blocked at internal W/W join')
+for x,label in [(0,'west outer land'),(3*side-1,'east outer land')]:
+    fraction=float(teal(board[:,max(0,x-2):min(3*side,x+3),:]).mean())
+    print('OUTER LAND',label,'open water fraction',round(fraction,3))
+    if fraction>.07:issues.append(label+' contains a false water exit')
+# The Five-Pavilion Bridge must cross both internal east/west street seams
+# at world y=330 -> image y=1.5 tile widths.
+y=int(round(side*1.5))
+def stone(pixels):
+    a=pixels.astype('float32')
+    return (a[...,0]>130)&(a[...,0]>a[...,1]*1.04)&(a[...,1]>a[...,2]*1.04)
+for x,label in [(side,'pagoda-to-bridge'),(side*2,'bridge-to-house')]:
+    patch=board[y-10:y+10,x-2:x+3]
+    fraction=float(stone(patch).mean())
+    print('WALKWAY',label,'stone fraction',round(fraction,2))
+    if fraction<.65:issues.append(label+' walking route misses internal street centre')
 if issues:
     print('\nNOT APPROVED:')
     for issue in issues:print(' -',issue)
