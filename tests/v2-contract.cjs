@@ -117,7 +117,7 @@ assert(pilot.includes('useCommittedMaster()'),'Review studio must load the real 
 assert(pilot.includes("registerReviewImage(key,im)"),'Pilot inspector must still allow a local revision for comparison');
 assert(pilot.includes("const tiles=[tile(0,0),tile(1,0),tile(2,0)]"),'Three-square seam inspection is required');
 assert(pilot.includes('LSLS'),'Original east-west connection must be explicit');
-assert(html.includes('id="pilotUpload"')&&html.includes('street-pilot-review.html'),'Playable camera should have a review link and an optional local revision path');
+assert(html.includes('id="pilotUpload"')&&html.includes('painted-neighbour-lab.html'),'Playable camera should link to the independent join laboratory and offer optional revision preview');
 assert(html.includes('const state={type:1,rotation:1'),'Game should initially preview the imported east-west street');
 const painter=fs.readFileSync(path.join(__dirname,'../tile-art-v2.js'),'utf8');
 assert(painter.includes('permanentMasters'),'Original imported painting must be kept separately from optional temporary revisions');
