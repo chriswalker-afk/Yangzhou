@@ -41,3 +41,9 @@ A natural lake can occupy more of the *six fixed starting squares* than the 88-u
 
 ## Known related gameplay issue
 The northern teahouse currently has a local path but **no street-access connection**. The original street-access scoring criterion therefore remains unmet. A painting cannot silently create eligibility; this requires a rules/layout change before scoring can be implemented.
+
+## 10 November 2026: painted art shown by default, port mouth corrected
+
+The initial staging blocker has been addressed for the **fixed six-tile landscape**: the southern W-port's left bank was locally moved about 27px at the 1536px art-master scale, tapering smoothly within the lower 80px. No bridge, pagoda or building was warped. Both external water mouths now match the 88/220 port. Six corrected, square 512px WebP files are installed.
+
+The lake manifest is now **`review` and displayed by default**, replacing the flat top-down vector prototype. This does **not** mean historical or artistic acceptance. The 13×4 expansion paintings are also in review; see [the new painterly visual standard](PAINTERLY-TILE-ART-STANDARD.md) and [deck review log](PAINTERLY-DECK-REVIEW.md). Earlier notes in this document about staged-only preview and the unfixed southern mouth are retained as historical context and superseded by this update.
