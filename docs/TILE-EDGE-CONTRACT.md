@@ -75,3 +75,17 @@ See [Living Painting Architecture](LIVING-PAINTING.md) for the clean plate, inde
 The six masters are distinct, but several were built using reworked shared sources and painterly composites. A matching pixel row on each side cannot conceal mismatched stone paths or waterbanks farther inside. Some images also contain partial paths and architecture not fully governed by the logical topology. They should be **repainted per archetype/topology at 1024×1024 or higher**, using the 44-unit road and 88-unit water edge ports as hard constraints. Preserve separate alpha masks for actors/foreground occlusion. The reference image supplied in the discussion is an **art-direction and connection-system target**, not a source asset to slice into the game.
 
 The original Slender West Lake panorama is only a gallery reference. The live grid must remain independent if it is later removed entirely. A production acceptance screenshot should show the 3×2 starter, a mixed 16-square ring, and rotated road/canal curves at overview and close detail without smearing, tinted bands, or disconnected waterways.
+
+## Proposed fixed-starter scenic-lake exception (art review)
+
+The original 88-unit water-port contract remains mandatory on **all outward-facing tile borders**, including every future player-placed square. A naturally broad Slender West Lake should not be forced into a constant 88-unit tube inside the six **permanently fixed** starting squares. For this one fixed composition:
+
+- The visible lake footprint may expand and cross *internal* art seams without introducing new outward-facing water exits.
+- The navigable centreline still joins through declared W-to-W ports; the visual water surface is not itself the scoreable route graph.
+- No new player tile may attach through an L edge as though it had a canal port. Internal scenic bays are not automatic external transport routes.
+- The Five-Pavilion Bridge walking connection remains a strict 44-unit S-to-S link at the centre of its two fixed internal joining edges, with an actual visible walkway.
+- Outer north/south canal openings must be exactly centred 88-unit exits. No outer street exit is introduced.
+- An artist must inspect the complete 3×2 painting and the ten-tile surrounding ring, rather than requiring every *interior* bay to be the same width as an external water port.
+
+This is a narrowly scoped **proposal** to reconcile natural lake artwork with the scoring network, not a blanket permission to violate edge matching elsewhere. It should receive explicit design review before marking the painted assets approved. For the associated installation and QA gates see [Painted Lake Artwork Pass](LAKE-PAINTED-ARTWORK-PASS.md).
+
