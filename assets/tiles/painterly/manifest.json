@@ -1,5 +1,5 @@
 {
-  "version": "painterly-deck-review-v2",
+  "version": "painterly-deck-review-v2.1",
   "status": "review",
   "displayByDefault": true,
   "tile_px": 512,
@@ -219,8 +219,8 @@
           ]
         }
       ],
-      "bytes": 1000066,
-      "sha256": "b5954e6568edf896ba30c112eef6311b4fd3e7a560ffb98ce80b7a77e0417217"
+      "bytes": 1803670,
+      "sha256": "75401d28cc94edaebcd7106114f5d8e8846dc1ea78b85b6eff554a1cc0e46f13"
     },
     {
       "index": 5,
