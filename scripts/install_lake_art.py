@@ -34,6 +34,8 @@ if check.returncode:
     manifest['status']='staged'
     manifest_path.write_text(json.dumps(manifest,indent=2)+'\n')
     raise SystemExit('Art installed but not approved: fix geometry before deploying')
-manifest['status']='approved'
+# The importer cannot sign off historical content or artistic readability.
+# Keep the loader staged until a human reviews the complete 3x2 scene and ring.
+manifest['status']='staged'
 manifest_path.write_text(json.dumps(manifest,indent=2)+'\n')
-print('Pixel QA passed and painted master manifest approved. Complete manual/historical visual review before release.')
+print('Pixel QA passed. Assets remain staged pending visual and historical sign-off; approve the manifest manually after review.')
