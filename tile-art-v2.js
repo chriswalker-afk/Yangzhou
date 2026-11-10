@@ -46,7 +46,11 @@
           if(v.artwork){
             const path='assets/v2/'+v.artwork;
             const im=new Image();
-            im.onload=repaint;
+            im.onload=()=>{
+              if(im.naturalWidth<1024||im.naturalWidth!==im.naturalHeight)
+                failures.add('Rejected undersized/non-square master: '+path);
+              repaint();
+            };
             im.onerror=()=>{failures.add(path);repaint();};
             im.src=path;
             masters.set(arch.id+':'+r,im);
@@ -192,10 +196,8 @@
   function study(c,t){
     const e=t.edges;
     c.fillStyle=palette.land;c.fillRect(0,0,T,T);
-    // The even base colour intentionally reveals when two neighbouring
-    // composition studies join; there is NO fake seam-blur masking.
-    c.fillStyle='#f2ead9';c.fillRect(9,9,T-18,T-18);
-    c.fillStyle=palette.land;c.fillRect(11,11,T-22,T-22);
+    // Full-bleed landscape reaches every edge: no square inset, frame,
+    // hidden seam or artificial apron. A joined board must remain seamless.
     drawRoute(c,e,'W',88,palette.water);
     if(e.includes('W')){
       c.save();c.globalAlpha=.45;drawRoute(c,e,'W',1,'#c2d9c9');c.restore();
@@ -236,7 +238,7 @@
       }
     }else{
       const k=t.id+':'+(t.rotation||0),im=masters.get(k);
-      if(im?.complete&&im.naturalWidth>=512&&im.naturalWidth===im.naturalHeight){
+      if(im?.complete&&im.naturalWidth>=1024&&im.naturalWidth===im.naturalHeight){
         c.drawImage(im,0,0,T,T);
       }else{
         study(c,t);
@@ -246,7 +248,7 @@
   }
   function inspect(){
     return {mode:'v2-composition-studies',manifestStatus,studies:schema.archetypes.length,
-      paintingVariantsLoaded:[...masters.values()].filter(i=>i.complete&&i.naturalWidth).length,
+      paintingVariantsLoaded:[...masters.values()].filter(i=>i.complete&&i.naturalWidth>=1024&&i.naturalWidth===i.naturalHeight).length,
       lakeReferencesLoaded:[...lake.values()].filter(i=>i.complete&&i.naturalWidth).length,
       failures:[...failures]};
   }
