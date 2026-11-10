@@ -78,6 +78,17 @@ assert.equal(placed.id,'garden-grove');
 assert.equal(placed.rotation,0);
 assert.equal(st.selected,null);
 assert.deepEqual([...window.YangzhouTileTopology.validateBoard([...game.board.values()])],[]);
+// PR13: a valid 1254px east-west image may temporarily take over ONLY
+// the correct orientation; it is never re-used for a north-south street.
+const pilot=new Image();pilot.complete=true;pilot.naturalWidth=1254;pilot.naturalHeight=1254;
+window.YangzhouArtV2.registerReviewImage('street-straight:1',pilot);
+assert.equal(window.YangzhouArtV2.getReviewImage('street-straight:1'),pilot);
+assert.equal(window.YangzhouArtV2.inspect().temporaryReviewKeys.length,1);
+assert.throws(()=>window.YangzhouArtV2.registerReviewImage('street-straight:0',pilot));
+assert.equal(window.YangzhouArtV2.draw(makeContext(),{x:0,y:0,id:'street-straight',kind:'street',rotation:1,edges:['L','S','L','S']}),true);
+assert(calls.includes('drawImage'),'Loaded street artwork should be drawn as an actual image');
+window.YangzhouArtV2.clearReviewImage('street-straight:1');
+assert.equal(window.YangzhouArtV2.getReviewImage('street-straight:1'),null);
 const old=st.scale;
 elements.get('viewDetail').onclick();frame(80);
 assert(st.scale>=3.3&&st.scale>old,'Detail camera must zoom in');
@@ -85,5 +96,5 @@ elements.get('fit').onclick();frame(80);
 assert(st.scale<2,'Fit must reset overview');
 elements.get('explore').onclick();assert.equal(st.showSites,false);
 elements.get('explore').onclick();assert.equal(st.showSites,true);
-assert(calls.includes('drawImage')===false,'Without loaded paintings, no old texture image may be drawn');
+assert.equal(window.YangzhouArtV2.inspect().temporaryReviewKeys.length,0,'Original must not remain injected after clear');
 console.log('V2 game smoke passed: camera, no legacy painter, eight tile types, rotation, placement, and schematic drawing.');

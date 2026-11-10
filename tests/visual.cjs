@@ -61,6 +61,46 @@ async function run(){
   await mobile.waitForFunction(()=>window.YangzhouArtV2?.ready(),{timeout:30000});
   assert.equal(await mobile.locator('#tileLab').count(),1);
   await mobile.screenshot({path:'artifacts/v2/playable-mobile.png',fullPage:true});
+  // PR13 technical integration: the fixture is NOT claimed to be original
+  // painted artwork. It exercises the picker, actual image pixels, the game
+  // renderer and repeated seam-inspection view in a headless browser.
+  const fixtureData=await lab.evaluate(()=>{
+    const canvas=document.createElement('canvas');
+    canvas.width=canvas.height=1024;
+    const c=canvas.getContext('2d');
+    c.fillStyle='#c6bf9d';c.fillRect(0,0,1024,1024);
+    c.fillStyle='#b7a182';c.fillRect(0,410,1024,205);
+    c.fillStyle='#6a7a64';c.fillRect(0,0,1024,410);
+    c.fillStyle='#829272';c.fillRect(0,615,1024,409);
+    return canvas.toDataURL('image/png').split(',')[1];
+  });
+  const fileFixture={name:'test-only-not-real-art.png',mimeType:'image/png',buffer:Buffer.from(fixtureData,'base64')};
+  const pilotPage=await browser.newPage({viewport:{width:1420,height:940},deviceScaleFactor:1});
+  pilotPage.on('pageerror',e=>errors.push('pilot: '+String(e)));
+  await pilotPage.goto('http://127.0.0.1:8765/street-pilot-review.html',{waitUntil:'load'});
+  await pilotPage.waitForFunction(()=>window.YangzhouArtV2?.ready(),{timeout:30000});
+  await pilotPage.locator('#pilotFile').setInputFiles(fileFixture);
+  await pilotPage.waitForFunction(()=>window.YangzhouArtV2.inspect().temporaryReviewKeys.length===1);
+  assert.match(await pilotPage.locator('#assetStatus').textContent(),/Local painted pilot loaded/);
+  assert.equal(await pilotPage.locator('#sizeValue').textContent(),'1024×1024');
+  assert.match(await pilotPage.locator('#geometryVerdict').textContent(),/outstanding/);
+  await pilotPage.locator('#portToggle').click();
+  assert.equal(await pilotPage.locator('#portToggle').getAttribute('aria-pressed'),'true');
+  await pilotPage.locator('#zoom').selectOption('3');
+  await pilotPage.screenshot({path:'artifacts/v2/pr13-geometry-ports-fixture.png',fullPage:true});
+  await pilotPage.locator('#clear').click();
+  await pilotPage.waitForFunction(()=>window.YangzhouArtV2.inspect().temporaryReviewKeys.length===0);
+  const imgStatus=await pilotPage.locator('#sizeValue').textContent();
+  assert.equal(imgStatus,'Not loaded');
+  await desktop.locator('#pilotUpload').setInputFiles(fileFixture);
+  await desktop.waitForFunction(()=>window.YangzhouArtV2.inspect().temporaryReviewKeys.length===1);
+  const selected=await desktop.evaluate(()=>{
+    const s=window.YangzhouDebug.state;
+    return {id:window.YangzhouDebug.archetypes[s.type].id,rotation:s.rotation,
+       edges:window.YangzhouDebug.rotEdges(window.YangzhouDebug.archetypes[s.type].edges,s.rotation).join('')};
+  });
+  assert.deepEqual(selected,{id:'street-straight',rotation:1,edges:'LSLS'});
+  await desktop.screenshot({path:'artifacts/v2/pr13-playable-pilot-fixture.png',fullPage:true});
   assert.deepEqual(errors,[],'Browser JavaScript errors');
   console.log('V2 browser QA passed: desktop/mobile, placement, gallery, 32 studies, 16-square ring and detail zoom.');
  }finally{await browser.close();}

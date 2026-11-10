@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yangzhou V2 · first painted street quality review</title>
+<style>
+:root{--paper:#f2e9d8;--ink:#3b493f;--mute:#6b7166;--border:#cbbda5;--jade:#4c6c65}
+*{box-sizing:border-box}html{background:#e9e2d2;color:var(--ink);font:14px/1.5 system-ui,sans-serif}body{margin:0}
+header{padding:19px max(16px,calc((100vw - 1260px)/2));background:var(--paper);border-bottom:1px solid var(--border)}
+main{max-width:1300px;margin:auto;padding:18px 18px 80px}h1,h2{font-family:Georgia,serif;font-weight:normal}
+h1{font-size:clamp(28px,4vw,42px);margin:2px 0 8px}h2{font-size:24px;margin:24px 0 9px}
+p{margin:7px 0;max-width:980px}.eyebrow{text-transform:uppercase;letter-spacing:.14em;color:#8d684a;font-size:11px;font-weight:700}
+a{color:#7f573d}button,.file-button,select{font:inherit;padding:9px 13px;border:1px solid #b6a48e;background:#f8f0e3;border-radius:5px;color:var(--ink);cursor:pointer}
+button:hover,.file-button:hover,button:focus-visible,.file-button:focus-within{outline:2px solid var(--jade)}
+button[aria-pressed=true]{background:#d9e7df;border-color:#567d72}
+.file-button input{position:absolute;width:1px;height:1px;opacity:0}
+.note{padding:12px 15px;background:#f4ecdd;border-left:3px solid #a8875c;margin:14px 0}
+.columns{display:grid;grid-template-columns:minmax(300px,1fr) minmax(300px,1fr);gap:18px}
+.panel{background:#f7efe3;border:1px solid var(--border);padding:13px;border-radius:5px}
+.panel h3{margin:3px 0 9px;font:22px Georgia,serif}
+.preview{display:block;width:100%;max-width:100%;height:auto;border:1px solid #bfb398;aspect-ratio:1;object-fit:contain}
+#join{width:100%;height:auto;display:block;min-width:0;background:#d9ddca;border:1px solid var(--border)}
+.controls{display:flex;gap:9px;flex-wrap:wrap;align-items:center;padding:10px 0}
+label{cursor:pointer}small,.small{color:var(--mute);font-size:12px}
+.key{font-weight:600;color:#346d62}
+.metrics{display:flex;gap:12px;flex-wrap:wrap}
+.metric{background:#e8e0d1;padding:9px 11px;flex:1;min-width:145px}
+.metric strong{display:block;font:22px Georgia,serif}
+table{border-collapse:collapse;width:100%;background:#f8f1e5}th,td{border-bottom:1px solid var(--border);padding:8px;vertical-align:top;text-align:left}
+th{font-size:12px}input[type=checkbox]{width:18px;height:18px}
+#assessment td:nth-child(2){font-variant-numeric:tabular-nums}
+.status{color:#8d633f;font-weight:600}
+#joinFrame{max-width:100%;overflow:auto;background:#ede8dc}
+#join{max-height:900px}
+footer{margin:24px 0 0;border-top:1px solid var(--border);padding:15px 0;color:var(--mute)}
+@media(max-width:780px){main{padding:12px}.columns{grid-template-columns:1fr}.panel{padding:10px}h2{font-size:21px}#join{max-height:650px}}
+</style>
+</head>
+<body>
+<header><div class="eyebrow">Yangzhou · Artwork V2 / PR13 pilot</div>
+<h1>The first painted street · quality & joining study</h1>
+<p><a href="./">Playable camera</a> · <a href="tile-lab-v2.html">All composition studies</a> · <a href="docs/ARTWORK-V2.md">Acceptance requirements</a></p></header>
+<main>
+<div class="note">
+<strong>One painted candidate, not an approved family.</strong> The original 1254 × 1254 Yangzhou street painting is east–west: its topology is <strong>LSLS</strong> (land north, street east, land south, street west). The sketch's base topology is SLSL; we select rotation <strong>1</strong> to match the artwork WITHOUT rotating its buildings.
+<p id="assetStatus" class="status">Select the original painting below to inspect the actual pixels. No artwork is silently substituted, uploaded or cached.</p>
+</div>
+<div class="controls">
+<label class="file-button" for="pilotFile">Choose original painting<input id="pilotFile" type="file" accept="image/png,image/webp,image/avif,image/jpeg"></label>
+<button type="button" id="clear">Clear painted candidate</button>
+<button type="button" id="portToggle" aria-pressed="false">Show route ports</button>
+<label for="zoom">View scale <select id="zoom"><option value="1">Overview (1×)</option><option value="2">Neighbourhood (2×)</option><option value="3" selected>Detail (3×)</option></select></label>
+</div>
+<div class="metrics">
+<div class="metric"><strong id="sizeValue">Not loaded</strong><small>Source resolution</small></div>
+<div class="metric"><strong>44 / 220</strong><small>Legal street width · 20% of tile</small></div>
+<div class="metric"><strong>LSLS</strong><small>N / E / S / W connectors</small></div>
+<div class="metric"><strong id="approvedCount">0 / 4</strong><small>Independently painted road orientations</small></div>
+</div>
+<div class="columns">
+<section class="panel">
+<h3>Original square · no transformation</h3>
+<p class="small">The guide is an overlay only and does not alter the source artwork.</p>
+<canvas class="preview" id="single" width="900" height="900"></canvas>
+</section>
+<section class="panel">
+<h3>Three-square joining test</h3>
+<p class="small">For diagnostic purposes, the same painting is repeated in two neighbouring positions. This is <strong>not</strong> a distinct painted family or final gameplay composition.</p>
+<div id="joinFrame"><canvas id="join" width="1320" height="520"></canvas></div>
+</section>
+</div>
+<h2>Acceptance review</h2>
+<p>Inspect the original painting at 1× and 3×. The test distinguishes a <strong>topologically legal</strong> join from a <strong>visually convincing</strong> join. Passing the first does not establish the second.</p>
+<div class="columns">
+<section class="panel">
+<h3>Geometry and seam checklist</h3>
+<table><tbody>
+<tr><td><input id="north" type="checkbox" disabled checked></td><td>North edge is land; no external street.</td></tr>
+<tr><td><input id="east" type="checkbox" disabled checked></td><td>East edge is a street port.</td></tr>
+<tr><td><input id="south" type="checkbox" disabled checked></td><td>South edge is land; no external street.</td></tr>
+<tr><td><input id="west" type="checkbox" disabled checked></td><td>West edge is a street port.</td></tr>
+<tr><td><input id="widthCheck" type="checkbox"></td><td>Street visibly reaches the <em>same 44/220 width</em> at both external edges, without a synthetic patch or obvious crop.</td></tr>
+<tr><td><input id="seamCheck" type="checkbox"></td><td>Painted paving and neighbouring boundary details join convincingly in both directions, at 1× and 3×.</td></tr>
+<tr><td><input id="historicalCheck" type="checkbox"></td><td>Architectural and horticultural details have passed the historical plausibility review.</td></tr>
+</tbody></table>
+<p id="geometryVerdict" class="status">Exact border and seam approval: pending human inspection.</p>
+</section>
+<section class="panel">
+<h3>Artwork quality rubric</h3>
+<p class="small">0–3 per category. Gate: at least 16 / 18 and every category at least 2. An absent image cannot be approved.</p>
+<table id="assessment"><thead><tr><th>Criterion</th><th>Score</th></tr></thead><tbody></tbody></table>
+<p id="score" class="status">Review has not been scored.</p>
+</section>
+</div>
+<h2>Findings / next visual iteration</h2>
+<p>The initial illustration has excellent garden and roof detail. Remaining issues for the art pass: verify that the paving extends exactly through the east/west midpoint at 20% tile width; retouch the two edge slices directly in the painting if needed; test against <em>another independently painted</em> neighbour rather than judging repeated artwork as success.</p>
+<footer>No file uploaded by this tool is automatically committed to GitHub. The reviewer can load the original generated image in this page and the playable camera while the repository master is being staged. This page does not store the image between page loads.</footer>
+</main>
+<script src="tile-topology.js"></script>
+<script src="tile-art-v2.js"></script>
+<script>
+(() => {
+'use strict';
+const $=id=>document.getElementById(id),top=window.YangzhouTileTopology,artist=window.YangzhouArtV2;
+const key='street-straight:1',arch=top.archetypes.find(a=>a.id==='street-straight');
+const e=top.rotateEdges(arch.edges,1);
+if(e.join('')!=='LSLS')throw Error('Artwork axis is not compatible with rotation one');
+let source=null,ports=false;
+const tile=(x,y)=>({id:arch.id,kind:arch.kind,x,y,rotation:1,edges:e,name:arch.name});
+const tiles=[tile(0,0),tile(1,0),tile(2,0)];
+const errors=top.validateBoard(tiles);
+if(errors.length)throw Error('Three-square chain violates route contract: '+errors.join('; '));
+function overlay(c,x,y){
+ c.save();c.translate(x,y);
+ c.strokeStyle='#b34e3c';c.lineWidth=2;c.setLineDash([5,4]);
+ c.strokeRect(.5,.5,219,219);
+ c.fillStyle='#d9cc77a0';c.fillRect(0,88,220,44);
+ c.strokeStyle='#b34e3c';c.lineWidth=1.5;c.beginPath();
+ c.moveTo(0,88);c.lineTo(19,88);c.moveTo(0,132);c.lineTo(19,132);
+ c.moveTo(201,88);c.lineTo(220,88);c.moveTo(201,132);c.lineTo(220,132);
+ c.moveTo(110,77);c.lineTo(110,143);c.stroke();c.setLineDash([]);
+ c.fillStyle='#8f3926';c.font='bold 10px system-ui,sans-serif';
+ c.fillText('W',3,108);c.fillText('E',207,108);
+ c.restore();
+}
+function render(){
+ const single=$('single'),c=single.getContext('2d');
+ c.setTransform(1,0,0,1,0,0);c.fillStyle='#e0ddcc';c.fillRect(0,0,900,900);
+ c.save();c.scale(900/220,900/220);
+ artist.draw(c,tile(0,0));if(ports)overlay(c,0,0);
+ c.restore();
+ const zoom=Number($('zoom').value),join=$('join'),ctx=join.getContext('2d');
+ // One source tile is 220 world units. Native joins share pixels,
+ // not painted feathering or canvas rotations.
+ const scale=1.8*zoom;
+ join.width=660*scale+40;join.height=220*scale+40;
+ ctx.fillStyle='#e0ddcc';ctx.fillRect(0,0,join.width,join.height);
+ ctx.save();ctx.translate(20,20);ctx.scale(scale,scale);
+ for(const t of tiles){artist.draw(ctx,t);if(ports)overlay(ctx,t.x*220,t.y*220);}
+ ctx.restore();
+}
+function validate(){
+ const inputs=['widthCheck','seamCheck','historicalCheck'].map(id=>$(id).checked);
+ $('geometryVerdict').textContent=source
+ ? inputs.every(Boolean)?'All three reviewer checks ticked. Reconfirm visual results and independent neighbour before approval.':'Seam / geometric / historical review remains outstanding.'
+ :'No source painting selected. No seam approval possible.';
+ const scores=[...document.querySelectorAll('#assessment select')].map(x=>Number(x.value));
+ const sum=scores.reduce((a,b)=>a+b,0);
+ const pass=source && sum>=16 && scores.every(x=>x>=2) && inputs.every(Boolean);
+ $('score').textContent='Human assessment '+sum+' / 18 · '+(pass?'Rubric threshold provisionally met; separate neighbour + historical signoff still required.':'Not approved. Gate: 16/18, all scores >=2, required geometry checks.');
+ $('score').style.color=pass?'#386b51':'#975e38';
+}
+const criteria=['Painterly detail','True overhead camera','Distinctness of scene','Street / destination topology','Visible seam continuity','Close zoom detail'];
+const tbody=document.querySelector('#assessment tbody');
+for(const criterion of criteria){
+ const tr=document.createElement('tr'),cell=document.createElement('td'),score=document.createElement('td'),select=document.createElement('select');
+ cell.textContent=criterion;select.setAttribute('aria-label',criterion);
+ for(let i=0;i<=3;i++){const option=document.createElement('option');option.value=i;option.textContent=i;select.append(option);}
+ score.append(select);tr.append(cell,score);tbody.append(tr);select.onchange=validate;
+}
+$('pilotFile').addEventListener('change',ev=>{
+ const file=ev.target.files?.[0];if(!file)return;
+ const url=URL.createObjectURL(file),im=new Image();
+ im.onload=()=>{
+  try{
+   artist.registerReviewImage(key,im);
+   source={name:file.name,width:im.naturalWidth,height:im.naturalHeight};
+   $('sizeValue').textContent=im.naturalWidth+'×'+im.naturalHeight;
+   $('assetStatus').textContent='Local painted pilot loaded: '+file.name+' · east–west (LSLS) · not in GitHub · pending seam approval.';
+  }catch(error){$('assetStatus').textContent='Pilot rejected: '+error.message;source=null;}
+  render();validate();URL.revokeObjectURL(url);
+ };
+ im.onerror=()=>{$('assetStatus').textContent='Unable to decode source image.';URL.revokeObjectURL(url);};
+ im.src=url;
+});
+$('clear').onclick=()=>{
+ artist.clearReviewImage(key);source=null;
+ $('sizeValue').textContent='Not loaded';
+ $('assetStatus').textContent='No painting loaded: composition study fallback, not finished artwork.';
+ $('pilotFile').value='';render();validate();
+};
+$('portToggle').onclick=()=>{ports=!ports;$('portToggle').setAttribute('aria-pressed',String(ports));render();};
+$('zoom').onchange=render;
+for(const id of ['widthCheck','seamCheck','historicalCheck'])$(id).onchange=validate;
+window.addEventListener('yangzhou-art-v2-updated',render);
+render();validate();
+})();
+</script>
+</body></html>
