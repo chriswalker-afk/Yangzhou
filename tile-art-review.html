@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yangzhou — Painterly tile artwork review</title>
+<style>
+:root{color-scheme:light;--ink:#293c36;--paper:#f6f0e3;--line:#d7c7a9;--accent:#7c493e;--muted:#6e7169}
+*{box-sizing:border-box}
+body{font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);background:#e4e2d1;margin:0}
+header{background:var(--paper);padding:25px max(18px,calc((100vw - 1300px)/2));border-bottom:1px solid var(--line)}
+.eyebrow{text-transform:uppercase;font-size:11px;letter-spacing:.13em;color:var(--accent);font-weight:700}
+h1{font-family:Georgia,serif;font-weight:500;font-size:clamp(25px,3vw,38px);margin:.2em 0}
+p{margin:6px 0;max-width:900px}
+.notice{color:var(--accent);font-weight:650}
+main{max-width:1320px;margin:auto;padding:22px 18px 60px}
+a{color:var(--accent)}
+.actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:15px 0 20px}
+select,button{font:inherit;min-height:38px;border-radius:5px;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:6px 10px;cursor:pointer}
+button:hover,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h2{font:500 24px Georgia,serif;margin:20px 0 12px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.card{display:flex;flex-direction:column;gap:6px;background:var(--paper);border:1px solid var(--line);padding:9px;border-radius:8px}
+.card canvas{width:100%;height:auto;aspect-ratio:1;background:#c6c3a8;border-radius:3px;image-rendering:auto;display:block}
+.caption{font-size:12px;color:var(--muted)}
+.card strong{font-size:14px}
+.ref{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;max-width:750px;border:3px solid var(--paper);box-shadow:0 4px 13px #3f493627}
+.ref img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+#status{font-size:13px;color:var(--muted)}
+dialog{border:1px solid var(--line);border-radius:12px;padding:15px;background:var(--paper);max-height:95vh;max-width:95vw;box-shadow:0 20px 80px #18292080}
+dialog::backdrop{background:#16201fc7}
+dialog canvas{width:min(80vw,70vh);height:auto;aspect-ratio:1;display:block}
+.dialogbar{display:flex;justify-content:space-between;align-items:center;gap:12px}
+@media(max-width:600px){main{padding:16px}.gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card{padding:6px}}
+</style></head>
+<body>
+<header><div class="eyebrow">Yangzhou • Artwork acceptance studio</div>
+<h1>Painterly tile-deck review</h1>
+<p>Examine the actual expansion assets at overhead and close zoom. Every image must meet the detail and connection standard of the six-square Slender West Lake painting.</p>
+<p class="notice">Review artwork only — passing the geometry test does not mean these tiles have been artistically approved.</p>
+<p><a href="./">Return to the game</a> · <a href="docs/PAINTERLY-TILE-ART-STANDARD.md">Read the acceptance standard</a></p>
+</header>
+<main>
+<h2>Accepted visual benchmark</h2>
+<p>These six detailed starter paintings are the target for all other tiles. They do not count as six separate expansion archetypes.</p>
+<div class="ref" id="lakeRef"></div>
+<div class="actions">
+<label for="filter">Tile type</label>
+<select id="filter"><option value="all">All 13 archetypes</option></select>
+<label for="mode">Review scale</label>
+<select id="mode"><option value="normal">Normal</option><option value="large">Larger</option></select>
+<span id="status">Loading the 52 square artwork variants…</span>
+</div>
+<div class="gallery" id="gallery"></div>
+<dialog id="detail"><div class="dialogbar"><strong id="detailTitle"></strong><button id="close" type="button">Close</button></div>
+<canvas id="detailCanvas" width="512" height="512"></canvas><p class="caption">Inspect detailed paving, foliage, edge exits and landmark orientation before sign-off.</p></dialog>
+</main>
+<script>
+const root='assets/tiles/painterly/';
+const $=id=>document.getElementById(id);
+const files=['01-willow-garden','02-northern-lake','03-lakeside-teahouse','04-white-pagoda','05-five-pavilion-bridge','06-breakfast-house'];
+$('lakeRef').replaceChildren(...files.map(name=>{const img=new Image();img.alt=name.replaceAll('-',' ');img.loading='lazy';img.src='assets/lake/'+name+'.webp';return img;}));
+const cache=new Map();
+let entries=[];
+function thumb(row,r){
+ const im=cache.get(row.index),c=document.createElement('canvas');
+ c.width=c.height=256;
+ if(im?.complete&&im.naturalWidth)c.getContext('2d').drawImage(im,(r%2)*512,Math.floor(r/2)*512,512,512,0,0,256,256);
+ return c;
+}
+function render(){
+ const filter=$('filter').value;const gallery=$('gallery');gallery.replaceChildren();
+ if($('mode').value==='large')gallery.style.gridTemplateColumns='repeat(auto-fill,minmax(260px,1fr))';
+ else gallery.style.gridTemplateColumns='';
+ for(const row of entries){
+  if(filter!=='all'&&Number(filter)!==row.index)continue;
+  for(let r=0;r<4;r++){
+   const card=document.createElement('button');card.className='card';card.type='button';
+   const title=document.createElement('strong');title.textContent=row.name;
+   const subtitle=document.createElement('span');subtitle.className='caption';subtitle.textContent='Rotation '+(r*90)+'° · N/E/S/W '+row.variants[r].edges;
+   card.append(thumb(row,r),title,subtitle);card.addEventListener('click',()=>openTile(row,r));gallery.append(card);
+  }
+ }
+}
+function openTile(row,r){
+ const img=cache.get(row.index);const c=$('detailCanvas').getContext('2d');c.clearRect(0,0,512,512);
+ if(img?.complete&&img.naturalWidth)c.drawImage(img,(r%2)*512,Math.floor(r/2)*512,512,512,0,0,512,512);
+ $('detailTitle').textContent=row.name+' — '+(r*90)+'° — '+row.variants[r].edges;
+ $('detail').showModal();
+}
+$('close').onclick=()=>$('detail').close();
+$('filter').onchange=render;$('mode').onchange=render;
+fetch(root+'manifest.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('Artwork manifest unavailable');return r.json()}).then(async m=>{
+ entries=m.archetypes;
+ const select=$('filter');
+ entries.forEach(row=>{const o=document.createElement('option');o.value=row.index;o.textContent=row.name;select.append(o)});
+ await Promise.all(entries.map(row=>new Promise(resolve=>{
+  const img=new Image();img.onload=resolve;img.onerror=resolve;img.src=root+row.atlas;cache.set(row.index,img);
+ })));
+ $('status').textContent=entries.length*4+' artwork variants · '+m.status+' status';
+ render();
+}).catch(e=>$('status').textContent='Artwork could not be displayed: '+e.message);
+</script></body></html>
