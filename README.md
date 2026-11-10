@@ -10,6 +10,7 @@ A calm, tile-laying city-builder inspired by the everyday stories of eighteenth-
 
 - [Painterly art standard and release gates](docs/PAINTERLY-TILE-ART-STANDARD.md)
 - [Expansion artwork review log and known imperfections](docs/PAINTERLY-DECK-REVIEW.md)
+- [Open the in-browser 52-tile artwork review gallery](tile-art-review.html)
 - [Deck atlas manifest](assets/tiles/painterly/manifest.json) and [reproducible source pipeline](scripts/build_painterly_deck.py)
 - Local QA: `python scripts/check_painterly_deck.py` and `node tests/smoke.cjs`
 - To compare the legacy composited expansion art only, use `?tileArt=legacy` (the detailed starter remains unless separately disabled).
