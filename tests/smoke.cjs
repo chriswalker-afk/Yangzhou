@@ -16,6 +16,28 @@ assert.equal(schema.portWidth.S,44);
 assert.equal(schema.portWidth.W,88);
 assert.equal(schema.center,110);
 assert.equal(schema.starter.length,6);
+const paintedManifest=JSON.parse(fs.readFileSync('assets/lake/manifest.json','utf8'));
+const painterlyManifest=JSON.parse(fs.readFileSync('assets/tiles/painterly/manifest.json','utf8'));
+assert.equal(paintedManifest.status,'review','Detailed starting paintings should be visible in review mode');
+assert.equal(painterlyManifest.status,'review','Expansion art requires human sign-off');
+assert.equal(painterlyManifest.archetypes.length,schema.archetypes.length);
+assert(html.includes('deck-painter.js'),'Dedicated painterly deck loader must run');
+assert(rendererOrFalse('tile-system.js','YangzhouDeckPainter?.draw'),'Loaded painted art must bypass vector overlays');
+for(let i=0;i<schema.archetypes.length;i++){
+  const row=painterlyManifest.archetypes[i],arch=schema.archetypes[i];
+  assert.equal(row.name,arch.name);
+  assert.equal(row.baseEdges,arch.edges.join(''));
+  assert.equal(row.variants.length,4);
+  const file='assets/tiles/painterly/'+row.atlas;
+  assert(fs.existsSync(file),'Missing painted tile atlas '+file);
+  assert(fs.statSync(file).size>200000,'Painterly atlas too small to contain rich square artwork '+file);
+  for(let rotation=0;rotation<4;rotation++){
+    assert.equal(row.variants[rotation].edges,schema.rotateEdges(arch.edges,rotation).join(''));
+  }
+}
+function rendererOrFalse(path,fragment){return fs.readFileSync(path,'utf8').includes(fragment);}
+new vm.Script(fs.readFileSync('deck-painter.js','utf8'),{filename:'deck-painter.js'});
+
 const renderer=fs.readFileSync('tile-system.js','utf8');
 const edgePainter=fs.readFileSync('edge-art.js','utf8');
 // A production landmark master must not be obscured by a second
@@ -132,6 +154,8 @@ assert(st.selected,'Valid location should select');
 assert.equal(elements.get('place').disabled,false);
 elements.get('place').onclick();
 assert.equal(game.board.size,7);
+assert.equal(game.board.get(site.join(',')).archetypeIndex,0,'Placed tile preserves painterly archetype identity');
+assert.equal(game.board.get(site.join(',')).rotation,0,'Placed tile preserves its art rotation');
 assert.equal(st.selected,null);
 assert.equal(game.board.get(site.join(',')).fixed,undefined);
 
