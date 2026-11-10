@@ -145,6 +145,10 @@
   }
   function paint(c,t){
     c.save();c.beginPath();c.rect(0,0,S,S);c.clip();
+    // Every expansion archetype/rotation has its own upright painted square.
+    // Once loaded it is authoritative: never paint vector roads, duplicate
+    // pavilions or fuzzy edge collars over the artwork.
+    if(!t.fixed&&window.YangzhouDeckPainter?.draw?.(c,t)){c.restore();return;}
     const master=masterFor(t),base=baseFor(t);
     // Six starter squares sample contiguous source coordinates from one
     // coherent composition. This eliminates the duplicated garden scene and
@@ -208,7 +212,9 @@
   function draw(c,t,time,scale=1){
     if(!ok(baseFor(t))&&!(t.fixed&&(window.YangzhouLakePainted?.ready?.()||window.YangzhouOrthographic?.ready?.())))return false;
     const detail=scale>=2.7?5:4;
-    const k=[t.master||'',t.kind,t.edges.join(''),t.seed||0,detail,window.YangzhouLakePainted?.ready?.()?'painted':window.YangzhouOrthographic?.ready?.()?'ortho':'fallback'].join(':');
+    const k=[t.master||'',t.archetypeIndex??'',t.name||'',t.rotation??'',t.kind,t.edges.join(''),t.seed||0,detail,
+      window.YangzhouLakePainted?.ready?.()?'painted':window.YangzhouOrthographic?.ready?.()?'ortho':'fallback',
+      window.YangzhouDeckPainter?.inspect?.().loaded??0].join(':');
     let can=cache.get(k);
     if(!can){can=raster(t,detail);cache.set(k,can);if(cache.size>MAX_CACHE)cache.delete(cache.keys().next().value);}
     else{cache.delete(k);cache.set(k,can);}
@@ -221,7 +227,8 @@
   }
   window.YangzhouTiles={draw,drawBridgeOccluders,ready:()=>NAMES.every(ok),
     assetsReady:()=>NAMES.filter(ok),errors:()=>errors.slice(),
-    stats:()=>({cached:cache.size,loaded:populated(),mode:'individual-square-tile-masters',artMode:window.YangzhouLakePainted?.ready?.()?'painted-orthographic':'generated-orthographic',canonicalWidths:{street:44,water:88}}),
+    stats:()=>({cached:cache.size,loaded:populated(),mode:'individual-square-tile-masters',artMode:window.YangzhouLakePainted?.ready?.()?'painted-orthographic':'generated-orthographic',
+    expansionArt:window.YangzhouDeckPainter?.inspect?.().status||'legacy',canonicalWidths:{street:44,water:88}}),
     tileSize:S,sourceFor:baseFor,clear:()=>cache.clear()};
   load();
 })();
