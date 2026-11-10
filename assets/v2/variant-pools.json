@@ -1,0 +1,358 @@
+{
+  "schemaVersion": 1,
+  "packId": "yangzhou-all-painted-tile-variants-2026-11-10",
+  "usage": "candidate original paintings for randomly selected, compass-upright tile artwork",
+  "imagePixels": 1254,
+  "worldUnits": 220,
+  "portWidthUnits": {
+    "S": 44,
+    "W": 88,
+    "L": 0
+  },
+  "pathBase": "assets/v2/",
+  "loadPolicy": "only select an image from a pool matching id AND exact N/E/S/W edges; keep each selected image stable for its tile",
+  "seedPolicy": "choose once for each placed tile by stable hash(gameSeed, x, y, id, edges, tile.seed); do not re-roll every frame",
+  "disclaimer": "Artwork visual joins and exact mouth widths have not been formally certified. No physically rotated copies. Fixed lake starter tiles remain in the existing GitHub repository and are not duplicated in this overlay archive.",
+  "pools": [
+    {
+      "archetype": "garden-grove",
+      "edges": "LLLL",
+      "variants": [
+        {
+          "id": "garden-enclosed-willow-pond",
+          "file": "variants/garden-grove/garden-enclosed-willow-pond.webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 1047374,
+          "sha256": "964476d133193366cf5ed8f5b5b4bc4ff2c9c8ff25f39081b5caa867cd8441d1",
+          "sourcePngSha256": "a6c0f567bde6922cc355f43875438b39aa12a114345e3627ba2f7298d5f783d0",
+          "sourcePngBytes": 4255015,
+          "sourceFilename": "enclosed_jiangnan_garden_tile.png",
+          "status": "candidate",
+          "description": "Enclosed Jiangnan scholar garden with inner lotus pond",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "archetype": "street-straight",
+      "edges": "LSLS",
+      "variants": [
+        {
+          "id": "street-ew-original-pilot",
+          "file": "variants/street-straight/street-ew-original-pilot.webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 1016952,
+          "sha256": "02cf9541a0533012f9fe402aabf6b852a22bcdc1edea8fe10bd313b4834390bc",
+          "sourcePngSha256": "bc8fc1cf37b0404dc6620385a6167576692e3aee11bbf7346da28edbb158b2c2",
+          "sourcePngBytes": 4108283,
+          "sourceFilename": "watercolor_courtyards_along_yangzhou_street.png",
+          "status": "candidate",
+          "description": "Archived original east-west street painting",
+          "weight": 1
+        },
+        {
+          "id": "street-ew-repainted",
+          "file": "variants/street-straight/street-ew-repainted.webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 941722,
+          "sha256": "e93bb8a9e03ff8a1648cddeb81efcb2ea2838a6be19368476d1059e389544aa9",
+          "sourcePngSha256": "6154a21f963d9d3d42253d2067faec3ff0f9f12b216515d0f90dbdb4c868036e",
+          "sourcePngBytes": 3804335,
+          "sourceFilename": "street-east-west-repaint.png",
+          "status": "candidate",
+          "description": "Repainted east-west street; imported master",
+          "weight": 1
+        },
+        {
+          "id": "street-ew-garden-neighbour",
+          "file": "variants/street-straight/street-ew-garden-neighbour.webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 1005674,
+          "sha256": "0c44b2b6652314ff1e33408f98097cc665b30826c58cee97492ba59e05184b31",
+          "sourcePngSha256": "3ea085876ce7941525314b6a846989311bb5562bbfc14dc8098cda0fcbf49df3",
+          "sourcePngBytes": 4034740,
+          "sourceFilename": "street-east-west-neighbour.png",
+          "status": "candidate",
+          "description": "Independent east-west courtyard street",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "archetype": "street-straight",
+      "edges": "SLSL",
+      "variants": [
+        {
+          "id": "street-ns-merchant-courtyards",
+          "file": "variants/street-straight/street-ns-merchant-courtyards.webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 1049018,
+          "sha256": "252b2ea3825ff37ecbfcb428928003dfa086cfc36a2302f84e6c5180423d697a",
+          "sourcePngSha256": "e73d1211c750589cb16a8e8020bb2670999a7ebc45332a4b09ad11019fe98ea2",
+          "sourcePngBytes": 4302868,
+          "sourceFilename": "street-straight-north-south.png",
+          "status": "candidate",
+          "description": "North-to-south street; original upright merchant courtyards",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "archetype": "street-bend",
+      "edges": "SSLL",
+      "variants": [
+        {
+          "id": "street-ne-courtyard-turn",
+          "file": "variants/street-bend/street-ne-courtyard-turn.webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 1044886,
+          "sha256": "3daa5c98abebb0169856451b3b1b3fcebfea926bc05a5f943d6dacb137c1f3ba",
+          "sourcePngSha256": "d4990f92248d31df198a046d636e982a9a7c839d66719b4152570a3613c15825",
+          "sourcePngBytes": 4237737,
+          "sourceFilename": "jiangnan_courtyard_garden_street.png",
+          "status": "candidate",
+          "description": "North-to-east turning street",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "archetype": "market-cross",
+      "edges": "SSSS",
+      "variants": [
+        {
+          "id": "market-four-way-crossroads",
+          "file": "variants/market-cross/market-four-way-crossroads.webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 980772,
+          "sha256": "ba3ded74e9f5093416f9cb89fef52d34505d4a04b95e8c741731b37ce7de7efe",
+          "sourcePngSha256": "a964f9a461d679e3a3771334822e0dcc35e8c522153a53249182f27033b2ae9d",
+          "sourcePngBytes": 3908488,
+          "sourceFilename": "recovered_tiles/market-crossroads.png",
+          "status": "candidate",
+          "description": "Four-way merchant neighbourhood crossroads",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "archetype": "canal-straight",
+      "edges": "LWLW",
+      "variants": [
+        {
+          "id": "canal-ew-lotus-shores",
+          "file": "variants/canal-straight/canal-ew-lotus-shores.webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 961792,
+          "sha256": "750b19742d5add4f7ad25692764f957d7a9b7f42f6b51016bc199ffdde8b3ce6",
+          "sourcePngSha256": "566004f38bd32554ed38b55c69d76cbd43cd789b3c0971a6d646fe2da12a9779",
+          "sourcePngBytes": 3799454,
+          "sourceFilename": "a_highly_detailed_hand_painted_watercolor_ink_sty.png",
+          "status": "candidate",
+          "description": "West-to-east canal, land on top and bottom",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "archetype": "canal-straight",
+      "edges": "WLWL",
+      "variants": [
+        {
+          "id": "canal-ns-first-lakebank",
+          "file": "variants/canal-straight/canal-ns-first-lakebank.webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 1007518,
+          "sha256": "2d8c3f7f83f2fe7176effcf48d0105ca04afd4a7755a56ce103efff01a3b9ef7",
+          "sourcePngSha256": "6c52036c5464ebc2c52dec98077117b3b5a070470c50e2f7d920738840bf1818",
+          "sourcePngBytes": 4078549,
+          "sourceFilename": "jiangnan_canal_gardens_from_above.png",
+          "status": "candidate",
+          "description": "North-to-south willow canal beside pavilions",
+          "weight": 1
+        },
+        {
+          "id": "canal-ns-garden-courtyards",
+          "file": "variants/canal-straight/canal-ns-garden-courtyards.webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 903970,
+          "sha256": "d813de77872fa35c289272c25c0f394b920fbb94de45f06b69a3ed6afbae168c",
+          "sourcePngSha256": "53a024d8cafc8a68eff26a82958bf5758b79e2a8d1603242df8f0edc7cec409c",
+          "sourcePngBytes": 3646713,
+          "sourceFilename": "a_highly_detailed_hand_painted_top_down_orthogr.png",
+          "status": "candidate",
+          "description": "North-to-south canal with mirrored garden districts",
+          "weight": 1
+        },
+        {
+          "id": "canal-ns-lotus-gates",
+          "file": "variants/canal-straight/canal-ns-lotus-gates.webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 964882,
+          "sha256": "d3128f490f2e420721ffea7f920125c85b377160a3e3f21f4782d4f60d2b799d",
+          "sourcePngSha256": "ae50ef96104f9d1b26bcb8935c0f06adccf3431d72b708120b03e54c926534bf",
+          "sourcePngBytes": 3792460,
+          "sourceFilename": "a_highly_detailed_watercolor_ink_style_top_down.png",
+          "status": "candidate",
+          "description": "North-to-south canal with lotus and moon gates",
+          "weight": 1
+        },
+        {
+          "id": "canal-ns-lantern-houses",
+          "file": "variants/canal-straight/canal-ns-lantern-houses.webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 906496,
+          "sha256": "ae5695c8007998f84895e73cb2418e563c535795068b88c3a39f97d1605fedca",
+          "sourcePngSha256": "e4d4b0b560f2aa5472b211ebf1b89b094d2ba59d1ef5e07ee2a042b0802a32ce",
+          "sourcePngBytes": 3638009,
+          "sourceFilename": "recovered_tiles/canal-ns-late-variant.png",
+          "status": "candidate",
+          "description": "North-to-south canal with lantern houses",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "archetype": "canal-bend",
+      "edges": "WWLL",
+      "variants": [
+        {
+          "id": "canal-ne-pavilion-terrace",
+          "file": "variants/canal-bend/canal-ne-pavilion-terrace.webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 971956,
+          "sha256": "608c1cbed28425be01ae296cb5f737953a8af7c564ff6c9ec86a811ed048f15a",
+          "sourcePngSha256": "6a8c9cbcb9e2b6186bb3b4149d5ec0f8c41013026b2d9a55b2a2e6695529b811",
+          "sourcePngBytes": 3966772,
+          "sourceFilename": "a_highly_detailed_hand_painted_overhead_game_ti.png",
+          "status": "candidate",
+          "description": "North-to-east canal bend beside garden pavilion",
+          "weight": 1
+        },
+        {
+          "id": "canal-ne-willow-rockery",
+          "file": "variants/canal-bend/canal-ne-willow-rockery.webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 980256,
+          "sha256": "7290372612a684c76008bf7932887bc32c36c906c4bda5582f1cf20f82559ecb",
+          "sourcePngSha256": "af8239d594c5441d6d7f1b53e9bddf62d07a2a62a82cb15f59d895d102386efa",
+          "sourcePngBytes": 3969878,
+          "sourceFilename": "a_highly_detailed_hand_painted_watercolor_ink_w.png",
+          "status": "candidate",
+          "description": "North-to-east canal bend with large willow",
+          "weight": 1
+        },
+        {
+          "id": "canal-ne-courtyard-steps",
+          "file": "variants/canal-bend/canal-ne-courtyard-steps.webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 954574,
+          "sha256": "8b3f3ec06a8d7b0ea792c73a7534ce379b2ac5daf8be033eeb5aa3bd5e449418",
+          "sourcePngSha256": "b8bff5323ed93c833698ba58239bb3c26b043b5253b437c09a285436e9b37472",
+          "sourcePngBytes": 3821559,
+          "sourceFilename": "a_highly_detailed_top_down_orthographic_watercol.png",
+          "status": "candidate",
+          "description": "North-to-east canal bend with merchant courtyard steps",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "archetype": "stone-bridge",
+      "edges": "WSWS",
+      "variants": [
+        {
+          "id": "bridge-ns-water-ew-stone-road",
+          "file": "variants/stone-bridge/bridge-ns-water-ew-stone-road.webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 946708,
+          "sha256": "8d9439ee0e09b88cf69cc5345bcb9fcd6f8cb637aac3e32685cd1bd9600d177e",
+          "sourcePngSha256": "457c7734fc498f5ee8ed9525407b2794b96a1f6b6fe131af591565837efcdc7f",
+          "sourcePngBytes": 3761259,
+          "sourceFilename": "a_highly_detailed_top_down_orthographic_watercolo.png",
+          "status": "candidate",
+          "description": "Horizontal paved footbridge over a vertical canal",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "archetype": "canal-junction",
+      "edges": "LWWW",
+      "variants": [
+        {
+          "id": "canal-esw-moon-gate",
+          "file": "variants/canal-junction/canal-esw-moon-gate.webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 956452,
+          "sha256": "14e5dc26a671ff936063bf695901ce542fe558d558dbeb68191771480e73b028",
+          "sourcePngSha256": "ec4540a833d032e0822a50bef5a8e52ab65204f99882b9870d921e1e9ecb176a",
+          "sourcePngBytes": 3823987,
+          "sourceFilename": "a_highly_detailed_top_down_hand_painted_watercol.png",
+          "status": "candidate",
+          "description": "East-south-west T junction, land north",
+          "weight": 1
+        },
+        {
+          "id": "canal-esw-courtyard-pavilion",
+          "file": "variants/canal-junction/canal-esw-courtyard-pavilion.webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 948754,
+          "sha256": "70347be6e2d724ec9203cb143f96e774a1b7148bfc3a10123b2a5e8f484f0848",
+          "sourcePngSha256": "6afa1a6c97b520b467c82613cf3e4e2dad4d2630eded97503c78797e41bedabc",
+          "sourcePngBytes": 3775993,
+          "sourceFilename": "a_richly_detailed_top_down_orthographic_illustr.png",
+          "status": "candidate",
+          "description": "East-south-west T junction, land north",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "archetype": "canal-junction",
+      "edges": "WWLW",
+      "variants": [
+        {
+          "id": "canal-new-three-way-gardens",
+          "file": "variants/canal-junction/canal-new-three-way-gardens.webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 947874,
+          "sha256": "1eb1c281a2a6f31c5f81ff29d3eda88bc8529567bc066cc79c8f0a739680d51d",
+          "sourcePngSha256": "fca10cc4c88164bf7086d2f6a35de2823add3616fb22934189079c48fa82d23b",
+          "sourcePngBytes": 3797841,
+          "sourceFilename": "a_highly_detailed_hand_painted_watercolor_ink_top.png",
+          "status": "candidate",
+          "description": "North-east-west T junction, land south",
+          "weight": 1
+        }
+      ]
+    }
+  ],
+  "existingStarterTileFiles": [
+    "assets/lake/01-willow-garden.webp",
+    "assets/lake/02-northern-lake.webp",
+    "assets/lake/03-lakeside-teahouse.webp",
+    "assets/lake/04-white-pagoda.webp",
+    "assets/lake/05-five-pavilion-bridge.webp",
+    "assets/lake/06-breakfast-house.webp"
+  ]
+}
