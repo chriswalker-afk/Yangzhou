@@ -48,7 +48,7 @@ canvas{display:block}#board{max-width:none;height:auto}#edgeStrips{width:100%;he
 </select></label>
 <label class="upload" for="neighbourFile">Choose DIFFERENT painted neighbour<input id="neighbourFile" type="file" accept="image/png,image/webp,image/jpeg,image/avif"></label>
 <label class="control" for="zoom">Inspection scale
-<select id="zoom"><option value="1">Overview 1×</option><option value="2">Street 2×</option><option value="3" selected>Detail 3×</option></select></label>
+<select id="zoom"><option value="1" selected>Overview 1×</option><option value="2">Street 2×</option><option value="3">Detail 3×</option></select></label>
 <button id="ports" type="button" aria-pressed="true">Show street port guides</button>
 <button id="clearNeighbour" type="button">Clear neighbour</button>
 </div>
@@ -56,7 +56,7 @@ canvas{display:block}#board{max-width:none;height:auto}#edgeStrips{width:100%;he
 <div id="neighbourStatus" role="status" class="sub">No independent painted neighbour loaded. A labelled blank study slot is shown instead.</div>
 <div class="layout">
 <section class="panel"><h3>Connected pair · original pixels</h3>
-<p class="sub">The overlay is for inspection only; no geometry changes are applied to the paintings. The scrollable canvas allows real 3× seam inspection.</p>
+<p class="sub">The overlay is for inspection only; no geometry changes are applied to the paintings. The pair is shown together at 1× by default; use 3× for close inspection and scroll horizontally when needed.</p>
 <div id="boardShell"><canvas id="board" width="700" height="700" aria-label="Two adjoining square tiles, one original painting and a separate neighbour slot"></canvas></div>
 <p id="geometryStatus">Checking topological compatibility…</p>
 </section>
