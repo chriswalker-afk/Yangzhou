@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Yangzhou V2 · first painted street quality review</title>
+<title>Yangzhou V2 · repainted street quality review</title>
 <style>
 :root{--paper:#f2e9d8;--ink:#3b493f;--mute:#6b7166;--border:#cbbda5;--jade:#4c6c65}
 *{box-sizing:border-box}html{background:#e9e2d2;color:var(--ink);font:14px/1.5 system-ui,sans-serif}body{margin:0}
@@ -38,12 +38,12 @@ footer{margin:24px 0 0;border-top:1px solid var(--border);padding:15px 0;color:v
 </head>
 <body>
 <header><div class="eyebrow">Yangzhou · Artwork V2 / PR13 pilot</div>
-<h1>The first painted street · quality & joining study</h1>
+<h1>Repainted street · quality & joining study</h1>
 <p><a href="./">Playable camera</a> · <a href="tile-lab-v2.html">All composition studies</a> · <a href="painted-neighbour-lab.html">Independent neighbour seam test</a> · <a href="docs/ARTWORK-V2.md">Acceptance requirements</a></p></header>
 <main>
 <div class="note">
-<strong>One painted candidate, not an approved family.</strong> The original 1254 × 1254 Yangzhou street painting is east–west: its topology is <strong>LSLS</strong> (land north, street east, land south, street west). The sketch's base topology is SLSL; we select rotation <strong>1</strong> to match the artwork WITHOUT rotating its buildings.
-<p id="assetStatus" class="status">Loading the original high-resolution painting from this GitHub repository. No upload needed.</p><p class="small"><a href="assets/v2/street-straight-east-west.png" target="_blank" rel="noopener">Open the original 1254px PNG</a> · source is permanently saved in Git history.</p>
+<strong>One painted candidate, not an approved family.</strong> The newly repainted 1254 × 1254 Yangzhou street painting is east–west: its topology is <strong>LSLS</strong> (land north, street east, land south, street west). The sketch's base topology is SLSL; we select rotation <strong>1</strong> to match the artwork WITHOUT rotating its buildings.
+<p id="assetStatus" class="status">Loading the original high-resolution painting from this GitHub repository. No upload needed.</p><p class="small"><a href="assets/v2/street-east-west-repaint.png" target="_blank" rel="noopener">Open the repainted 1254px PNG</a> · <a href="assets/v2/street-straight-east-west.png" target="_blank" rel="noopener">View preserved first version</a>. Both are permanently saved in Git history.</p>
 </div>
 <div class="controls">
 <label class="file-button" for="pilotFile">Try a local revision<input id="pilotFile" type="file" accept="image/png,image/webp,image/avif,image/jpeg"></label>
@@ -95,8 +95,8 @@ footer{margin:24px 0 0;border-top:1px solid var(--border);padding:15px 0;color:v
 <h2>Independent painted-neighbour test</h2>
 <p>The three-square view above deliberately repeats <em>the same artwork</em> and is not a passing landscape-quality demonstration. To compare a genuinely different square against the original street, open the <a href="painted-neighbour-lab.html">two-original joining laboratory</a>. It provides legal east/west street and north/south garden joins, a full-bleed visual comparison at 1× and 3×, border-strip inspection and a separate human review gate.</p>
 <h2>Findings / next visual iteration</h2>
-<p>The initial illustration has excellent garden and roof detail. Remaining issues for the art pass: verify that the paving extends exactly through the east/west midpoint at 20% tile width; retouch the two edge slices directly in the painting if needed; test against <em>another independently painted</em> neighbour rather than judging repeated artwork as success.</p>
-<footer>The original image is committed to GitHub and loads automatically. Choosing a local revision temporarily replaces it only in your browser. The review page does not upload or save the revision. The artwork itself is still NOT approved for production.</footer>
+<p>The original's narrow mouth motivated this repaint. Confirm the revised image really meets the full 20% mouth geometry on BOTH east/west edges, then check it against the independently painted neighbour in the <a href="painted-neighbour-lab.html">joining laboratory</a> at overview and 3×. Seams and historical detail remain unapproved.</p>
+<footer>The repainted street is committed to GitHub and loads automatically. Choosing a local revision temporarily replaces it only in your browser. The review page does not upload or save the revision. The artwork itself is still NOT approved for production.</footer>
 </main>
 <script src="tile-topology.js"></script>
 <script src="tile-art-v2.js"></script>
@@ -166,10 +166,10 @@ function useCommittedMaster(){
  if(localOverride)return;
  const original=artist.getMaster(key);
  if(original){
-  source={name:'street-straight-east-west.png',width:original.naturalWidth,height:original.naturalHeight,origin:'repository'};
+  source={name:'street-east-west-repaint.png',width:original.naturalWidth,height:original.naturalHeight,origin:'repository'};
   $('sizeValue').textContent=original.naturalWidth+'×'+original.naturalHeight;
-  $('paintedCount').textContent='1 / 4';
-  $('assetStatus').textContent='Original street painting loaded from GitHub (1254px) · east–west / LSLS · geometric, seam and historical approval still pending.';
+  $('paintedCount').textContent='2 / 4';
+  $('assetStatus').textContent='Repainted street painting loaded from GitHub (1254px) · east–west / LSLS · geometric, seam and historical approval still pending.';
  }else{
   source=null;
   $('sizeValue').textContent='Loading…';

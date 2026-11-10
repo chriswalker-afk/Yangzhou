@@ -1,10 +1,10 @@
 {
-  "version": "v2-painted-street-pilot-1",
+  "version": "v2-painted-street-pair-1",
   "status": "review",
-  "source": "One original 1254px east-west street painting restored intact from Git history; 31 further square paintings still required.",
+  "source": "Two independently painted 1254px east-west street variants committed intact; historic first PNG archived without alteration; remaining variants are layout studies.",
   "worldUnits": 220,
   "requiredArtworkPixels": 1024,
-  "reviewPolicy": "The street-straight 90-degree painted master is loaded by default, but is NOT approved. Route-edge width, seam appearance at 1x/3x, compositional diversity and historical review are pending. No other variant is painted.",
+  "reviewPolicy": "The two original street PNGs are imported for review at rotation 1 and 3. No art is approved; exact port width, painted seam at overview/3x, and historical quality are pending.",
   "tiles": [
     {
       "id": "garden-grove",
@@ -55,16 +55,16 @@
         {
           "rotation": 1,
           "edges": "LSLS",
-          "artwork": "street-straight-east-west.png",
+          "artwork": "street-east-west-repaint.png",
           "status": "review",
-          "note": "Original 1254-square painting committed intact; 44/220 road port geometry and seamless joins are NOT yet visually approved. Geometry preview and human review still required.",
-          "sourceFilename": "watercolor_courtyards_along_yangzhou_street.png",
-          "imageSource": "Generated in original Yangzhou project conversation on 2026-11-10; user approved art direction; uploaded to GitHub by user.",
+          "note": "Distinct high-resolution user-generated source. Port width and genuinely seamless paint remain subject to human art review, never inferred from topology.",
+          "sourceFilename": "street-east-west-repaint.png",
+          "imageSource": "Two new original full-square Yangzhou paintings generated for the street-pair refinement and uploaded to PR #16 by the user.",
           "width": 1254,
           "height": 1254,
-          "bytes": 4108283,
-          "sha256": "bc8fc1cf37b0404dc6620385a6167576692e3aee11bbf7346da28edbb158b2c2",
-          "gitBlobSha": "39c962c0e6a370a811e7c8535fef20581f14505c"
+          "bytes": 3804335,
+          "sha256": "6154a21f963d9d3d42253d2067faec3ff0f9f12b216515d0f90dbdb4c868036e",
+          "gitBlobSha": "a195f4152394b8b97dbdd1aca63828e35687fd49"
         },
         {
           "rotation": 2,
@@ -75,8 +75,16 @@
         {
           "rotation": 3,
           "edges": "LSLS",
-          "artwork": null,
-          "status": "needs-independent-painting"
+          "artwork": "street-east-west-neighbour.png",
+          "status": "review",
+          "note": "Distinct high-resolution user-generated source. Port width and genuinely seamless paint remain subject to human art review, never inferred from topology.",
+          "sourceFilename": "street-east-west-neighbour.png",
+          "imageSource": "Two new original full-square Yangzhou paintings generated for the street-pair refinement and uploaded to PR #16 by the user.",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 4034740,
+          "sha256": "3ea085876ce7941525314b6a846989311bb5562bbfc14dc8098cda0fcbf49df3",
+          "gitBlobSha": "fd234e7907f0aecf9ef9fa983b0e5019351ffa6b"
         }
       ]
     },

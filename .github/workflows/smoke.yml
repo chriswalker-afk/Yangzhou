@@ -24,3 +24,4 @@ jobs:
           node tests/smoke.cjs
           node tests/v2-contract.cjs
           node tests/scoring-contract.cjs
+          node scripts/validate_street_pair.cjs

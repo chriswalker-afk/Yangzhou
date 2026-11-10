@@ -1,0 +1,69 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yangzhou · Street Pair Review</title><style>
+:root{--paper:#f5ecdc;--ink:#35463e;--line:#cbbca6;--status:#946044}
+*{box-sizing:border-box}body{margin:0;background:#e9e3d7;color:var(--ink);font:14px/1.5 system-ui,sans-serif}
+header{background:var(--paper);border-bottom:1px solid var(--line);padding:22px max(18px,calc((100vw - 1100px)/2))}
+main{max-width:1160px;margin:auto;padding:16px}h1,h2{font-family:Georgia,serif;font-weight:normal}h1{font-size:36px;margin:5px 0}h2{font-size:25px}
+a{color:#805c45}.tag{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#936742}
+.panel{background:#f7f0e4;border:1px solid var(--line);border-radius:6px;padding:13px;margin:12px 0}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+button,select{font:inherit;padding:8px 12px;background:#fff9eb;border:1px solid #bcad97;border-radius:5px;cursor:pointer;color:var(--ink)}
+button[aria-pressed=true]{background:#deeee3}button:focus-visible,select:focus-visible{outline:2px solid #668b77}
+canvas{display:block;width:100%;height:auto;background:#ddd5c3;border:1px solid var(--line)}
+#sceneFrame{overflow:auto;max-width:100%}.notice{border-left:3px solid #ae7654;padding:9px 12px;background:#efe3d0}
+.status{font-weight:600;color:var(--status)}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.card{background:#faf3e7;border:1px solid var(--line);padding:10px;border-radius:5px}
+.card img{width:100%;height:auto;aspect-ratio:1;object-fit:contain}.card strong{display:block;margin-bottom:7px}
+@media(max-width:680px){.cards{grid-template-columns:1fr}h1{font-size:28px}}
+</style></head><body>
+<header><div class="tag">Yangzhou · Painterly Art V2</div><h1>Two original painted streets</h1>
+<p><a href="./">Back to game</a> · <a href="painted-neighbour-lab.html">Independent seam laboratory</a></p></header>
+<main><div class="notice">These are two newly generated <strong>full-square, independently composed paintings</strong>. The old painting remains archived. New images are under review: the 44/220 road-port geometry, seam colour and actual painterly continuity still need human acceptance. This page does not automatically approve them.</div>
+<div class="panel controls"><label>Scale <select id="zoom"><option value="1" selected>Overview · 1×</option><option value="2">Inspect · 2×</option><option value="3">Detail · 3×</option></select></label>
+<button id="ports" aria-pressed="false">Show exact street-port boundaries</button><button id="swap">Swap left / right</button></div>
+<div class="panel">
+<h2>Neighbouring-tile joining comparison</h2>
+<p>The composition is <strong>street ↔ street</strong> (N/E/S/W = LSLS for both). Their rooftops stay upright; neither square is rotated or blurred. The gold bands show the required 20%-high openings when enabled.</p>
+<p id="status" class="status">Checking original image files…</p><div id="sceneFrame"><canvas id="scene" width="1024" height="530"></canvas></div></div>
+<div class="cards">
+<section class="card"><strong>Preserved pilot · archival reference</strong><img id="oldImage" alt="Original first painted Yangzhou street" src="assets/v2/street-straight-east-west.png"/><p>Preserved in Git history and current main. Not a new image.</p></section>
+<section class="card"><strong>Repainted street · proposed rotation 1</strong><img id="leftImage" alt="Repainted Yangzhou street" src="assets/v2/street-east-west-repaint.png"/><p id="repaintStatus" class="status">Checking file…</p></section>
+<section class="card"><strong>Independently painted neighbour · proposed rotation 3</strong><img id="rightImage" alt="New neighbouring Yangzhou garden street" src="assets/v2/street-east-west-neighbour.png"/><p id="neighbourStatus" class="status">Checking file…</p></section>
+</div>
+<div class="panel">
+<h2>Next acceptance gate</h2><p>The intended road opening at the west and east boundaries is <strong>20% of a 1254-pixel image</strong>, approximately <strong>Y502–752</strong>, with neither buildings nor foliage crossing into the paved street mouth. Even though the two images have the same legal LSLS signature, only a real image-level review at 1× and 3× can establish whether their borders are convincing.</p>
+<p>No automatic 16/18 artwork score is claimed. Historical details, road width and seam quality still require review.</p>
+</div></main>
+<script>
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+const imgs=[$('leftImage'),$('rightImage')];
+let reversed=false,ports=false;
+function valid(i){return i.complete&&i.naturalWidth>=1024&&i.naturalWidth===i.naturalHeight;}
+function render(){
+ const c=$('scene'),ctx=c.getContext('2d'),scale=1.65*Number($('zoom').value),gap=10;
+ const size=Math.round(220*scale);c.width=2*size+2*gap;c.height=size+2*gap;
+ ctx.fillStyle='#ddd7c8';ctx.fillRect(0,0,c.width,c.height);
+ const arr=reversed?[...imgs].reverse():imgs;
+ for(let j=0;j<2;j++){
+  let img=arr[j],x=gap+j*size,y=gap;
+  if(valid(img)){ctx.drawImage(img,x,y,size,size);}
+  else{ctx.fillStyle='#d9ddca';ctx.fillRect(x,y,size,size);ctx.fillStyle='#536359';ctx.font='13px system-ui,sans-serif';ctx.fillText('Original binary pending',x+20,y+size/2);}
+  if(ports){
+    ctx.fillStyle='#eac16780';ctx.fillRect(x,y+size*.4,size,size*.2);
+    ctx.strokeStyle='#a94c35';ctx.lineWidth=1.5;ctx.strokeRect(x,y+size*.4,size,size*.2);
+  }
+ }
+ ctx.strokeStyle='#805c45';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(gap+size+.5,gap);ctx.lineTo(gap+size+.5,gap+size);ctx.stroke();
+ let count=imgs.filter(valid).length;
+ $('status').textContent=count+'/2 full-resolution originals available on this branch.'+(count===2?' Compare the actual seam and mouth width at 1× and 3×.':' Upload the two originals to assets/v2/ with the filenames in the intake manifest.');
+ $('repaintStatus').textContent=valid(imgs[0])?'Full-resolution original loaded · review only':'Awaiting full-resolution PNG upload';
+ $('neighbourStatus').textContent=valid(imgs[1])?'Full-resolution independent painting loaded · review only':'Awaiting full-resolution PNG upload';
+}
+for(const i of imgs){i.onload=render;i.onerror=render;}
+$('zoom').onchange=render;$('ports').onclick=()=>{ports=!ports;$('ports').setAttribute('aria-pressed',ports?'true':'false');render();};
+$('swap').onclick=()=>{reversed=!reversed;render();};
+render();
+})();
+</script></body></html>
