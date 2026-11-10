@@ -20,6 +20,12 @@ The [playable board](index.html) and [tile lab](tile-lab-v2.html) load both new 
 
 The files and their exact SHA-256 hashes are validated in `scripts/validate_street_pair.cjs`. **Both are review assets, not artistically approved**. Actual 44/220 mouth width, natural seam transitions, six-category 16/18 human artwork review and historical plausibility all remain quality gates. Exactly **30 other orientation slots** still show labelled layout studies.
 
+### Expanding the painterly deck — Batch 01
+
+The two east–west streets are the accepted-for-play art baseline. Our next original is a **north–south stone-paved street** (1254px). The same batch also defines a genuine **turning street**, **enclosed garden**, and **north–south canal**, each with its own N/E/S/W connection contract. Their unpainted slots remain clearly marked; there is no cropped panorama or accidental infographic in the game.
+
+The new file is staged as an image to upload, rather than falsely added to the active manifest. Open the [interactive artwork expansion preview](tile-art-expansion.html), read the [four detailed painting briefs](docs/ARTWORK-BATCH-01.md), or [upload the original north–south street directly to the batch branch](https://github.com/chriswalker-afk/Yangzhou/upload/feat/tile-art-expansion-batch-01/assets/v2). Once it has been uploaded and its SHA-256 verified, we can activate the third original painting. Current game artwork remains stable until then.
+
 ### What is in this proof of concept
 
 - Eight deliberately small tile archetypes, each with four distinct compass orientations: garden, straight street, turning street, market crossroads, straight canal, canal bend, bridge, canal junction.
