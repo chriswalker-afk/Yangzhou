@@ -4,29 +4,29 @@
 **Started:** 10 November 2026  
 **Branch:** `feat/artwork-v2-clean-reset`
 
-## PR13 — first painted street pilot (art direction accepted, seams pending)
+## Original pilot — preserved and permanently integrated
 
-The user-approved original **1254 × 1254** image is `watercolor_courtyards_along_yangzhou_street.png` (generated 10 November 2026). It is a complete original illustration of a street and courtyards, not a panorama crop, image atlas or programmatic overlay.
+The user-approved original 1254 × 1254 PNG is now `assets/v2/street-straight-east-west.png`, restored **byte-for-byte** from the user's genuine GitHub upload (4,108,283 bytes). The Git blob is `39c962c0e6a370a811e7c8535fef20581f14505c`; the SHA-256 is `bc8fc1cf37b0404dc6620385a6167576692e3aee11bbf7346da28edbb158b2c2`. A later accidental rename had created a corrupt two-byte non-PNG; that has been replaced with the original object. This is not a thumbnail or synthetic redrawing.
 
-**Important axis clarification:** the painting visibly connects **west ↔ east**, so it belongs to the `street-straight` tile's **90° / rotation 1** slot, topology `LSLS` (N/E/S/W). Rotation 0 is `SLSL` and would make the street north–south. **Do not rotate this painting**; rooftops, trees and architectural details must stay upright. Future independently composed images must fill the remaining orientations.
+The street connects **west–east**. It belongs to `street-straight` rotation **1** (`LSLS`, N/E/S/W), not rotation 0 (`SLSL`). The artist's architectural details remain upright. The six starter lake paintings are still reference-only. The 31 other expansion artwork slots are still layout studies.
 
-**The original image was generated in the chat, not committed as a binary to GitHub.** PR13 supplies a local-file picker in the playable camera (`Load painting`) and [street-pilot-review.html](../street-pilot-review.html), so the true image can be reviewed at 1×/2×/3×, with a 44-unit centred port overlay and a three-tile repetition *test only*. The manifest explicitly records `artwork:null` and `pilot-review-needs-repository-master` until the complete master is imported as a repository binary. A passing CI run is a code integration test using clearly identified generated fixtures, **not** a visual pass for the original.
+### What is available in the browser
 
-### Outstanding evidence
+- The playable camera starts with the original painted street selected in its correct orientation. Selecting and placing it uses the full-resolution image automatically.
+- The [street pilot review](../street-pilot-review.html) now loads that same committed original without asking for an upload. It offers 1×/2×/3× inspection, exact street-port overlays, a three-identical-tile diagnostic, and a human quality rubric.
+- A `Try local revision` control may temporarily override the image; `Restore original painting` switches back to the saved GitHub master.
 
-- Align the painted entrance at each edge with the contract: **20% of the image height**, centred at its midpoint. In the 1254px source, the ideal entry span is approximately **502–752px**, pending painterly retouching. The artwork currently looks narrower; the QA overlay shows the boundary rather than silently stretching the road.
-- Inspect the real source at 1× and 3× next to other paintings, and record actual screenshots. The diagnostic repetition of the *same* painting three times proves only edge consistency; it is not evidence of compositional variety or finished city continuity.
-- Carry out period-specific historical review separately. Do not assign a numerical artwork score automatically.
-- Commit the original ≥1024px painting as `assets/v2/street-straight-east-west.webp` (or PNG), update `assets/v2/manifest.json` for **only rotation 1**, set `status:'review'`, include file provenance/hash, and verify the renderer loads it automatically. This requires a real binary transfer, not a low-resolution thumbnail.
-- After that, capture 1×/3× QA screenshots and judge visual quality (≥16/18 with each category ≥2). Do **not** set status `approved` before this sign-off.
+### Outstanding quality gates
 
-The original generated painting remains accessible as a conversation image for authorized use; the public repository's build will otherwise continue to show a labelled layout study. **Never replace the original with a low-resolution thumbnail or data-derived imitation just to turn a test green.**
+- Required road mouth: 44/220 = **20% of tile**, centred on each east/west edge. In a 1254px original, that is approximately **Y502–752**. The road appears narrower in the original, so the painting may require genuine retouching before final geometry acceptance. Do not hide mismatches with a pixel collar, vector road or blur.
+- The identical-artwork three-tile repeat is a seam diagnostic, not proof of visual diversity. Test with independently painted neighbours at 1× and 3× before scaling the asset library.
+- Human scoring threshold remains **16/18** across six criteria, no criterion under 2. Historical accuracy/signoff is separate. The master is **review**, NOT **approved**; code/CI success does not confer art approval.
 
 ## Why this is different
 
 Our previous iterations cropped a broad landscape painting into many tiles or applied road/water geometry to an image afterwards. This repeatedly produced duplicated buildings, artificial rivers, conspicuous joins and artwork inconsistent with the camera. We have deleted those active pipelines and retained their history. **This stage designs *what each square must contain* before painting begins.**
 
-The 8 `tile-art-v2.js` studies are *geometry and composition sketches only*; they are intentionally not called hand-painted or acceptable game illustrations. The six older 512px lake paintings are kept because they are the closest benchmark to the desired style. Their own shore-port and historical details still require review.
+The 31 remaining `tile-art-v2.js` studies are *geometry and composition sketches only*; one imported square street painting is in review. The six older 512px lake paintings are kept because they are the closest benchmark to the desired style. Their own shore-port and historical details still require review.
 
 ### Connections and space
 
@@ -57,7 +57,7 @@ The six 512×512 WebPs in `assets/lake/` are retained as a *reference, not an ap
 
 ### Asset file contract for the next pass
 
-`assets/v2/manifest.json` declares the eight tile IDs, their topologies and 4 compass-upright variants apiece (32 painting slots). Each variant currently has `artwork:null` and `status:needs-independent-painting`. Once art exists, export each original `webp` or `png` **as its own complete square** at >=1024 pixels, add an exact relative path and checksum/provenance; do not mark the full deck approved while slots are incomplete. The renderer may preview a review image when present, but the manifest's state remains `review` until human approval.
+`assets/v2/manifest.json` declares the eight tile IDs, their topologies and 4 compass-upright variants apiece (32 painting slots). One street variant now has a full-resolution PNG in status `review`; 31 others remain `artwork:null` and `status:needs-independent-painting`. Once art exists, export each original `webp` or `png` **as its own complete square** at >=1024 pixels, add an exact relative path and checksum/provenance; do not mark the full deck approved while slots are incomplete. The renderer may preview a review image when present, but the manifest's state remains `review` until human approval.
 
 The `tile-lab-v2.html` gallery exposes all four rotations of every archetype. Its complete starter+10 ring demonstrates *logical* joining only; future proof must demonstrate **painterly continuity** at overview and close zoom on desktop and mobile, not simply pixel equality at a border.
 

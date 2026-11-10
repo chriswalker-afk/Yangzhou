@@ -43,11 +43,11 @@ footer{margin:24px 0 0;border-top:1px solid var(--border);padding:15px 0;color:v
 <main>
 <div class="note">
 <strong>One painted candidate, not an approved family.</strong> The original 1254 × 1254 Yangzhou street painting is east–west: its topology is <strong>LSLS</strong> (land north, street east, land south, street west). The sketch's base topology is SLSL; we select rotation <strong>1</strong> to match the artwork WITHOUT rotating its buildings.
-<p id="assetStatus" class="status">Select the original painting below to inspect the actual pixels. No artwork is silently substituted, uploaded or cached.</p>
+<p id="assetStatus" class="status">Loading the original high-resolution painting from this GitHub repository. No upload needed.</p><p class="small"><a href="assets/v2/street-straight-east-west.png" target="_blank" rel="noopener">Open the original 1254px PNG</a> · source is permanently saved in Git history.</p>
 </div>
 <div class="controls">
-<label class="file-button" for="pilotFile">Choose original painting<input id="pilotFile" type="file" accept="image/png,image/webp,image/avif,image/jpeg"></label>
-<button type="button" id="clear">Clear painted candidate</button>
+<label class="file-button" for="pilotFile">Try a local revision<input id="pilotFile" type="file" accept="image/png,image/webp,image/avif,image/jpeg"></label>
+<button type="button" id="clear">Restore original painting</button>
 <button type="button" id="portToggle" aria-pressed="false">Show route ports</button>
 <label for="zoom">View scale <select id="zoom"><option value="1">Overview (1×)</option><option value="2">Neighbourhood (2×)</option><option value="3" selected>Detail (3×)</option></select></label>
 </div>
@@ -55,7 +55,7 @@ footer{margin:24px 0 0;border-top:1px solid var(--border);padding:15px 0;color:v
 <div class="metric"><strong id="sizeValue">Not loaded</strong><small>Source resolution</small></div>
 <div class="metric"><strong>44 / 220</strong><small>Legal street width · 20% of tile</small></div>
 <div class="metric"><strong>LSLS</strong><small>N / E / S / W connectors</small></div>
-<div class="metric"><strong id="approvedCount">0 / 4</strong><small>Independently painted road orientations</small></div>
+<div class="metric"><strong id="paintedCount">0 / 4</strong><small>Painted road orientations (review stage)</small></div>
 </div>
 <div class="columns">
 <section class="panel">
@@ -94,7 +94,7 @@ footer{margin:24px 0 0;border-top:1px solid var(--border);padding:15px 0;color:v
 </div>
 <h2>Findings / next visual iteration</h2>
 <p>The initial illustration has excellent garden and roof detail. Remaining issues for the art pass: verify that the paving extends exactly through the east/west midpoint at 20% tile width; retouch the two edge slices directly in the painting if needed; test against <em>another independently painted</em> neighbour rather than judging repeated artwork as success.</p>
-<footer>No file uploaded by this tool is automatically committed to GitHub. The reviewer can load the original generated image in this page and the playable camera while the repository master is being staged. This page does not store the image between page loads.</footer>
+<footer>The original image is committed to GitHub and loads automatically. Choosing a local revision temporarily replaces it only in your browser. The review page does not upload or save the revision. The artwork itself is still NOT approved for production.</footer>
 </main>
 <script src="tile-topology.js"></script>
 <script src="tile-art-v2.js"></script>
@@ -105,7 +105,7 @@ const $=id=>document.getElementById(id),top=window.YangzhouTileTopology,artist=w
 const key='street-straight:1',arch=top.archetypes.find(a=>a.id==='street-straight');
 const e=top.rotateEdges(arch.edges,1);
 if(e.join('')!=='LSLS')throw Error('Artwork axis is not compatible with rotation one');
-let source=null,ports=false;
+let source=null,ports=false,localOverride=false;
 const tile=(x,y)=>({id:arch.id,kind:arch.kind,x,y,rotation:1,edges:e,name:arch.name});
 const tiles=[tile(0,0),tile(1,0),tile(2,0)];
 const errors=top.validateBoard(tiles);
@@ -158,32 +158,57 @@ for(const criterion of criteria){
  for(let i=0;i<=3;i++){const option=document.createElement('option');option.value=i;option.textContent=i;select.append(option);}
  score.append(select);tr.append(cell,score);tbody.append(tr);select.onchange=validate;
 }
+// One true full-resolution original belongs to the repository manifest.
+// Local file input is strictly optional for comparing a revision.
+function useCommittedMaster(){
+ if(localOverride)return;
+ const original=artist.getMaster(key);
+ if(original){
+  source={name:'street-straight-east-west.png',width:original.naturalWidth,height:original.naturalHeight,origin:'repository'};
+  $('sizeValue').textContent=original.naturalWidth+'×'+original.naturalHeight;
+  $('paintedCount').textContent='1 / 4';
+  $('assetStatus').textContent='Original street painting loaded from GitHub (1254px) · east–west / LSLS · geometric, seam and historical approval still pending.';
+ }else{
+  source=null;
+  $('sizeValue').textContent='Loading…';
+  $('paintedCount').textContent='0 / 4';
+  const failures=artist.inspect().failures;
+  $('assetStatus').textContent=failures.length?('Image load error: '+failures.join('; ')):'Loading committed street painting…';
+ }
+ render();validate();
+}
 $('pilotFile').addEventListener('change',ev=>{
  const file=ev.target.files?.[0];if(!file)return;
  const url=URL.createObjectURL(file),im=new Image();
  im.onload=()=>{
   try{
+   localOverride=true;
    artist.registerReviewImage(key,im);
-   source={name:file.name,width:im.naturalWidth,height:im.naturalHeight};
+   source={name:file.name,width:im.naturalWidth,height:im.naturalHeight,origin:'local-override'};
    $('sizeValue').textContent=im.naturalWidth+'×'+im.naturalHeight;
-   $('assetStatus').textContent='Local painted pilot loaded: '+file.name+' · east–west (LSLS) · not in GitHub · pending seam approval.';
-  }catch(error){$('assetStatus').textContent='Pilot rejected: '+error.message;source=null;}
+   $('assetStatus').textContent='Temporary local revision: '+file.name+' · NOT committed. Use Restore original painting to compare.';
+  }catch(error){
+   localOverride=false;artist.clearReviewImage(key);
+   useCommittedMaster();
+   $('assetStatus').textContent='Local revision rejected: '+error.message+'. The committed original remains available.';
+  }
   render();validate();URL.revokeObjectURL(url);
  };
- im.onerror=()=>{$('assetStatus').textContent='Unable to decode source image.';URL.revokeObjectURL(url);};
+ im.onerror=()=>{$('assetStatus').textContent='Could not decode revision. The original remains available.';URL.revokeObjectURL(url);};
  im.src=url;
 });
 $('clear').onclick=()=>{
- artist.clearReviewImage(key);source=null;
- $('sizeValue').textContent='Not loaded';
- $('assetStatus').textContent='No painting loaded: composition study fallback, not finished artwork.';
- $('pilotFile').value='';render();validate();
+ artist.clearReviewImage(key);localOverride=false;$('pilotFile').value='';
+ useCommittedMaster();
 };
 $('portToggle').onclick=()=>{ports=!ports;$('portToggle').setAttribute('aria-pressed',String(ports));render();};
 $('zoom').onchange=render;
 for(const id of ['widthCheck','seamCheck','historicalCheck'])$(id).onchange=validate;
-window.addEventListener('yangzhou-art-v2-updated',render);
-render();validate();
+window.addEventListener('yangzhou-art-v2-updated',()=>{
+ if(localOverride){render();validate();}
+ else useCommittedMaster();
+});
+useCommittedMaster();
 })();
 </script>
 </body></html>

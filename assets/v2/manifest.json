@@ -1,10 +1,10 @@
 {
-  "version": "v2-pr13-pilot-review-1",
-  "status": "composition-study",
-  "source": "Eight independently planned tile compositions, not generated from the lake art",
+  "version": "v2-painted-street-pilot-1",
+  "status": "review",
+  "source": "One original 1254px east-west street painting restored intact from Git history; 31 further square paintings still required.",
   "worldUnits": 220,
   "requiredArtworkPixels": 1024,
-  "reviewPolicy": "PR13 has one accepted art-direction painting, temporarily loaded from local file. It is not in the repository. Do not claim a finished asset or seam approval.",
+  "reviewPolicy": "The street-straight 90-degree painted master is loaded by default, but is NOT approved. Route-edge width, seam appearance at 1x/3x, compositional diversity and historical review are pending. No other variant is painted.",
   "tiles": [
     {
       "id": "garden-grove",
@@ -55,11 +55,16 @@
         {
           "rotation": 1,
           "edges": "LSLS",
-          "artwork": null,
-          "status": "pilot-review-needs-repository-master",
-          "note": "1254x1254 original east-west street painting accepted as art direction; Git binary not yet imported; available via local review picker. Do not promote to approved.",
+          "artwork": "street-straight-east-west.png",
+          "status": "review",
+          "note": "Original 1254-square painting committed intact; 44/220 road port geometry and seamless joins are NOT yet visually approved. Geometry preview and human review still required.",
           "sourceFilename": "watercolor_courtyards_along_yangzhou_street.png",
-          "imageSource": "ChatGPT-generated pilot in conversation, 10 November 2026"
+          "imageSource": "Generated in original Yangzhou project conversation on 2026-11-10; user approved art direction; uploaded to GitHub by user.",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 4108283,
+          "sha256": "bc8fc1cf37b0404dc6620385a6167576692e3aee11bbf7346da28edbb158b2c2",
+          "gitBlobSha": "39c962c0e6a370a811e7c8535fef20581f14505c"
         },
         {
           "rotation": 2,

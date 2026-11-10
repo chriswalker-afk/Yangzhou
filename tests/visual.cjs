@@ -11,6 +11,8 @@ async function run(){
   desktop.on('pageerror',e=>errors.push('game: '+String(e)));
   await desktop.goto('http://127.0.0.1:8765/',{waitUntil:'load'});
   await desktop.waitForFunction(()=>window.YangzhouArtV2?.ready(),{timeout:30000});
+  await desktop.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:1')?.naturalWidth===1254,{timeout:30000});
+  await desktop.screenshot({path:'artifacts/v2/original-painted-street-game-rack.png',fullPage:true});
   const status=await desktop.evaluate(()=>({
    size:window.YangzhouDebug.board.size,
    names:window.YangzhouDebug.archetypes.map(t=>t.id),
@@ -20,7 +22,10 @@ async function run(){
   assert.equal(status.size,6);
   assert.equal(status.names.length,8);
   assert.equal(status.art.lakeReferencesLoaded,6);
-  assert.equal(status.art.paintingVariantsLoaded,0);
+  assert.equal(status.art.paintingVariantsLoaded,1,'The original committed image must load automatically');
+  assert.equal(status.art.manifestStatus,'review');
+  assert.equal(await desktop.evaluate(()=>window.YangzhouDebug.archetypes[window.YangzhouDebug.state.type].id),'street-straight');
+  assert.equal(await desktop.evaluate(()=>window.YangzhouDebug.state.rotation),1);
   assert.equal(status.ports.S,44);
   assert.equal(status.ports.W,88);
   const placement=await desktop.evaluate(()=>{
@@ -35,7 +40,8 @@ async function run(){
     return {n:g.board.size,latest:[...g.board.values()].find(t=>!t.fixed),valid:g.topology.validateBoard([...g.board.values()])};
   });
   assert.equal(made.n,7);
-  assert.equal(made.latest?.id,'garden-grove');
+  assert.equal(made.latest?.id,'street-straight');
+  assert.equal(made.latest?.edges?.join(''),'LSLS');
   assert.deepEqual(made.valid,[]);
   await desktop.screenshot({path:'artifacts/v2/playable-desktop.png',fullPage:true});
   await desktop.locator('#viewDetail').click();
@@ -46,6 +52,7 @@ async function run(){
   lab.on('pageerror',e=>errors.push('lab: '+String(e)));
   await lab.goto('http://127.0.0.1:8765/tile-lab-v2.html',{waitUntil:'load'});
   await lab.waitForFunction(()=>window.YangzhouArtV2?.ready(),{timeout:30000});
+  await lab.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:1')?.naturalWidth===1254,{timeout:30000});
   assert.equal(await lab.locator('.variant canvas').count(),32);
   assert.match(await lab.locator('#ringCheck').textContent(),/16\/16 tiles legally connected/);
   await lab.screenshot({path:'artifacts/v2/tile-gallery-desktop.png',fullPage:true});
@@ -59,6 +66,7 @@ async function run(){
   mobile.on('pageerror',e=>errors.push('mobile: '+String(e)));
   await mobile.goto('http://127.0.0.1:8765/',{waitUntil:'load'});
   await mobile.waitForFunction(()=>window.YangzhouArtV2?.ready(),{timeout:30000});
+  await mobile.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:1')?.naturalWidth===1254,{timeout:30000});
   assert.equal(await mobile.locator('#tileLab').count(),1);
   await mobile.screenshot({path:'artifacts/v2/playable-mobile.png',fullPage:true});
   // PR13 technical integration: the fixture is NOT claimed to be original
@@ -79,19 +87,31 @@ async function run(){
   pilotPage.on('pageerror',e=>errors.push('pilot: '+String(e)));
   await pilotPage.goto('http://127.0.0.1:8765/street-pilot-review.html',{waitUntil:'load'});
   await pilotPage.waitForFunction(()=>window.YangzhouArtV2?.ready(),{timeout:30000});
+  await pilotPage.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:1')?.naturalWidth===1254,{timeout:30000});
+  await pilotPage.waitForFunction(()=>document.getElementById('sizeValue')?.textContent==='1254×1254',{timeout:30000});
+  assert.match(await pilotPage.locator('#assetStatus').textContent(),/Original street painting loaded from GitHub/);
+  assert.match(await pilotPage.locator('#geometryVerdict').textContent(),/outstanding/);
+  await pilotPage.locator('#zoom').selectOption('1');
+  await pilotPage.screenshot({path:'artifacts/v2/original-painted-street-1x.png',fullPage:true});
+  await pilotPage.locator('#portToggle').click();
+  await pilotPage.screenshot({path:'artifacts/v2/original-painted-street-1x-port-overlay.png',fullPage:true});
+  await pilotPage.locator('#zoom').selectOption('3');
+  await pilotPage.screenshot({path:'artifacts/v2/original-painted-street-3x-port-overlay.png',fullPage:true});
+  // Synthetic upload is a temporary override for technical QA only.
   await pilotPage.locator('#pilotFile').setInputFiles(fileFixture);
   await pilotPage.waitForFunction(()=>window.YangzhouArtV2.inspect().temporaryReviewKeys.length===1);
-  assert.match(await pilotPage.locator('#assetStatus').textContent(),/Local painted pilot loaded/);
+  assert.match(await pilotPage.locator('#assetStatus').textContent(),/Temporary local revision/);
   assert.equal(await pilotPage.locator('#sizeValue').textContent(),'1024×1024');
   assert.match(await pilotPage.locator('#geometryVerdict').textContent(),/outstanding/);
-  await pilotPage.locator('#portToggle').click();
   assert.equal(await pilotPage.locator('#portToggle').getAttribute('aria-pressed'),'true');
   await pilotPage.locator('#zoom').selectOption('3');
   await pilotPage.screenshot({path:'artifacts/v2/pr13-geometry-ports-fixture.png',fullPage:true});
   await pilotPage.locator('#clear').click();
   await pilotPage.waitForFunction(()=>window.YangzhouArtV2.inspect().temporaryReviewKeys.length===0);
   const imgStatus=await pilotPage.locator('#sizeValue').textContent();
-  assert.equal(imgStatus,'Not loaded');
+  assert.equal(imgStatus,'1254×1254','Restoring must show the committed original, not a sketch');
+  assert.equal(await pilotPage.evaluate(()=>window.YangzhouArtV2.getMaster('street-straight:1')?.naturalWidth),1254);
+  assert.match(await pilotPage.locator('#assetStatus').textContent(),/Original street painting loaded from GitHub/);
   await desktop.locator('#pilotUpload').setInputFiles(fileFixture);
   await desktop.waitForFunction(()=>window.YangzhouArtV2.inspect().temporaryReviewKeys.length===1);
   const selected=await desktop.evaluate(()=>{
@@ -102,7 +122,7 @@ async function run(){
   assert.deepEqual(selected,{id:'street-straight',rotation:1,edges:'LSLS'});
   await desktop.screenshot({path:'artifacts/v2/pr13-playable-pilot-fixture.png',fullPage:true});
   assert.deepEqual(errors,[],'Browser JavaScript errors');
-  console.log('V2 browser QA passed: desktop/mobile, placement, gallery, 32 studies, 16-square ring and detail zoom.');
+  console.log('Painted street browser QA passed: original 1254px image autoload, correct LSLS tile, mobile/desktop, original 1x/3x seam previews, 32-variant gallery, and local revision/restore.');
  }finally{await browser.close();}
 }
 run().catch(e=>{console.error(e);process.exit(1)});

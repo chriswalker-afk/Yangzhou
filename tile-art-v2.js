@@ -13,7 +13,7 @@
     '01-willow-garden.webp','02-northern-lake.webp','03-lakeside-teahouse.webp',
     '04-white-pagoda.webp','05-five-pavilion-bridge.webp','06-breakfast-house.webp'
   ];
-  const lake=new Map(), masters=new Map(), failures=new Set(), temporaryReviewKeys=new Set();
+  const lake=new Map(), masters=new Map(), permanentMasters=new Map(), failures=new Set(), temporaryReviewKeys=new Set();
   const palette={paper:'#e8e1d0',land:'#d5d5b7',ink:'#46554e',path:'#b9a88c',paving:'#dfd1b5',
     water:'#7baba7',waterInk:'#557d79',roof:'#64736d',leaf:'#869b74',shadow:'#606754',clay:'#b77862'};
   let manifest=null, manifestStatus='composition-study';
@@ -44,16 +44,21 @@
           const v=row.variants[r],expected=schema.rotateEdges(arch.edges,r).join('');
           if(v.rotation!==r||v.edges!==expected)throw Error('V2 rotation mismatch '+arch.id+':'+r);
           if(v.artwork){
+            if(v.status!=='review' && v.status!=='approved')throw Error('Master must declare review or approved status');
             const path='assets/v2/'+v.artwork;
             const im=new Image();
             im.onload=()=>{
               if(im.naturalWidth<1024||im.naturalWidth!==im.naturalHeight)
                 failures.add('Rejected undersized/non-square master: '+path);
+              else if((v.width&&v.width!==im.naturalWidth)||(v.height&&v.height!==im.naturalHeight))
+                failures.add('Master differs from declared dimensions: '+path);
               repaint();
             };
             im.onerror=()=>{failures.add(path);repaint();};
             im.src=path;
-            masters.set(arch.id+':'+r,im);
+            const key=arch.id+':'+r;
+            permanentMasters.set(key,im);
+            if(!temporaryReviewKeys.has(key))masters.set(key,im);
           }
         }
       }
@@ -258,17 +263,24 @@
   }
   function clearReviewImage(key){
     if(temporaryReviewKeys.has(key)){
-      masters.delete(key);temporaryReviewKeys.delete(key);repaint();
+      temporaryReviewKeys.delete(key);
+      if(permanentMasters.has(key))masters.set(key,permanentMasters.get(key));
+      else masters.delete(key);
+      repaint();
     }
   }
   function getReviewImage(key){return temporaryReviewKeys.has(key)?masters.get(key):null;}
+  function getMaster(key){
+    const im=permanentMasters.get(key);
+    return (im?.complete&&im.naturalWidth>=1024&&im.naturalWidth===im.naturalHeight)?im:null;
+  }
   function inspect(){
     return {mode:'v2-composition-studies',manifestStatus,studies:schema.archetypes.length,
-      paintingVariantsLoaded:[...masters.values()].filter(i=>i.complete&&i.naturalWidth>=1024&&i.naturalWidth===i.naturalHeight).length,
+      paintingVariantsLoaded:[...permanentMasters.values()].filter(i=>i.complete&&i.naturalWidth>=1024&&i.naturalWidth===i.naturalHeight).length,
       lakeReferencesLoaded:[...lake.values()].filter(i=>i.complete&&i.naturalWidth).length,
       temporaryReviewKeys:[...temporaryReviewKeys],
       failures:[...failures]};
   }
-  window.YangzhouArtV2={draw,inspect,registerReviewImage,clearReviewImage,getReviewImage,
+  window.YangzhouArtV2={draw,inspect,registerReviewImage,clearReviewImage,getReviewImage,getMaster,
     ready:()=>[...lake.values()].every(i=>i.complete&&i.naturalWidth)};
 })();
