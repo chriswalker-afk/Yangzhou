@@ -18,6 +18,8 @@ The original `1254 × 1254` image is now committed as **[`assets/v2/street-strai
 - [Review the original painting and its neighbours](street-pilot-review.html): automatic high-resolution loading, 20%-wide route mouth overlay, 1×/2×/3×, three-square repeat diagnostic and human quality checklist.
 - The 31 remaining atlas slots are unpainted; they continue to display labelled topology studies. The original road variant has **review** status, **NOT approved**.
 - "Try local revision" permits a temporary, session-only replacement for side-by-side comparison, and "Restore original painting" returns to the repository master without deleting it.
+- [Independent painted-neighbour joining laboratory](painted-neighbour-lab.html): compare the original against a **different full-square painting** above, below, left or right at 1×–3×, with legal edges, separate seam strips and a deliberately pending human approval gate. It refuses an exact duplicate of the first PNG.
+- [Street-edge acceptance brief](docs/STREET-EDGE-ACCEPTANCE.md): exact 44/220 mouth geometry, observed width shortfall, and distinctly composed neighbour painting briefs; **no mechanical road-strip fix**.
 
 **A working import is not artistic acceptance.** The street currently appears narrower than the 44/220 contract at the exterior mouths (20% of the image = 250.8px, centred at Y≈502–752), and its seams have not yet been approved against *different original paintings*. Human 16/18 artwork scoring and historical signoff remain necessary.
 

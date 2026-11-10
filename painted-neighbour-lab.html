@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yangzhou | Painted Tile Joining Laboratory</title>
+<style>
+:root{--paper:#f3ebdc;--ink:#34433c;--sub:#6b756b;--line:#c8b89e;--accent:#637d69;--warning:#99684f}
+*{box-sizing:border-box}body{margin:0;background:#e5dfd0;color:var(--ink);font:14px/1.55 system-ui,-apple-system,sans-serif}
+header{background:var(--paper);border-bottom:1px solid var(--line);padding:22px max(18px,calc((100vw - 1290px)/2))}
+main{max-width:1330px;margin:auto;padding:18px 20px 45px}
+h1,h2,h3{font-family:Georgia,serif;font-weight:400}h1{font-size:clamp(28px,4.2vw,48px);line-height:1.14;margin:6px 0 8px}h2{font-size:26px;margin:22px 0 10px}h3{font-size:21px;margin:6px 0}
+p{max-width:1000px;margin:8px 0}.eyebrow{font-size:11px;color:#855e45;font-weight:700;letter-spacing:.17em;text-transform:uppercase}
+a{color:#75614c}.note{background:#f4ede0;border-left:3px solid #a78158;padding:12px 16px;margin:15px 0}
+.layout{display:grid;grid-template-columns:minmax(300px,1.35fr) minmax(300px,.8fr);gap:16px;align-items:start}
+.panel{background:#f6efe3;border:1px solid var(--line);border-radius:6px;padding:15px;min-width:0}.sub{color:var(--sub);font-size:12px}
+.controls{display:flex;align-items:end;flex-wrap:wrap;gap:10px;margin:14px 0}
+.control{display:flex;flex-direction:column;gap:4px;font-size:12px;color:#536356;font-weight:600}
+button,select,.upload{font:14px system-ui,sans-serif;min-height:37px;background:#fff8eb;color:var(--ink);border:1px solid #b9ad97;border-radius:4px;padding:8px 11px;cursor:pointer}
+button:focus-visible,select:focus-visible,.upload:focus-within{outline:2px solid #7c9b8c;outline-offset:2px}
+button[aria-pressed=true]{background:#dfede7;border-color:#5a8c77}
+.upload{display:inline-flex;position:relative;align-items:center;gap:7px}.upload input{position:absolute;width:1px;height:1px;opacity:0}
+#boardShell{background:#ddd6c9;border:1px solid var(--line);overflow:auto;max-height:650px;max-width:100%;margin-top:10px}
+canvas{display:block}#board{max-width:none;height:auto}#edgeStrips{width:100%;height:auto;border:1px solid var(--line);background:#e7dfd2}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(110px,1fr));gap:8px;margin:10px 0}.stat{background:#e7e5d7;border:1px solid #d9d4c3;padding:9px;border-radius:3px}
+.stat strong{font:23px Georgia,serif;display:block}.stat span{font-size:11px;color:#657166}
+#geometryStatus,#seamStatus,#humanStatus{font-weight:600;color:#8b5f48}
+.review table{border-collapse:collapse;width:100%}.review td{border-bottom:1px solid #dfd4c1;padding:9px 5px;vertical-align:top}
+.review input{width:17px;height:17px}.tiny{font-size:11px;color:var(--sub)}
+.footer{color:var(--sub);font-size:12px;padding:12px 0 4px;margin-top:25px;border-top:1px solid var(--line)}
+@media(max-width:840px){.layout{grid-template-columns:1fr}main{padding:12px}.panel{padding:10px}h2{font-size:22px}}
+</style>
+</head>
+<body>
+<header><div class="eyebrow">Yangzhou · Artwork V2 · edge contract</div>
+<h1>Painted tile joining laboratory</h1>
+<p>Inspect the actual original painted street against a <em>different</em>, independently authored painting. This page never stretches, rotates, crops or repaints the game assets, and never claims that a matching topology guarantees beautiful seams.</p>
+<p><a href="./">Playable camera</a> · <a href="street-pilot-review.html">Original street pilot</a> · <a href="tile-lab-v2.html">32 composition slots</a></p>
+</header>
+<main>
+<div class="note"><strong>Current result: original street under review.</strong> The east–west paved opening looks approximately 160–170px high near the outside edges, while our edge contract requires <strong>250.8px</strong> (20% of a 1254px square), centred at Y=627. Without genuine repainted endpoints and an independently painted neighbour, final seam approval remains unavailable.</div>
+<div class="controls">
+<label class="control" for="neighbourPosition">Neighbour position / legal connections
+<select id="neighbourPosition">
+<option value="east">Street east · LSLS connects E ↔ W</option>
+<option value="west">Street west · LSLS connects W ↔ E</option>
+<option value="north">Garden north · LLLL meets land</option>
+<option value="south">Garden south · LLLL meets land</option>
+</select></label>
+<label class="upload" for="neighbourFile">Choose DIFFERENT painted neighbour<input id="neighbourFile" type="file" accept="image/png,image/webp,image/jpeg,image/avif"></label>
+<label class="control" for="zoom">Inspection scale
+<select id="zoom"><option value="1">Overview 1×</option><option value="2">Street 2×</option><option value="3" selected>Detail 3×</option></select></label>
+<button id="ports" type="button" aria-pressed="true">Show street port guides</button>
+<button id="clearNeighbour" type="button">Clear neighbour</button>
+</div>
+<div id="originalStatus" role="status" class="sub">Loading committed street painting…</div>
+<div id="neighbourStatus" role="status" class="sub">No independent painted neighbour loaded. A labelled blank study slot is shown instead.</div>
+<div class="layout">
+<section class="panel"><h3>Connected pair · original pixels</h3>
+<p class="sub">The overlay is for inspection only; no geometry changes are applied to the paintings. The scrollable canvas allows real 3× seam inspection.</p>
+<div id="boardShell"><canvas id="board" width="700" height="700" aria-label="Two adjoining square tiles, one original painting and a separate neighbour slot"></canvas></div>
+<p id="geometryStatus">Checking topological compatibility…</p>
+</section>
+<section class="panel"><h3>Edge passport and diagnostics</h3>
+<div class="stats">
+<div class="stat"><strong>44 / 220</strong><span>Street port · 20% of square</span></div>
+<div class="stat"><strong>Y 502–752</strong><span>Required painting pixels at both E/W borders</span></div>
+<div class="stat"><strong id="masterCount">0 / 32</strong><span>Loaded original painted masters</span></div>
+<div class="stat"><strong id="edgeDelta">—</strong><span>Mean RGB difference along selected shared edge</span></div>
+</div>
+<canvas id="edgeStrips" width="660" height="320" aria-label="Zoomed artwork strips at the adjoining boundary"></canvas>
+<p id="seamStatus">A second independent artwork is required before the seam can be measured.</p>
+<p class="tiny">Colour differences are a diagnostic, not an artwork score. A high difference can be intentional (flowers or rooftops); a low difference cannot prove natural continuity. The tile edge's exact content and perspective must be inspected by a human.</p>
+</section>
+</div>
+<h2>Acceptance gate — do not auto-approve art</h2>
+<div class="layout">
+<section class="panel review"><h3>Original street issues</h3>
+<table><tbody>
+<tr><td><input type="checkbox" id="widthAccepted"></td><td>Both entrances have been genuinely repainted to the centred 44/220 street opening (not a stretching or vector overlay).</td></tr>
+<tr><td><input type="checkbox" id="streetDetailAccepted"></td><td>The repaint preserves the same detailed architecture, painted paving, gardens and overhead perspective.</td></tr>
+<tr><td><input type="checkbox" id="contextAccepted"></td><td>One independently illustrated neighbour is checked at normal size and at 3×, including both sides of the actual shared seam.</td></tr>
+<tr><td><input type="checkbox" id="historicalAccepted"></td><td>Historical details have been checked for a plausible Yangzhou setting.</td></tr>
+</tbody></table>
+<p id="humanStatus" role="status">Awaiting the independent neighbour and visual review.</p>
+</section>
+<section class="panel"><h3>The next painting to produce</h3>
+<p><strong>Second east–west street:</strong> another complete square, with a continuous 44-unit-wide route entering exactly at the W/E midpoints; asymmetric Jiangnan garden walls, a stone lantern alcove, one quieter riverside house and smaller vegetation masses. Different building placement, no cut-and-paste from the existing street; no people or moving boats baked in.</p>
+<p><strong>Alternatively, a garden above or below:</strong> LLLL all around, a wholly different full-square willow and rockery garden. The shared edge must be composed to meet the existing northern or southern land boundary naturally, without the garden hiding a mismatched roofline.</p>
+<p class="sub">Do not claim these images exist until an independent painting has actually been made. Paint both the boundary and its architecture together; do not repair the seam after rendering with an edge wash.</p>
+</section>
+</div>
+<div class="footer">This tool reads one committed original painting and optionally one temporary local artwork. It does not persist or upload the local file. No drawing produced here is approved art; this is a deterministic diagnostic and human review interface.</div>
+</main>
+<script src="tile-topology.js"></script>
+<script src="tile-art-v2.js"></script>
+<script>
+(() => {
+'use strict';
+const $=x=>document.getElementById(x), art=window.YangzhouArtV2,top=window.YangzhouTileTopology;
+const street=top.archetypes.find(x=>x.id==='street-straight'),garden=top.archetypes.find(x=>x.id==='garden-grove');
+const streetEdges=top.rotateEdges(street.edges,1);if(streetEdges.join('')!=='LSLS')throw Error('East-west topology mismatch');
+const referenceHash='bc8fc1cf37b0404dc6620385a6167576692e3aee11bbf7346da28edbb158b2c2';
+let neighbor=null,showPorts=true;
+const options={east:{x:1,y:0,id:'street-straight',rotation:1,edges:streetEdges},
+ west:{x:-1,y:0,id:'street-straight',rotation:1,edges:streetEdges},
+ north:{x:0,y:-1,id:'garden-grove',rotation:0,edges:garden.edges},
+ south:{x:0,y:1,id:'garden-grove',rotation:0,edges:garden.edges}};
+const makeTile=(x,y,id,rotation,edges)=>({x,y,id,rotation,edges,kind:id==='garden-grove'?'garden':'street'});
+function pair(){const p=options[$('neighbourPosition').value];return [makeTile(0,0,street.id,1,streetEdges),makeTile(p.x,p.y,p.id,p.rotation,p.edges)];}
+function portGuide(c,x,y){
+ c.save();c.translate(x,y);c.fillStyle='#efbb6664';c.fillRect(0,88,220,44);
+ c.strokeStyle='#b64e35';c.lineWidth=1.5;c.setLineDash([4,3]);
+ c.beginPath();c.moveTo(0,88);c.lineTo(23,88);c.moveTo(0,132);c.lineTo(23,132);
+ c.moveTo(197,88);c.lineTo(220,88);c.moveTo(197,132);c.lineTo(220,132);c.stroke();c.setLineDash([]);c.restore();
+}
+function placeholder(c,x,y){
+ c.save();c.translate(x,y);c.fillStyle='#dbdfcb';c.fillRect(0,0,220,220);
+ c.strokeStyle='#a49d8a';c.lineWidth=1;c.strokeRect(.5,.5,219,219);
+ c.fillStyle='#52635a';c.font='11px system-ui,sans-serif';
+ c.fillText('NO INDEPENDENT PAINTING',13,105);c.fillText('Upload an original square',13,124);c.restore();
+}
+function imageData(im){const c=document.createElement('canvas');c.width=c.height=256;
+ const ctx=c.getContext('2d',{willReadFrequently:true});ctx.drawImage(im,0,0,256,256);
+ return ctx.getImageData(0,0,256,256).data;}
+function seamMetric(a,b,side){if(!a||!b)return null;
+ const aa=imageData(a),bb=imageData(b),width=256;let total=0,count=0;
+ for(let i=0;i<256;i++)for(let o=0;o<3;o++){
+   const x=side==='east'?[254,1]:side==='west'?[1,254]:side==='north'?[i,i]:[i,i];
+   const y=side==='north'?[1,254]:side==='south'?[254,1]:[i,i];
+   const ai=(y[0]*width+x[0])*4+o,bi=(y[1]*width+x[1])*4+o;
+   total+=Math.abs(aa[ai]-bb[bi]);count++;
+ }
+ return Math.round(total/count*10)/10;
+}
+function strips(original,neighborImage,mode){const c=$('edgeStrips'),ctx=c.getContext('2d');c.width=660;c.height=320;
+ ctx.fillStyle='#e9e0d2';ctx.fillRect(0,0,660,320);
+ ctx.fillStyle='#4f6757';ctx.font='13px system-ui,sans-serif';
+ if(!original){ctx.fillText('Loading original artwork...',18,160);return;}
+ if(mode==='east'||mode==='west'){
+   const w=original.naturalWidth,h=original.naturalHeight,band=180;
+   const sx=mode==='east'?w-band:0;
+   ctx.drawImage(original,sx,0,band,h,0,0,330,320);
+   if(neighborImage){let secondX=mode==='east'?0:neighborImage.naturalWidth-band;
+     ctx.drawImage(neighborImage,secondX,0,band,neighborImage.naturalHeight,330,0,330,320);
+   }else{ctx.fillText('SECOND ORIGINAL NEEDED',355,160);}
+   const firstPortY=Math.round(320*.4),lastPortY=Math.round(320*.6);
+   ctx.strokeStyle='#b54e3c';ctx.lineWidth=1.5;
+   for(const y of [firstPortY,lastPortY]){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(660,y);ctx.stroke();}
+   ctx.beginPath();ctx.moveTo(330,0);ctx.lineTo(330,320);ctx.stroke();
+ }else{
+   const h=original.naturalHeight,w=original.naturalWidth,band=180;
+   const sy=mode==='north'?0:h-band;
+   ctx.drawImage(original,0,sy,w,band,0,0,660,160);
+   if(neighborImage){const secondY=mode==='north'?neighborImage.naturalHeight-band:0;
+     ctx.drawImage(neighborImage,0,secondY,neighborImage.naturalWidth,band,0,160,660,160);
+   }else{ctx.fillText('SECOND ORIGINAL NEEDED',190,245);}
+   ctx.strokeStyle='#b54e3c';ctx.beginPath();ctx.moveTo(0,160);ctx.lineTo(660,160);ctx.stroke();
+ }
+}
+function review(){
+ const hasImage=!!art.getMaster('street-straight:1'),inputs=['widthAccepted','streetDetailAccepted','contextAccepted','historicalAccepted'].map(id=>$(id).checked);
+ const accepted=!!neighbor&&hasImage&&inputs.every(Boolean);
+ $('humanStatus').textContent=accepted?'All local reviewer boxes ticked. Formal 16/18, original artwork revision and a reproducible signed-off source asset are still required.':'Not approved. A second independent original and all human review checks are required.';
+ $('humanStatus').style.color=accepted?'#4a735e':'#8b5f48';
+}
+function render(){
+ const original=art.getMaster('street-straight:1'),mode=$('neighbourPosition').value;
+ const tiles=pair(),errs=top.validateBoard(tiles);
+ $('geometryStatus').textContent=errs.length?'ERROR: '+errs.join('; '):'Legal connection ('+mode+'). Topology only: artistic continuity remains unapproved.';
+ $('geometryStatus').style.color=errs.length?'#b43d36':'#517a62';
+ $('originalStatus').textContent=original?'Original 1254px painted street loaded automatically from GitHub · east-west LSLS · 1 of 32 variants.':'Loading the committed original painted street…';
+ $('masterCount').textContent=art.inspect().paintingVariantsLoaded+' / 32';
+ const scale=1.4*Number($('zoom').value),offset=16;
+ const w=(mode==='east'||mode==='west')?440:220,h=(mode==='east'||mode==='west')?220:440;
+ const c=$('board');c.width=Math.round(w*scale+offset*2);c.height=Math.round(h*scale+offset*2);
+ const ctx=c.getContext('2d');ctx.fillStyle='#e8e2d3';ctx.fillRect(0,0,c.width,c.height);
+ ctx.save();ctx.translate(offset,offset);ctx.scale(scale,scale);
+ const x0=mode==='west'?1:0,y0=mode==='north'?1:0;
+ if(original){ctx.drawImage(original,x0*220,y0*220,220,220);if(showPorts)portGuide(ctx,x0*220,y0*220);}
+ const t=tiles[1],nx=(t.x+x0)*220,ny=(t.y+y0)*220;
+ if(neighbor){ctx.drawImage(neighbor.image,nx,ny,220,220);if(showPorts&&neighbor.role==='street')portGuide(ctx,nx,ny);}
+ else placeholder(ctx,nx,ny);
+ ctx.restore();
+ $('edgeDelta').textContent=neighbor&&original?seamMetric(original,neighbor.image,mode):'—';
+ $('seamStatus').textContent=neighbor&&original?'RGB edge difference above is a diagnostic. Inspect continuity at 1× and 3×; no automatic artwork approval.':'Awaiting one separate original painted tile. No seam quality result can be claimed yet.';
+ strips(original,neighbor?.image,mode);review();
+}
+$('neighbourPosition').onchange=()=>{neighbor=null;$('neighbourFile').value='';$('neighbourStatus').textContent='Choose a new original painted neighbour appropriate to this connector.';render();};
+$('zoom').onchange=render;
+$('ports').onclick=()=>{showPorts=!showPorts;$('ports').setAttribute('aria-pressed',String(showPorts));render();};
+$('clearNeighbour').onclick=()=>{neighbor=null;$('neighbourFile').value='';$('neighbourStatus').textContent='No separate original painting loaded.';render();};
+$('neighbourFile').onchange=async(event)=>{
+ const file=event.target.files?.[0];if(!file)return;
+ const original=art.getMaster('street-straight:1');if(!original){$('neighbourStatus').textContent='Original street still loading. Retry after it loads.';return;}
+ const bytes=await file.arrayBuffer();const hashed=await crypto.subtle.digest('SHA-256',bytes);
+ const hash=[...new Uint8Array(hashed)].map(x=>x.toString(16).padStart(2,'0')).join('');
+ if(hash===referenceHash){neighbor=null;$('neighbourStatus').textContent='Rejected: this is an exact copy of the first street painting, not an independent neighbour.';render();return;}
+ const url=URL.createObjectURL(file),im=new Image();
+ im.onload=()=>{
+  URL.revokeObjectURL(url);
+  if(im.naturalWidth!==im.naturalHeight||im.naturalWidth<1024){neighbor=null;$('neighbourStatus').textContent='Rejected: independently painted neighbour must be square, at least 1024px.';render();return;}
+  const role=['east','west'].includes($('neighbourPosition').value)?'street':'garden';
+  neighbor={image:im,filename:file.name,role,sha256:hash};
+  $('neighbourStatus').textContent='Independent candidate loaded locally: '+file.name+' ('+im.naturalWidth+'×'+im.naturalHeight+'), '+role+'. Not committed and not approved.';
+  render();
+ };
+ im.onerror=()=>{URL.revokeObjectURL(url);neighbor=null;$('neighbourStatus').textContent='Could not decode second painting.';render();};
+ im.src=url;
+};
+for(const id of ['widthAccepted','streetDetailAccepted','contextAccepted','historicalAccepted'])$(id).onchange=review;
+window.addEventListener('yangzhou-art-v2-updated',render);
+render();
+})();
+</script>
+</body></html>
