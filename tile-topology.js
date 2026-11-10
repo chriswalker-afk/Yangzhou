@@ -35,7 +35,8 @@
   ];
   // Six bespoke square paintings; one fixed starting tile = one art file.
   // Masters are compass-upright, so the buildings never rotate sideways.
-  // The N/S lake and E/W bridge each connect through the tile centre.\n  // The bridge ends at the pagoda garden and southern landing; no external street exits.
+  // The N/S lake and E/W bridge each connect through the tile centre.
+  // The bridge ends at the pagoda garden and southern landing; no external street exits.
   const starter=[
     {x:0,y:0,edges:['L','L','L','L'],kind:'causeway',name:'Willow Garden',master:'road-straight',fixed:true,rotation:0,seed:1,artStatus:'requires-repaint'},
     {x:1,y:0,edges:['W','L','W','L'],kind:'lake',name:'Northern Lake',master:'river-straight',fixed:true,rotation:0,seed:2,artStatus:'prototype'},

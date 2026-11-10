@@ -20,10 +20,10 @@ const renderer=fs.readFileSync('tile-system.js','utf8');
 const edgePainter=fs.readFileSync('edge-art.js','utf8');
 // A production landmark master must not be obscured by a second
 // procedurally drawn landmark or a translucent vector street.
-assert(renderer.includes("if(!master&&!useAtlas&&!useOrthographic&&(t.kind='five'"),'No duplicate landmarks over square art masters');
+assert(renderer.includes("if(!master&&!usePainted&&!useOrthographic&&(t.kind==='five'"),'No duplicate landmarks over square art masters');
 assert(!renderer.includes("const spur=t.kind==='pagoda'"),'No fake road spurs across landmark paintings');
 assert(!edgePainter.includes('drawBands(c,t.edges,exposed)'), 'No doubled edge wash around starter');
-assert(renderer.includes('if(!useAtlas&&!useOrthographic)window.YangzhouEdgeArt?.drawBands?.(c,t.edges)'), 'Coherent lake tiles must not receive feathered edge washes');
+assert(renderer.includes('if(!usePainted&&!useOrthographic)window.YangzhouEdgeArt?.drawBands?.(c,t.edges)'), 'Coherent lake tiles must not receive feathered edge washes');
 
 assert.equal(new Set(schema.starter.map(t=>t.master)).size,6);
 assert.deepEqual(schema.validateBoard(schema.starter),[]);
@@ -183,9 +183,9 @@ for(const ft of fixed)for(let d=0;d<4;d++){
 }
 assert.equal(perimeter.size,10,'3 x 2 starter must have ten expansion positions');
 const ports=[...perimeter.values()].map(z=>z.port);
-assert.equal(ports.filter(p=>p==='S').length,5,'Five outward roads have their own painted source-tile exits');
+assert.equal(ports.filter(p=>p==='S').length,0,'No exterior roads on the natural starter shoreline');
 assert.equal(ports.filter(p=>p==='W').length,2,'North and south canal exits');
-assert.equal(ports.filter(p=>p==='L').length,3,'Three natural garden/landscape borders');
+assert.equal(ports.filter(p=>p==='L').length,8,'Eight natural landscape borders');
 const preferred={'S':'Stone-paved street','W':'Mooring basin','L':'Garden pavilion'};
 const ring=[...perimeter.values()].sort((a,b)=>a.y-b.y||a.x-b.x);
 for(const cell of ring){
@@ -217,7 +217,22 @@ assert.deepEqual(schema.validateBoard([...game.board.values()]),[],
   'Expanded painted city must preserve topology on every internal seam');
 console.log('Yangzhou smoke tests passed: shared schema, six standalone tile masters, 44/88 ports, rotations, 13 archetypes, ring and camera.');
 
-const ortho=fs.readFileSync(path.join(ROOT,'orthographic-lake.js'),'utf8');
+const ortho=fs.readFileSync('orthographic-lake.js','utf8');
 assert(ortho.includes('viewBox='),'Orthographic artwork is clipped by square viewBoxes');
 assert(ortho.includes('286 0')&&ortho.includes('374 440'),'Water ports are centred and 88 units wide');
-assert(html.includes('orthographic-lake.js'),'Orthographic artwork loaded by game');
+assert(html.includes('orthographic-lake.js'),'Orthographic fallback loaded by game');
+assert(html.includes('painted-lake.js'),'High-resolution painted master loader is wired');
+assert(!renderer.includes("t.kind='five'"),'Tile rendering must not overwrite game kind');
+const manifest=JSON.parse(fs.readFileSync('assets/lake/manifest.json','utf8'));
+assert.equal(manifest.tiles.length,6);
+assert.deepEqual(manifest.tiles.map(t=>t.edges),schema.starter.map(t=>t.edges.join('')));
+assert(['staged','approved'].includes(manifest.status));
+for(const tile of manifest.tiles){
+  const bytes=fs.readFileSync('assets/lake/'+tile.file);
+  assert(bytes.length>80000,'Missing high-detail painted master: '+tile.file);
+  assert.equal(bytes.toString('ascii',0,4),'RIFF','Not a RIFF/WebP artwork file: '+tile.file);
+  assert.equal(bytes.toString('ascii',8,12),'WEBP','Incorrect image format: '+tile.file);
+}
+const loader=fs.readFileSync('painted-lake.js','utf8');
+assert(loader.includes("get('lakeArt')==='preview'"),'Staged paintings must have an explicit preview route');
+

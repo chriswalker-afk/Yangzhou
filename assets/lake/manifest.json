@@ -1,0 +1,56 @@
+{
+  "status": "staged",
+  "version": "2026-11-10-watercolour-master-1",
+  "camera": "top-down orthographic",
+  "grid": [
+    3,
+    2
+  ],
+  "tilePixels": 512,
+  "tileWorldUnits": 220,
+  "note": "The six painted WEBP tile exports are supplied in the downloadable artwork ZIP and must be committed to this directory; do not switch to approved until water and bridge ports pass strict visual contract QA. This file intentionally keeps the functional overhead fallback enabled.",
+  "tiles": [
+    {
+      "x": 0,
+      "y": 0,
+      "file": "01-willow-garden.webp",
+      "edges": "LLLL",
+      "name": "Willow Garden"
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "file": "02-northern-lake.webp",
+      "edges": "WLWL",
+      "name": "Northern Lake"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "file": "03-lakeside-teahouse.webp",
+      "edges": "LLLL",
+      "name": "Lakeside Teahouses"
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "file": "04-white-pagoda.webp",
+      "edges": "LSLL",
+      "name": "White Pagoda Garden"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "file": "05-five-pavilion-bridge.webp",
+      "edges": "WSWS",
+      "name": "Five-Pavilion Bridge"
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "file": "06-breakfast-house.webp",
+      "edges": "LLLS",
+      "name": "Southern Landing and Breakfast House"
+    }
+  ]
+}

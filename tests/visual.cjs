@@ -176,8 +176,8 @@ async function main(){
     assert.equal(expansion.count,16,'Ten painted tiles must surround six-tile lake');
     assert.deepEqual(await page.evaluate(()=>window.YangzhouTileTopology.validateBoard([...window.YangzhouDebug.board.values()])),[]);
     assert.equal(expansion.slots.length,10);
-    assert.equal(expansion.slots.filter(x=>x.port==='S').length,5);
-    assert.equal(expansion.slots.filter(x=>x.port==='L').length,3);
+    assert.equal(expansion.slots.filter(x=>x.port==='S').length,0);
+    assert.equal(expansion.slots.filter(x=>x.port==='L').length,8);
     assert.equal(expansion.slots.filter(x=>x.port==='W').length,2);
     await page.click('#fit');
     await page.waitForTimeout(750);
