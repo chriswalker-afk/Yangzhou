@@ -58,6 +58,9 @@ async function run(){
   variantGallery.on('pageerror',e=>errors.push('variants-gallery: '+String(e)));
   await variantGallery.goto('http://127.0.0.1:8765/variant-gallery.html',{waitUntil:'load'});
   assert.equal(await variantGallery.locator('figure img').count(),19,'Gallery must show 19 original square paintings');
+  // The public gallery intentionally uses lazy loading; force all originals
+  // to load before we inspect their dimensions or capture a full-page shot.
+  await variantGallery.locator('figure img').evaluateAll(images=>images.forEach(img=>{img.loading='eager';}));
   await variantGallery.waitForFunction(()=>
     [...document.querySelectorAll('figure img')].every(im=>im.complete&&im.naturalWidth===1254&&im.naturalHeight===1254),
     {timeout:60000});
