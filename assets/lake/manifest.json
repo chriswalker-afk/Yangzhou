@@ -1,6 +1,6 @@
 {
-  "status": "staged",
-  "version": "2026-11-10-watercolour-master-1",
+  "status": "review",
+  "version": "2026-11-10-painterly-lake-south-port-v2",
   "camera": "top-down orthographic",
   "grid": [
     3,
@@ -8,7 +8,7 @@
   ],
   "tilePixels": 512,
   "tileWorldUnits": 220,
-  "note": "The six painted WEBP tile exports are supplied in the downloadable artwork ZIP and must be committed to this directory; do not switch to approved until water and bridge ports pass strict visual contract QA. This file intentionally keeps the functional overhead fallback enabled.",
+  "note": "Detailed six-square lake artwork is visible by default in REVIEW mode, not yet artistically signed off. Both outer navigable W mouths are aligned to x=666..870 in the 1536x1024 coordinated painting; human historical and mixed-tile close-zoom acceptance remain outstanding.",
   "tiles": [
     {
       "x": 0,
@@ -52,5 +52,6 @@
       "edges": "LLLS",
       "name": "Southern Landing and Breakfast House"
     }
-  ]
+  ],
+  "displayByDefault": true
 }
