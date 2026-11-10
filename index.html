@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#eae0ca">
-<title>Yangzhou · A Living Scroll | V2 tile-layout study</title>
+<title>Yangzhou · A Living Scroll | Painted Street Pilot Review</title>
 <style>
 :root{--paper:#f0e6d1;--ink:#39413c;--muted:#697069;--jade:#739e99;--red:#a46c52;--gold:#aa8753}*{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:Georgia,"Noto Serif",serif}
@@ -75,13 +75,13 @@ button{font:inherit;cursor:pointer;color:inherit}button:focus-visible{outline:3p
 </head>
 <body>
 <canvas id="scene" aria-label="Interactive Yangzhou city canvas; use the controls to zoom, rotate and place tiles"></canvas>
-<div class="shell header"><div class="brand"><span class="han" lang="zh">揚州</span><h1>Yangzhou</h1><p>A Living Scroll · V2 composition study</p></div></div>
-<div class="shell status"><div class="chip" id="counter">6 tiles · Slender West Lake</div><div class="chip zoom-label" id="zoomLabel">City overview</div><a class="btn" id="tileLab" href="tile-lab-v2.html" title="Inspect all eight new tile composition studies">Tile studies</a><a class="btn" id="streetReview" href="street-pilot-review.html" title="Review the first painted street, its port alignment and seams">Street pilot QA</a><label class="btn upload-btn" for="pilotUpload" title="Preview the original east–west street painting in this browser session">Load painting</label><input type="file" id="pilotUpload" accept="image/png,image/webp,image/avif,image/jpeg" hidden></div>
+<div class="shell header"><div class="brand"><span class="han" lang="zh">揚州</span><h1>Yangzhou</h1><p>A Living Scroll · painted street pilot</p></div></div>
+<div class="shell status"><div class="chip" id="counter">6 tiles · Slender West Lake</div><div class="chip zoom-label" id="zoomLabel">City overview</div><a class="btn" id="tileLab" href="tile-lab-v2.html" title="Inspect all eight new tile composition studies">Tile studies</a><a class="btn" id="streetReview" href="street-pilot-review.html" title="Review the first painted street, its port alignment and seams">Street pilot QA</a><label class="btn upload-btn" for="pilotUpload" title="Optionally compare a retouched 1254px street painting in this browser session">Try local revision</label><input type="file" id="pilotUpload" accept="image/png,image/webp,image/avif,image/jpeg" hidden></div>
 <div class="shell controls"><button class="btn" id="zoomIn" title="Zoom in" aria-label="Zoom in">+</button><button class="btn" id="zoomOut" title="Zoom out" aria-label="Zoom out">−</button><button class="btn" id="fit" title="Fit the whole city">Fit</button><button class="btn preset" id="viewCity" title="Overview (1)">City</button><button class="btn preset" id="viewNear" title="Neighbourhood (2)">Street</button><button class="btn preset" id="viewDetail" title="Close inspection (3)">Detail</button><button class="btn" id="explore" title="Hide or show placement guides" aria-pressed="false">Explore city</button><button class="btn" id="help" title="Show instructions">?</button></div>
-<div class="shell notice" id="notice" role="status">PR13: use Load painting to preview the original street artwork at 90° (east–west), then place and inspect its edges. The painting is NOT yet committed to GitHub.</div>
+<div class="shell notice" id="notice" role="status">The original painted street is now included. The rack shows its east–west (LSLS) orientation. Place it in a matching space, or open Street pilot QA to inspect the seam geometry. Artwork is under review.</div>
 <div class="legend" id="legend"><b>Placement edges</b><span><i class="mark" style="background:#7daba6"></i>Water · canal or lake</span><span><i class="mark" style="background:#c1af93"></i>Street · walking route</span><span><i class="mark" style="background:#c6c5a3"></i>Land · garden or district</span></div>
 <div class="shell bottom"><div class="panel tile-panel"><canvas id="preview" class="tile-preview" width="140" height="140" aria-label="Current tile preview"></canvas><div class="tile-description"><div class="eyebrow">Your next tile</div><strong id="tileName">Willow garden</strong><div class="hint" id="tileDesc">Place next to a matching edge</div></div><div class="tile-actions"><button class="btn" id="previous" aria-label="Previous tile">‹</button><button class="btn" id="next" aria-label="Next tile">›</button><button class="btn" id="rotate" title="Rotate tile clockwise">↻ Rotate</button></div></div><div class="panel action"><button class="btn primary" id="place" disabled>Place tile</button><button class="btn" id="cancel">Clear selection</button></div></div>
-<div class="shell footer"><span id="assetStatus">Artwork V2: eight layout studies, six lake references — NOT production art</span> · Edge geometry remains a prototype · Scoring is planned for a later pass</div>
+<div class="shell footer"><span id="assetStatus">Loading one original street master (under review) and 31 layout studies…</span> · Edge geometry remains a prototype · Scoring is planned for a later pass</div>
 
 <script src="tile-topology.js"></script>
 <script src="tile-art-v2.js"></script>
@@ -96,7 +96,7 @@ const kinds={L:'land',S:'street',W:'water'};
 const archetypes=window.YangzhouTileTopology.archetypes;
 const starter=window.YangzhouTileTopology.starter;
 const board=new Map(starter.map(t=>[t.x+','+t.y,t]));
-const state={type:0,rotation:0,selected:null,hover:null,scale:1.0,offsetX:0,offsetY:0,motion:!matchMedia('(prefers-reduced-motion: reduce)').matches,showSites:true,drag:null,time:0,w:0,h:0,dirty:true};
+const state={type:1,rotation:1,selected:null,hover:null,scale:1.0,offsetX:0,offsetY:0,motion:!matchMedia('(prefers-reduced-motion: reduce)').matches,showSites:true,drag:null,time:0,w:0,h:0,dirty:true};
 const rotEdges=window.YangzhouTileTopology.rotateEdges;
 const edge=(t,i)=>t.edges[i]; const dirs=[[0,-1],[1,0],[0,1],[-1,0]];
 const key=(x,y)=>x+','+y;
@@ -175,8 +175,8 @@ canvas.addEventListener('touchend',e=>{e.preventDefault();if(e.touches.length===
  else if(e.touches.length===1){let a=e.touches[0];touch={kind:'pan',x:a.clientX,y:a.clientY,startX:a.clientX,startY:a.clientY,moved:true};}
 },{passive:false});
 canvas.addEventListener('touchcancel',()=>{touch=null;},{passive:false});
-// PR13: local asset transfer into the review renderer. No hidden image
-// substitution, server upload, sideways rotation or persistence is implied.
+// Optional QA override only. The original painted master already loads from
+// the repository manifest; no additional user upload is required.
 $('pilotUpload').addEventListener('change',event=>{
   const file=event.target.files?.[0];if(!file)return;
   const url=URL.createObjectURL(file),img=new Image();
@@ -184,13 +184,18 @@ $('pilotUpload').addEventListener('change',event=>{
     try{
       window.YangzhouArtV2.registerReviewImage('street-straight:1',img);
       state.type=1;state.rotation=1;state.selected=null;
-      $('notice').textContent='Street painting loaded for THIS SESSION. This is the 90° east–west tile (LSLS). Select a matching dotted space to place it. See Street pilot QA for seam review.';
+      $('notice').textContent='Local replacement loaded for this browser session. The committed original remains unchanged. Street orientation is 90° (east–west, LSLS).';
       refresh();
     }catch(error){$('notice').textContent='Pilot image rejected: '+error.message;}
     URL.revokeObjectURL(url);
   };
   img.onerror=()=>{$('notice').textContent='Could not decode pilot image.';URL.revokeObjectURL(url);};
   img.src=url;
+});
+window.addEventListener('yangzhou-art-v2-updated',()=>{
+  const info=window.YangzhouArtV2.inspect();
+  $('assetStatus').textContent=info.paintingVariantsLoaded+' original painted master(s) imported / 32 slots · review only, 31 composition studies';
+  state.dirty=true;refresh();
 });
 $('viewCity').onclick=()=>fit();$('viewNear').onclick=()=>zoomTo(1.55);$('viewDetail').onclick=()=>zoomTo(3.35);
 $('explore').onclick=()=>{state.showSites=!state.showSites;$('explore').textContent=state.showSites?'Explore city':'Place tiles';$('explore').setAttribute('aria-pressed',String(!state.showSites));state.selected=null;

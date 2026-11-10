@@ -36,12 +36,12 @@ fieldset{border:none;padding:0;display:inline-flex;gap:12px;align-items:center}
 <body>
 <header>
 <div class="eyebrow">Yangzhou / Tile system reset / Pass 1</div>
-<h1>Eight-tile composition studio</h1>
-<p>Original, tile-specific <strong>layout studies</strong> for an eventual Jiangnan ink-and-watercolour deck. Routes are designed before painting. The six starter-lake squares are retained as a visual benchmark only.</p>
+<h1>Tile composition and painted pilot studio</h1>
+<p>One original high-resolution Jiangnan street painting plus tile-specific <strong>layout studies</strong> for the remaining unpainted slots. Routes are designed before painting. The six starter-lake squares are retained as a visual benchmark only.</p>
 <p><a href="./">Return to the playable camera</a> · <a href="docs/ARTWORK-V2.md">Read V2 artwork contract and painting briefs</a></p>
 </header>
 <main>
-<div class="notice"><strong>Not finished illustrations.</strong> The geometric, muted drawings below establish each tile's routes, feature placement and four upright orientations. They are deliberately not presented as hand-painted Yangzhou. We will replace each square with bespoke artwork only after its layout works among neighbours.</div>
+<div class="notice"><strong>Not finished illustrations.</strong> The street-straight 90° (east–west) tile is the real 1254px painted pilot, imported for review. The other 31 variants remain geometric composition studies. No artwork has passed final geometry/seam and historical acceptance yet. <a href="street-pilot-review.html">Inspect the actual painted street in its dedicated seam studio</a>.</div>
 <div class="bar">
 <fieldset><label><input type="checkbox" id="ports"> Show connection markers</label></fieldset>
 <span id="status">Loading six lake reference paintings…</span>
@@ -120,7 +120,7 @@ function drawAll(){
  for(const {canvas,t} of allCards)paintCanvas(canvas,[t],0,0,canvas.width/220);
  paintCanvas($('ring'),board,220,220,1);
  const s=art.inspect();
- $('status').textContent='Artwork stage: '+s.manifestStatus+' · '+s.lakeReferencesLoaded+'/6 benchmark lake paintings loaded · '+s.paintingVariantsLoaded+'/32 finished expansion paintings';
+ $('status').textContent='Artwork stage: '+s.manifestStatus+' · '+s.lakeReferencesLoaded+'/6 benchmark lake paintings loaded · '+s.paintingVariantsLoaded+'/32 original painted masters loaded (review only)';
  if(current)paintCanvas($('detailCanvas'),[current],0,0,4);
 }
 let current=null;
