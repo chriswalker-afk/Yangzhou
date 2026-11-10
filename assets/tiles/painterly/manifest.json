@@ -1,0 +1,570 @@
+{
+  "version": "painterly-deck-review-v2",
+  "status": "review",
+  "displayByDefault": true,
+  "tile_px": 512,
+  "world_units": 220,
+  "visualStandard": "docs/PAINTERLY-TILE-ART-STANDARD.md",
+  "source": "coordinated Slender West Lake painterly master; recomposed with deterministic ink-texture paths; human art signoff required",
+  "archetypes": [
+    {
+      "index": 0,
+      "name": "Canal-side teahouse",
+      "kind": "tea",
+      "baseEdges": "LWLS",
+      "atlas": "archetype-00.webp",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "LWLS",
+          "cell": [
+            0,
+            0
+          ]
+        },
+        {
+          "rotation": 1,
+          "edges": "SLWL",
+          "cell": [
+            1,
+            0
+          ]
+        },
+        {
+          "rotation": 2,
+          "edges": "LSLW",
+          "cell": [
+            0,
+            1
+          ]
+        },
+        {
+          "rotation": 3,
+          "edges": "WLSL",
+          "cell": [
+            1,
+            1
+          ]
+        }
+      ],
+      "bytes": 919362,
+      "sha256": "0748b8456eda150b7e519b911d40407b8a42b12c78d2a88bfe6ff6dc35b8d433"
+    },
+    {
+      "index": 1,
+      "name": "Stone-paved street",
+      "kind": "street",
+      "baseEdges": "SLSL",
+      "atlas": "archetype-01.webp",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "SLSL",
+          "cell": [
+            0,
+            0
+          ]
+        },
+        {
+          "rotation": 1,
+          "edges": "LSLS",
+          "cell": [
+            1,
+            0
+          ]
+        },
+        {
+          "rotation": 2,
+          "edges": "SLSL",
+          "cell": [
+            0,
+            1
+          ]
+        },
+        {
+          "rotation": 3,
+          "edges": "LSLS",
+          "cell": [
+            1,
+            1
+          ]
+        }
+      ],
+      "bytes": 991156,
+      "sha256": "23b82bca83be5a12ee7d225e112696e1921a669b5899ae13a3bab90b33d7f60f"
+    },
+    {
+      "index": 2,
+      "name": "Willow canal bend",
+      "kind": "canal",
+      "baseEdges": "WWLL",
+      "atlas": "archetype-02.webp",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "WWLL",
+          "cell": [
+            0,
+            0
+          ]
+        },
+        {
+          "rotation": 1,
+          "edges": "LWWL",
+          "cell": [
+            1,
+            0
+          ]
+        },
+        {
+          "rotation": 2,
+          "edges": "LLWW",
+          "cell": [
+            0,
+            1
+          ]
+        },
+        {
+          "rotation": 3,
+          "edges": "WLLW",
+          "cell": [
+            1,
+            1
+          ]
+        }
+      ],
+      "bytes": 1525946,
+      "sha256": "9ea736f423434ba06cf927f3327f86064de1ac6c6a148b0b693e8031a064c6f8"
+    },
+    {
+      "index": 3,
+      "name": "Waterfront landing",
+      "kind": "landing",
+      "baseEdges": "LWLW",
+      "atlas": "archetype-03.webp",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "LWLW",
+          "cell": [
+            0,
+            0
+          ]
+        },
+        {
+          "rotation": 1,
+          "edges": "WLWL",
+          "cell": [
+            1,
+            0
+          ]
+        },
+        {
+          "rotation": 2,
+          "edges": "LWLW",
+          "cell": [
+            0,
+            1
+          ]
+        },
+        {
+          "rotation": 3,
+          "edges": "WLWL",
+          "cell": [
+            1,
+            1
+          ]
+        }
+      ],
+      "bytes": 1099724,
+      "sha256": "1c95a3ff0db6c153a3025ce72181c9a7b071983e3b50084259b6d75c2d20e00b"
+    },
+    {
+      "index": 4,
+      "name": "Garden enclosure",
+      "kind": "garden",
+      "baseEdges": "LLLL",
+      "atlas": "archetype-04.webp",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "LLLL",
+          "cell": [
+            0,
+            0
+          ]
+        },
+        {
+          "rotation": 1,
+          "edges": "LLLL",
+          "cell": [
+            1,
+            0
+          ]
+        },
+        {
+          "rotation": 2,
+          "edges": "LLLL",
+          "cell": [
+            0,
+            1
+          ]
+        },
+        {
+          "rotation": 3,
+          "edges": "LLLL",
+          "cell": [
+            1,
+            1
+          ]
+        }
+      ],
+      "bytes": 1000066,
+      "sha256": "b5954e6568edf896ba30c112eef6311b4fd3e7a560ffb98ce80b7a77e0417217"
+    },
+    {
+      "index": 5,
+      "name": "Market crossroads",
+      "kind": "market",
+      "baseEdges": "SSSS",
+      "atlas": "archetype-05.webp",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "SSSS",
+          "cell": [
+            0,
+            0
+          ]
+        },
+        {
+          "rotation": 1,
+          "edges": "SSSS",
+          "cell": [
+            1,
+            0
+          ]
+        },
+        {
+          "rotation": 2,
+          "edges": "SSSS",
+          "cell": [
+            0,
+            1
+          ]
+        },
+        {
+          "rotation": 3,
+          "edges": "SSSS",
+          "cell": [
+            1,
+            1
+          ]
+        }
+      ],
+      "bytes": 601624,
+      "sha256": "e030170eeda2cdecd8207a7dadc1322917779830d1c92bfb9db6378b86c563e7"
+    },
+    {
+      "index": 6,
+      "name": "Canal crossroads",
+      "kind": "canal",
+      "baseEdges": "WWWW",
+      "atlas": "archetype-06.webp",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "WWWW",
+          "cell": [
+            0,
+            0
+          ]
+        },
+        {
+          "rotation": 1,
+          "edges": "WWWW",
+          "cell": [
+            1,
+            0
+          ]
+        },
+        {
+          "rotation": 2,
+          "edges": "WWWW",
+          "cell": [
+            0,
+            1
+          ]
+        },
+        {
+          "rotation": 3,
+          "edges": "WWWW",
+          "cell": [
+            1,
+            1
+          ]
+        }
+      ],
+      "bytes": 941506,
+      "sha256": "ed1b563653d67a295738c3aace753d40ed1ffa8363947c1f9612e46b4d3ef3c7"
+    },
+    {
+      "index": 7,
+      "name": "Street corner",
+      "kind": "street",
+      "baseEdges": "SSLL",
+      "atlas": "archetype-07.webp",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "SSLL",
+          "cell": [
+            0,
+            0
+          ]
+        },
+        {
+          "rotation": 1,
+          "edges": "LSSL",
+          "cell": [
+            1,
+            0
+          ]
+        },
+        {
+          "rotation": 2,
+          "edges": "LLSS",
+          "cell": [
+            0,
+            1
+          ]
+        },
+        {
+          "rotation": 3,
+          "edges": "SLLS",
+          "cell": [
+            1,
+            1
+          ]
+        }
+      ],
+      "bytes": 1085688,
+      "sha256": "b0ab915c7d47c108d79fd57110824bae7bce5a9610a7a38c57c60997bc0a8aa3"
+    },
+    {
+      "index": 8,
+      "name": "Small stone bridge",
+      "kind": "bridge",
+      "baseEdges": "WSWS",
+      "atlas": "archetype-08.webp",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "WSWS",
+          "cell": [
+            0,
+            0
+          ]
+        },
+        {
+          "rotation": 1,
+          "edges": "SWSW",
+          "cell": [
+            1,
+            0
+          ]
+        },
+        {
+          "rotation": 2,
+          "edges": "WSWS",
+          "cell": [
+            0,
+            1
+          ]
+        },
+        {
+          "rotation": 3,
+          "edges": "SWSW",
+          "cell": [
+            1,
+            1
+          ]
+        }
+      ],
+      "bytes": 1507540,
+      "sha256": "853d7eca6994acd291270a290a2c70d1be76ec9bc525bb9bbaecead181d78ee1"
+    },
+    {
+      "index": 9,
+      "name": "Garden pavilion",
+      "kind": "garden",
+      "baseEdges": "LSLL",
+      "atlas": "archetype-09.webp",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "LSLL",
+          "cell": [
+            0,
+            0
+          ]
+        },
+        {
+          "rotation": 1,
+          "edges": "LLSL",
+          "cell": [
+            1,
+            0
+          ]
+        },
+        {
+          "rotation": 2,
+          "edges": "LLLS",
+          "cell": [
+            0,
+            1
+          ]
+        },
+        {
+          "rotation": 3,
+          "edges": "SLLL",
+          "cell": [
+            1,
+            1
+          ]
+        }
+      ],
+      "bytes": 1120372,
+      "sha256": "6fc1ff677c2300950819513c0130d47ba29209afb6b5ce0b13399cdde72f93d9"
+    },
+    {
+      "index": 10,
+      "name": "Walled courtyard",
+      "kind": "court",
+      "baseEdges": "SLLL",
+      "atlas": "archetype-10.webp",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "SLLL",
+          "cell": [
+            0,
+            0
+          ]
+        },
+        {
+          "rotation": 1,
+          "edges": "LSLL",
+          "cell": [
+            1,
+            0
+          ]
+        },
+        {
+          "rotation": 2,
+          "edges": "LLSL",
+          "cell": [
+            0,
+            1
+          ]
+        },
+        {
+          "rotation": 3,
+          "edges": "LLLS",
+          "cell": [
+            1,
+            1
+          ]
+        }
+      ],
+      "bytes": 534428,
+      "sha256": "e7dd709c5020330209ce2f3fdeb0799f9332f541e7683ddf14fa0f8a95088b25"
+    },
+    {
+      "index": 11,
+      "name": "Canal junction",
+      "kind": "canal",
+      "baseEdges": "WWWL",
+      "atlas": "archetype-11.webp",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "WWWL",
+          "cell": [
+            0,
+            0
+          ]
+        },
+        {
+          "rotation": 1,
+          "edges": "LWWW",
+          "cell": [
+            1,
+            0
+          ]
+        },
+        {
+          "rotation": 2,
+          "edges": "WLWW",
+          "cell": [
+            0,
+            1
+          ]
+        },
+        {
+          "rotation": 3,
+          "edges": "WWLW",
+          "cell": [
+            1,
+            1
+          ]
+        }
+      ],
+      "bytes": 1160294,
+      "sha256": "a5ab9bbcf6e6556aaea94a2b38f31794d7af8db4c8ab4f71bc53b8cb05afedb2"
+    },
+    {
+      "index": 12,
+      "name": "Mooring basin",
+      "kind": "landing",
+      "baseEdges": "WLLL",
+      "atlas": "archetype-12.webp",
+      "variants": [
+        {
+          "rotation": 0,
+          "edges": "WLLL",
+          "cell": [
+            0,
+            0
+          ]
+        },
+        {
+          "rotation": 1,
+          "edges": "LWLL",
+          "cell": [
+            1,
+            0
+          ]
+        },
+        {
+          "rotation": 2,
+          "edges": "LLWL",
+          "cell": [
+            0,
+            1
+          ]
+        },
+        {
+          "rotation": 3,
+          "edges": "LLLW",
+          "cell": [
+            1,
+            1
+          ]
+        }
+      ],
+      "bytes": 1319540,
+      "sha256": "94e540e831cdcabbdbaa34c85b716c89b723f899346b3193e66ea966eaf15375"
+    }
+  ]
+}
