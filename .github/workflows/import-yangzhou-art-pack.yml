@@ -1,0 +1,43 @@
+name: Import one-file Yangzhou painted tile package
+
+on:
+  push:
+    branches:
+      - feat/yangzhou-art-pack-import
+    paths:
+      - incoming/yangzhou-art-variants-v1.zip
+
+permissions:
+  contents: write
+
+jobs:
+  import-art:
+    name: Validate, unpack and activate painted variations
+    if: github.repository == 'chriswalker-afk/Yangzhou'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out this upload branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Validate and unpack the exact artwork ZIP
+        run: python3 scripts/import_yangzhou_art_pack.py --repo-root .
+
+      - name: Check the runtime JavaScript syntax
+        run: node --check assets/v2/variant-runtime.js
+
+      - name: Commit unpacked artwork and optional runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- assets/v2/variants assets/v2/variant-pools.json assets/v2/variant-runtime.js \
+            docs/ARTWORK-VARIANTS-README.md variant-gallery.html artwork-variants-preview.jpg \
+            index.html tile-lab-v2.html incoming/yangzhou-art-variants-v1.zip
+          if ! git diff --cached --quiet; then
+            git commit -m "Import 19 Yangzhou painted variants and stable seeded artwork pools"
+            git push origin HEAD:feat/yangzhou-art-pack-import
+          fi
