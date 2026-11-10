@@ -227,3 +227,12 @@ const manifest=JSON.parse(fs.readFileSync('assets/lake/manifest.json','utf8'));
 assert.equal(manifest.tiles.length,6);
 assert.deepEqual(manifest.tiles.map(t=>t.edges),schema.starter.map(t=>t.edges.join('')));
 assert(['staged','approved'].includes(manifest.status));
+for(const tile of manifest.tiles){
+  const bytes=fs.readFileSync('assets/lake/'+tile.file);
+  assert(bytes.length>80000,'Missing high-detail painted master: '+tile.file);
+  assert.equal(bytes.toString('ascii',0,4),'RIFF','Not a RIFF/WebP artwork file: '+tile.file);
+  assert.equal(bytes.toString('ascii',8,12),'WEBP','Incorrect image format: '+tile.file);
+}
+const loader=fs.readFileSync('painted-lake.js','utf8');
+assert(loader.includes("get('lakeArt')==='preview'"),'Staged paintings must have an explicit preview route');
+
