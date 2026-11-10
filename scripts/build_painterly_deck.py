@@ -357,6 +357,12 @@ def make_tile(index,rotation):
     # No quarter-turn of gardens or roofs. A mild mirror is acceptable for
     # natural foliage but never for a recognisable architectural monument.
     if kind in ('street','canal','garden') and (rotation%2):source=ImageOps.mirror(source)
+    if kind=='garden' and sig=='LLLL' and rotation>=2:
+        # Garden tiles rotate their route logic, not their botanical composition.
+        # Preserve upright vegetation without identical repeated crops.
+        enlarged=source.resize((555,555),Image.Resampling.LANCZOS)
+        shift=10 if rotation==2 else 32
+        source=enlarged.crop((shift,43-shift,shift+512,43-shift+512))
     bg=source
     bg=draw_network(bg,sig,seed)
     if kind=='garden' and sig=='LSLL':
