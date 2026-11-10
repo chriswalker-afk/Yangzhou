@@ -132,28 +132,40 @@ function seamMetric(a,b,side){if(!a||!b)return null;
  }
  return Math.round(total/count*10)/10;
 }
-function strips(original,neighborImage,mode){const c=$('edgeStrips'),ctx=c.getContext('2d');c.width=660;c.height=320;
+function strips(original,neighborImage,mode){
+ const c=$('edgeStrips'),ctx=c.getContext('2d');c.width=660;c.height=320;
  ctx.fillStyle='#e9e0d2';ctx.fillRect(0,0,660,320);
  ctx.fillStyle='#4f6757';ctx.font='13px system-ui,sans-serif';
  if(!original){ctx.fillText('Loading original artwork...',18,160);return;}
+ // Always lay the two edge bands in their real spatial order: west on
+ // the LEFT, north ABOVE, never the reverse. The same original PNG is
+ // never stretched or altered; Canvas crops are diagnostic previews only.
  if(mode==='east'||mode==='west'){
-   const w=original.naturalWidth,h=original.naturalHeight,band=180;
-   const sx=mode==='east'?w-band:0;
-   ctx.drawImage(original,sx,0,band,h,0,0,330,320);
-   if(neighborImage){let secondX=mode==='east'?0:neighborImage.naturalWidth-band;
-     ctx.drawImage(neighborImage,secondX,0,band,neighborImage.naturalHeight,330,0,330,320);
-   }else{ctx.fillText('SECOND ORIGINAL NEEDED',355,160);}
-   const firstPortY=Math.round(320*.4),lastPortY=Math.round(320*.6);
-   ctx.strokeStyle='#b54e3c';ctx.lineWidth=1.5;
-   for(const y of [firstPortY,lastPortY]){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(660,y);ctx.stroke();}
-   ctx.beginPath();ctx.moveTo(330,0);ctx.lineTo(330,320);ctx.stroke();
+   const band=180;
+   if(mode==='east'){
+     ctx.drawImage(original,original.naturalWidth-band,0,band,original.naturalHeight,0,0,330,320);
+     if(neighborImage)ctx.drawImage(neighborImage,0,0,band,neighborImage.naturalHeight,330,0,330,320);
+     else ctx.fillText('SECOND ORIGINAL NEEDED',355,160);
+   }else{
+     if(neighborImage)ctx.drawImage(neighborImage,neighborImage.naturalWidth-band,0,band,neighborImage.naturalHeight,0,0,330,320);
+     else ctx.fillText('SECOND ORIGINAL NEEDED',12,160);
+     ctx.drawImage(original,0,0,band,original.naturalHeight,330,0,330,320);
+   }
+   for(const y of [Math.round(320*.4),Math.round(320*.6)]){
+     ctx.strokeStyle='#b54e3c';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(660,y);ctx.stroke();
+   }
+   ctx.strokeStyle='#b54e3c';ctx.beginPath();ctx.moveTo(330,0);ctx.lineTo(330,320);ctx.stroke();
  }else{
-   const h=original.naturalHeight,w=original.naturalWidth,band=180;
-   const sy=mode==='north'?0:h-band;
-   ctx.drawImage(original,0,sy,w,band,0,0,660,160);
-   if(neighborImage){const secondY=mode==='north'?neighborImage.naturalHeight-band:0;
-     ctx.drawImage(neighborImage,0,secondY,neighborImage.naturalWidth,band,0,160,660,160);
-   }else{ctx.fillText('SECOND ORIGINAL NEEDED',190,245);}
+   const band=180;
+   if(mode==='north'){
+     if(neighborImage)ctx.drawImage(neighborImage,0,neighborImage.naturalHeight-band,neighborImage.naturalWidth,band,0,0,660,160);
+     else ctx.fillText('SECOND ORIGINAL NEEDED',180,80);
+     ctx.drawImage(original,0,0,original.naturalWidth,band,0,160,660,160);
+   }else{
+     ctx.drawImage(original,0,original.naturalHeight-band,original.naturalWidth,band,0,0,660,160);
+     if(neighborImage)ctx.drawImage(neighborImage,0,0,neighborImage.naturalWidth,band,0,160,660,160);
+     else ctx.fillText('SECOND ORIGINAL NEEDED',180,245);
+   }
    ctx.strokeStyle='#b54e3c';ctx.beginPath();ctx.moveTo(0,160);ctx.lineTo(660,160);ctx.stroke();
  }
 }
