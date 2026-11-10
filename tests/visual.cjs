@@ -121,6 +121,43 @@ async function run(){
   });
   assert.deepEqual(selected,{id:'street-straight',rotation:1,edges:'LSLS'});
   await desktop.screenshot({path:'artifacts/v2/pr13-playable-pilot-fixture.png',fullPage:true});
+
+  // Independent-original joining lab: must withhold all seam approval without
+  // a truly second painting. Synthetic fixtures validate interface logic only.
+  const neighbourLab=await browser.newPage({viewport:{width:1400,height:920},deviceScaleFactor:1});
+  neighbourLab.on('pageerror',e=>errors.push('neighbour: '+String(e)));
+  await neighbourLab.goto('http://127.0.0.1:8765/painted-neighbour-lab.html',{waitUntil:'load'});
+  await neighbourLab.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:1')?.naturalWidth===1254,{timeout:30000});
+  assert.match(await neighbourLab.locator('#originalStatus').textContent(),/Original 1254px painted street loaded/);
+  assert.match(await neighbourLab.locator('#neighbourStatus').textContent(),/No independent painted neighbour loaded/);
+  assert.equal(await neighbourLab.locator('#edgeDelta').textContent(),'—','No seam result without second original');
+  assert.match(await neighbourLab.locator('#humanStatus').textContent(),/Not approved/);
+  await neighbourLab.screenshot({path:'artifacts/v2/original-neighbour-lab-awaiting-independent-art.png',fullPage:true});
+  await neighbourLab.locator('#neighbourFile').setInputFiles(fileFixture);
+  await neighbourLab.waitForFunction(()=>document.getElementById('edgeDelta').textContent!=='—');
+  assert.match(await neighbourLab.locator('#neighbourStatus').textContent(),/Independent candidate loaded locally/);
+  assert(Number(await neighbourLab.locator('#edgeDelta').textContent())>=0,'Real two-source metric is calculated');
+  await neighbourLab.locator('#zoom').selectOption('1');
+  await neighbourLab.screenshot({path:'artifacts/v2/neighbour-lab-1x-technical-fixture.png',fullPage:true});
+  await neighbourLab.locator('#zoom').selectOption('3');
+  await neighbourLab.screenshot({path:'artifacts/v2/neighbour-lab-3x-technical-fixture.png',fullPage:true});
+  await neighbourLab.locator('#neighbourPosition').selectOption('north');
+  assert.equal(await neighbourLab.locator('#edgeDelta').textContent(),'—','Changing from street to garden requires a new painting');
+  await neighbourLab.locator('#neighbourFile').setInputFiles(fileFixture);
+  await neighbourLab.waitForFunction(()=>document.getElementById('edgeDelta').textContent!=='—');
+  assert.match(await neighbourLab.locator('#geometryStatus').textContent(),/Legal connection \(north\)/);
+  await neighbourLab.locator('#neighbourPosition').selectOption('east');
+  const sourceFile=fs.readFileSync('assets/v2/street-straight-east-west.png');
+  await neighbourLab.locator('#neighbourFile').setInputFiles({name:'duplicate.png',mimeType:'image/png',buffer:sourceFile});
+  await neighbourLab.waitForFunction(()=>document.getElementById('neighbourStatus').textContent.startsWith('Rejected:'));
+  assert.match(await neighbourLab.locator('#neighbourStatus').textContent(),/exact copy of the first street painting/);
+  assert.equal(await neighbourLab.locator('#edgeDelta').textContent(),'—');
+  const mobileLab=await browser.newPage({viewport:{width:390,height:790},deviceScaleFactor:1,isMobile:true,hasTouch:true});
+  mobileLab.on('pageerror',e=>errors.push('neighbour-mobile: '+String(e)));
+  await mobileLab.goto('http://127.0.0.1:8765/painted-neighbour-lab.html',{waitUntil:'load'});
+  await mobileLab.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:1')?.naturalWidth===1254,{timeout:30000});
+  await mobileLab.screenshot({path:'artifacts/v2/neighbour-lab-mobile.png',fullPage:true});
+
   assert.deepEqual(errors,[],'Browser JavaScript errors');
   console.log('Painted street browser QA passed: original 1254px image autoload, correct LSLS tile, mobile/desktop, original 1x/3x seam previews, 32-variant gallery, and local revision/restore.');
  }finally{await browser.close();}

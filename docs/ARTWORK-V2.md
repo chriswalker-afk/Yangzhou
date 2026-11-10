@@ -16,6 +16,10 @@ The street connects **west–east**. It belongs to `street-straight` rotation **
 - The [street pilot review](../street-pilot-review.html) now loads that same committed original without asking for an upload. It offers 1×/2×/3× inspection, exact street-port overlays, a three-identical-tile diagnostic, and a human quality rubric.
 - A `Try local revision` control may temporarily override the image; `Restore original painting` switches back to the saved GitHub master.
 
+### Separate painting joining gate
+
+The [independent painted-neighbour QA page](../painted-neighbour-lab.html) checks this exact original against a different full-square painted east/west street or north/south garden. It uses the real image pixels, provides an exact 44/220 port guide, and withholds the seam metric and art approval when the separate picture is absent. The [detailed street-edge acceptance brief](STREET-EDGE-ACCEPTANCE.md) records the measured deficiency and painterly correction required. A three-tile *self-repeat* cannot be called a completed neighbour test.
+
 ### Outstanding quality gates
 
 - Required road mouth: 44/220 = **20% of tile**, centred on each east/west edge. In a 1254px original, that is approximately **Y502–752**. The road appears narrower in the original, so the painting may require genuine retouching before final geometry acceptance. Do not hide mismatches with a pixel collar, vector road or blur.

@@ -92,12 +92,32 @@ assert(html.includes('tile-art-v2.js'));
 assert(html.includes('tile-topology.js'));
 assert(html.includes('id:a.id,rotation:state.rotation'),'Tile placement must retain artwork identity and orientation');
 assert(lab.includes('Strict')||lab.includes('strict'));
+
+// A genuine second original is required for road/street and street/garden joining.
+const neighborLab=fs.readFileSync(path.join(__dirname,'../painted-neighbour-lab.html'),'utf8');
+const road=topology.archetypes.find(t=>t.id==='street-straight');
+const grove=topology.archetypes.find(t=>t.id==='garden-grove');
+const paintedRoad=topology.rotateEdges(road.edges,1);
+assert.equal(paintedRoad.join(''),'LSLS');
+for(const [x,y,edges] of [[1,0,paintedRoad],[-1,0,paintedRoad],[0,-1,grove.edges],[0,1,grove.edges]]){
+ assert.deepEqual(topology.validateBoard([
+  {x:0,y:0,edges:paintedRoad,id:'street-straight',rotation:1},
+  {x,y,edges,id:y===0?'street-straight':'garden-grove',rotation:y===0?1:0}
+ ]),[],'Neighbour must have a legal edge for its chosen position');
+}
+assert(neighborLab.includes('NO INDEPENDENT PAINTING'),'Missing second image must never be shown as finished art');
+assert(neighborLab.includes("crypto.subtle.digest('SHA-256',bytes)"),'Second painting must be checked for exact source duplication');
+assert(neighborLab.includes('seamMetric(original,neighbor.image,mode)'),'A real two-source seam diagnostic must be calculated');
+assert(neighborLab.includes("if(hash===referenceHash)"),'Identical first painting cannot pass as new painting');
+assert(neighborLab.includes('widthAccepted')&&neighborLab.includes('historicalAccepted'),'Artwork gate must remain a human task');
+assert(neighborLab.includes('44 / 220'),'Exact street mouth width must be visible to reviewer');
+
 const pilot=fs.readFileSync(path.join(__dirname,'../street-pilot-review.html'),'utf8');
 assert(pilot.includes('useCommittedMaster()'),'Review studio must load the real repository image automatically');
 assert(pilot.includes("registerReviewImage(key,im)"),'Pilot inspector must still allow a local revision for comparison');
 assert(pilot.includes("const tiles=[tile(0,0),tile(1,0),tile(2,0)]"),'Three-square seam inspection is required');
 assert(pilot.includes('LSLS'),'Original east-west connection must be explicit');
-assert(html.includes('id="pilotUpload"')&&html.includes('street-pilot-review.html'),'Playable camera should have a review link and an optional local revision path');
+assert(html.includes('id="pilotUpload"')&&html.includes('painted-neighbour-lab.html'),'Playable camera should link to the independent join laboratory and offer optional revision preview');
 assert(html.includes('const state={type:1,rotation:1'),'Game should initially preview the imported east-west street');
 const painter=fs.readFileSync(path.join(__dirname,'../tile-art-v2.js'),'utf8');
 assert(painter.includes('permanentMasters'),'Original imported painting must be kept separately from optional temporary revisions');
@@ -105,4 +125,4 @@ assert(painter.includes('getMaster'),'Review studio needs to retrieve the origin
 for(const name of ['tile-system.js','painted-lake.js','painted-assets.js','orthographic-lake.js','living-scene.js']){
  assert(!html.includes('<script src="'+name+'"'),'Retired artist still loads: '+name);
 }
-console.log('V2 contract passed: exact 4.1MB original restored, 1 painted street review slot, 31 sketches, sixteen-square ring, no wrong rotations.');
+console.log('V2 contract passed: original 4.1MB painterly tile, exact 44/220 street geometry, 4 legal neighbour configurations, distinct-source QA gate, 31 study slots.');
