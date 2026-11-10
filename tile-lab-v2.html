@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yangzhou • V2 eight-tile composition studio</title>
+<style>
+:root{--paper:#f1e8d6;--ink:#34463c;--muted:#6b7366;--clay:#935e45;--line:#c8bba1}
+*{box-sizing:border-box}html{background:#e8e2d4}body{color:var(--ink);font:14px/1.5 system-ui,sans-serif;margin:0}
+header{background:var(--paper);border-bottom:1px solid var(--line);padding:20px max(14px,calc((100vw - 1230px)/2))}
+h1,h2{font-family:Georgia,serif;font-weight:normal}h1{font-size:clamp(27px,3.5vw,44px);line-height:1.1;margin:7px 0}h2{font-size:25px;margin:18px 0 10px}
+.eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--clay);font-weight:bold}
+p{max-width:880px;margin:8px 0}
+main{max-width:1280px;margin:auto;padding:14px 18px 50px}
+a{color:#875e45}
+.notice{border-left:3px solid #a67957;padding:10px 14px;background:#f1e8d6;margin:15px 0}
+.bar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:10px 0}
+button{color:var(--ink);background:#f5ebdb;border:1px solid #b6a58d;border-radius:5px;padding:8px 12px;cursor:pointer;font:inherit}
+button:hover,button:focus-visible{outline:2px solid #ad7d57;outline-offset:1px}
+.cardgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.card{background:#f4ebdc;border:1px solid var(--line);border-radius:6px;padding:11px;box-shadow:0 4px 12px #55513e0a}
+.card h3{font:20px Georgia,serif;margin:3px 0}.card p{font-size:12px;color:var(--muted)}
+.variants{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.variant{border:0;background:#e2d9c5;border-radius:3px;padding:4px;cursor:zoom-in;text-align:left}
+.variant canvas{display:block;width:100%;height:auto;aspect-ratio:1}
+.variant span{font-size:11px;color:#4c6158;display:block;padding:4px 2px;letter-spacing:.02em}
+#ring{width:100%;max-width:990px;height:auto;display:block;background:#e6e0cf;border:1px solid var(--line);border-radius:5px}
+#status{font-size:12px;color:var(--muted)}
+dialog{border:1px solid var(--line);border-radius:9px;padding:16px;background:var(--paper);max-width:calc(100vw - 30px)}
+dialog::backdrop{background:#1e3028bc}
+dialog canvas{width:min(76vw,70vh);height:auto;max-width:660px;display:block;margin:8px auto}
+dialog header{padding:0;background:transparent;border:0;display:flex;align-items:center;justify-content:space-between;gap:25px}
+fieldset{border:none;padding:0;display:inline-flex;gap:12px;align-items:center}
+@media(max-width:600px){main{padding:12px}.cardgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.card{padding:7px}.card h3{font-size:16px}.variant{padding:2px}.variant span{font-size:9px}h2{font-size:21px}}
+</style>
+</head>
+<body>
+<header>
+<div class="eyebrow">Yangzhou / Tile system reset / Pass 1</div>
+<h1>Eight-tile composition studio</h1>
+<p>Original, tile-specific <strong>layout studies</strong> for an eventual Jiangnan ink-and-watercolour deck. Routes are designed before painting. The six starter-lake squares are retained as a visual benchmark only.</p>
+<p><a href="./">Return to the playable camera</a> · <a href="docs/ARTWORK-V2.md">Read V2 artwork contract and painting briefs</a></p>
+</header>
+<main>
+<div class="notice"><strong>Not finished illustrations.</strong> The geometric, muted drawings below establish each tile's routes, feature placement and four upright orientations. They are deliberately not presented as hand-painted Yangzhou. We will replace each square with bespoke artwork only after its layout works among neighbours.</div>
+<div class="bar">
+<fieldset><label><input type="checkbox" id="ports"> Show connection markers</label></fieldset>
+<span id="status">Loading six lake reference paintings…</span>
+</div>
+<h2>Placeable tile families <small>(8 archetypes × 4 orientations)</small></h2>
+<div id="gallery" class="cardgrid"></div>
+<h2>Complete neighbouring ring: 16 squares</h2>
+<p>This is a strict 3 × 2 lake plus all ten immediately adjacent positions. No invented exterior roads through the lake; two north/south water exits. Every internal N/E/S/W connection is validated.</p>
+<canvas id="ring" width="1100" height="880" aria-label="Six starter tiles and ten legally connected neighbouring tiles"></canvas>
+<p id="ringCheck" role="status"></p>
+</main>
+<dialog id="detail"><header><div><div class="eyebrow">Composition & connectivity</div><h2 id="detailName"></h2></div><button id="close" aria-label="Close detail">Close</button></header><canvas id="detailCanvas" width="880" height="880"></canvas><p id="detailEdges"></p></dialog>
+<script src="tile-topology.js"></script>
+<script src="tile-art-v2.js"></script>
+<script>
+(() => {
+'use strict';
+const topology=window.YangzhouTileTopology, art=window.YangzhouArtV2;
+const $=id=>document.getElementById(id),gallery=$('gallery'),ports=$('ports');
+const tiles=topology.archetypes;
+const rotations=[0,1,2,3];
+const type=(arch,rotation,x=0,y=0)=>({id:arch.id,kind:arch.kind,name:arch.name,rotation,x,y,edges:topology.rotateEdges(arch.edges,rotation)});
+function labels(c,edges){
+ c.save();c.fillStyle='#283e37';c.font='bold 13px system-ui,sans-serif';
+ const p=[[110,14],[200,112],[110,205],[15,112]];
+ for(let i=0;i<4;i++){
+  const [x,y]=p[i];c.fillText(edges[i],x-5,y);
+ }
+ c.restore();
+}
+function paintCanvas(canvas,tiles,offsetX=0,offsetY=0,scale=1){
+ const c=canvas.getContext('2d');c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,canvas.width,canvas.height);
+ c.fillStyle='#e4dfd1';c.fillRect(0,0,canvas.width,canvas.height);
+ c.save();c.scale(scale,scale);c.translate(offsetX,offsetY);
+ for(const t of tiles){
+  art.draw(c,t);
+  if(ports.checked){
+   c.save();c.translate(t.x*220,t.y*220);labels(c,t.edges);c.restore();
+  }
+ }
+ c.restore();
+}
+const allCards=[];
+for(const arch of tiles){
+ const card=document.createElement('section');card.className='card';
+ const h=document.createElement('h3');h.textContent=arch.name;card.append(h);
+ const info=document.createElement('p');info.textContent=arch.note;card.append(info);
+ const mini=document.createElement('div');mini.className='variants';
+ for(const rotation of rotations){
+  const t=type(arch,rotation);
+  const button=document.createElement('button');button.className='variant';
+  button.setAttribute('aria-label',arch.name+' '+(rotation*90)+' degrees');
+  const canvas=document.createElement('canvas');canvas.width=canvas.height=330;
+  const caption=document.createElement('span');caption.textContent=(rotation*90)+'° · '+t.edges.join('');
+  button.append(canvas,caption);button.onclick=()=>openDetail(arch,rotation);
+  mini.append(button);allCards.push({canvas,t});
+ }
+ card.append(mini);gallery.append(card);
+}
+const fixed=topology.starter;
+const examples=[
+ [-1,0,'street-straight',0],[-1,1,'street-straight',0],
+ [3,0,'street-straight',0],[3,1,'street-straight',0],
+ [0,-1,'street-bend',3],[1,-1,'canal-straight',0],[2,-1,'street-bend',0],
+ [0,2,'street-bend',2],[1,2,'canal-straight',0],[2,2,'street-bend',1]
+].map(([x,y,id,r])=>{
+ const a=tiles.find(t=>t.id===id);
+ if(!a)throw Error('Missing ring tile '+id);
+ return type(a,r,x,y);
+});
+const board=[...fixed,...examples];
+const problems=topology.validateBoard(board);
+$('ringCheck').textContent=problems.length?'FAILED connection checks: '+problems.join('; '):'16/16 tiles legally connected · north/south canal mouths retained · all joins match';
+$('ringCheck').style.color=problems.length?'#a3483a':'#386950';
+function drawAll(){
+ for(const {canvas,t} of allCards)paintCanvas(canvas,[t],0,0,canvas.width/220);
+ paintCanvas($('ring'),board,220,220,1);
+ const s=art.inspect();
+ $('status').textContent='Artwork stage: '+s.manifestStatus+' · '+s.lakeReferencesLoaded+'/6 benchmark lake paintings loaded · '+s.paintingVariantsLoaded+'/32 finished expansion paintings';
+ if(current)paintCanvas($('detailCanvas'),[current],0,0,4);
+}
+let current=null;
+function openDetail(arch,r){
+ current=type(arch,r);
+ $('detailName').textContent=arch.name+' / '+r*90+'°';
+ $('detailEdges').textContent='Connections N/E/S/W: '+current.edges.join(' / ')+'. Artwork required: independent compass-upright square painting, minimum 1024px.';
+ paintCanvas($('detailCanvas'),[current],0,0,4);$('detail').showModal();
+}
+$('close').onclick=()=>{$('detail').close();current=null;};
+$('detail').addEventListener('close',()=>{current=null;});
+ports.onchange=drawAll;
+window.addEventListener('yangzhou-art-v2-updated',drawAll);
+drawAll();
+})();
+</script>
+</body>
+</html>

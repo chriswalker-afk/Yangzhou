@@ -1,4 +1,4 @@
-name: Painted artwork visual QA
+name: V2 composition and browser QA
 on:
   push:
     branches: [main, "feat/**"]
@@ -19,15 +19,15 @@ jobs:
         run: |
           npm install --no-save playwright
           npx playwright install --with-deps chromium
-      - name: Render and test desktop and mobile
+      - name: Run desktop, mobile, 16-square ring and 32-variant gallery
         run: |
           python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/yangzhou-http.log 2>&1 &
           sleep 2
           node tests/visual.cjs
-      - name: Preserve visual screenshots
+      - name: Keep preview screenshots (not painterly approval)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: painted-yangzhou-screenshots
-          path: artifacts/visual/
-          retention-days: 7
+          name: yangzhou-v2-layout-screenshots
+          path: artifacts/v2/
+          retention-days: 14

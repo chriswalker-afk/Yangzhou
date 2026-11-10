@@ -1,207 +1,68 @@
-/* Browser visual QA for the painted Yangzhou proof of concept. */
 'use strict';
-const { chromium }=require('playwright');
-const fs=require('node:fs');
+const {chromium}=require('playwright');
 const assert=require('node:assert/strict');
-const OUT='artifacts/visual';
-fs.mkdirSync(OUT,{recursive:true});
-async function main(){
-  const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
-  const errors=[];
-  async function visit(page){
-    page.on('pageerror',e=>errors.push(String(e)));
-    await page.goto('http://127.0.0.1:8765/',{waitUntil:'load'});
-    await page.waitForFunction(()=>window.YangzhouPainted?.ready()===true,{timeout:25000});
-    await page.waitForFunction(()=>window.YangzhouTiles?.ready()===true,{timeout:25000});
-    const individual=await page.evaluate(()=>{
-      const g=window.YangzhouDebug,t=window.YangzhouTiles;
-      return {sources:[...g.board.values()].map(tile=>t.sourceFor(tile)),
-              mode:t.stats().mode,tiles:g.board.size};
-    });
-    assert.equal(individual.tiles,6);
-    assert.equal(new Set(individual.sources).size,6,'Six different square art masters must form the starter, not a sliced panorama');
-    assert.equal(individual.mode,'individual-square-tile-masters');
-    const contract=await page.evaluate(()=>({
-      logic:window.YangzhouTileTopology.portWidth,
-      painter:window.YangzhouEdgeArt.spec.exits,
-      renderer:window.YangzhouTiles.stats().canonicalWidths,
-      errors:window.YangzhouTileTopology.validateBoard([...window.YangzhouDebug.board.values()])
-    }));
-    assert.equal(contract.logic.S,44);
-    assert.equal(contract.logic.W,88);
-    assert.equal(contract.painter.S,44,'Painter and game road width must agree');
-    assert.equal(contract.painter.W,88,'Painter and game water width must agree');
-    assert.equal(contract.renderer.street,44);
-    assert.equal(contract.renderer.water,88);
-    assert.equal(contract.errors.length,0);
-    await page.waitForFunction(()=>window.YangzhouLiving?.ready()===true,{timeout:25000});
-    const layers=await page.evaluate(()=>window.YangzhouLiving.inspect());
-    assert(layers.ready,'Clean layered painted scene should be ready');
-    assert(layers.images.clean&&layers.images.bridge&&layers.images.willow,'Background and foreground layers missing');
-    assert(layers.images.upper&&layers.images.lower,'Boats must load as separate transparent images');
-    assert(layers.images.blue&&layers.images.rose,'Independent resident sprites missing');
-    assert.equal(layers.residentCount,3);
+const fs=require('node:fs');
+fs.mkdirSync('artifacts/v2',{recursive:true});
+async function run(){
+ const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+ const errors=[];
+ try{
+  const desktop=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:1});
+  desktop.on('pageerror',e=>errors.push('game: '+String(e)));
+  await desktop.goto('http://127.0.0.1:8765/',{waitUntil:'load'});
+  await desktop.waitForFunction(()=>window.YangzhouArtV2?.ready(),{timeout:30000});
+  const status=await desktop.evaluate(()=>({
+   size:window.YangzhouDebug.board.size,
+   names:window.YangzhouDebug.archetypes.map(t=>t.id),
+   art:window.YangzhouArtV2.inspect(),
+   ports:window.YangzhouTileTopology.portWidth
+  }));
+  assert.equal(status.size,6);
+  assert.equal(status.names.length,8);
+  assert.equal(status.art.lakeReferencesLoaded,6);
+  assert.equal(status.art.paintingVariantsLoaded,0);
+  assert.equal(status.ports.S,44);
+  assert.equal(status.ports.W,88);
+  const placement=await desktop.evaluate(()=>{
+    const g=window.YangzhouDebug,site=g.candidates()[0],s=g.state;
+    return {site,screenX:(site[0]*220+110)*s.scale+s.offsetX,screenY:(site[1]*220+110)*s.scale+s.offsetY};
+  });
+  assert(placement.site);
+  await desktop.mouse.click(placement.screenX,placement.screenY);
+  await desktop.locator('#place').click();
+  const made=await desktop.evaluate(()=>{
+    const g=window.YangzhouDebug;
+    return {n:g.board.size,latest:[...g.board.values()].find(t=>!t.fixed),valid:g.topology.validateBoard([...g.board.values()])};
+  });
+  assert.equal(made.n,7);
+  assert.equal(made.latest?.id,'garden-grove');
+  assert.deepEqual(made.valid,[]);
+  await desktop.screenshot({path:'artifacts/v2/playable-desktop.png',fullPage:true});
+  await desktop.locator('#viewDetail').click();
+  await desktop.waitForTimeout(650);
+  await desktop.screenshot({path:'artifacts/v2/playable-detail.png',fullPage:true});
 
-    const size=await page.evaluate(()=>window.YangzhouDebug.board.size);
-    assert.equal(size,6,'Six fixed starter tiles should be present');
-    const image=await page.locator('#artImage').evaluate(el=>({complete:el.complete,naturalWidth:el.naturalWidth}));
-    assert(image.complete&&image.naturalWidth>=1000,'Full-resolution painted image failed to load');
-  }
-  try{
-    const page=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:1});
-    await visit(page);
-    await page.click('#explore');
-    await page.waitForTimeout(650);
-    await page.screenshot({path:OUT+'/desktop-overview.png'});
-    // The very same camera must show an unpopulated plate when the life layer is disabled.
-    await page.click('#livingToggle');
-    assert.equal(await page.evaluate(()=>window.YangzhouLiving.active()),false);
-    await page.screenshot({path:OUT+'/clean-plate.png'});
-    await page.click('#livingToggle');
-    assert.equal(await page.evaluate(()=>window.YangzhouLiving.active()),true);
-    await page.screenshot({path:OUT+'/living-plate.png'});
-    // Foreground PNGs must be transparent away from painted bridge objects.
-    const alpha=await page.evaluate(async()=>{
-      const img=new Image();img.src='assets/living/bridge-foreground.png';
-      await img.decode();const el=document.createElement('canvas');
-      el.width=img.naturalWidth;el.height=img.naturalHeight;let c=el.getContext('2d');
-      c.drawImage(img,0,0);return [c.getImageData(10,10,1,1).data[3],
-                                      c.getImageData(637,230,1,1).data[3]];
-    });
-    assert.equal(alpha[0],0,'Bridge foreground must be transparent over blank landscape');
-    assert(alpha[1]>0,'Bridge foreground must contain separate painted roof pixels');
-
-    await page.click('#viewDetail');
-    await page.waitForTimeout(700);
-    await page.screenshot({path:OUT+'/desktop-closeup.png'});
-    await page.click('#scenes');
-    await page.locator('#artDialog').waitFor({state:'visible'});
-    await page.screenshot({path:OUT+'/art-gallery.png'});
-    await page.click('#artNext');
-    assert((await page.locator('#artTitle').innerText()).includes('Five-Pavilion Bridge'),'Next should show bridge detail');
-    await page.click('#closePaintings');
-    await page.click('#fit');
-    await page.waitForTimeout(500);
-    await page.click('#explore');
-    assert.equal(await page.evaluate(()=>window.YangzhouDebug.state.showSites),true,'Place mode restored');
-    // Zoom out to include neighboring candidate spaces, then test an actual canvas click.
-    await page.mouse.move(715,450);
-    await page.mouse.wheel(0,650);
-    await page.waitForTimeout(780);
-    const target=await page.evaluate(()=>{
-      const g=window.YangzhouDebug,s=g.state;
-      for(const [x,y] of g.candidates()){
-        const px=(x*220+110)*s.scale+s.offsetX,py=(y*220+110)*s.scale+s.offsetY;
-        if(px>60&&px<innerWidth-110&&py>155&&py<innerHeight-170)return {px,py};
-      }
-      return null;
-    });
-    assert(target,'At least one candidate should be clickable after zooming out');
-    await page.mouse.click(target.px,target.py);
-    assert.equal(await page.locator('#place').isDisabled(),false,'Canvas click should select a legal tile');
-    await page.click('#place');
-    assert.equal(await page.evaluate(()=>window.YangzhouDebug.board.size),7,'Tile placement must still work');
-    await page.waitForTimeout(330);
-    assert((await page.evaluate(()=>window.YangzhouTiles?.stats().cached||0))>0,'Newly placed tiles must use the same square-art renderer as fixed tiles');
-    assert.equal(await page.evaluate(()=>window.YangzhouTiles.stats().mode),'individual-square-tile-masters','Placed tiles must share the independent tile-art pipeline');
-    // Actual pixel comparisons across every compatible edge type and
-    // orientation: two different underlying paintings must have a tiny
-    // measurable seam once their shared boundary aprons are rendered.
-    const edges=await page.evaluate(()=>{
-      const art=window.YangzhouEdgeArt;
-      const result=[];
-      if(!art)throw new Error('Shared edge module not loaded');
-      for(const type of ['L','S','W']){
-        for(const vertical of [false,true]){
-          const cv=document.createElement('canvas');
-          cv.width=vertical?220:440;cv.height=vertical?440:220;
-          const c=cv.getContext('2d');
-          c.fillStyle='#c15240';c.fillRect(0,0,vertical?220:220,vertical?220:220);
-          c.fillStyle='#3858a4';
-          if(vertical)c.fillRect(0,220,220,220);
-          else c.fillRect(220,0,220,220);
-          const a=vertical?['L','L',type,'L']:['L',type,'L','L'];
-          const b=vertical?[type,'L','L','L']:['L','L','L',type];
-          art.drawTile(c,{x:0,y:0,edges:a});
-          art.drawTile(c,{x:vertical?0:1,y:vertical?1:0,edges:b});
-          let total=0,max=0,n=0;
-          for(let p=5;p<215;p++){
-            const q1=vertical?c.getImageData(p,219,1,1).data:c.getImageData(219,p,1,1).data;
-            const q2=vertical?c.getImageData(p,220,1,1).data:c.getImageData(220,p,1,1).data;
-            const d=Math.max(Math.abs(q1[0]-q2[0]),Math.abs(q1[1]-q2[1]),Math.abs(q1[2]-q2[2]));
-            total+=d;max=Math.max(max,d);n++;
-          }
-          result.push({type,vertical,mean:total/n,max});
-        }
-      }
-      return result;
-    });
-    for(const item of edges){
-      assert(item.mean<14,'High visible paint seam for '+JSON.stringify(item));
-      assert(item.max<70,'Hard discontinuity at edge for '+JSON.stringify(item));
-    }
-    console.log('Tileable painted edges (horizontal/vertical, L/S/W):',edges);
-
-    await page.screenshot({path:OUT+'/desktop-placement.png'});
-    // End-to-end expansion proof: attach a real, rotated, painted tile to
-    // all 10 positions around the original lake at once. This catches
-    // incompatible corner neighbours that a one-site legality test misses.
-    const expansion=await page.evaluate(()=>{
-      const g=window.YangzhouDebug,board=g.board;
-      for(const [key,t] of board)if(!t.fixed)board.delete(key);
-      const fixed=[...board.values()],dirs=[[0,-1],[1,0],[0,1],[-1,0]];
-      const slots=new Map();
-      for(const t of fixed)for(let i=0;i<4;i++){
-        const x=t.x+dirs[i][0],y=t.y+dirs[i][1],k=x+','+y;
-        if(!board.has(k))slots.set(k,{x,y,side:i,port:t.edges[i]});
-      }
-      const types={S:'Stone-paved street',W:'Mooring basin',L:'Garden pavilion'};
-      const results=[];
-      for(const slot of [...slots.values()].sort((a,b)=>a.y-b.y||a.x-b.x)){
-        const arch=g.archetypes.find(t=>t.name===types[slot.port]);
-        if(!arch)throw Error('No art archetype for '+slot.port);
-        const choices=[];
-        for(let rotation=0;rotation<4;rotation++){
-          const edges=g.rotEdges(arch.edges,rotation);
-          if(g.canPlace(slot.x,slot.y,edges)&&(slot.port!=='L'||edges[slot.side]==='S'))choices.push(rotation);
-        }
-        if(!choices.length)throw Error('Cannot fill boundary position '+slot.x+','+slot.y);
-        const rotation=choices[0],edges=g.rotEdges(arch.edges,rotation);
-        board.set(slot.x+','+slot.y,{x:slot.x,y:slot.y,edges,
-          kind:arch.kind,name:arch.name,rotation,seed:40+results.length,fixed:false});
-        results.push({x:slot.x,y:slot.y,port:slot.port,name:arch.name,rotation});
-      }
-      g.state.dirty=true;return {count:board.size,slots:results};
-    });
-    assert.equal(expansion.count,16,'Ten painted tiles must surround six-tile lake');
-    assert.deepEqual(await page.evaluate(()=>window.YangzhouTileTopology.validateBoard([...window.YangzhouDebug.board.values()])),[]);
-    assert.equal(expansion.slots.length,10);
-    assert.equal(expansion.slots.filter(x=>x.port==='S').length,0);
-    assert.equal(expansion.slots.filter(x=>x.port==='L').length,8);
-    assert.equal(expansion.slots.filter(x=>x.port==='W').length,2);
-    await page.click('#fit');
-    await page.waitForTimeout(750);
-    await page.click('#explore');
-    await page.waitForTimeout(360);
-    await page.screenshot({path:OUT+'/all-ten-perimeter-joins.png'});
-    console.log('All starter boundary tile candidates:',expansion.slots);
-
-
-    const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2,isMobile:true,hasTouch:true});
-    await visit(mobile);
-    await mobile.click('#explore');
-    await mobile.waitForTimeout(600);
-    const mobileFrame=await mobile.evaluate(()=>{
-      const s=window.YangzhouDebug.state;
-      return {fraction:660*s.scale/innerWidth,scale:s.scale};
-    });
-    assert(mobileFrame.fraction>=.75,'The painted city should use at least 75% of mobile viewport width');
-    await mobile.screenshot({path:OUT+'/mobile-overview.png'});
-    await mobile.click('#scenes');
-    await mobile.locator('#artDialog').waitFor({state:'visible'});
-    await mobile.screenshot({path:OUT+'/mobile-gallery.png'});
-    assert.equal(errors.length,0,'Page errors: '+errors.join('\n'));
-    console.log('Visual QA passed: panorama, detail zoom, artwork gallery, desktop/mobile layout, tile interaction.');
-  } finally {await browser.close();}
+  const lab=await browser.newPage({viewport:{width:1440,height:950},deviceScaleFactor:1});
+  lab.on('pageerror',e=>errors.push('lab: '+String(e)));
+  await lab.goto('http://127.0.0.1:8765/tile-lab-v2.html',{waitUntil:'load'});
+  await lab.waitForFunction(()=>window.YangzhouArtV2?.ready(),{timeout:30000});
+  assert.equal(await lab.locator('.variant canvas').count(),32);
+  assert.match(await lab.locator('#ringCheck').textContent(),/16\/16 tiles legally connected/);
+  await lab.screenshot({path:'artifacts/v2/tile-gallery-desktop.png',fullPage:true});
+  await lab.locator('.variant').first().click();
+  await lab.locator('#detail').waitFor({state:'visible'});
+  await lab.screenshot({path:'artifacts/v2/composition-closeup.png',fullPage:true});
+  await lab.locator('#close').click();
+  await lab.locator('#ports').check();
+  await lab.screenshot({path:'artifacts/v2/ports-overlay.png',fullPage:true});
+  const mobile=await browser.newPage({viewport:{width:390,height:780},deviceScaleFactor:1,isMobile:true,hasTouch:true});
+  mobile.on('pageerror',e=>errors.push('mobile: '+String(e)));
+  await mobile.goto('http://127.0.0.1:8765/',{waitUntil:'load'});
+  await mobile.waitForFunction(()=>window.YangzhouArtV2?.ready(),{timeout:30000});
+  assert.equal(await mobile.locator('#tileLab').count(),1);
+  await mobile.screenshot({path:'artifacts/v2/playable-mobile.png',fullPage:true});
+  assert.deepEqual(errors,[],'Browser JavaScript errors');
+  console.log('V2 browser QA passed: desktop/mobile, placement, gallery, 32 studies, 16-square ring and detail zoom.');
+ }finally{await browser.close();}
 }
-main().catch(e=>{console.error(e);process.exitCode=1;});
+run().catch(e=>{console.error(e);process.exit(1)});

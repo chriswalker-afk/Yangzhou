@@ -1,6 +1,6 @@
 {
-  "status": "staged",
-  "version": "2026-11-10-watercolour-master-1",
+  "status": "reference-only",
+  "version": "2026-11-10-v2-artwork-reset",
   "camera": "top-down orthographic",
   "grid": [
     3,
@@ -8,7 +8,7 @@
   ],
   "tilePixels": 512,
   "tileWorldUnits": 220,
-  "note": "The six painted WEBP tile exports are supplied in the downloadable artwork ZIP and must be committed to this directory; do not switch to approved until water and bridge ports pass strict visual contract QA. This file intentionally keeps the functional overhead fallback enabled.",
+  "note": "These are six detailed existing reference masters shown for comparison in V2. They are NOT approved production artwork, nor a source to crop into expansion tiles. External ports and historical detail still require review.",
   "tiles": [
     {
       "x": 0,

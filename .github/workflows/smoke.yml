@@ -1,9 +1,11 @@
-name: Browser logic smoke tests
+name: V2 logic and route-contract smoke
 on:
   push:
     branches: [main, "feat/**"]
   pull_request:
     branches: [main]
+permissions:
+  contents: read
 jobs:
   smoke:
     runs-on: ubuntu-latest
@@ -13,12 +15,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Validate JavaScript and run canvas interaction smoke tests
+      - name: Syntax, camera, board topology and scoring contracts
         run: |
           node --check tile-topology.js
-          node --check tile-system.js
-          node --check edge-art.js
-          node --check artwork.js
-          node --check ambient.js
+          node --check tile-art-v2.js
           node --check tests/smoke.cjs
+          node --check tests/v2-contract.cjs
           node tests/smoke.cjs
+          node tests/v2-contract.cjs
+          node tests/scoring-contract.cjs

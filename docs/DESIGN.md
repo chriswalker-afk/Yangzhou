@@ -3,7 +3,7 @@
 ## Creative vision
 A calm, competitive 2–4-player tile-laying game in an eighteenth-century Yangzhou inspired by Chinese painted handscrolls and by local architecture and daily life. Players jointly build a city and commit a limited set of people to enjoyable activities; completing an activity earns points and returns the person to their pool. The visual experience must reward viewing the entire city and zooming close enough to discover detailed human stories.
 
-**Status:** Design goals, not all implemented. The current app is a camera/art/placement proof of concept, not a complete game.
+**Status (10 November 2026):** The camera, topology and placement prototype are retained. Active artwork is now **V2 eight-tile composition studies**, with six detailed Slender West Lake reference squares. Retired painted/crop/actor pipelines are accessible only in Git history. See [Artwork V2](ARTWORK-V2.md). This is not a complete game.
 
 ## Historical reference
 - Approximate period: late Qianlong, c. 1785–1795; historically grounded artistic reconstruction rather than a literal map.
@@ -40,18 +40,19 @@ The canonical playable shoreline is **eight landscape perimeter edges and two na
 5. (1,1) Five-Pavilion Bridge: W S W S
 6. (2,1) Southern Landing and Breakfast House: L L L S
 
-The bridge is an internal east–west street crossing the north–south navigable canal; its ends terminate at the pagoda garden and breakfast-house gates. No road runs from the bridge through the natural shoreline. The two water exits lie on the north and south of the centre column. The ten outer grid positions remain candidate expansion cells. **Existing painted masters are placeholders and must be repainted to this topology before production art sign-off.** The new [artwork templates](SLENDER-WEST-LAKE-TEMPLATES.md) are the canonical painting guides.
+The bridge is an internal east–west street crossing the north–south navigable canal; its ends terminate at the pagoda garden and breakfast-house gates. No road runs from the bridge through the natural shoreline. The two water exits lie on the north and south of the centre column. The ten outer grid positions remain candidate expansion cells. **The six displayed paintings are unapproved reference masters.** They must be retouched/checked at exterior water mouths and all bridge access points before any production-art sign-off. The exact topology in `tile-topology.js` and [Artwork V2](ARTWORK-V2.md) supersedes old templates.
 
-## Living painting asset rule (pass 4)
-For every starter scene and future tile, the base layer must be free of animated people, boats, steam and leaves. Keep foreground occluders (bridges, roofs, some trees) as transparent assets. Boats and residents are independent paint-matched sprites in world coordinates, never baked into the static panorama. The prototype contains a content-reconstructed clean plate, two moving boats, three painted resident cut-outs, bridge/willow occlusion and separate small atmospheric effects. **These are an editable first pass**: local retouching, walk/row frame animations and dynamic route graphs remain future work. See [Living Painting Architecture](LIVING-PAINTING.md).
+## Static painting and future moving life
+
+The eventual base paintings must contain **no embedded moving people, boats, smoke, or wakes**. People, boats, willow motion and foreground occlusion will later be separate assets whose movement obeys the actual connected street and canal graphs. The old cutout-cleanup and animation demo has been removed from the active V2 build; it was not robust enough to reuse. We should not revive it before the core painted tiles are accepted.
 
 ## Tile system
 - Square orthogonal grid; all contacting edge types match after 90-degree rotation.
 - Three MVP edge types: L=landscape, S=street, W=water. A connected-wall / walled-quarter subgraph is reserved for the full game.
 - Roads and waterways must cross edges at their exact midpoint with standard width.
 - Bridges carry separate transport graphs, even if both appear on the same tile.
-- 13 prototype tile archetypes: canal-side teahouse, straight road, canal bend, landing, garden, crossroads market, canal crossroads, street corner, small bridge, garden pavilion, walled courtyard, canal junction, single-port mooring basin.
-- The prototype uses selectable archetypes. The actual game will draw from a balanced deck with multiple art variants per topology, simulated for legal placement frequency.
+- The complete game *may* eventually use thirteen or more archetypes. The **V2 artwork pilot deliberately contains only eight**: willow garden, straight paved street, street bend, market crossroads, straight canal, canal bend, small bridge and canal junction.
+- The pilot uses selectable archetypes with four compass-upright composition studies each. The actual game will use independently painted original squares with carefully balanced draw probabilities, simulated for legal placement frequency.
 - A placed tile should settle gently, triggering optional route animation and no exaggerated confetti.
 
 ## Turns and score (planned, not yet implemented)
@@ -76,12 +77,12 @@ Three layers:
 2. Connected journeys — boats traverse canal graph; residents traverse street graph across tile seams and bridge elevations.
 3. Citywide density — connected markets/teahouses support more visitors while gardens remain calm.
 - Ambient traffic has no effect on scoring. Simulated people require plausible starts/destinations and should be occluded by buildings.
-- The painted starter currently has subtle glints and foliage motion. Older vector character and boat demonstrations are suppressed at normal/close view to avoid style clashes; **painterly moving actor sprites and general graph navigation remain future work.**
+- There are currently **no active ambient actors in V2**; doing animation justice requires the final artwork and connected navigation graphs first.
 - End-of-game scroll tour along the water and across the finished city (future enhancement).
 
 ## Product and engineering
 - Responsive browser-based client. Accessible controls, keyboard pan/zoom/rotate, reduced motion, semantic status messages.
-- Prototype uses dependency-free Canvas 2D with generated line art to test camera movement and mechanics before commissioning historically reviewed production assets.
+- Prototype uses dependency-free Canvas 2D to display clearly labelled composition studies to test camera movement and mechanics before commissioning historically reviewed production assets.
 - Future implementation may migrate render layers to PixiJS for atlas batching, asset streaming, layered animated characters, and stable high-density views.
 - Geometry, deck, gameplay state and animation should eventually be separate deterministic modules with unit tests, saved state and seeded games.
 - Gameplay must not be blocked on animation; mobile performance and memory budgets will be measured after asset import.
