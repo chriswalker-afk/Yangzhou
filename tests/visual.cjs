@@ -17,6 +17,52 @@ async function run(){
   await desktop.evaluate(()=>{const game=window.YangzhouDebug;game.state.type=1;game.state.rotation=0;game.state.selected=null;});
   await desktop.screenshot({path:'artifacts/v2/north-south-street-active.png',fullPage:true});
   await desktop.evaluate(()=>{const game=window.YangzhouDebug;game.state.type=1;game.state.rotation=1;game.state.selected=null;});
+  // 19 independently painted expansion images; keep one stable, topology-safe
+  // selection per placed tile. This verifies the real downloaded WebPs, not
+  // an approximate or synthetic test sprite.
+  await desktop.waitForFunction(()=>{
+    const x=window.YangzhouVariantDeck?.inspect();
+    return x?.variantPoolReady===true && x.variantPaintingsLoaded===19;
+  },{timeout:60000});
+  const randomQA=await desktop.evaluate(()=>{
+    const deck=window.YangzhouVariantDeck;
+    const east={id:'street-straight',edges:['L','S','L','S'],x:5,y:9,seed:31};
+    const canal={id:'canal-straight',edges:['W','L','W','L'],x:1,y:5,seed:42};
+    deck.setGameSeed(7);
+    const first=deck.getSelectedVariant(east);
+    const repeated=deck.getSelectedVariant(east);
+    const canalSelected=deck.getSelectedVariant(canal);
+    const seen=new Set();
+    for(let n=1;n<40;n++){
+      deck.setGameSeed(n);
+      seen.add(deck.getSelectedVariant(east)?.id);
+    }
+    deck.setGameSeed(7);
+    return {info:deck.inspect(),first,repeated,canalSelected,
+      uniqueDraws:seen.size,
+      fixed:deck.getSelectedVariant({...east,fixed:true}),
+      invalid:deck.getSelectedVariant({...east,edges:['W','W','L','L']})};
+  });
+  assert.equal(randomQA.info.variantPools,11);
+  assert.equal(randomQA.info.variantCandidates,19);
+  assert.deepEqual(randomQA.info.variantFailures,[]);
+  assert.equal(randomQA.first?.edges,'LSLS');
+  assert.deepEqual(randomQA.first,randomQA.repeated);
+  assert.equal(randomQA.canalSelected?.edges,'WLWL');
+  assert(randomQA.uniqueDraws>1,'Randomization should vary per seed');
+  assert.equal(randomQA.fixed,null,'Original lake tiles must never be replaced');
+  assert.equal(randomQA.invalid,null,'No wrong-edge tile may receive artwork');
+  await desktop.screenshot({path:'artifacts/v2/painted-variants-active.png',fullPage:true});
+
+  const variantGallery=await browser.newPage({viewport:{width:1380,height:850},deviceScaleFactor:1});
+  variantGallery.on('pageerror',e=>errors.push('variants-gallery: '+String(e)));
+  await variantGallery.goto('http://127.0.0.1:8765/variant-gallery.html',{waitUntil:'load'});
+  assert.equal(await variantGallery.locator('figure img').count(),19,'Gallery must show 19 original square paintings');
+  await variantGallery.waitForFunction(()=>
+    [...document.querySelectorAll('figure img')].every(im=>im.complete&&im.naturalWidth===1254&&im.naturalHeight===1254),
+    {timeout:60000});
+  await variantGallery.screenshot({path:'artifacts/v2/19-painted-originals-gallery.png',fullPage:true});
+
   const status=await desktop.evaluate(()=>({
    size:window.YangzhouDebug.board.size,
    names:window.YangzhouDebug.archetypes.map(t=>t.id),

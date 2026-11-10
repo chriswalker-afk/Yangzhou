@@ -24,6 +24,7 @@ jobs:
           node --check tests/v2-contract.cjs
           node tests/smoke.cjs
           node tests/v2-contract.cjs
+          node tests/variant-deck.cjs
           node scripts/validate_art_batch_01.cjs
           node tests/scoring-contract.cjs
           node scripts/validate_street_pair.cjs
