@@ -24,7 +24,7 @@ The files and their exact SHA-256 hashes are validated in `scripts/validate_stre
 
 The two east–west streets are the accepted-for-play art baseline. Our next original is a **north–south stone-paved street** (1254px). The same batch also defines a genuine **turning street**, **enclosed garden**, and **north–south canal**, each with its own N/E/S/W connection contract. Their unpainted slots remain clearly marked; there is no cropped panorama or accidental infographic in the game.
 
-The new file is staged as an image to upload, rather than falsely added to the active manifest. Open the [interactive artwork expansion preview](tile-art-expansion.html), read the [four detailed painting briefs](docs/ARTWORK-BATCH-01.md), or [upload the original north–south street directly to the batch branch](https://github.com/chriswalker-afk/Yangzhou/upload/feat/tile-art-expansion-batch-01/assets/v2). Once it has been uploaded and its SHA-256 verified, we can activate the third original painting. Current game artwork remains stable until then.
+The original north–south painting has now been uploaded, verified and added to the live game as the third painted variant. Open the [interactive artwork expansion preview](tile-art-expansion.html) or read the [specific tile painting briefs](docs/ARTWORK-BATCH-01.md). The **street corner** is next; garden and canal remain honest unpainted studies.
 
 ### What is in this proof of concept
 
@@ -32,7 +32,7 @@ The new file is staged as an image to upload, rather than falsely added to the a
 - Exact edge contracts: `L` landscape, `S` 44/220-wide street, `W` 88/220-wide navigable water; routes join at edge midpoints. Bridges have separate road and water graphs.
 - Six fixed Slender West Lake **reference paintings** with eight land-only exterior edges and north/south navigable outlets. The ring inspector assembles all ten immediate neighbours without inventing streets through the lake.
 - A live preview and gallery that distinguish **layout study** from independently painted production artwork.
-- An explicit manifest for **32 independently painted square masters**: two independent original 1254px street paintings are imported for review; the other 30 slots need paintings.
+- An explicit manifest for **32 independently painted square masters**: three independent 1254px street paintings are imported for review; the other 29 slots need paintings.
 
 ### Controls
 

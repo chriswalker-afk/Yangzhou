@@ -5,6 +5,8 @@ const crypto=require('node:crypto');
 const path=require('node:path');
 const topology=require('../tile-topology.js');
 const data=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/v2/manifest.json'),'utf8'));
+const batch=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/v2/art-batch-01.json'),'utf8'));
+assert.equal(batch.slots.find(x=>x.id==='street-straight:0').status,'integrated-review');
 const SIZE=220;
 assert.equal(topology.size,SIZE);
 assert.deepEqual(topology.portWidth,{L:0,S:44,W:88});
@@ -37,17 +39,21 @@ for(let i=0;i<8;i++){
   const expected=topology.rotateEdges(t.edges,r);
   const v=m.variants[r];
   assert.equal(v.edges,expected.join(''));
-  if(t.id==='street-straight'&&(r===1||r===3)){
+  if(t.id==='street-straight'&&(r===0||r===1||r===3)){
     masterCount++;
-    const original=intake.candidates.find(x=>x.rotation===r);
+    const original=r===0?batch.slots.find(x=>x.id==='street-straight:0'):intake.candidates.find(x=>x.rotation===r);
     assert(original);
-    assert.equal(v.status,'review','Neither tile has passed human artwork approval');
-    assert.equal(v.artwork,original.file);
-    assert.equal(v.edges,'LSLS','Both independent paintings must connect east-west');
-    assert.equal(v.sourceFilename,original.file);
+    const sourceFile=r===0?original.filename:original.file;
+    const declaredBytes=r===0?original.expectedSizeBytes:original.bytes;
+    const declaredSha=r===0?original.expectedSha256:original.sha256;
+    const declaredGitBlob=r===0?original.gitBlobSha:original.gitBlobSha;
+    assert.equal(v.status,'review','No artwork may be approved by a code check');
+    assert.equal(v.artwork,sourceFile);
+    assert.equal(v.edges,r===0?'SLSL':'LSLS','Art must follow exact canonical ports');
+    assert.equal(v.sourceFilename,sourceFile);
     const p=path.join(__dirname,'../assets/v2/',v.artwork);
     const bytes=fs.readFileSync(p);
-    assert.equal(bytes.length,original.bytes,'Actual full-size source must be committed');
+    assert.equal(bytes.length,declaredBytes,'Actual full-size source must be committed');
     assert.equal(bytes.length,v.bytes);
     assert.equal(bytes.subarray(0,8).toString('hex'),'89504e470d0a1a0a','Artwork must be a real PNG');
     assert.equal(bytes.readUInt32BE(16),1254);
@@ -55,11 +61,11 @@ for(let i=0;i<8;i++){
     assert.equal(bytes.readUInt32BE(16),v.width);
     assert.equal(bytes.readUInt32BE(20),v.height);
     const sha256=crypto.createHash('sha256').update(bytes).digest('hex');
-    assert.equal(sha256,original.sha256,'Wrong original or altered painting');
+    assert.equal(sha256,declaredSha,'Wrong original or altered painting');
     assert.equal(sha256,v.sha256);
     const gitHeader=Buffer.from('blob '+bytes.length+'\0','utf8');
     const gitBlob=crypto.createHash('sha1').update(gitHeader).update(bytes).digest('hex');
-    assert.equal(gitBlob,original.gitBlobSha,'Expected exact user-uploaded binary');
+    assert.equal(gitBlob,declaredGitBlob,'Expected exact user-uploaded binary');
     assert.equal(gitBlob,v.gitBlobSha);
   }else{
     assert.equal(v.artwork,null,'Every other orientation remains a clearly labelled study');
@@ -68,7 +74,7 @@ for(let i=0;i<8;i++){
   assert.deepEqual(topology.rotateEdges(expected,4-r),t.edges);
  }
 }
-assert.equal(masterCount,2,'The two distinct east-west paintings must be in the playable manifest');
+assert.equal(masterCount,3,'Both east-west street paintings and one north-south original must be in the playable manifest');
 const old=fs.readFileSync(path.join(__dirname,'../assets/v2/street-straight-east-west.png'));
 assert.equal(old.length,4108283,'Preserve original first painting, unchanged');
 assert.equal(crypto.createHash('sha256').update(old).digest('hex'),'bc8fc1cf37b0404dc6620385a6167576692e3aee11bbf7346da28edbb158b2c2');
@@ -147,4 +153,4 @@ assert(painter.includes('getMaster'),'Review studio needs to retrieve the origin
 for(const name of ['tile-system.js','painted-lake.js','painted-assets.js','orthographic-lake.js','living-scene.js']){
  assert(!html.includes('<script src="'+name+'"'),'Retired artist still loads: '+name);
 }
-console.log('V2 contract passed: two original 1254px independent street paintings, SHA256 + Git blob verification, archived pilot, 30 study variants, legal joining topology.');
+console.log('V2 contract passed: three independent 1254px painted streets, SHA256 + Git blob verification, archived pilot, 29 honest study variants, legal topology.');

@@ -36,8 +36,8 @@ button:focus-visible,.filelabel:focus-within,select:focus-visible{outline:2px so
 <p><a href="./">Yangzhou game</a> · <a href="street-pair-review.html">Accepted street pair</a> · <a href="docs/ARTWORK-V2.md">Art standards</a></p>
 </header><main>
 <div class="message">
-<strong>Artwork-production status, not game release.</strong> One new high-resolution north–south street has been created and is awaiting upload to the branch. The other three slots are composition briefs, not fictitious completed paintings. No unfinished image will silently become approved game art.
-<p><a href="https://github.com/chriswalker-afk/Yangzhou/upload/feat/tile-art-expansion-batch-01/assets/v2">Upload a complete-square painting to the correct GitHub branch</a> — keep its exact filename and original resolution.</p>
+<strong>Artwork-production status, not game release.</strong> The new high-resolution north–south street has been uploaded and connected to the game as a playable review painting. The other three slots are composition briefs, not fictitious completed paintings. No unfinished image will silently become approved game art.
+<p>The north–south street is now permanently imported. The next painting is the <strong>north-to-east street corner</strong>, followed by the enclosed garden and straight canal. New paintings must be complete square originals.</p>
 </div>
 <div class="controls"><button id="showPorts" type="button" aria-pressed="false">Show exact route ports</button>
 <label for="scale">Inspection scale <select id="scale"><option value="1" selected>Overview · 1×</option><option value="2">Artwork · 2×</option><option value="3">Detail · 3×</option></select></label>
@@ -134,7 +134,7 @@ function createCard(slot){
  upload.append(input);
  panel.append(cap,heading,canvas,status,brief,upload);
  $('gallery').append(panel);cells.push({canvas,slot,status});
- if(slot.status==='painted-awaiting-upload'){
+ if(slot.status==='painted-awaiting-upload'||slot.status==='integrated-review'){
   const img=new Image();
   img.onload=()=>{
    if(!localUrls.has(slot.id)){
@@ -144,7 +144,7 @@ function createCard(slot){
     redraw();
    }
   };
-  img.onerror=()=>{if(!localUrls.has(slot.id)){status.textContent='Original PNG awaits upload to this branch';redraw();}};
+  img.onerror=()=>{if(!localUrls.has(slot.id)){status.textContent='Original PNG could not load from the repository';redraw();}};
   img.src=urls+slot.filename;
  }else status.textContent='Composition brief only — new original artwork required';
 }
@@ -169,11 +169,11 @@ function redraw(){
  c.save();c.scale(pixels/440,pixels/440);
  for(const tile of layout)drawSquare(c,tile);
  c.restore();
- const painted=candidateImages.has('street-straight:0')?1:0;
+ const painted=candidateImages.has('street-straight:0')||!!artist.getMaster('street-straight:0')?1:0;
  $('boardStatus').textContent=errors.length?'Invalid tile joins: '+errors.join('; '):
   '4/4 topology joins valid. New north–south paintings visible: '+painted+'/1. Corner/garden are still labelled layout studies.';
  $('boardStatus').style.color=errors.length?'#9b453d':'#507c68';
- $('status').textContent=painted?'One new painting previewed / three slots remain unpainted':'Awaiting one valid new PNG / three slots remain unpainted';
+ $('status').textContent=painted?'Three permanent street paintings total; this batch has one new original and three unpainted briefs':'Original image is loading or missing; three other briefs remain unpainted';
 }
 async function start(){
  const response=await fetch(urls+'art-batch-01.json');

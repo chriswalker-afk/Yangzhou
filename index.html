@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#eae0ca">
-<title>Yangzhou · A Living Scroll | Painted Street Pilot Review</title>
+<title>Yangzhou · A Living Scroll | Three Painted Streets</title>
 <style>
 :root{--paper:#f0e6d1;--ink:#39413c;--muted:#697069;--jade:#739e99;--red:#a46c52;--gold:#aa8753}*{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:Georgia,"Noto Serif",serif}
@@ -75,13 +75,13 @@ button{font:inherit;cursor:pointer;color:inherit}button:focus-visible{outline:3p
 </head>
 <body>
 <canvas id="scene" aria-label="Interactive Yangzhou city canvas; use the controls to zoom, rotate and place tiles"></canvas>
-<div class="shell header"><div class="brand"><span class="han" lang="zh">揚州</span><h1>Yangzhou</h1><p>A Living Scroll · two painted streets</p></div></div>
+<div class="shell header"><div class="brand"><span class="han" lang="zh">揚州</span><h1>Yangzhou</h1><p>A Living Scroll · three painted streets</p></div></div>
 <div class="shell status"><div class="chip" id="counter">6 tiles · Slender West Lake</div><div class="chip zoom-label" id="zoomLabel">City overview</div><a class="btn" id="tileLab" href="tile-lab-v2.html" title="Inspect all eight new tile composition studies">Tile studies</a><a class="btn" id="streetReview" href="painted-neighbour-lab.html" title="Inspect the original street and test an independently painted neighbouring tile">Join QA</a><label class="btn upload-btn" for="pilotUpload" title="Optionally compare a retouched 1254px street painting in this browser session">Try local revision</label><input type="file" id="pilotUpload" accept="image/png,image/webp,image/avif,image/jpeg" hidden></div>
 <div class="shell controls"><button class="btn" id="zoomIn" title="Zoom in" aria-label="Zoom in">+</button><button class="btn" id="zoomOut" title="Zoom out" aria-label="Zoom out">−</button><button class="btn" id="fit" title="Fit the whole city">Fit</button><button class="btn preset" id="viewCity" title="Overview (1)">City</button><button class="btn preset" id="viewNear" title="Neighbourhood (2)">Street</button><button class="btn preset" id="viewDetail" title="Close inspection (3)">Detail</button><button class="btn" id="explore" title="Hide or show placement guides" aria-pressed="false">Explore city</button><button class="btn" id="help" title="Show instructions">?</button></div>
-<div class="shell notice" id="notice" role="status">Two independent east–west (LSLS) streets now have original painted artwork. Choose the Stone-paved street and rotate to 90° or 270° to see each one. Artwork and joins are under review.</div>
+<div class="shell notice" id="notice" role="status">Three independent stone-street paintings are now active: north–south at 0° and east–west at 90° or 270°. Change rotation to choose the painting. The other tile types are layout studies; artwork remains under review.</div>
 <div class="legend" id="legend"><b>Placement edges</b><span><i class="mark" style="background:#7daba6"></i>Water · canal or lake</span><span><i class="mark" style="background:#c1af93"></i>Street · walking route</span><span><i class="mark" style="background:#c6c5a3"></i>Land · garden or district</span></div>
 <div class="shell bottom"><div class="panel tile-panel"><canvas id="preview" class="tile-preview" width="140" height="140" aria-label="Current tile preview"></canvas><div class="tile-description"><div class="eyebrow">Your next tile</div><strong id="tileName">Willow garden</strong><div class="hint" id="tileDesc">Place next to a matching edge</div></div><div class="tile-actions"><button class="btn" id="previous" aria-label="Previous tile">‹</button><button class="btn" id="next" aria-label="Next tile">›</button><button class="btn" id="rotate" title="Rotate tile clockwise">↻ Rotate</button></div></div><div class="panel action"><button class="btn primary" id="place" disabled>Place tile</button><button class="btn" id="cancel">Clear selection</button></div></div>
-<div class="shell footer"><span id="assetStatus">Loading two distinct painted street masters (review) and 30 layout studies…</span> · Edge geometry remains a prototype · Scoring is planned for a later pass</div>
+<div class="shell footer"><span id="assetStatus">Loading three original painted street masters (review) and 29 layout studies…</span> · Edge geometry remains a prototype · Scoring is planned for a later pass</div>
 
 <script src="tile-topology.js"></script>
 <script src="tile-art-v2.js"></script>
@@ -194,7 +194,7 @@ $('pilotUpload').addEventListener('change',event=>{
 });
 window.addEventListener('yangzhou-art-v2-updated',()=>{
   const info=window.YangzhouArtV2.inspect();
-  $('assetStatus').textContent=info.paintingVariantsLoaded+' painted master(s) loaded / 32 slots · review only, 30 composition studies';
+  $('assetStatus').textContent=info.paintingVariantsLoaded+' painted master(s) loaded / 32 slots · review only, 29 composition studies';
   state.dirty=true;refresh();
 });
 $('viewCity').onclick=()=>fit();$('viewNear').onclick=()=>zoomTo(1.55);$('viewDetail').onclick=()=>zoomTo(3.35);

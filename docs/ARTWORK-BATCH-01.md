@@ -6,11 +6,11 @@
 
 The user is satisfied with the current paintings and wants breadth of playable combinations, not another cycle of microscopic reworking. From this pass onwards, **produce an original image for a single canonical slot, inspect it, then integrate it without rewriting the game engine**. Preserve original full-resolution sources and retain honest review/production status.
 
-## Four compositions — one painted, three briefs
+## Four compositions — one integrated, three briefs
 
 | Existing tile archetype / rotation | N/E/S/W edges | Image | Current status |
 | --- | --- | --- | --- |
-| `street-straight:0` (north/south street) | `SLSL` | `street-straight-north-south.png` | **Original 1254px painting produced; awaiting binary upload** |
+| `street-straight:0` (north/south street) | `SLSL` | `street-straight-north-south.png` | **Original 1254px painting uploaded, verified and integrated for review** |
 | `street-bend:0` (north→east lane) | `SSLL` | `street-bend-north-east.png` | Composition brief; original painting needed |
 | `garden-grove:0` (enclosed willow garden) | `LLLL` | `garden-grove-willow-rockery.png` | Composition brief; original painting needed |
 | `canal-straight:0` (north/south canal) | `WLWL` | `canal-straight-north-south.png` | Composition brief; original painting needed |
@@ -38,7 +38,7 @@ A full original square, 1254 × 1254 pixels, has been produced. The vertical pav
 
 **[Direct upload for the batch's correct GitHub branch](https://github.com/chriswalker-afk/Yangzhou/upload/feat/tile-art-expansion-batch-01/assets/v2)**
 
-After that exact file is present, run `node scripts/validate_art_batch_01.cjs --require-painted`. This must verify the original source bytes before updating the active game artwork manifest. The `--require-painted` option only requires the one candidate marked as painted; it does not demand nonexistent art for other slots.
+The original 1254px file has been uploaded unchanged. `node scripts/validate_art_batch_01.cjs --require-painted` verifies its bytes and SHA-256. Its canonical `street-straight:0` image is now active in the game at status `review`; no garden, bend or canal painting is claimed to exist.
 
 ### 2. Street corner — north to east (`SSLL`)
 
@@ -71,4 +71,4 @@ All internal edges match: the new N/S street meets the corner; the corner joins 
 - New art must be **one original, full-bleed square per slot** with upright roofs, not a large sheet split into squares.
 - Game art should be useful at normal board zoom and detailed at 3×.
 - Run the source-integrity validator, legal-edge tests and browser QA before updating `assets/v2/manifest.json`.
-- The game currently has **2 committed original painted variants**, and will have **3** after the new north/south image is uploaded, verified and activated. Do not claim the batch contains four finished paintings until all four files genuinely exist.
+- The game now has **3 committed original painted variants**. The corner, enclosed garden and north–south canal remain unpainted briefs; do not claim the batch contains four finished paintings until all four files genuinely exist.

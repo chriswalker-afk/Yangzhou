@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "batchId": "tile-art-expansion-01",
   "project": "Yangzhou — A Living Scroll",
-  "status": "partial-art-produced",
+  "status": "one-painted-integrated-three-briefs",
   "baseline": "Two accepted-for-play street paintings in `assets/v2/manifest.json` remain unchanged.",
   "target": "Four original artwork variants that fill existing archetype/rotation slots without introducing a new geometric engine.",
   "artDirection": {
@@ -26,14 +26,15 @@
       "edges": "SLSL",
       "label": "North–south stone street",
       "filename": "street-straight-north-south.png",
-      "status": "painted-awaiting-upload",
+      "status": "integrated-review",
       "expectedSizeBytes": 4302868,
       "expectedSha256": "e73d1211c750589cb16a8e8020bb2670999a7ebc45332a4b09ad11019fe98ea2",
       "imageWidth": 1254,
       "imageHeight": 1254,
       "role": "New portrait-upright top-to-bottom street",
       "connectionNotes": "Road exits north/south at centred X≈502–752px; east/west boundaries land. No sideways roofs.",
-      "artBrief": "Distinct orthographic street with magnolia courtyard, tea room, lattice screens, bamboo, pale stone slabs and enclosed garden walls; road exactly through top and bottom midpoints."
+      "artBrief": "Distinct orthographic street with magnolia courtyard, tea room, lattice screens, bamboo, pale stone slabs and enclosed garden walls; road exactly through top and bottom midpoints.",
+      "gitBlobSha": "6271589707d00a9a4c5bd509fce94519a1225365"
     },
     {
       "id": "street-bend:0",
@@ -75,9 +76,11 @@
   "upload": {
     "branch": "feat/tile-art-expansion-batch-01",
     "destination": "assets/v2",
-    "directUrl": "https://github.com/chriswalker-afk/Yangzhou/upload/feat/tile-art-expansion-batch-01/assets/v2"
+    "directUrl": "https://github.com/chriswalker-afk/Yangzhou/upload/feat/tile-art-expansion-batch-01/assets/v2",
+    "instructions": "Original street is integrated in the game. Do not upload a replacement to this branch unless explicitly creating a new revised source."
   },
   "notes": [
+    "Original north-south street PNG uploaded at 4,302,868 bytes, linked to the canonical SLSL rotation 0 slot; three other design briefs remain unpainted.",
     "Only the north–south street has a valid new completed painting. Three attempts at other archetypes returned infographics and were rejected, not repurposed as game art.",
     "The existing game manifest MUST NOT be modified to load missing files. After a full-resolution candidate is uploaded and verified, assign it to the specified variant in a subsequent commit.",
     "Code and tests passing do not imply artwork approval. The user accepted the previous two street variants as good enough to expand the family."

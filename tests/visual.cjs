@@ -12,8 +12,11 @@ async function run(){
   await desktop.goto('http://127.0.0.1:8765/',{waitUntil:'load'});
   await desktop.waitForFunction(()=>window.YangzhouArtV2?.ready(),{timeout:30000});
   await desktop.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:1')?.naturalWidth===1254,{timeout:30000});
-  await desktop.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:3')?.naturalWidth===1254,{timeout:30000});
+  await desktop.waitForFunction(()=>window.YangzhouArtV2?.getMaster?.('street-straight:3')?.naturalWidth===1254 && window.YangzhouArtV2?.getMaster?.('street-straight:0')?.naturalWidth===1254,{timeout:30000});
   await desktop.screenshot({path:'artifacts/v2/two-painted-streets-game-rack.png',fullPage:true});
+  await desktop.evaluate(()=>{const game=window.YangzhouDebug;game.state.type=1;game.state.rotation=0;game.state.selected=null;});
+  await desktop.screenshot({path:'artifacts/v2/north-south-street-active.png',fullPage:true});
+  await desktop.evaluate(()=>{const game=window.YangzhouDebug;game.state.type=1;game.state.rotation=1;game.state.selected=null;});
   const status=await desktop.evaluate(()=>({
    size:window.YangzhouDebug.board.size,
    names:window.YangzhouDebug.archetypes.map(t=>t.id),
@@ -23,7 +26,7 @@ async function run(){
   assert.equal(status.size,6);
   assert.equal(status.names.length,8);
   assert.equal(status.art.lakeReferencesLoaded,6);
-  assert.equal(status.art.paintingVariantsLoaded,2,'Both independently painted street variants must load by default');
+  assert.equal(status.art.paintingVariantsLoaded,3,'Three independent street paintings must load from the active manifest');
   const activeMasters=await desktop.evaluate(()=>({
     repaint:window.YangzhouArtV2.getMaster('street-straight:1')?.src,
     neighbour:window.YangzhouArtV2.getMaster('street-straight:3')?.src
@@ -31,6 +34,7 @@ async function run(){
   assert.match(activeMasters.repaint,/street-east-west-repaint\.png/);
   assert.match(activeMasters.neighbour,/street-east-west-neighbour\.png/);
   assert.notEqual(activeMasters.repaint,activeMasters.neighbour,'Two different original paintings, not a duplicated image');
+  assert.match(await desktop.evaluate(()=>window.YangzhouArtV2.getMaster('street-straight:0')?.src),/street-straight-north-south\.png/);
   assert.equal(status.art.manifestStatus,'review');
   assert.equal(await desktop.evaluate(()=>window.YangzhouDebug.archetypes[window.YangzhouDebug.state.type].id),'street-straight');
   assert.equal(await desktop.evaluate(()=>window.YangzhouDebug.state.rotation),1);
@@ -189,6 +193,8 @@ async function run(){
   const pendingImage=fs.existsSync('assets/v2/street-straight-north-south.png');
   assert.match(await batchPage.locator('#boardStatus').textContent(),new RegExp('New north–south paintings visible: '+(pendingImage?1:0)+'/1'));
   assert.match(await batchPage.locator('#gallery').textContent(),/Composition brief only/);
+  assert.match(await batchPage.locator('#state-street-straight-0').textContent(),/Original artwork file loaded from GitHub/);
+  assert.equal(await batchPage.locator('#gallery .card').count(),4);
   await batchPage.screenshot({path:'artifacts/v2/next-batch-four-art-slots.png',fullPage:true});
   await batchPage.locator('#gallery .card').first().locator('input[type=file]').setInputFiles(fileFixture);
   await batchPage.waitForFunction(()=>document.getElementById('state-street-straight-0').textContent.includes('Local image preview only'),{timeout:30000});
