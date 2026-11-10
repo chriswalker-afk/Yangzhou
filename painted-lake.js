@@ -26,10 +26,13 @@
       const response=await fetch(DIR+'manifest.json',{cache:'no-cache'});
       if(!response.ok)throw Error('Lake artwork manifest unavailable');
       const manifest=await response.json();
-      if(manifest.status!=='approved'&&!(manifest.status==='staged'&&previewRequested)){
-        status='staged';reason='Painted masters awaiting art/port review';
+      if(!['approved','review','staged'].includes(manifest.status)){
+        status='unavailable';reason='Painting manifest is not available for display';
         return;
       }
+      // Painterly source art is displayed by default so players no longer see
+      // the flat geometry prototype. REVIEW is not production art sign-off.
+      // The explicit ?lakeArt=preview mode remains available for inspection.
       if(!Array.isArray(manifest.tiles)||manifest.tiles.length!==CELLS.length)throw Error('Expected six square masters');
       for(const [x,y,src,signature] of CELLS){
         const row=manifest.tiles.find(t=>t.x===x&&t.y===y);
@@ -46,8 +49,8 @@
       }));
       for(const [key,image] of results)images.set(key,image);
       loaded=results.length;
-      status=manifest.status==='approved'?'ready':'preview';
-      reason=status==='preview'?'Unapproved artwork preview: exterior water-port review outstanding':'';
+      status=manifest.status==='approved'?'ready':previewRequested?'preview':'review';
+      reason=status==='ready'?'':'Painted lake in visual review; historical and outer-ring checks outstanding';
       invalidate();
     }catch(error){
       status='unavailable';reason=String(error?.message||error);
@@ -56,12 +59,12 @@
   }
   window.YangzhouLakePainted={
     draw:(c,t)=>{
-      const image=(status==='ready'||status==='preview')&&t.fixed?images.get(t.x+','+t.y):null;
+      const image=(status==='ready'||status==='preview'||status==='review')&&t.fixed?images.get(t.x+','+t.y):null;
       if(!image)return false;
       c.drawImage(image,0,0,220,220);
       return true;
     },
-    ready:()=>status==='ready'||status==='preview',
+    ready:()=>status==='ready'||status==='preview'||status==='review',
     inspect:()=>({status,loaded,reason,previewRequested,mode:'independent painted square masters',filenames:CELLS.map(row=>row[2])})
   };
   start();
