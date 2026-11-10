@@ -111,6 +111,7 @@ button{font:inherit;cursor:pointer;color:inherit}button:focus-visible{outline:3p
 <script src="tile-topology.js"></script>
 <script src="orthographic-lake.js"></script>
 <script src="painted-lake.js"></script>
+<script src="deck-painter.js"></script>
 <script src="tile-system.js"></script>
 <script src="living-scene.js"></script>
 <script>
@@ -188,15 +189,16 @@ const wx0=-state.offsetX/state.scale-TILE,wy0=-state.offsetY/state.scale-TILE,wx
 for(const t of board.values())if(t.x*TILE<wx1&&(t.x+1)*TILE>wx0&&t.y*TILE<wy1&&(t.y+1)*TILE>wy0)drawTile(ctx,t,state.time,false);
 window.YangzhouLiving?.drawActors?.(ctx,state.time,board,state.motion);
 if(state.showSites){const possible=candidates();for(const [x,y] of possible){if(x*TILE>=wx1||(x+1)*TILE<=wx0||y*TILE>=wy1||(y+1)*TILE<=wy0)continue;let p={x:x*TILE,y:y*TILE},picked=state.selected&&state.selected[0]===x&&state.selected[1]===y;ctx.fillStyle=picked?'#eddfac6a':'#f4ead529';ctx.fillRect(p.x+1,p.y+1,TILE-2,TILE-2);ctx.strokeStyle=picked?'#956d36':'#ad997bb0';ctx.lineWidth=(picked?2.6:1.2)/state.scale;ctx.setLineDash([6/state.scale,7/state.scale]);ctx.strokeRect(p.x+2/state.scale,p.y+2/state.scale,TILE-4/state.scale,TILE-4/state.scale);ctx.setLineDash([]);}}
-if(state.showSites&&state.selected){let a=archetypes[state.type], edges=rotEdges(a.edges,state.rotation);ctx.save();ctx.globalAlpha=.82;drawTile(ctx,{x:state.selected[0],y:state.selected[1],edges,kind:a.kind,seed:22},state.time,true);ctx.restore();}
+if(state.showSites&&state.selected){let a=archetypes[state.type], edges=rotEdges(a.edges,state.rotation);ctx.save();ctx.globalAlpha=.82;drawTile(ctx,{x:state.selected[0],y:state.selected[1],edges,kind:a.kind,name:a.name,archetypeIndex:state.type,rotation:state.rotation,seed:22},state.time,true);ctx.restore();}
 ctx.restore();}
-function drawPreview(){pc.clearRect(0,0,140,140);pc.save();pc.scale(140/TILE,140/TILE);let a=archetypes[state.type];drawTile(pc,{x:0,y:0,kind:a.kind,edges:rotEdges(a.edges,state.rotation),seed:22},state.time,true);pc.restore();}
+function drawPreview(){pc.clearRect(0,0,140,140);pc.save();pc.scale(140/TILE,140/TILE);let a=archetypes[state.type];drawTile(pc,{x:0,y:0,kind:a.kind,name:a.name,archetypeIndex:state.type,rotation:state.rotation,edges:rotEdges(a.edges,state.rotation),seed:22},state.time,true);pc.restore();}
+window.addEventListener('yangzhou-painterly-art-loaded',()=>{refresh();});
 function refresh(){let a=archetypes[state.type];$('tileName').textContent=a.name;$('tileDesc').textContent=a.note+' · '+['0°','90°','180°','270°'][state.rotation];$('place').disabled=!state.selected||!state.showSites;$('counter').textContent=board.size+' tiles · '+(board.size===6?'Slender West Lake':'Living city');drawPreview();state.dirty=true;}
 function selectAt(sx,sy){if(!state.showSites){let p=worldPoint(sx,sy),x=Math.floor(p.x/TILE),y=Math.floor(p.y/TILE);const t=board.get(key(x,y));if(t){$('notice').textContent=t.name+' · explore the painterly scene.';
   if(state.scale>=1.4&&window.YangzhouPainted?.open)window.YangzhouPainted.open(window.YangzhouPainted.sceneForTile(t));
   else zoomBy(1.75,sx,sy);
 }return;}let p=worldPoint(sx,sy),x=Math.floor(p.x/TILE),y=Math.floor(p.y/TILE);if(canPlace(x,y,rotEdges(archetypes[state.type].edges,state.rotation))){state.selected=[x,y];$('notice').textContent='This tile fits. Select Place tile to add it to Yangzhou.';}else if(board.has(key(x,y))){let t=board.get(key(x,y));$('notice').textContent=t.name||'An illustrated neighbourhood';state.selected=null;}else{$('notice').textContent='That space needs matching water, street and land edges.';state.selected=null;}refresh();}
-function place(){if(!state.selected)return;let [x,y]=state.selected,a=archetypes[state.type],edges=rotEdges(a.edges,state.rotation);if(!canPlace(x,y,edges))return;board.set(key(x,y),{x,y,edges,kind:a.kind,name:a.name,seed:board.size+11});state.selected=null;$('notice').textContent=a.name+' has joined the living city. Watch the details, or place another tile.';state.type=(state.type+1)%archetypes.length;state.rotation=0;refresh();}
+function place(){if(!state.selected)return;let [x,y]=state.selected,a=archetypes[state.type],edges=rotEdges(a.edges,state.rotation);if(!canPlace(x,y,edges))return;board.set(key(x,y),{x,y,edges,kind:a.kind,name:a.name,archetypeIndex:state.type,rotation:state.rotation,seed:board.size+11});state.selected=null;$('notice').textContent=a.name+' has joined the living city. Watch the details, or place another tile.';state.type=(state.type+1)%archetypes.length;state.rotation=0;refresh();}
 function resize(){const oldW=state.w,oldH=state.h,prevCenter=oldW?worldPoint(oldW/2,oldH/2):null;
   let dpr=Math.min(devicePixelRatio||1,2);state.w=window.innerWidth;state.h=window.innerHeight;
   canvas.width=Math.ceil(state.w*dpr);canvas.height=Math.ceil(state.h*dpr);canvas.style.width=state.w+'px';canvas.style.height=state.h+'px';ctx.setTransform(dpr,0,0,dpr,0,0);
