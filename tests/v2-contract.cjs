@@ -20,8 +20,14 @@ for(let i=0;i<8;i++){
  for(let r=0;r<4;r++){
   const expected=topology.rotateEdges(t.edges,r);
   assert.equal(m.variants[r].edges,expected.join(''));
-  assert.equal(m.variants[r].artwork,null,'No fake image must be marked as a finished painting');
-  assert.equal(m.variants[r].status,'needs-independent-painting');
+  assert.equal(m.variants[r].artwork,null,'No binary master is in the repository: never claim otherwise');
+  if(t.id==='street-straight'&&r===1){
+    assert.equal(m.variants[r].status,'pilot-review-needs-repository-master');
+    assert.equal(m.variants[r].sourceFilename,'watercolor_courtyards_along_yangzhou_street.png');
+    assert.equal(m.variants[r].edges,'LSLS','East-west painting must not be attached to north-south ports');
+  }else{
+    assert.equal(m.variants[r].status,'needs-independent-painting');
+  }
   assert.deepEqual(topology.rotateEdges(expected,4-r),t.edges);
  }
 }
@@ -64,6 +70,11 @@ assert(html.includes('tile-art-v2.js'));
 assert(html.includes('tile-topology.js'));
 assert(html.includes('id:a.id,rotation:state.rotation'),'Tile placement must retain artwork identity and orientation');
 assert(lab.includes('Strict')||lab.includes('strict'));
+const pilot=fs.readFileSync(path.join(__dirname,'../street-pilot-review.html'),'utf8');
+assert(pilot.includes("registerReviewImage(key,im)"),'Pilot inspector must render the real user-provided pixels');
+assert(pilot.includes("const tiles=[tile(0,0),tile(1,0),tile(2,0)]"),'Three-square seam inspection is required');
+assert(pilot.includes('LSLS'),'Original east-west connection must be explicit');
+assert(html.includes('id="pilotUpload"')&&html.includes('street-pilot-review.html'),'Playable camera needs an obvious pilot preview path');
 for(const name of ['tile-system.js','painted-lake.js','painted-assets.js','orthographic-lake.js','living-scene.js']){
  assert(!html.includes('<script src="'+name+'"'),'Retired artist still loads: '+name);
 }

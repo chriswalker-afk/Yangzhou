@@ -13,7 +13,7 @@
     '01-willow-garden.webp','02-northern-lake.webp','03-lakeside-teahouse.webp',
     '04-white-pagoda.webp','05-five-pavilion-bridge.webp','06-breakfast-house.webp'
   ];
-  const lake=new Map(), masters=new Map(), failures=new Set();
+  const lake=new Map(), masters=new Map(), failures=new Set(), temporaryReviewKeys=new Set();
   const palette={paper:'#e8e1d0',land:'#d5d5b7',ink:'#46554e',path:'#b9a88c',paving:'#dfd1b5',
     water:'#7baba7',waterInk:'#557d79',roof:'#64736d',leaf:'#869b74',shadow:'#606754',clay:'#b77862'};
   let manifest=null, manifestStatus='composition-study';
@@ -246,11 +246,29 @@
     }
     c.restore();return true;
   }
+  // PR13: a supplied high-resolution pilot may be inspected directly in the
+  // current browser session without claiming that it is a committed master.
+  // The image's architectural orientation is NEVER physically rotated.
+  function registerReviewImage(key,im){
+    if(key!=='street-straight:1')throw Error('PR13 permits only the east-west road pilot');
+    if(!im?.complete||im.naturalWidth<1024||im.naturalWidth!==im.naturalHeight)
+      throw Error('Pilot must be a fully loaded square image of at least 1024 pixels');
+    masters.set(key,im);temporaryReviewKeys.add(key);repaint();
+    return true;
+  }
+  function clearReviewImage(key){
+    if(temporaryReviewKeys.has(key)){
+      masters.delete(key);temporaryReviewKeys.delete(key);repaint();
+    }
+  }
+  function getReviewImage(key){return temporaryReviewKeys.has(key)?masters.get(key):null;}
   function inspect(){
     return {mode:'v2-composition-studies',manifestStatus,studies:schema.archetypes.length,
       paintingVariantsLoaded:[...masters.values()].filter(i=>i.complete&&i.naturalWidth>=1024&&i.naturalWidth===i.naturalHeight).length,
       lakeReferencesLoaded:[...lake.values()].filter(i=>i.complete&&i.naturalWidth).length,
+      temporaryReviewKeys:[...temporaryReviewKeys],
       failures:[...failures]};
   }
-  window.YangzhouArtV2={draw,inspect,ready:()=>[...lake.values()].every(i=>i.complete&&i.naturalWidth)};
+  window.YangzhouArtV2={draw,inspect,registerReviewImage,clearReviewImage,getReviewImage,
+    ready:()=>[...lake.values()].every(i=>i.complete&&i.naturalWidth)};
 })();

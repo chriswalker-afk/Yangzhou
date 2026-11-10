@@ -1,10 +1,10 @@
 {
-  "version": "v2-layout-studies-1",
+  "version": "v2-pr13-pilot-review-1",
   "status": "composition-study",
   "source": "Eight independently planned tile compositions, not generated from the lake art",
   "worldUnits": 220,
   "requiredArtworkPixels": 1024,
-  "reviewPolicy": "All 32 compass-upright paintings require human review; the studies are never production artwork.",
+  "reviewPolicy": "PR13 has one accepted art-direction painting, temporarily loaded from local file. It is not in the repository. Do not claim a finished asset or seam approval.",
   "tiles": [
     {
       "id": "garden-grove",
@@ -56,7 +56,10 @@
           "rotation": 1,
           "edges": "LSLS",
           "artwork": null,
-          "status": "needs-independent-painting"
+          "status": "pilot-review-needs-repository-master",
+          "note": "1254x1254 original east-west street painting accepted as art direction; Git binary not yet imported; available via local review picker. Do not promote to approved.",
+          "sourceFilename": "watercolor_courtyards_along_yangzhou_street.png",
+          "imageSource": "ChatGPT-generated pilot in conversation, 10 November 2026"
         },
         {
           "rotation": 2,

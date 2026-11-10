@@ -4,6 +4,24 @@
 **Started:** 10 November 2026  
 **Branch:** `feat/artwork-v2-clean-reset`
 
+## PR13 — first painted street pilot (art direction accepted, seams pending)
+
+The user-approved original **1254 × 1254** image is `watercolor_courtyards_along_yangzhou_street.png` (generated 10 November 2026). It is a complete original illustration of a street and courtyards, not a panorama crop, image atlas or programmatic overlay.
+
+**Important axis clarification:** the painting visibly connects **west ↔ east**, so it belongs to the `street-straight` tile's **90° / rotation 1** slot, topology `LSLS` (N/E/S/W). Rotation 0 is `SLSL` and would make the street north–south. **Do not rotate this painting**; rooftops, trees and architectural details must stay upright. Future independently composed images must fill the remaining orientations.
+
+**The original image was generated in the chat, not committed as a binary to GitHub.** PR13 supplies a local-file picker in the playable camera (`Load painting`) and [street-pilot-review.html](../street-pilot-review.html), so the true image can be reviewed at 1×/2×/3×, with a 44-unit centred port overlay and a three-tile repetition *test only*. The manifest explicitly records `artwork:null` and `pilot-review-needs-repository-master` until the complete master is imported as a repository binary. A passing CI run is a code integration test using clearly identified generated fixtures, **not** a visual pass for the original.
+
+### Outstanding evidence
+
+- Align the painted entrance at each edge with the contract: **20% of the image height**, centred at its midpoint. In the 1254px source, the ideal entry span is approximately **502–752px**, pending painterly retouching. The artwork currently looks narrower; the QA overlay shows the boundary rather than silently stretching the road.
+- Inspect the real source at 1× and 3× next to other paintings, and record actual screenshots. The diagnostic repetition of the *same* painting three times proves only edge consistency; it is not evidence of compositional variety or finished city continuity.
+- Carry out period-specific historical review separately. Do not assign a numerical artwork score automatically.
+- Commit the original ≥1024px painting as `assets/v2/street-straight-east-west.webp` (or PNG), update `assets/v2/manifest.json` for **only rotation 1**, set `status:'review'`, include file provenance/hash, and verify the renderer loads it automatically. This requires a real binary transfer, not a low-resolution thumbnail.
+- After that, capture 1×/3× QA screenshots and judge visual quality (≥16/18 with each category ≥2). Do **not** set status `approved` before this sign-off.
+
+The original generated painting remains accessible as a conversation image for authorized use; the public repository's build will otherwise continue to show a labelled layout study. **Never replace the original with a low-resolution thumbnail or data-derived imitation just to turn a test green.**
+
 ## Why this is different
 
 Our previous iterations cropped a broad landscape painting into many tiles or applied road/water geometry to an image afterwards. This repeatedly produced duplicated buildings, artificial rivers, conspicuous joins and artwork inconsistent with the camera. We have deleted those active pipelines and retained their history. **This stage designs *what each square must contain* before painting begins.**

@@ -10,6 +10,16 @@ The earlier tile-art generators, sliced panorama fallback, texture overlays and 
 
 This is deliberately **not a finished painterly tileset**. The eight new layouts are original *composition studies*, drawn specifically for their own street/canal connection signatures. They contain no crop of the previous painting and do not claim to be watercolour originals. The six detailed existing Slender West Lake tiles remain an **art-direction benchmark and provisional starter scene** while its exact external water mouths and other artistic issues are reviewed. We will not silently swap the game to a low-quality art fallback again.
 
+### First painted street pilot — PR #13
+
+A detailed 1254px original painting for the **west–east stone-paved street** has been accepted as the visual direction. The road must be attached to `street-straight` **rotation 1** (`LSLS`), without rotating the art or buildings. Until a full-resolution binary is uploaded into the GitHub repository, this remains **an externally supplied review candidate**, not part of the deployed art pack.
+
+- **[Open the street pilot review page](street-pilot-review.html)** — load the conversation-generated original PNG, inspect the 20%-wide port guide, side-by-side repeated seam diagnostic, 1×/3× zoom, and an honest visual quality rubric.
+- **[Open the playable camera](index.html)** — click **Load painting**, select the same original PNG, and test its live placement at the east–west orientation.
+- **[Artwork review contract](docs/ARTWORK-V2.md)** — specifies exactly what remains before the pilot can be promoted to a production master.
+
+The 32-variant manifest explicitly declares **one candidate awaiting its master** and 31 still-blank painting slots. A technically successful test **never** means the painting's border geometry has been approved.
+
 ### What is in this proof of concept
 
 - Eight deliberately small tile archetypes, each with four distinct compass orientations: garden, straight street, turning street, market crossroads, straight canal, canal bend, bridge, canal junction.
