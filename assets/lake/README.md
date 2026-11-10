@@ -18,6 +18,6 @@ To install the six assets once the ZIP is available on your computer, run:
 python scripts/install_lake_art.py Yangzhou_Slender_West_Lake_Artwork.zip
 ```
 
-This keeps the manifest `staged` unless pixel QA passes. A staged or incomplete asset set leaves the current independent orthographic fallback working. Do not change the status to `approved` to bypass the tests.
+This runs pixel QA and **keeps the manifest `staged` even if automated checks pass**. A staged or incomplete asset set leaves the current independent orthographic fallback working. Only set `approved` after the visual and historical reviews are complete; never bypass failed geometry tests.
 
 **Art direction:** true top-down, no horizon or camera tilt; recognisable Five-Pavilion Bridge, White Pagoda, teahouse and breakfast-house courtyards; generous quiet water and planted shores. A naturally wide fixed lake may span internal scenic seams, while road endpoints and all **exterior** water/road ports must remain exact.
