@@ -48,6 +48,8 @@ This prototype includes:
 | Motion on/off | Pause and resume atmospheric animation |
 
 ## Design and next steps
+- [Painted Slender West Lake artwork upgrade, strict port QA, and six-square asset loader](docs/LAKE-PAINTED-ARTWORK-PASS.md)
+
 - [Canonical Slender West Lake natural shoreline and six SVG painting templates](docs/SLENDER-WEST-LAKE-TEMPLATES.md)
 - [Scoring rules v1: seven activities, claims, completion and score-once behaviour](docs/SCORING-RULES-V1.md)
 - [Scoring-aware tile route/anchor schema](scoring-tile-spec.cjs) and [contract tests](tests/scoring-contract.cjs)
