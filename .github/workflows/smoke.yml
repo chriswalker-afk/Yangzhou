@@ -19,10 +19,12 @@ jobs:
         run: |
           node --check tile-topology.js
           node --check tile-art-v2.js
+          python3 -m py_compile scripts/import_yangzhou_art_pack.py
           node --check tests/smoke.cjs
           node --check tests/v2-contract.cjs
           node tests/smoke.cjs
           node tests/v2-contract.cjs
+          node tests/variant-deck.cjs
           node scripts/validate_art_batch_01.cjs
           node tests/scoring-contract.cjs
           node scripts/validate_street_pair.cjs
