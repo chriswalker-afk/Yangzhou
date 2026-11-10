@@ -14,6 +14,7 @@
     [1,1,'05-five-pavilion-bridge.webp','WSWS'],
     [2,1,'06-breakfast-house.webp','LLLS']
   ];
+  const previewRequested=new URLSearchParams(window.location.search).get('lakeArt')==='preview';
   let status='pending',reason='Staged artwork is not deployed',loaded=0;
   const images=new Map();
   const invalidate=()=>{
@@ -25,7 +26,7 @@
       const response=await fetch(DIR+'manifest.json',{cache:'no-cache'});
       if(!response.ok)throw Error('Lake artwork manifest unavailable');
       const manifest=await response.json();
-      if(manifest.status!=='approved'){
+      if(manifest.status!=='approved'&&!(manifest.status==='staged'&&previewRequested)){
         status='staged';reason='Painted masters awaiting art/port review';
         return;
       }
@@ -45,7 +46,8 @@
       }));
       for(const [key,image] of results)images.set(key,image);
       loaded=results.length;
-      status='ready';reason='';
+      status=manifest.status==='approved'?'ready':'preview';
+      reason=status==='preview'?'Unapproved artwork preview: exterior water-port review outstanding':'';
       invalidate();
     }catch(error){
       status='unavailable';reason=String(error?.message||error);
@@ -54,13 +56,13 @@
   }
   window.YangzhouLakePainted={
     draw:(c,t)=>{
-      const image=status==='ready'&&t.fixed?images.get(t.x+','+t.y):null;
+      const image=(status==='ready'||status==='preview')&&t.fixed?images.get(t.x+','+t.y):null;
       if(!image)return false;
       c.drawImage(image,0,0,220,220);
       return true;
     },
-    ready:()=>status==='ready',
-    inspect:()=>({status,loaded,reason,mode:'independent painted square masters',filenames:CELLS.map(row=>row[2])})
+    ready:()=>status==='ready'||status==='preview',
+    inspect:()=>({status,loaded,reason,previewRequested,mode:'independent painted square masters',filenames:CELLS.map(row=>row[2])})
   };
   start();
 })();
