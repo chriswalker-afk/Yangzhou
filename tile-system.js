@@ -17,9 +17,6 @@
     'river-straight','road-teahouse','road-pagoda','road-landing'
   ];
   const imgs={};const cache=new Map();let errors=[];
-  // A single coordinated clean composition is a temporary fallback until
-  // six bespoke edge-matched square masters replace the old repeated art.
-  const lakeAtlas=new Image();lakeAtlas.src='assets/living/starter-clean.webp';
   function load(){
     for(const name of NAMES){
       const img=new Image();imgs[name]=img;
@@ -153,20 +150,19 @@
     // coherent composition. This eliminates the duplicated garden scene and
     // all internal feathering while bespoke independent paintings are made.
     // It is explicitly a temporary atlas fallback, not final tile artwork.
-    const useAtlas=t.fixed&&t.x>=0&&t.x<3&&t.y>=0&&t.y<2&&lakeAtlas.complete&&lakeAtlas.naturalWidth>0;
-    const useOrthographic=t.fixed&&window.YangzhouOrthographic?.ready?.();
-    if(useOrthographic){
+    const usePainted=t.fixed&&window.YangzhouLakePainted?.ready?.();
+    const useOrthographic=t.fixed&&!usePainted&&window.YangzhouOrthographic?.ready?.();
+    if(usePainted){
+      window.YangzhouLakePainted.draw(c,t);
+    }else if(useOrthographic){
       window.YangzhouOrthographic.draw(c,t);
-    }else if(useAtlas){
-      const w=lakeAtlas.naturalWidth/3,h=lakeAtlas.naturalHeight/2;
-      c.drawImage(lakeAtlas,t.x*w,t.y*h,w,h,0,0,S,S);
     }else if(!imageOr(c,base,0,0,S,S)){
       c.fillStyle='#adb68d';c.fillRect(0,0,S,S);
     }
     const W=t.edges.includes('W'),R=t.edges.includes('S');
     const road=texturedPaint(c,'road-stone-texture','#c8b495');
     const water=texturedPaint(c,'canal-water-texture','#82aaa5');
-    if(master||useAtlas||useOrthographic){
+    if(master||usePainted||useOrthographic){
       // Full-square master is the art layer. Its topology is already encoded
       // in the painting; do not lay a translucent vector road over roofs.
     }else{
@@ -194,7 +190,7 @@
     // The full-square bridge and pagoda masters already contain architecture.
     // Never paste a second pavilion/stupa over the hand-painted landmark.
     // Procedural landmark sketches are reserved for tiles without a master.
-    if(!master&&!useAtlas&&!useOrthographic&&(t.kind='five'||t.kind==='pagoda'||t.kind==='tea'||t.kind==='market'))drawLocalArchitecture(c,t);
+    if(!master&&!usePainted&&!useOrthographic&&(t.kind==='five'||t.kind==='pagoda'||t.kind==='tea'||t.kind==='market'))drawLocalArchitecture(c,t);
     if(t.kind==='garden'||t.kind==='court'){
       for(let k=0;k<5;k++)plant(c,24+((k*73)%175),21+((k*41)%165),4,k+t.seed);
     }
@@ -202,7 +198,7 @@
     // alone cannot guarantee identical bank/curb widths at its cut edges.
     // A coherent starter composition already joins pixel-for-pixel across
     // internal seams. Painting a translucent apron would reintroduce blur.
-    if(!useAtlas&&!useOrthographic)window.YangzhouEdgeArt?.drawBands?.(c,t.edges);
+    if(!usePainted&&!useOrthographic)window.YangzhouEdgeArt?.drawBands?.(c,t.edges);
     c.restore();
   }
   function raster(t,resolution){
@@ -210,9 +206,9 @@
     const c=can.getContext('2d');c.scale(resolution,resolution);paint(c,t);return can;
   }
   function draw(c,t,time,scale=1){
-    if(!ok(baseFor(t))&&!(t.fixed&&lakeAtlas.complete&&lakeAtlas.naturalWidth))return false;
+    if(!ok(baseFor(t))&&!(t.fixed&&(window.YangzhouLakePainted?.ready?.()||window.YangzhouOrthographic?.ready?.())))return false;
     const detail=scale>=2.7?5:4;
-    const k=[t.master||'',t.kind,t.edges.join(''),t.seed||0,detail,window.YangzhouOrthographic?.ready?.()?'ortho':lakeAtlas.complete&&lakeAtlas.naturalWidth?'atlas':'fallback'].join(':');
+    const k=[t.master||'',t.kind,t.edges.join(''),t.seed||0,detail,window.YangzhouLakePainted?.ready?.()?'painted':window.YangzhouOrthographic?.ready?.()?'ortho':'fallback'].join(':');
     let can=cache.get(k);
     if(!can){can=raster(t,detail);cache.set(k,can);if(cache.size>MAX_CACHE)cache.delete(cache.keys().next().value);}
     else{cache.delete(k);cache.set(k,can);}
@@ -225,8 +221,7 @@
   }
   window.YangzhouTiles={draw,drawBridgeOccluders,ready:()=>NAMES.every(ok),
     assetsReady:()=>NAMES.filter(ok),errors:()=>errors.slice(),
-    stats:()=>({cached:cache.size,loaded:populated(),mode:'individual-square-tile-masters',canonicalWidths:{street:44,water:88}}),
+    stats:()=>({cached:cache.size,loaded:populated(),mode:'individual-square-tile-masters',artMode:window.YangzhouLakePainted?.ready?.()?'painted-orthographic':'generated-orthographic',canonicalWidths:{street:44,water:88}}),
     tileSize:S,sourceFor:baseFor,clear:()=>cache.clear()};
-  lakeAtlas.onload=()=>{cache.clear();if(window.YangzhouDebug?.state)window.YangzhouDebug.state.dirty=true;};
   load();
 })();
