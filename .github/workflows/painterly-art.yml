@@ -1,0 +1,42 @@
+name: Painterly artwork geometry
+on:
+  pull_request:
+    paths:
+      - 'assets/lake/**'
+      - 'assets/tiles/painterly/**'
+      - 'deck-painter.js'
+      - 'tile-system.js'
+      - 'tile-topology.js'
+      - 'index.html'
+      - 'scripts/check_painterly_deck.py'
+      - 'tests/smoke.cjs'
+      - '.github/workflows/painterly-art.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'assets/lake/**'
+      - 'assets/tiles/painterly/**'
+      - 'deck-painter.js'
+      - 'tile-system.js'
+      - 'scripts/check_painterly_deck.py'
+      - '.github/workflows/painterly-art.yml'
+jobs:
+  geometry:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install art-validation dependencies
+        run: python -m pip install pillow numpy
+      - name: Validate 52 standalone tile compositions and 6 lake squares
+        run: python scripts/check_painterly_deck.py
+      - name: Run gameplay and tile-contract smoke tests
+        run: |
+          node tests/smoke.cjs
+          node tests/scoring-contract.cjs
+      - name: Human artwork review still required
+        run: echo "Passing the technical checks does not approve painterly art. See docs/PAINTERLY-TILE-ART-STANDARD.md"
