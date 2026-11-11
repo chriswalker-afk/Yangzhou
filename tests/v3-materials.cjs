@@ -12,6 +12,8 @@ assert.equal(manifest.status,'candidate-accepted-awaiting-binary-upload');
 assert.equal(manifest.materialTexturePeriodWorldUnits,440);
 assert.deepEqual([...runtime.ids],['grass','stone','water']);
 assert.equal(runtime.worldPeriod,440);
+assert.deepEqual(runtime.periodById,{grass:440,stone:220,water:440});
+assert.deepEqual(manifest.periodWorldUnitsByMaterial,{grass:440,stone:220,water:440});
 assert.equal(manifest.materials.length,3);
 assert.equal(style.materials.length,3);
 assert.equal(style.approval.artwork,'unapproved');
@@ -30,6 +32,7 @@ for(const candidate of manifest.materials){
   assert.equal(expected.state,'candidate-accepted');
   assert.equal(expected.image,'assets/v3/materials/'+candidate.file);
   assert.equal(expected.worldAligned,true);
+  assert.equal(expected.textureWorldPeriodUnits,runtime.periodById[candidate.id]);
   assert.equal(expected.productionApproved,false);
   const filename=path.join(root,'assets/v3/materials',candidate.file);
   if(!fs.existsSync(filename))continue;
@@ -72,6 +75,9 @@ try{
   assert.equal(mat.values[3],440/1254);
   assert.equal(mat.values[4],0);
   assert.equal(mat.values[5],0);
+  let fine;
+  assert.equal(runtime.makePattern({createPattern:()=>({setTransform(x){fine=x;}})},{naturalWidth:1254},runtime.periodById.stone)?.setTransform instanceof Function,true);
+  assert.equal(fine.values[0],220/1254);
 }finally{
   if(previous===undefined)delete global.DOMMatrix;
   else global.DOMMatrix=previous;
