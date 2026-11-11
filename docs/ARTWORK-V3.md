@@ -2,7 +2,7 @@
 
 **Status: experimental proposal. Three painted material candidates (grass, stone, water) have been accepted for review, not production-approved. The live V2 renderer is not replaced.**
 
-**Material pilot / PR #20:** The original accepted grass, stone and canal-water candidate WebPs are now committed in [`assets/v3/materials/`](../assets/v3/materials/), with [checksummed manifest](../assets/v3/materials/manifest.json) and [integrity instructions](../assets/v3/materials/README.md). The [six-tile material lab](../layer-lab-v3.html) loads them automatically; optional file selectors allow local comparisons. The mandatory material test verifies all three binary hashes, sizes and dimensions. **Visual seam, style and history review is still required before production approval.**
+**Material pilot / merged PR #20:** The original accepted grass, stone and canal-water candidate WebPs are now committed in [`assets/v3/materials/`](../assets/v3/materials/), with [checksummed manifest](../assets/v3/materials/manifest.json) and [integrity instructions](../assets/v3/materials/README.md). The [six-tile material lab](../layer-lab-v3.html) loads them automatically; optional file selectors allow local comparisons. The mandatory material test verifies all three binary hashes, sizes and dimensions. **Visual seam, style and history review is still required before production approval.**
 
 This is the proposed successor to the independent full-square-painting workflow described in [ARTWORK-V2.md](ARTWORK-V2.md). The V2 rules remain valid for V2 images and tests; they do **not** prohibit carefully constructed geometry, reusable textures, transparent sprites or animation in V3.
 
@@ -69,6 +69,20 @@ Start with **three** seamless source materials: grass/earth, paved stone and mut
 
 Source textures and sprites should have an asset manifest with width/height, colour space, alpha-channel expectation, provenance, checksum, and review status. Until approved assets exist, the manifest must not pretend placeholder colours are final artwork.
 
+## Layer 1B — geometry-following edge system (PR #21)
+
+This is **geometry infrastructure only**, not a painted border asset or a production-quality art pass. The [six-tile laboratory](../layer-lab-v3.html) now offers six studies: connected east/west roads and canals, a connected street bend, a connected canal bend, a footbridge, a three-way canal junction and a four-way street junction. Hide/show temporary edge colours, show port guides and inspect at 3×.
+
+- The original **44/220 street** and **88/220 canal** surface masks remain unchanged. Edge treatments occupy surrounding *land*, never widen the navigable openings or create a route on a land-only edge.
+- The edge model is constructed from the same centreline, tangent and normal as the route. Two sides of each ribbon share exact cross-sections at a port, regardless of the direction in which neighbouring tiles compile their routes.
+- Temporary path verge: **2.5 world units outward per side**, with **0.8 units** of contact rim near paving. Temporary canal bank: **4 units outward per side**, with **1.2 units** of contact rim near water. The proposed bridge deck uses the path dimensions with a different placeholder colour, drawn over the continuous canal.
+- **No artist-made edge strip has been created or approved.** Current verge, bank and contact-rim colours are flat diagnostic fills in `assets/v3/edge-system.js`. The [style spec](../assets/v3/style-spec.json) labels each as `temporary-geometry-only` with `asset: null`; they must never masquerade as painted materials.
+- The page retains committed grass/stone/water materials and samples them continuously in global board coordinates. We offset ribbon vertices, not the Canvas transform or material pattern, so tile joins do not reset texture phase.
+- Unit tests inspect all 20 topology signatures, the exact edge cross-sections, adjoining-tile agreement, orthogonal edge tangents, junction layering and bridge draw order. The browser workflow captures actual desktop/mobile review screenshots and comparison with edging switched off.
+- The preview has **not** been visually approved. Curved edge-strip UV mapping, painted kerbs/banks, soft shadows, decorative overlap, naturally irregular outlines and bridge parapet artwork belong to later art passes.
+
+**Next review gate:** Inspect edge continuity and thickness in the five basic geometries at 1× and 3×, then produce **one canal-bank painted strip** in the project's muted ink-and-watercolour language. Test it on a straight canal and bend before commissioning the path-verge strip. Keep the first painterly asset as an independently approved candidate, not a hidden code-generated substitute.
+
 ## V3 quality gates
 
 **Automated (mandatory for geometry/runtime):**
@@ -92,10 +106,12 @@ Source textures and sprites should have an asset manifest with width/height, col
 ## Pilot delivery sequence
 
 1. **Foundation (merged PR #19):** V3 proposal, colour/material manifest, precise geometry-only route generation, independent topology checks and a simple pilot view. The production game remains unchanged.
-2. **Material proof (PR #20):** three original candidate textures have been committed and are mechanically validated. **Next:** review adjoining tiles, edge sampling, repeat frequency and 1×/3× appearance before approving the shared library for production. Adjust palette *once*, in the shared library.
-3. **Large-details proof:** add one wall/house component, one willow and a few rocks as transparent assets, with deterministic placement/exclusion rules.
-4. **Fine-details proof:** add a small leaf/moss/flower palette and correct local occlusion/shadow treatment.
-5. **Animation proof:** add one low-key animated effect with reduced-motion support.
-6. **Migration decision:** side-by-side compare pilot with V2 at overview/1×/3× and only then design how V3 is introduced to the playable board.
+2. **Material proof (merged PR #20):** three original candidate textures have been committed and mechanically validated. Inspect adjoining tiles, edge sampling, repeat frequency and 1×/3× appearance before production approval.
+3. **Edge geometry proof (PR #21):** test strict width-preserving path verges, canal banks and bridge deck boundaries with temporary colours, across straights, bends and junctions. Do not approve these colours as painted artwork.
+4. **Painterly edge asset intake (next):** approve one canal-bank strip, then one path-verge strip, and prove their repeat/curve mapping before more scene decoration. Adjust palette *once*, in the shared library.
+5. **Large-details proof:** add one wall/house component, one willow and a few rocks as transparent assets, with deterministic placement/exclusion rules.
+6. **Fine-details proof:** add a small leaf/moss/flower palette and correct local occlusion/shadow treatment.
+7. **Animation proof:** add one low-key animated effect with reduced-motion support.
+8. **Migration decision:** side-by-side compare pilot with V2 at overview/1×/3× and only then design how V3 is introduced to the playable board.
 
 **Stop rule:** If the simplest three-material joined neighbourhood is not visually consistent, improve geometry/material generation before adding more assets or replacing the live renderer.
