@@ -51,32 +51,39 @@
   "materials": [
     {
       "id": "grass",
-      "state": "awaiting-texture",
-      "image": null,
+      "state": "candidate-accepted",
+      "image": "assets/v3/materials/grass-01-lossless.webp",
       "seamless": true,
-      "worldAligned": true
+      "worldAligned": true,
+      "availability": "binary-intake-pending",
+      "productionApproved": false
     },
     {
       "id": "stone",
-      "state": "awaiting-texture",
-      "image": null,
+      "state": "candidate-accepted",
+      "image": "assets/v3/materials/stone-01-lossless.webp",
       "seamless": true,
-      "worldAligned": true
+      "worldAligned": true,
+      "availability": "binary-intake-pending",
+      "productionApproved": false
     },
     {
       "id": "water",
-      "state": "awaiting-texture",
-      "image": null,
+      "state": "candidate-accepted",
+      "image": "assets/v3/materials/water-01-lossless.webp",
       "seamless": true,
-      "worldAligned": true
+      "worldAligned": true,
+      "availability": "binary-intake-pending",
+      "productionApproved": false
     }
   ],
   "spriteLibrary": [],
   "animationLibrary": [],
   "approval": {
     "geometry": "pending-qa",
-    "materials": "unapproved",
+    "materials": "candidate-accepted-not-production-approved",
     "artwork": "unapproved",
     "historical": "unreviewed"
-  }
+  },
+  "materialPack": "assets/v3/materials/manifest.json"
 }
