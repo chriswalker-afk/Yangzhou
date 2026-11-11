@@ -38,7 +38,7 @@ button[aria-pressed="true"]{background:#304f49;color:#fff}
 <label>Stone texture<input id="stoneFile" type="file" accept=".png,.webp,image/png,image/webp"></label>
 <label>Water texture<input id="waterFile" type="file" accept=".png,.webp,image/png,image/webp"></label>
 </div>
-<p class="subtle">At 3× zoom the canvas expands for close inspection; scroll within the preview to inspect neighbouring seams. The pattern repeats every two tiles (440 world units) across the whole board. Stone banks are flat interim geometry; no large-detail, fine-detail or animation layer is implemented here.</p>
+<p class="subtle">At 3× zoom the canvas expands for close inspection; scroll within the preview to inspect neighbouring seams. Grass and water repeat every two tiles (440 world units); smaller paving repeats every tile (220 world units). Every pattern has a single global origin. Stone banks are flat interim geometry; no large-detail, fine-detail or animation layer is implemented here.</p>
 <p><a href="index.html">Current playable game (V2)</a> · <a href="docs/ARTWORK-V3.md">V3 artwork specification</a> · <a href="assets/v3/materials/README.md">Asset intake instructions</a></p>
 </main>
 <script src="tile-topology.js"></script><script src="assets/v3/base-geometry.js"></script><script src="assets/v3/material-runtime.js"></script>
@@ -50,7 +50,7 @@ const materials=window.YangzhouV3Materials,chosen={},sources={},fallback={grass:
 let guides=false,solo=false,zoom=false;
 function materialStyle(id){
   if(!chosen[id])return fallback[id];
-  try{return materials.makePattern(ctx,chosen[id]);}
+  try{return materials.makePattern(ctx,chosen[id],materials.periodById[id]);}
   catch(e){return fallback[id];}
 }
 function pathFor(route,x,y){
