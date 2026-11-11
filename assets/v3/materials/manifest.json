@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "packId": "yangzhou-v3-materials-01",
-  "status": "candidate-accepted-awaiting-binary-upload",
+  "status": "candidate-accepted-committed",
   "imagePixels": 1254,
   "materialTexturePeriodWorldUnits": 440,
   "worldAligned": true,
-  "description": "Three user-accepted artwork candidates; acceptance is not technical/artistic production approval. Binary WebPs are not yet committed. The V3 preview supports optional local upload while the PR awaits binary intake.",
+  "description": "Three unchanged, user-accepted lossless WebP artwork candidates, now committed as Git blobs and subject to exact SHA-256 and dimensions validation. Candidate acceptance is not finished-art or historical approval.",
   "materials": [
     {
       "id": "grass",
@@ -58,5 +58,6 @@
     "grass": 440,
     "stone": 220,
     "water": 440
-  }
+  },
+  "binarySource": "original chat-generated lossless WebP assets, imported byte-for-byte"
 }
