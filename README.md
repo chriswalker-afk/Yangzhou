@@ -1,6 +1,6 @@
 # Yangzhou · A Living Scroll
 
-> **Artwork V3 experiment (11 November 2026):** We are testing a layered, reusable material-and-sprite rendering pipeline alongside the unchanged V2 game. Read [the V3 proposal](docs/ARTWORK-V3.md) and open [the isolated six-tile geometry lab](layer-lab-v3.html). The new flat-colour prototype is a geometry check, **not approved artwork**. Current V2 paintings, manifests and tests remain intact.
+> **Artwork V3 experiment (11 November 2026):** We are testing a layered, reusable material-and-sprite rendering pipeline alongside the unchanged V2 game. Read [the V3 proposal](docs/ARTWORK-V3.md) and open [the isolated six-tile geometry lab](layer-lab-v3.html). The V3 material lab now supports world-aligned grass, stone and water candidate textures, local-file preview, six connected tiles and 3× inspection. Accepted WebP binaries are still awaiting upload; it explicitly shows flat placeholders when they are absent. Neither the candidates nor the prototype are approved production artwork. Current V2 paintings, manifests and tests remain intact.
 
 A peaceful tile-laying game inspired by historic Yangzhou and Carcassonne. The aim is a connected **top-down city painting** that looks beautiful at overview and close zoom, with authentic Jiangnan garden and waterside details.
 
