@@ -2,7 +2,7 @@
 
 **Status: experimental proposal. Three painted material candidates (grass, stone, water) have been accepted for review, not production-approved. The live V2 renderer is not replaced.**
 
-**Material pilot / PR handoff:** [six-tile material lab](../layer-lab-v3.html), [candidate material manifest](../assets/v3/materials/manifest.json), [exact-binary intake instructions](../assets/v3/materials/README.md). The material WebP binaries must be committed before the lab loads them automatically. Until then it provides local-file selectors and shows flat colours for any missing files. This is an explicit asset-intake dependency, not an artwork-quality pass.
+**Material pilot / PR #20:** The original accepted grass, stone and canal-water candidate WebPs are now committed in [`assets/v3/materials/`](../assets/v3/materials/), with [checksummed manifest](../assets/v3/materials/manifest.json) and [integrity instructions](../assets/v3/materials/README.md). The [six-tile material lab](../layer-lab-v3.html) loads them automatically; optional file selectors allow local comparisons. The mandatory material test verifies all three binary hashes, sizes and dimensions. **Visual seam, style and history review is still required before production approval.**
 
 This is the proposed successor to the independent full-square-painting workflow described in [ARTWORK-V2.md](ARTWORK-V2.md). The V2 rules remain valid for V2 images and tests; they do **not** prohibit carefully constructed geometry, reusable textures, transparent sprites or animation in V3.
 
@@ -91,8 +91,8 @@ Source textures and sprites should have an asset manifest with width/height, col
 
 ## Pilot delivery sequence
 
-1. **Foundation PR (this PR):** V3 proposal, colour/material manifest, precise geometry-only route generation, independent topology checks and a simple pilot view. Do not enable in the production game.
-2. **Material proof:** create and approve only grass, stone and water materials; test adjoining tiles, edge sampling and mipmap/zoom appearance. Adjust palette *once*, in the shared library.
+1. **Foundation (merged PR #19):** V3 proposal, colour/material manifest, precise geometry-only route generation, independent topology checks and a simple pilot view. The production game remains unchanged.
+2. **Material proof (PR #20):** three original candidate textures have been committed and are mechanically validated. **Next:** review adjoining tiles, edge sampling, repeat frequency and 1×/3× appearance before approving the shared library for production. Adjust palette *once*, in the shared library.
 3. **Large-details proof:** add one wall/house component, one willow and a few rocks as transparent assets, with deterministic placement/exclusion rules.
 4. **Fine-details proof:** add a small leaf/moss/flower palette and correct local occlusion/shadow treatment.
 5. **Animation proof:** add one low-key animated effect with reduced-motion support.

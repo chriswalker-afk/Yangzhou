@@ -1,6 +1,6 @@
 # Yangzhou · A Living Scroll
 
-> **Artwork V3 experiment (11 November 2026):** We are testing a layered, reusable material-and-sprite rendering pipeline alongside the unchanged V2 game. Read [the V3 proposal](docs/ARTWORK-V3.md) and open [the isolated six-tile geometry lab](layer-lab-v3.html). The V3 material lab now supports world-aligned grass, stone and water candidate textures, local-file preview, six connected tiles and 3× inspection. Accepted WebP binaries are still awaiting upload; it explicitly shows flat placeholders when they are absent. Neither the candidates nor the prototype are approved production artwork. Current V2 paintings, manifests and tests remain intact.
+> **Artwork V3 material pilot (12 November 2026):** A layered, reusable material-and-sprite rendering pipeline is being tested **separately from the unchanged V2 game**. The original accepted grass, stone and canal-water lossless WebPs are now committed under [`assets/v3/materials/`](assets/v3/materials/) on PR #20. Open the [six-tile material lab](layer-lab-v3.html) to inspect world-aligned textures, exact road/canal mouths, and 3× zoom. All three binaries are mandatory and SHA-256/dimension-checked in CI; browser file selectors are optional for comparing local alternatives. These are **accepted candidates, not production-approved artwork**. See the [V3 specifications and review gates](docs/ARTWORK-V3.md). Existing V2 artwork, manifests, gameplay and tests are unchanged.
 
 A peaceful tile-laying game inspired by historic Yangzhou and Carcassonne. The aim is a connected **top-down city painting** that looks beautiful at overview and close zoom, with authentic Jiangnan garden and waterside details.
 
@@ -45,6 +45,8 @@ Drag or arrow keys to pan. Wheel/pinch to zoom, Fit to show the city, 1/2/3 for 
 ```bash
 node tests/smoke.cjs
 node tests/v2-contract.cjs
+node tests/v3-geometry.cjs
+node tests/v3-materials.cjs
 ```
 
 Browser QA runs with the Playwright workflow `.github/workflows/visual-qa.yml`. A successful test run checks *mechanics and geometry only*, never art quality. See [artwork V2 and acceptance criteria](docs/ARTWORK-V2.md) and [game design](docs/DESIGN.md).

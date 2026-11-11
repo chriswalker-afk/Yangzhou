@@ -55,7 +55,7 @@
       "image": "assets/v3/materials/grass-01-lossless.webp",
       "seamless": true,
       "worldAligned": true,
-      "availability": "binary-intake-pending",
+      "availability": "committed",
       "productionApproved": false,
       "textureWorldPeriodUnits": 440
     },
@@ -65,7 +65,7 @@
       "image": "assets/v3/materials/stone-01-lossless.webp",
       "seamless": true,
       "worldAligned": true,
-      "availability": "binary-intake-pending",
+      "availability": "committed",
       "productionApproved": false,
       "textureWorldPeriodUnits": 220
     },
@@ -75,7 +75,7 @@
       "image": "assets/v3/materials/water-01-lossless.webp",
       "seamless": true,
       "worldAligned": true,
-      "availability": "binary-intake-pending",
+      "availability": "committed",
       "productionApproved": false,
       "textureWorldPeriodUnits": 440
     }

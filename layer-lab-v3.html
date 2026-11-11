@@ -21,7 +21,7 @@ button[aria-pressed="true"]{background:#304f49;color:#fff}
 .status{padding:10px 12px;border:1px solid #d1c8b4;background:#f6efe0;border-radius:6px}
 </style></head><body><main>
 <h1>Yangzhou V3 — Layer 1 Material Lab</h1>
-<p class="notice"><strong>Candidate-only proof of concept.</strong> Grass, stone and canal-water artwork is reviewed as candidates, not production-approved. This page does not change the V2 game. Until the accepted image binaries are actually present in this GitHub branch, select the three local files to preview the real materials. Missing images are shown as explicitly flat placeholder colours.</p>
+<p class="notice"><strong>Candidate-only proof of concept.</strong> Grass, stone and canal-water artwork is reviewed as candidates, not production-approved. This page does not change the V2 game. The three accepted WebP binaries are committed and load automatically from GitHub Pages. Optional local selectors compare alternatives without replacing the originals. If loading fails, flat placeholder colours remain clearly identified.</p>
 <p>Three joined east–west stone streets above three joined east–west waterways. Their land-facing edges also connect. All tile-to-tile texture samples use a single world-space origin, not a new repeating pattern for each tile. Road mouths are exactly 20% and water mouths exactly 40% of an edge.</p>
 <div class="controls">
 <button id="ports" aria-pressed="false" type="button">Show exact port guides</button>
@@ -31,15 +31,15 @@ button[aria-pressed="true"]{background:#304f49;color:#fff}
 <div id="status" class="status" role="status" aria-live="polite">Checking whether the three accepted texture images are available…</div>
 <div class="preview" id="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Connected three-by-two road and canal material preview"></canvas></div>
 <div class="legend"><span style="--swatch:#D5D5B7">Fallback grass</span><span style="--swatch:#DFD1B5">Fallback stone</span><span style="--swatch:#7EA9A5">Fallback water</span></div>
-<h2>Preview the three accepted textures locally</h2>
-<p class="subtle">These selectors only read files from your device for this browser session; they do not upload anything to GitHub. They can also be used to compare a revised material while keeping its original geometry.</p>
+<h2>Compare alternative textures locally (optional)</h2>
+<p class="subtle">The committed accepted candidates load automatically. These selectors only read alternatives from your device for this browser session; they do not upload or alter anything on GitHub.</p>
 <div class="inputs">
 <label>Grass texture<input id="grassFile" type="file" accept=".png,.webp,image/png,image/webp"></label>
 <label>Stone texture<input id="stoneFile" type="file" accept=".png,.webp,image/png,image/webp"></label>
 <label>Water texture<input id="waterFile" type="file" accept=".png,.webp,image/png,image/webp"></label>
 </div>
 <p class="subtle">At 3× zoom the canvas expands for close inspection; scroll within the preview to inspect neighbouring seams. Grass and water repeat every two tiles (440 world units); smaller paving repeats every tile (220 world units). Every pattern has a single global origin. Stone banks are flat interim geometry; no large-detail, fine-detail or animation layer is implemented here.</p>
-<p><a href="index.html">Current playable game (V2)</a> · <a href="docs/ARTWORK-V3.md">V3 artwork specification</a> · <a href="assets/v3/materials/README.md">Asset intake instructions</a></p>
+<p><a href="index.html">Current playable game (V2)</a> · <a href="docs/ARTWORK-V3.md">V3 artwork specification</a> · <a href="assets/v3/materials/README.md">Committed materials and integrity checks</a></p>
 </main>
 <script src="tile-topology.js"></script><script src="assets/v3/base-geometry.js"></script><script src="assets/v3/material-runtime.js"></script>
 <script>

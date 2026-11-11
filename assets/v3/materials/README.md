@@ -1,21 +1,23 @@
 # Yangzhou V3 — Accepted candidate material pack
 
-These three materials were accepted **as artwork candidates** in chat. They are not yet production-approved. The full-resolution original files were created outside GitHub and are retained without any modification in the corresponding material pack. GitHub's current connector supports code and metadata writes but not binary-image attachment transfer. This PR therefore commits the manifests, loader, test logic and a local-file preview but **must not claim the WebP images are already imported**.
+The three user-accepted **candidate** textures are committed in this directory, byte-for-byte, as original lossless WebPs. They are **not** production-approved, visually seam-approved, or historically approved. The first three source PNG paintings are provenance references; the playable laboratory loads the committed WebPs directly.
 
-## Exact binary handoff (three files)
+## Committed files and exact integrity contract
 
-Upload the following **unaltered lossless WebP** files into `assets/v3/materials/` on branch `feat/v3-accepted-materials-preview`:
+| Material | Filename | Bytes | SHA-256 |
+| --- | --- | ---: | --- |
+| Jiangnan garden grass | `grass-01-lossless.webp` | 2,271,520 | `6f2d66fe8de1091112609c65c6cb9a563dc0f8189d85b8e5a528c6b1273f5ebb` |
+| Mossy stone paving | `stone-01-lossless.webp` | 2,113,914 | `ba36e366d7d2a2c712a66408ece8afcdcb02d814a8e39be37f5ca10348579f84` |
+| Muted jade canal water | `water-01-lossless.webp` | 1,610,606 | `abdf3356f5c47520c59a58e0a506d983c7de5e2f40e58bfbc4fe1aca70627ad9` |
 
-- `grass-01-lossless.webp` — 2,271,520 bytes, SHA-256 `6f2d66fe8de1091112609c65c6cb9a563dc0f8189d85b8e5a528c6b1273f5ebb`
-- `stone-01-lossless.webp` — 2,113,914 bytes, SHA-256 `ba36e366d7d2a2c712a66408ece8afcdcb02d814a8e39be37f5ca10348579f84`
-- `water-01-lossless.webp` — 1,610,606 bytes, SHA-256 `abdf3356f5c47520c59a58e0a506d983c7de5e2f40e58bfbc4fe1aca70627ad9`
+All three textures are **1254 × 1254 pixels**, RIFF/WebP VP8L (lossless) images. `manifest.json` is the machine-readable source of truth for their exact filenames, byte counts, image dimensions, SHA-256 checksums, material periods and candidate-only approval state.
 
-The files are expected to be 1254 × 1254. The original image PNGs remain the archival masters and may be stored in a separate optional source ZIP, not required in the playable preview.
+The `node tests/v3-materials.cjs` test **requires all three files**, verifies their exact bytes/checksums, lossless image signature and dimensions, and checks their runtime/manifest links. Missing or substituted files fail CI; there is no zero-file or partial-file success case. These automated checks establish integrity and geometry, **not** visual seamlessness or artistic acceptance.
 
-The CI contract in `tests/v3-materials.cjs` verifies all three hashes and dimensions automatically **when all three images are present**. Partial uploads fail CI. Until they arrive it reports the explicit missing-binary state; the lab displays untextured geometry and a local-upload control rather than pretending the textures have been committed.
+## Preview and next gate
 
-## Preview
+After merging PR #20, open [the six-tile V3 material laboratory](../../layer-lab-v3.html) on GitHub Pages or from a local static HTTP server. All three images should load automatically and the status must say `All three texture candidates loaded` with `loaded from GitHub assets` for each. The three optional file inputs only compare alternate images in the browser; they do **not** upload replacements.
 
-Open `layer-lab-v3.html` on the feature-branch preview (or after merge on GitHub Pages). On page load it attempts the three committed files. If absent, select those same WebPs using the three file inputs. It draws three linked east/west streets and three linked east/west canals with the textures sampled from **global board coordinates**. Check the guide overlay and inspect 1× / 3× at neighbouring seams.
+Inspect the connected 3 × 2 scene at 1× and 3×, toggle exact mouth guides, and inspect the bend test. Check for obvious repeats, colour mismatch, seams and unnatural boundaries before any production promotion. If a texture needs editing, keep it as a **new** identified candidate rather than overwriting a verified original.
 
-The tile system, live `index.html`, V2 artwork, and all scoring and camera mechanics remain unchanged. V3 is an isolated prototype. Only after a strong visual review should the material library be promoted to finished artwork.
+The current live `index.html` game, V2 art, board logic, scoring and camera remain unchanged. Layer 2 transparent assets (a courtyard/wall, willow and rocks) begin **after** this visual review.

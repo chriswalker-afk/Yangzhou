@@ -8,7 +8,7 @@ const manifest=JSON.parse(fs.readFileSync(path.join(root,'assets/v3/materials/ma
 const style=JSON.parse(fs.readFileSync(path.join(root,'assets/v3/style-spec.json'),'utf8'));
 const runtime=require('../assets/v3/material-runtime.js');
 assert.equal(manifest.schemaVersion,1);
-assert.equal(manifest.status,'candidate-accepted-awaiting-binary-upload');
+assert.equal(manifest.status,'candidate-accepted-committed');
 assert.equal(manifest.materialTexturePeriodWorldUnits,440);
 assert.deepEqual([...runtime.ids],['grass','stone','water']);
 assert.equal(runtime.worldPeriod,440);
@@ -31,11 +31,12 @@ for(const candidate of manifest.materials){
   assert(expected);
   assert.equal(expected.state,'candidate-accepted');
   assert.equal(expected.image,'assets/v3/materials/'+candidate.file);
+  assert.equal(expected.availability,'committed');
   assert.equal(expected.worldAligned,true);
   assert.equal(expected.textureWorldPeriodUnits,runtime.periodById[candidate.id]);
   assert.equal(expected.productionApproved,false);
   const filename=path.join(root,'assets/v3/materials',candidate.file);
-  if(!fs.existsSync(filename))continue;
+  assert(fs.existsSync(filename),'Required accepted candidate binary missing: '+candidate.file);
   present.push(candidate.id);
   const b=fs.readFileSync(filename);
   assert.equal(b.length,candidate.bytes,'Wrong length for '+candidate.file);
@@ -48,8 +49,7 @@ for(const candidate of manifest.materials){
   assert.equal(((packed>>>14)&0x3fff)+1,1254);
   assert.equal(crypto.createHash('sha256').update(b).digest('hex'),candidate.sha256,'Candidate not byte-identical to accepted source');
 }
-assert(present.length===0||present.length===3,
-  'Partial binary intake is invalid; supply all three unmodified accepted texture files');
+assert.equal(present.length,3,'All three original accepted WebP binaries are required for V3 material CI');
 const page=fs.readFileSync(path.join(root,'layer-lab-v3.html'),'utf8');
 for(const marker of [
   'assets/v3/base-geometry.js',
@@ -83,5 +83,4 @@ try{
   else global.DOMMatrix=previous;
 }
 console.log('V3 material contract passed: 3 accepted candidate records, exact provenance, world-space preview, local-source fallback.');
-if(present.length===0)console.log('NOTICE: all 3 candidate WebP binaries still await upload to assets/v3/materials (this is NOT a completed art import).');
-else console.log('All 3 lossless WebP binaries verified against approved-candidate checksums and dimensions.');
+console.log('All 3 committed lossless WebP candidates verified: exact SHA-256, bytes, VP8L format and 1254x1254 dimensions. Visual artwork approval remains pending.');
