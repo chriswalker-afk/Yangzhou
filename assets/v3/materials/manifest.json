@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "packId": "yangzhou-v3-materials-01",
+  "status": "candidate-accepted-committed",
+  "imagePixels": 1254,
+  "materialTexturePeriodWorldUnits": 440,
+  "worldAligned": true,
+  "description": "Three unchanged, user-accepted lossless WebP artwork candidates, now committed as Git blobs and subject to exact SHA-256 and dimensions validation. Candidate acceptance is not finished-art or historical approval.",
+  "materials": [
+    {
+      "id": "grass",
+      "name": "Jiangnan garden grass",
+      "file": "grass-01-lossless.webp",
+      "mimeType": "image/webp",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2271520,
+      "sha256": "6f2d66fe8de1091112609c65c6cb9a563dc0f8189d85b8e5a528c6b1273f5ebb",
+      "sourcePngSha256": "d8e19d43b271a3bd507ac04c54e8c00adf01d8fd9ed781f58fca20c5aa16dd0c",
+      "reviewStatus": "candidate-accepted",
+      "productionApproved": false
+    },
+    {
+      "id": "stone",
+      "name": "Mossy Jiangnan stone paving",
+      "file": "stone-01-lossless.webp",
+      "mimeType": "image/webp",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2113914,
+      "sha256": "ba36e366d7d2a2c712a66408ece8afcdcb02d814a8e39be37f5ca10348579f84",
+      "sourcePngSha256": "f00526856d0fdba4a88b694066a4af8a5ea612bc9117ad22b2dc105dbb5bfd44",
+      "reviewStatus": "candidate-accepted",
+      "productionApproved": false
+    },
+    {
+      "id": "water",
+      "name": "Muted jade canal water",
+      "file": "water-01-lossless.webp",
+      "mimeType": "image/webp",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1610606,
+      "sha256": "abdf3356f5c47520c59a58e0a506d983c7de5e2f40e58bfbc4fe1aca70627ad9",
+      "sourcePngSha256": "b1b063879a4f716e39ca44ea2f9de949b73dcf51f27ccc4c15deb5a4c7291503",
+      "reviewStatus": "candidate-accepted",
+      "productionApproved": false
+    }
+  ],
+  "requiredChecks": [
+    "SHA-256",
+    "RIFF/WebP signature",
+    "VP8L size 1254x1254",
+    "repeat edges",
+    "physical mouth widths and visual seams in six-tile lab"
+  ],
+  "periodWorldUnitsByMaterial": {
+    "grass": 440,
+    "stone": 220,
+    "water": 440
+  },
+  "binarySource": "original chat-generated lossless WebP assets, imported byte-for-byte"
+}

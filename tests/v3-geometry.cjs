@@ -51,5 +51,7 @@ const junction=v3.compile('WWWL'.split(''));
 assert.equal(junction.paths.length,3);
 assert.equal(junction.exits[3].width,0);
 assert.throws(()=>v3.compile(['X','L','L','L']));
-assert(spec.materials.every(m=>m.state==='awaiting-texture'&&m.image===null),'Never pass placeholder colours as final textures');
+assert(spec.materials.every(m=>m.state==='candidate-accepted'&&m.image?.endsWith(m.id+'-01-lossless.webp')),'Materials are accepted candidates with exact expected image names');
+assert.equal(spec.approval.artwork,'unapproved');
+assert.notEqual(spec.approval.materials,'approved');
 console.log('V3 geometry contracts passed: 20 signatures, exact 20%/40% centred ports, connected bends/junctions, bridge separation, honest materials.');
