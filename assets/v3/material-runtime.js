@@ -14,7 +14,8 @@
     water:'water-01-lossless.webp'
   });
   const ids=Object.freeze(['grass','stone','water']);
-  const worldPeriod=440; // two world tiles; one consistent phase across seams
+  const worldPeriod=440; // default two-tile texture period
+  const periodById=Object.freeze({grass:440,stone:220,water:440}); // readable paving at smaller scale
   function imageFromUrl(url){
     if(typeof Image==='undefined')return Promise.reject(Error('Browser Image unavailable'));
     return new Promise((resolve,reject)=>{
@@ -55,5 +56,5 @@
     surface.getContext('2d').drawImage(image,0,0,surface.width,surface.height);
     return ctx.createPattern(surface,'repeat');
   }
-  return Object.freeze({files,ids,base,worldPeriod,loadAll,loadLocal,makePattern});
+  return Object.freeze({files,ids,base,worldPeriod,periodById,loadAll,loadLocal,makePattern});
 });
