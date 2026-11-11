@@ -59,7 +59,8 @@ for(const marker of [
   'materials.makePattern(',
   'id="ports"','id="zoom"',
   'id="grassFile"','id="stoneFile"','id="waterFile"',
-  "edges:i<3?'LSLS':'LWLW'",
+  "joined:['LSLS','LSLS','LSLS','LWLW','LWLW','LWLW']",
+  'id="sceneChoice"', 'assets/v3/edge-system.js', 'edging.draw(',
   'ctx.setTransform(3,0,0,3,0,0)'
 ])assert(page.includes(marker),'Missing V3 material lab contract: '+marker);
 // World-space material repeat geometry: the pattern origin must be independent
