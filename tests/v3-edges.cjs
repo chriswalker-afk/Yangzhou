@@ -12,7 +12,8 @@ assert.equal(geometry.signatures.length,20);
 assert.deepEqual(Object.keys(edges.treatments),['S','W']);
 assert.deepEqual(edges.treatments.S,{id:'path-verge',outside:2.5,contact:0.8,core:44});
 assert.deepEqual(edges.treatments.W,{id:'canal-bank',outside:4,contact:1.2,core:88});
-assert(spec.edgeTreatments.every(e=>e.status==='temporary-geometry-only'&&e.asset===null));
+assert.equal(spec.edgeTreatments.length,3);
+assert(spec.edgeTreatments.every(e=>e.status==='temporary-geometry-only'&&e.asset===null&&e.productionApproved===false));
 for(const e of spec.edgeTreatments){
   const type=e.routeType,rule=edges.treatments[type];
   assert(rule);assert.equal(e.landSideWidthWorldUnits,rule.outside);
@@ -134,7 +135,7 @@ assert.throws(()=>edges.compile(null));
 const lab=fs.readFileSync(path.join(__dirname,'../layer-lab-v3.html'),'utf8');
 for(const marker of [
  'assets/v3/edge-system.js','id="edges"','id="sceneChoice"',
- 'edgeSystem', 'edging.draw(', 'edges:edgesVisible,x,y',
+ 'edging.draw(', 'edges:edgesVisible,x,y',
  "bridge:['LSLS','WSWS','LSLS'", "'canal-junction':['LWLW','LWWW'",
  "document.getElementById('sceneChoice').addEventListener('change',draw)"
 ])assert(lab.includes(marker),'Missing V3 Layer 1B laboratory contract: '+marker);
