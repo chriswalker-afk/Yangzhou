@@ -1,6 +1,6 @@
 # Yangzhou · A Living Scroll
 
-> **Artwork V3 material pilot (12 November 2026):** A layered, reusable material-and-sprite rendering pipeline is being tested **separately from the unchanged V2 game**. The original accepted grass, stone and canal-water lossless WebPs are now committed under [`assets/v3/materials/`](assets/v3/materials/) on PR #20. Open the [six-tile material lab](layer-lab-v3.html) to inspect world-aligned textures, exact road/canal mouths, and 3× zoom. All three binaries are mandatory and SHA-256/dimension-checked in CI; browser file selectors are optional for comparing local alternatives. These are **accepted candidates, not production-approved artwork**. See the [V3 specifications and review gates](docs/ARTWORK-V3.md). Existing V2 artwork, manifests, gameplay and tests are unchanged.
+> **Artwork V3 layered landscape pilot (12 November 2026):** A layered, reusable material-and-sprite rendering pipeline is being tested **separately from the unchanged V2 game**. The original accepted grass, stone and canal-water lossless WebPs are now committed under [`assets/v3/materials/`](assets/v3/materials/) (merged in PR #20). PR #21 adds geometry-following provisional path verges, canal banks and bridge-deck edges; no new artwork is claimed. Open the [six-tile material lab](layer-lab-v3.html) to inspect world-aligned textures, temporary edge treatments, exact road/canal mouths, six geometry studies and 3× zoom. All three binaries are mandatory and SHA-256/dimension-checked in CI; browser file selectors are optional for comparing local alternatives. These are **accepted candidates, not production-approved artwork**. See the [V3 specifications and review gates](docs/ARTWORK-V3.md). Existing V2 artwork, manifests, gameplay and tests are unchanged.
 
 A peaceful tile-laying game inspired by historic Yangzhou and Carcassonne. The aim is a connected **top-down city painting** that looks beautiful at overview and close zoom, with authentic Jiangnan garden and waterside details.
 
@@ -47,6 +47,7 @@ node tests/smoke.cjs
 node tests/v2-contract.cjs
 node tests/v3-geometry.cjs
 node tests/v3-materials.cjs
+node tests/v3-edges.cjs
 ```
 
 Browser QA runs with the Playwright workflow `.github/workflows/visual-qa.yml`. A successful test run checks *mechanics and geometry only*, never art quality. See [artwork V2 and acceptance criteria](docs/ARTWORK-V2.md) and [game design](docs/DESIGN.md).
