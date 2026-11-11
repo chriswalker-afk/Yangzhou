@@ -53,5 +53,10 @@
     "VP8L size 1254x1254",
     "repeat edges",
     "physical mouth widths and visual seams in six-tile lab"
-  ]
+  ],
+  "periodWorldUnitsByMaterial": {
+    "grass": 440,
+    "stone": 220,
+    "water": 440
+  }
 }
