@@ -22,8 +22,11 @@ jobs:
           python3 -m py_compile scripts/import_yangzhou_art_pack.py
           node --check tests/smoke.cjs
           node --check tests/v2-contract.cjs
+          node --check assets/v3/base-geometry.js
+          node --check tests/v3-geometry.cjs
           node tests/smoke.cjs
           node tests/v2-contract.cjs
+          node tests/v3-geometry.cjs
           node tests/variant-deck.cjs
           node scripts/validate_art_batch_01.cjs
           node tests/scoring-contract.cjs

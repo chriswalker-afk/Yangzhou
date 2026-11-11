@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "status": "proposed-unapproved",
+  "artworkSystem": "living-layer-system",
+  "imagePixelSize": 1254,
+  "worldTileSize": 220,
+  "edgeOrder": [
+    "N",
+    "E",
+    "S",
+    "W"
+  ],
+  "portWidthWorldUnits": {
+    "L": 0,
+    "S": 44,
+    "W": 88
+  },
+  "palette": {
+    "ricePaper": "#EEE3CD",
+    "charcoalInk": "#3D403D",
+    "roofSlate": "#68706A",
+    "jadeWater": "#7EA9A5",
+    "willow": "#849B74",
+    "clayAccent": "#AD755D",
+    "gardenGround": "#D5D5B7",
+    "stonePaving": "#DFD1B5",
+    "stoneBank": "#CFC2A7"
+  },
+  "layers": [
+    {
+      "id": "base",
+      "purpose": "Exact land/road/canal masks plus shared textures and shoreline/curb",
+      "static": true
+    },
+    {
+      "id": "large",
+      "purpose": "Reusable compass-upright architecture and trees, garden walls, rocks and bridges",
+      "static": true
+    },
+    {
+      "id": "fine",
+      "purpose": "Moss, flower and leaf details, microtexture, local shadows",
+      "static": true
+    },
+    {
+      "id": "animation",
+      "purpose": "Independent ambient effects and eventually connected actors",
+      "static": false
+    }
+  ],
+  "materials": [
+    {
+      "id": "grass",
+      "state": "awaiting-texture",
+      "image": null,
+      "seamless": true,
+      "worldAligned": true
+    },
+    {
+      "id": "stone",
+      "state": "awaiting-texture",
+      "image": null,
+      "seamless": true,
+      "worldAligned": true
+    },
+    {
+      "id": "water",
+      "state": "awaiting-texture",
+      "image": null,
+      "seamless": true,
+      "worldAligned": true
+    }
+  ],
+  "spriteLibrary": [],
+  "animationLibrary": [],
+  "approval": {
+    "geometry": "pending-qa",
+    "materials": "unapproved",
+    "artwork": "unapproved",
+    "historical": "unreviewed"
+  }
+}
