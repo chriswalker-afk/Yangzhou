@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yangzhou V3 | Layer foundation lab</title>
+<style>
+:root{color-scheme:light}body{margin:0;background:#eee3cd;color:#343f3b;font:16px/1.5 system-ui,sans-serif}
+main{max-width:1040px;margin:24px auto;padding:0 20px}h1{line-height:1.2;font-family:Georgia,serif}
+small,.subtle{color:#50655c}.notice{background:#fff8df;border-left:4px solid #ad755d;padding:12px 16px;border-radius:5px}
+.preview{background:#faf6eb;padding:14px;border:1px solid #cec5b1;border-radius:10px;display:inline-block;max-width:100%;overflow:auto}
+canvas{display:block;width:min(100%,660px);height:auto;image-rendering:auto}
+button{padding:8px 14px;border-radius:7px;border:1px solid #5b6b5a;background:#fff;cursor:pointer}
+button[aria-pressed="true"]{background:#304f49;color:#fff}
+.controls{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}
+.legend{display:flex;gap:12px;flex-wrap:wrap}.legend span:before{content:"";display:inline-block;width:12px;height:12px;background:var(--swatch);border:1px solid #999;margin-right:5px}
+</style></head><body><main>
+<h1>Yangzhou V3 — geometry foundation</h1>
+<p class="notice"><strong>Geometry-only prototype, not finished artwork.</strong> The purpose is to confirm route mouths and legal connections before generating or approving any painterly textures. The current game continues to use V2.</p>
+<p>Six adjacent cells: three east–west streets in the upper row, and three east–west canals in the lower row. The shared land edge joins the two rows. All openings are exactly centred: streets 44/220, canals 88/220.</p>
+<div class="controls"><button id="ports" aria-pressed="false" type="button">Show port guides</button>
+<button id="solo" aria-pressed="false" type="button">Show a single street bend</button></div>
+<div class="preview"><canvas id="scene" width="660" height="440" aria-label="Three joined street tiles and three canal tiles"></canvas></div>
+<p class="legend"><span style="--swatch:#D5D5B7">Land study</span><span style="--swatch:#DFD1B5">Stone study</span><span style="--swatch:#7EA9A5">Water study</span></p>
+<p class="subtle"><small>Visuals intentionally use flat provisional colours; not textures or final art. Pale canal embankments and decorative sprites will be built in later passes. Inspect source contracts in <code>assets/v3/base-geometry.js</code> and <code>tests/v3-geometry.cjs</code>.</small></p>
+<p><a href="index.html">Back to current game (V2)</a></p></main>
+<script src="tile-topology.js"></script><script src="assets/v3/base-geometry.js"></script>
+<script>
+(()=>{'use strict';
+const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d'),geom=window.YangzhouV3Geometry;
+let ports=false,solo=false;
+const colors={grass:'#D5D5B7',water:'#7EA9A5',paving:'#DFD1B5',bank:'#CFC2A7'};
+function draw(){
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ const shapes=solo?[{x:1,y:0,edges:'SLLS'}]:
+ Array.from({length:6},(_,i)=>({x:i%3,y:Math.floor(i/3),edges:i<3?'LSLS':'LWLW'}));
+ for(const shape of shapes){
+  ctx.save();ctx.translate(shape.x*220,shape.y*220);
+  // Clip only to tile bounds; edge ports are derived exactly from the canonical geometry.
+  ctx.beginPath();ctx.rect(0,0,220,220);ctx.clip();
+  const g=geom.drawStudy(ctx,shape.edges.split(''),colors);
+  if(ports){for(const p of g.exits){
+   if(p.type==='L')continue;
+   ctx.strokeStyle='#a43535';ctx.lineWidth=2;ctx.beginPath();
+   switch(p.side){
+    case 0:ctx.moveTo(p.start,0);ctx.lineTo(p.end,0);break;
+    case 1:ctx.moveTo(220,p.start);ctx.lineTo(220,p.end);break;
+    case 2:ctx.moveTo(p.start,220);ctx.lineTo(p.end,220);break;
+    case 3:ctx.moveTo(0,p.start);ctx.lineTo(0,p.end);break;
+   }ctx.stroke();
+  }}
+  ctx.restore();
+ }
+}
+const a=document.getElementById('ports'),b=document.getElementById('solo');
+a.onclick=()=>{ports=!ports;a.setAttribute('aria-pressed',String(ports));draw();};
+b.onclick=()=>{solo=!solo;b.setAttribute('aria-pressed',String(solo));draw();};
+draw();
+})();
+</script></body></html>
