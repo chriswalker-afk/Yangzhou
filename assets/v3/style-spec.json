@@ -56,7 +56,8 @@
       "seamless": true,
       "worldAligned": true,
       "availability": "binary-intake-pending",
-      "productionApproved": false
+      "productionApproved": false,
+      "textureWorldPeriodUnits": 440
     },
     {
       "id": "stone",
@@ -65,7 +66,8 @@
       "seamless": true,
       "worldAligned": true,
       "availability": "binary-intake-pending",
-      "productionApproved": false
+      "productionApproved": false,
+      "textureWorldPeriodUnits": 220
     },
     {
       "id": "water",
@@ -74,7 +76,8 @@
       "seamless": true,
       "worldAligned": true,
       "availability": "binary-intake-pending",
-      "productionApproved": false
+      "productionApproved": false,
+      "textureWorldPeriodUnits": 440
     }
   ],
   "spriteLibrary": [],
