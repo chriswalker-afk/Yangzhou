@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Yangzhou V3 | Six-tile material lab</title>
+<title>Yangzhou V3 | Layer 1B edge geometry lab</title>
 <style>
 :root{color-scheme:light}*{box-sizing:border-box}
 body{margin:0;background:#eee3cd;color:#343f3b;font:16px/1.5 system-ui,sans-serif}
@@ -12,6 +12,9 @@ canvas{display:block;max-width:none;image-rendering:auto}
 .controls{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}
 button{padding:8px 14px;border-radius:7px;border:1px solid #5b6b5a;background:#fff;cursor:pointer}
 button[aria-pressed="true"]{background:#304f49;color:#fff}
+.controls label{align-self:center;font-weight:600;font-size:.93rem}
+.controls select{padding:8px 12px;border:1px solid #5b6b5a;border-radius:7px;background:#fff;max-width:100%}
+
 .inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px;margin:12px 0}
 .inputs label{font-weight:600;font-size:.95rem}
 .inputs input{display:block;max-width:100%;font-weight:normal}
@@ -20,17 +23,26 @@ button[aria-pressed="true"]{background:#304f49;color:#fff}
 .subtle{color:#50655c;font-size:.93rem}
 .status{padding:10px 12px;border:1px solid #d1c8b4;background:#f6efe0;border-radius:6px}
 </style></head><body><main>
-<h1>Yangzhou V3 — Layer 1 Material Lab</h1>
-<p class="notice"><strong>Candidate-only proof of concept.</strong> Grass, stone and canal-water artwork is reviewed as candidates, not production-approved. This page does not change the V2 game. The three accepted WebP binaries are committed and load automatically from GitHub Pages. Optional local selectors compare alternatives without replacing the originals. If loading fails, flat placeholder colours remain clearly identified.</p>
-<p>Three joined east–west stone streets above three joined east–west waterways. Their land-facing edges also connect. All tile-to-tile texture samples use a single world-space origin, not a new repeating pattern for each tile. Road mouths are exactly 20% and water mouths exactly 40% of an edge.</p>
+<h1>Yangzhou V3 — Layer 1B Edge Geometry Lab</h1>
+<p class="notice"><strong>Geometry and temporary-colour study only — not finished edge art.</strong> The three previously accepted grass, stone and water texture candidates load automatically. Narrow path verges, canal banks and contact rims now follow the exact V3 route geometry. These flat edge colours are placeholders awaiting separately painted assets and visual review. Nothing here modifies the live V2 game.</p>
+<p>Compare a connected 3 × 2 street-and-canal neighbourhood against individual bends, a bridge, and junctions. Select a study, hide/show temporary edges, enable exact port guides and inspect at 3×. The paving and water still occupy <strong>exactly 20% and 40%</strong> of their respective edge mouths. Verge and bank strips sit on the land side; textures share one board-wide origin.</p>
 <div class="controls">
+<label for="sceneChoice">Study</label>
+<select id="sceneChoice" aria-label="Select geometry study">
+<option value="joined">Six joined tiles: street + canal</option>
+<option value="street-bend">Connected street bend</option>
+<option value="canal-bend">Connected canal bend</option>
+<option value="bridge">Bridge: road over canal</option>
+<option value="canal-junction">Three-way canal junction</option>
+<option value="street-cross">Four-way street junction</option>
+</select>
+<button id="edges" aria-pressed="true" type="button">Hide temporary edging</button>
 <button id="ports" aria-pressed="false" type="button">Show exact port guides</button>
-<button id="solo" aria-pressed="false" type="button">Show street-bend test</button>
 <button id="zoom" aria-pressed="false" type="button">Inspect at 3× zoom</button>
 </div>
 <div id="status" class="status" role="status" aria-live="polite">Checking whether the three accepted texture images are available…</div>
 <div class="preview" id="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Connected three-by-two road and canal material preview"></canvas></div>
-<div class="legend"><span style="--swatch:#D5D5B7">Fallback grass</span><span style="--swatch:#DFD1B5">Fallback stone</span><span style="--swatch:#7EA9A5">Fallback water</span></div>
+<div class="legend"><span style="--swatch:#D5D5B7">Fallback grass</span><span style="--swatch:#DFD1B5">Fallback paving</span><span style="--swatch:#7EA9A5">Fallback water</span><span style="--swatch:#B5A68C">Temporary path verge</span><span style="--swatch:#C9BC9E">Temporary canal bank</span></div>
 <h2>Compare alternative textures locally (optional)</h2>
 <p class="subtle">The committed accepted candidates load automatically. These selectors only read alternatives from your device for this browser session; they do not upload or alter anything on GitHub.</p>
 <div class="inputs">
@@ -38,29 +50,34 @@ button[aria-pressed="true"]{background:#304f49;color:#fff}
 <label>Stone texture<input id="stoneFile" type="file" accept=".png,.webp,image/png,image/webp"></label>
 <label>Water texture<input id="waterFile" type="file" accept=".png,.webp,image/png,image/webp"></label>
 </div>
-<p class="subtle">At 3× zoom the canvas expands for close inspection; scroll within the preview to inspect neighbouring seams. Grass and water repeat every two tiles (440 world units); smaller paving repeats every tile (220 world units). Every pattern has a single global origin. Stone banks are flat interim geometry; no large-detail, fine-detail or animation layer is implemented here.</p>
+<p class="subtle">At 3× zoom the canvas expands for close inspection; scroll within the preview to inspect joins. Grass and water repeat every two tiles (440 world units); paving every tile (220 units). The renderer draws route ribbons in global coordinates without resetting the pattern origin. Temporary verge widths: path 2.5 units per side, canal bank 4 units per side, plus a narrower contact rim. These do not widen the playable road or canal masks. No painted border-strip artwork, detail sprites or animation is included.</p>
 <p><a href="index.html">Current playable game (V2)</a> · <a href="docs/ARTWORK-V3.md">V3 artwork specification</a> · <a href="assets/v3/materials/README.md">Committed materials and integrity checks</a></p>
 </main>
-<script src="tile-topology.js"></script><script src="assets/v3/base-geometry.js"></script><script src="assets/v3/material-runtime.js"></script>
+<script src="tile-topology.js"></script><script src="assets/v3/base-geometry.js"></script><script src="assets/v3/material-runtime.js"></script><script src="assets/v3/edge-system.js"></script>
 <script>
 (()=>{
 'use strict';
 const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d'),geom=window.YangzhouV3Geometry;
-const materials=window.YangzhouV3Materials,chosen={},sources={},fallback={grass:'#D5D5B7',stone:'#DFD1B5',water:'#7EA9A5',bank:'#CFC2A7'};
-let guides=false,solo=false,zoom=false;
+const materials=window.YangzhouV3Materials,edging=window.YangzhouV3Edges,topology=window.YangzhouTileTopology;
+const chosen={},sources={},fallback={grass:'#D5D5B7',stone:'#DFD1B5',water:'#7EA9A5'};
+const provisionalEdges=Object.freeze({
+  pathVerge:'#B5A68C',pathContact:'#839078',
+  canalBank:'#C9BC9E',canalContact:'#6A9189',
+  bridgeEdge:'#B3A994',bridgeContact:'#707A73'
+});
+const scenes=Object.freeze({
+ joined:['LSLS','LSLS','LSLS','LWLW','LWLW','LWLW'],
+ 'street-bend':['LSLS','SLLS','LLLL','LLLL','LLLL','LLLL'],
+ 'canal-bend':['LWLW','WLLW','LLLL','LLLL','LLLL','LLLL'],
+ bridge:['LSLS','WSWS','LSLS','LLLL','WLLL','LLLL'],
+ 'canal-junction':['LWLW','LWWW','LWLW','LLLL','WLLL','LLLL'],
+ 'street-cross':['LSLS','SSSS','LSLS','LLLL','SLLL','LLLL']
+});
+let guides=false,edgesVisible=true,zoom=false;
 function materialStyle(id){
   if(!chosen[id])return fallback[id];
   try{return materials.makePattern(ctx,chosen[id],materials.periodById[id]);}
   catch(e){return fallback[id];}
-}
-function pathFor(route,x,y){
-  ctx.beginPath();ctx.moveTo(route.start[0]+x,route.start[1]+y);
-  if(route.kind==='quadratic')ctx.quadraticCurveTo(route.control[0]+x,route.control[1]+y,route.end[0]+x,route.end[1]+y);
-  else ctx.lineTo(route.end[0]+x,route.end[1]+y);
-}
-function strokeRoute(route,x,y,width,style){
-  pathFor(route,x,y);
-  ctx.lineWidth=width;ctx.lineJoin='round';ctx.lineCap='butt';ctx.strokeStyle=style;ctx.stroke();
 }
 function drawPort(port,x,y){
   if(port.type==='L')return;
@@ -72,20 +89,22 @@ function drawPort(port,x,y){
   ctx.stroke();
 }
 function draw(){
-  // Always render at 3 pixels per world unit. Display size changes, not geometry or texture phase.
+  // Always 3 physical pixels per world unit; display scale changes only.
   ctx.setTransform(3,0,0,3,0,0);ctx.clearRect(0,0,660,440);
   ctx.fillStyle=materialStyle('grass');ctx.fillRect(0,0,660,440);
-  const tiles=solo?[{x:1,y:0,edges:'SLLS'}]:
-    Array.from({length:6},(_,i)=>({x:i%3,y:Math.floor(i/3),edges:i<3?'LSLS':'LWLW'}));
-  const paving=materialStyle('stone'),water=materialStyle('water');
+  const choice=document.getElementById('sceneChoice').value;
+  const codes=scenes[choice];
+  if(!codes)throw Error('Invalid V3 geometry study');
+  const tiles=codes.map((edges,i)=>({x:i%3,y:Math.floor(i/3),edges:edges.split('')}));
+  const errors=topology.validateBoard(tiles);
+  if(errors.length)throw Error('Incorrect tile join in V3 study: '+errors.join('; '));
+  const style={...provisionalEdges,stone:materialStyle('stone'),water:materialStyle('water')};
   for(const tile of tiles){
-    const x=tile.x*220,y=tile.y*220,g=geom.compile(tile.edges.split(''));
+    const x=tile.x*220,y=tile.y*220,g=geom.compile(tile.edges);
     ctx.save();ctx.beginPath();ctx.rect(x,y,220,220);ctx.clip();
-    // Banks go behind the water. The water masks remain exactly 88 units wide.
-    for(const route of g.paths.filter(p=>p.type==='W'))strokeRoute(route,x,y,route.width+8,fallback.bank);
-    for(const route of g.paths.filter(p=>p.type==='W'))strokeRoute(route,x,y,route.width,water);
-    // Stone lanes remain exactly 44 units wide at their defined edge mouths.
-    for(const route of g.paths.filter(p=>p.type==='S'))strokeRoute(route,x,y,route.width,paving);
+    // Offset ribbon vertices into board coordinates, not Canvas transforms:
+    // the existing world-space texture phase is preserved across joins.
+    edging.draw(ctx,edging.compile(g),style,{edges:edgesVisible,x,y});
     if(guides)for(const port of g.exits)drawPort(port,x,y);
     ctx.restore();
   }
@@ -109,10 +128,11 @@ async function useLocal(id,input){
 for(const id of materials.ids)document.getElementById(id+'File').addEventListener('change',e=>useLocal(id,e.target));
 function toggle(id,callback){
  const button=document.getElementById(id);
- button.addEventListener('click',()=>{callback();button.setAttribute('aria-pressed',String(id==='ports'?guides:id==='solo'?solo:zoom));draw();});
+ button.addEventListener('click',()=>{callback();button.setAttribute('aria-pressed',String(id==='ports'?guides:id==='edges'?edgesVisible:zoom));draw();});
 }
+document.getElementById('sceneChoice').addEventListener('change',draw);
+toggle('edges',()=>{edgesVisible=!edgesVisible;document.getElementById('edges').textContent=edgesVisible?'Hide temporary edging':'Show temporary edging';});
 toggle('ports',()=>{guides=!guides;});
-toggle('solo',()=>{solo=!solo;});
 toggle('zoom',()=>{zoom=!zoom;canvas.style.width=zoom?'1980px':'660px';});
 status();draw();
 materials.loadAll().then(({images,missing})=>{
