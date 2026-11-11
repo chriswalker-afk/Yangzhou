@@ -15,6 +15,10 @@ A calm, competitive 2–4-player tile-laying game in an eighteenth-century Yangz
 - The present Ge Garden's 1818 construction date falls outside this setting; avoid anachronistic depictions of that specific later garden.
 - Acquire cultural/historical review before labelling assets authentic or releasing as educational history.
 
+## Artwork pipeline status (11 November 2026)
+
+The [V3 Living Layer System](ARTWORK-V3.md) is being explored separately from the live V2 independent-painting renderer. V3 proposes mathematically exact land/street/canal masks; shared painted ground, paving and water materials; reusable upright architectural/tree components; deterministic fine detail; and separately composited animation. Its materials are **not yet created or approved**. The current V2 documentation is archived as its own valid historical contract; do not substitute prototype geometry or flat colours for finished player-facing art.
+
 ## Art bible
 - Warm rice-paper ground #EEE3CD, charcoal ink #3D403D, roof slate #68706A, muted jade water #7EA9A5, willow #849B74, clay accent #AD755D.
 - Fine ink and ruled architectural lines with translucent mineral-like washes. The rendering should be a plausible eighteenth-century Yangzhou landscape with grey tiled courtyard architecture, plaster, timber, stone bridges, framed gardens, rockeries, bamboo and willows.
