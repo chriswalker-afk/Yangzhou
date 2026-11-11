@@ -68,21 +68,25 @@
 
   // Fill the two offset boundaries as a polygon. We never rotate artwork
   // or reset a texture's pattern origin at the tile boundary.
-  function fillRibbon(ctx,trace,boundary,fill){
+  function fillRibbon(ctx,trace,boundary,fill,offsetX=0,offsetY=0){
     const points=trace.samples;
     if(!points.length)return;
     ctx.beginPath();
-    ctx.moveTo(...points[0][boundary].left);
-    for(let i=1;i<points.length;i++)ctx.lineTo(...points[i][boundary].left);
-    for(let i=points.length-1;i>=0;i--)ctx.lineTo(...points[i][boundary].right);
+    const pos=point=>[point[0]+offsetX,point[1]+offsetY];
+    ctx.moveTo(...pos(points[0][boundary].left));
+    for(let i=1;i<points.length;i++)ctx.lineTo(...pos(points[i][boundary].left));
+    for(let i=points.length-1;i>=0;i--)ctx.lineTo(...pos(points[i][boundary].right));
     ctx.closePath();
     ctx.fillStyle=fill;ctx.fill();
   }
 
+  // The ribbon vertices are offset into board space, never translated via ctx:
+  // CanvasPattern coordinates therefore stay global across neighbouring tiles.
   // Pass the already world-aligned CanvasPattern for stone/water.
   // An edge proof is deliberately a flat, replaceable color — NOT a new image.
   function draw(ctx,compiled,style,options={}){
     const edgesOn=options.edges!==false;
+    const ox=options.x||0,oy=options.y||0;
     if(!style||!style.stone||!style.water)throw Error('Stone and water styles required');
     const traces=compiled.traces;
     for(const type of ['W','S']){
@@ -92,18 +96,18 @@
           const bridge=r.role==='bridge-deck';
           const outer=type==='W'?style.canalBank:bridge?style.bridgeEdge:style.pathVerge;
           if(!outer)throw Error('Missing temporary V3 edge color');
-          fillRibbon(ctx,r,'outer',outer);
+          fillRibbon(ctx,r,'outer',outer,ox,oy);
         }
         for(const r of group){
           const bridge=r.role==='bridge-deck';
           const contact=type==='W'?style.canalContact:bridge?style.bridgeContact:style.pathContact;
           if(!contact)throw Error('Missing temporary V3 contact color');
-          fillRibbon(ctx,r,'contact',contact);
+          fillRibbon(ctx,r,'contact',contact,ox,oy);
         }
       }
       // All core masks are painted after all edge bands for a junction.
       // Water is underneath the bridge's road; paths cannot add water exits.
-      for(const r of group)fillRibbon(ctx,r,'core',type==='W'?style.water:style.stone);
+      for(const r of group)fillRibbon(ctx,r,'core',type==='W'?style.water:style.stone,ox,oy);
     }
   }
 
