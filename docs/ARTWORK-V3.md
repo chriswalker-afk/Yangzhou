@@ -1,6 +1,8 @@
 # Yangzhou Artwork V3 — The Living Layer System
 
-**Status: experimental proposal. No V3 production artwork is approved and the live V2 renderer is not replaced.**
+**Status: experimental proposal. Three painted material candidates (grass, stone, water) have been accepted for review, not production-approved. The live V2 renderer is not replaced.**
+
+**Material pilot / PR handoff:** [six-tile material lab](../layer-lab-v3.html), [candidate material manifest](../assets/v3/materials/manifest.json), [exact-binary intake instructions](../assets/v3/materials/README.md). The material WebP binaries must be committed before the lab loads them automatically. Until then it provides local-file selectors and shows flat colours for any missing files. This is an explicit asset-intake dependency, not an artwork-quality pass.
 
 This is the proposed successor to the independent full-square-painting workflow described in [ARTWORK-V2.md](ARTWORK-V2.md). The V2 rules remain valid for V2 images and tests; they do **not** prohibit carefully constructed geometry, reusable textures, transparent sprites or animation in V3.
 
