@@ -27,8 +27,8 @@ a{color:#2f6457}
 #wallInfo{min-height:62px}
 @media(max-width:650px){h1{font-size:1.55rem}main{padding:0 10px}}
 </style></head><body><main>
-<h1>Yangzhou V3 — Wall Geometry &amp; Texture Lab (rev 36)</h1>
-<p class="lead"><strong>Isolated Layer 2 proof, not the playable game.</strong> These are continuous, tile-owned wall <em>centrelines</em> with exact mitered corners and T-connections. The moon gate is a genuine opening cut out of all four wall bands, not a painting laid over a solid wall. Wall colours are <strong>temporary geometry diagnostics</strong>; the first painted roof, plaster and foundation textures have not yet been made.</p>
+<h1>Yangzhou V3 — Wall Geometry &amp; Texture Lab (rev 37)</h1>
+<p class="lead"><strong>Isolated Layer 2 proof, not the playable game.</strong> These are continuous, tile-owned wall <em>centrelines</em> with exact mitered corners and T-connections. The moon gate is a genuine opening cut out of all four wall bands, not a painting laid over a solid wall. Stone, plaster and the unpainted ridge remain temporary diagnostic colours. <strong>Wall Roof-Tile Texture 01</strong> is our first painted material candidate: its repeating image follows each coping band at a fixed scale. It stays an unapproved candidate pending inspection at corners and gate ends.</p>
 <p>Test a complete courtyard, a three-sided garden, an L-corner and a T-junction around our existing courtyard hall. Toggle the road/canal layouts: invalid courtyards are rejected instead of crossing an 88-unit water channel or 44-unit street. The older wall-sprite lab remains available for comparison.</p>
 <div class="toolbar">
 <label for="study">Six-tile neighbourhood
@@ -55,6 +55,13 @@ a{color:#2f6457}
 <label><input type="checkbox" id="showJoints" checked> Mark L/T joints</label>
 <label><input type="checkbox" id="showHall" checked> Courtyard hall</label>
 <label><input type="checkbox" id="showTextures"> Use existing painted Layer 1 materials</label>
+<label><input type="checkbox" id="showRoofTexture" checked> Show painted roof-tile coping</label>
+</div>
+<div class="status" id="roofStatus" role="status" aria-live="polite">Checking Wall Roof-Tile Texture 01 (candidate artwork). The flat diagnostic roof remains available if the image is not yet committed.</div>
+<div class="toolbar">
+<label for="roofFile">Preview accepted WebP locally:</label>
+<input id="roofFile" type="file" accept=".webp,image/webp">
+<a id="roofUpload" href="https://github.com/chriswalker-afk/Yangzhou/upload/v3-wall-roof-coping-texture-01/assets/v3/wall-materials">Upload the matching WebP to this PR's branch</a>
 </div>
 <div class="status" id="readyStatus" role="status" aria-live="polite">Geometry ready. Optional existing artwork is loading independently; flat-colour proof is available now.</div>
 <div class="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Six Yangzhou V3 tiles showing rectangle, partial enclosure, L and T wall centreline examples over road and canal geometry"></canvas></div>
@@ -72,7 +79,7 @@ a{color:#2f6457}
 <tr><td>Grey tile coping</td><td>8 units</td><td><span class="swatch" style="background:#636d69"></span></td></tr>
 <tr><td>Roof ridge</td><td>2 units</td><td><span class="swatch" style="background:#a8afa5"></span></td></tr>
 </tbody></table>
-<small>One shared wall thickness everywhere. Future painted textures will follow the arclength and normal of each centreline, rather than restarting on individual wall pieces.</small>
+<small>The 8-unit coping strip now supports a 32-unit repeating painted material along each segment's local arclength. Miter-clipped corner strips meet without ground gaps, with diagnostic grey underneath. The 16-unit foundation and 12-unit plaster remain flat diagnostic colours.</small>
 </section>
 <section class="card">
 <h2>Geometry acceptance checks</h2>
@@ -90,11 +97,12 @@ a{color:#2f6457}
 <script src="assets/v3/material-runtime.js"></script>
 <script src="assets/v3/layer2-placements.js"></script>
 <script src="assets/v3/wall-geometry.js"></script>
+<script src="assets/v3/wall-roof-texture.js?rev=37"></script>
 <script>
 (()=>{'use strict';
 const topology=window.YangzhouTileTopology,geometry=window.YangzhouV3Geometry,
  edgeSystem=window.YangzhouV3Edges,materials=window.YangzhouV3Materials,
- walls=window.YangzhouV3WallGeometry;
+ walls=window.YangzhouV3WallGeometry,roofPainter=window.YangzhouV3WallRoofTexture;
 const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d');
 const CODES=Object.freeze({
  garden:['LLLL','LLLL','LLLL','LLLL','LLLL','LLLL'],
@@ -110,7 +118,7 @@ const edgePalette=Object.freeze({
  bridgeEdge:'#9ba397',bridgeContact:'#677c75'
 });
 let tiles=[],selected=0,gridOn=true,zoomOn=false,study='garden',
-  choices=[...starting],gallery={},imageErrors=[];
+  choices=[...starting],gallery={},imageErrors=[],roofImage=null,roofSource='none';
 const visible=id=>document.getElementById(id).checked;
 const tileModel=i=>choices[i]==='none'?null:walls.templates[choices[i]];
 function tileList(name){
@@ -150,7 +158,8 @@ function render(){
      ctx.fillText('HALL IMAGE NOT LOADED',ox+h.x-44,oy+h.y);ctx.restore();
     }
     if(visible('showWall'))walls.draw(ctx,model,tile,{
-     showGates:visible('showGate'),showJoints:visible('showJoints')
+     showGates:visible('showGate'),showJoints:visible('showJoints'),
+     roofImage:visible('showRoofTexture')?roofImage:null,roofPainter
     });
    }else{
     rejected++;
@@ -182,7 +191,8 @@ function render(){
  document.getElementById('summary').textContent=
   accepted+' valid walled tiles; '+rejected+' deliberately rejected against routes; '+
   ls+' exact L corners; '+ts+' exact T joins; '+openings+' passable moon gates. '+
-  'Protected V3 ports: 44-unit street, 88-unit canal.';
+  'Protected V3 ports: 44-unit street, 88-unit canal. '+
+  'Roof material: '+(visible('showRoofTexture')&&roofImage?'painted (candidate)':'flat diagnostic')+'.';
  document.getElementById('wallInfo').textContent=
   'Tile ('+current.x+','+current.y+') • edges '+current.edges.join('')+
   ' • '+(model?model.name:'No wall layout')+
@@ -194,7 +204,9 @@ function render(){
   model:model?{paths:model.paths,openings:model.openings,hall:model.hall}:null,
   compiled:model?{gates:selectedDetail.gates,junctions:selectedDetail.junctions,
    wallSegments:selectedDetail.ribbons.length}:null,
-  audit:report
+  audit:report,roofTexture:roofImage?
+   {id:roofPainter.ASSET.id,source:roofSource,period:roofPainter.ASSET.period,
+    bandWidth:roofPainter.ASSET.bandWidth,status:'candidate-for-review'}:null
  },null,2);
 }
 function refresh(){
@@ -219,7 +231,7 @@ document.getElementById('study').addEventListener('change',e=>selectStudy(e.targ
 document.getElementById('plan').addEventListener('change',e=>{
  choices[selected]=e.target.value;refresh();
 });
-for(const id of ['showWall','showGate','showJoints','showHall','showTextures'])
+for(const id of ['showWall','showGate','showJoints','showHall','showTextures','showRoofTexture'])
  document.getElementById(id).addEventListener('change',render);
 button('zoom',()=>{
  zoomOn=!zoomOn;canvas.style.width=zoomOn?'1980px':'660px';
@@ -238,7 +250,32 @@ button('copy',()=>{
   .catch(()=>{document.getElementById('wallInfo').textContent='Clipboard unavailable; select the JSON below.';});
  else document.getElementById('wallInfo').textContent='Clipboard unavailable; select the JSON below.';
 });
+// Verify the exact accepted painting. Never replace a missing WebP with a
+// generated/fake texture: only use the preview file or the GitHub original.
+const roofStatus=document.getElementById('roofStatus');
+function acceptRoof(img,source){
+ roofImage=img;roofSource=source;
+ roofStatus.textContent='Wall Roof-Tile Texture 01 verified ('+roofPainter.ASSET.width+
+  ' × '+roofPainter.ASSET.height+'). Ready for 1× / 3× corner, T-junction and gate review. '+
+  'Candidate only; source: '+source+'.';
+ render();
+}
+async function loadRoofFromGitHub(){
+ roofStatus.textContent='Checking the exact painted roof texture on GitHub…';
+ try{acceptRoof(await roofPainter.loadFromGitHub(), 'GitHub candidate WebP');}
+ catch(e){
+  roofStatus.textContent='Painted roof candidate not available from GitHub yet: '+
+   String(e.message||e)+'. Select your downloaded WebP locally to test, or upload it to the PR branch. Flat grey coping remains visible.';
+ }
+}
+document.getElementById('roofFile').addEventListener('change',async event=>{
+ const file=event.target.files?.[0];if(!file)return;
+ roofStatus.textContent='Verifying the selected original painted roof texture…';
+ try{acceptRoof(await roofPainter.verifyFile(file),'local review file');}
+ catch(e){roofStatus.textContent='Artwork rejected: '+String(e.message||e);}
+});
 selectStudy('garden'); // Geometry has no network dependency.
+loadRoofFromGitHub();
 const artFiles=[
  {id:'hall',file:'courtyard-hall.webp'},
  {id:'grass',file:'grass.webp'},
