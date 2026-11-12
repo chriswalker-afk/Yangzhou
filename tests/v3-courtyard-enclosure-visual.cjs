@@ -12,6 +12,7 @@ async function run(){
   await page.goto('http://127.0.0.1:8765/courtyard-enclosure-lab-v3.html',{waitUntil:'load'});
   await page.waitForFunction(()=>document.querySelector('#assetStatus')?.textContent.includes('V3 continuous grass'),{timeout:30000});
   await page.waitForFunction(()=>document.querySelector('#enclosureStatus')?.textContent.includes('/4 verified'),{timeout:30000});
+  const initialArtworkStatus=await page.locator('#enclosureStatus').textContent();
   assert.match(await page.locator('h1').textContent(),/rev 30/);
   const data=JSON.parse(await page.locator('#layoutData').textContent());
   assert.equal(data.tileSize,220);
@@ -42,7 +43,7 @@ async function run(){
   const count=await page.evaluate(()=>window.YangzhouV3Enclosures.IDS.length);
   assert.equal(count,4);
   const missing=fs.readdirSync('assets/v3/enclosures').filter(f=>f.endsWith('.webp'));
-  const status=await page.locator('#enclosureStatus').textContent();
+  const status=initialArtworkStatus; // Later rejection messages should not erase the original artwork availability result.
   if(missing.length===0)assert.match(status,/0\/4 verified/,'No fake artwork should load when files absent');
   else assert.match(status,/4\/4 verified/,'All committed artwork must be automatically verified and loaded');
   const mobile=await browser.newPage({viewport:{width:390,height:800},isMobile:true,hasTouch:true,deviceScaleFactor:1});
