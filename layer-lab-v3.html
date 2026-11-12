@@ -38,29 +38,36 @@ button[aria-pressed="true"]{background:#304f49;color:#fff}
 <option value="street-cross">Four-way street junction</option>
 </select>
 <button id="edges" aria-pressed="true" type="button">Hide temporary edging</button>
+<button id="paintedBank" aria-pressed="true" type="button">Hide painted-bank candidate</button>
 <button id="ports" aria-pressed="false" type="button">Show exact port guides</button>
 <button id="zoom" aria-pressed="false" type="button">Inspect at 3× zoom</button>
 </div>
 <div id="status" class="status" role="status" aria-live="polite">Checking whether the three accepted texture images are available…</div>
 <div id="edgeState" class="edge-state" role="status" aria-live="polite">Checking the Layer 1B edge renderer…</div>
+<div id="bankStatus" class="status" role="status" aria-live="polite">Checking for the painted canal-bank candidate asset…</div>
 <div class="preview" id="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Connected three-by-two road and canal material preview"></canvas></div>
 <div class="legend"><span style="--swatch:#D5D5B7">Fallback grass</span><span style="--swatch:#DFD1B5">Fallback paving</span><span style="--swatch:#7EA9A5">Fallback water</span><span style="--swatch:#B5A68C">Temporary path verge</span><span style="--swatch:#BAA789">Temporary canal bank</span><span style="--swatch:#567B70">Temporary waterline rim</span></div>
-<h2>Compare alternative textures locally (optional)</h2>
+<h2>Painted Canal Bank Edge 01 — candidate review</h2>
+<p class="subtle">The painted bank is independent from the three base textures. Once its WebP is committed under <code>assets/v3/edges/</code>, this lab loads it automatically. Until then, choose the original Canal Bank Edge 01 PNG below to test the painting without committing a false placeholder. The painted bank follows water edges, including bends; its visual appearance and repeat quality still require review.</p>
+<label>Local canal-bank PNG/WebP (optional)<input id="bankFile" type="file" accept=".png,.webp,image/png,image/webp"></label>
+<h2>Compare alternative base textures locally (optional)</h2>
 <p class="subtle">The committed accepted candidates load automatically. These selectors only read alternatives from your device for this browser session; they do not upload or alter anything on GitHub.</p>
 <div class="inputs">
 <label>Grass texture<input id="grassFile" type="file" accept=".png,.webp,image/png,image/webp"></label>
 <label>Stone texture<input id="stoneFile" type="file" accept=".png,.webp,image/png,image/webp"></label>
 <label>Water texture<input id="waterFile" type="file" accept=".png,.webp,image/png,image/webp"></label>
 </div>
-<p class="subtle">At 3× zoom the canvas expands for close inspection; scroll within the preview to inspect joins. Grass and water repeat every two tiles (440 world units); paving every tile (220 units). The renderer draws route ribbons in global coordinates without resetting the pattern origin. The warm stone-coloured canal band and dark waterline rim are deliberately more visible for this geometry diagnostic. If the page does not show <strong>Layer 1B rev 22</strong>, refresh the browser to obtain the current prototype. Temporary verge widths: path 2.5 units per side, canal bank 4 units per side, plus a narrower contact rim. These do not widen the playable road or canal masks. No painted border-strip artwork, detail sprites or animation is included.</p>
+<p class="subtle">At 3× zoom the canvas expands for close inspection; scroll within the preview to inspect joins. Grass and water repeat every two tiles (440 world units); paving every tile (220 units). The renderer draws route ribbons in global coordinates without resetting the pattern origin. The warm stone-coloured canal band and dark waterline rim are diagnostic fallbacks. Painted artwork displays only when a real candidate image is loaded. If the page does not show <strong>Layer 1B rev 22</strong>, refresh the browser to obtain the current prototype. Temporary verge widths: path 2.5 units per side, canal bank 4 units per side, plus a narrower contact rim. These do not widen the playable road or canal masks. No painted border-strip artwork, detail sprites or animation is included.</p>
 <p><a href="index.html">Current playable game (V2)</a> · <a href="docs/ARTWORK-V3.md">V3 artwork specification</a> · <a href="assets/v3/materials/README.md">Committed materials and integrity checks</a></p>
 </main>
-<script src="tile-topology.js"></script><script src="assets/v3/base-geometry.js"></script><script src="assets/v3/material-runtime.js"></script><script src="assets/v3/edge-system.js"></script>
+<script src="tile-topology.js"></script><script src="assets/v3/base-geometry.js"></script><script src="assets/v3/material-runtime.js"></script><script src="assets/v3/edge-system.js"></script><script src="assets/v3/canal-bank-art.js"></script>
 <script>
 (()=>{
 'use strict';
 const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d'),geom=window.YangzhouV3Geometry;
 const materials=window.YangzhouV3Materials,edging=window.YangzhouV3Edges,topology=window.YangzhouTileTopology;
+const bankArt=window.YangzhouV3CanalBankArt;
+let bankImage=null,bankSource='not committed; upload local candidate to review',bankEnabled=true;
 const chosen={},sources={},fallback={grass:'#D5D5B7',stone:'#DFD1B5',water:'#7EA9A5'};
 const provisionalEdges=Object.freeze({
   pathVerge:'#B5A68C',pathContact:'#839078',
@@ -76,6 +83,11 @@ const scenes=Object.freeze({
  'street-cross':['LSLS','SSSS','LSLS','LLLL','SLLL','LLLL']
 });
 let guides=false,edgesVisible=true,zoom=false;
+function paintedBankStatus(){
+  document.getElementById('bankStatus').textContent='Canal Bank Edge 01: '+bankSource+
+    ' • Painted preview '+(bankEnabled?'ON':'OFF')+
+    ' • Original artwork is a candidate, not production-approved';
+}
 function materialStyle(id){
   if(!chosen[id])return fallback[id];
   try{return materials.makePattern(ctx,chosen[id],materials.periodById[id]);}
@@ -106,13 +118,18 @@ function draw(){
     ctx.save();ctx.beginPath();ctx.rect(x,y,220,220);ctx.clip();
     // Offset ribbon vertices into board coordinates, not Canvas transforms:
     // the existing world-space texture phase is preserved across joins.
-    edging.draw(ctx,edging.compile(g),style,{edges:edgesVisible,x,y});
+    const compiled=edging.compile(g);
+    edging.draw(ctx,compiled,style,{edges:edgesVisible,x,y,
+      paintedBankOverlay:bankEnabled&&bankImage
+        ?(canvasContext,compiledGeometry,pos)=>bankArt.draw(canvasContext,compiledGeometry,bankImage,pos)
+        :null});
     if(guides)for(const port of g.exits)drawPort(port,x,y);
     ctx.restore();
   }
   const info=document.getElementById('edgeState');
-  info.textContent='Layer 1B rev 22 • Edging '+(edgesVisible?'ON':'OFF')+
-    ' • Canal bank 4 world units per side • Path verge 2.5 units per side • Temporary colours only; no painted edge asset yet';
+  info.textContent='Layer 1B • Edging '+(edgesVisible?'ON':'OFF')+
+    ' • Canal bank 4 world units per side • Path verge 2.5 units per side • Painted bank is optional candidate-only overlay';
+  paintedBankStatus();
 }
 function status(){
  const ids=materials.ids;
@@ -131,15 +148,32 @@ async function useLocal(id,input){
  }catch(e){document.getElementById('status').textContent='Could not preview '+id+': '+String(e);}
 }
 for(const id of materials.ids)document.getElementById(id+'File').addEventListener('change',e=>useLocal(id,e.target));
+document.getElementById('bankFile').addEventListener('change',async e=>{
+  const file=e.target.files?.[0];if(!file)return;
+  if(!file.type.startsWith('image/')){bankSource='rejected non-image file';paintedBankStatus();return;}
+  const url=URL.createObjectURL(file);
+  try{
+    const image=await bankArt.load(url);
+    bankImage=image;bankSource='local original preview only (not uploaded to GitHub)';
+    paintedBankStatus();draw();
+  }catch(error){bankSource='local preview failed: '+String(error);paintedBankStatus();}
+  finally{URL.revokeObjectURL(url);}
+});
 function toggle(id,callback){
  const button=document.getElementById(id);
- button.addEventListener('click',()=>{callback();button.setAttribute('aria-pressed',String(id==='ports'?guides:id==='edges'?edgesVisible:zoom));draw();});
+ button.addEventListener('click',()=>{callback();button.setAttribute('aria-pressed',String(id==='ports'?guides:id==='edges'?edgesVisible:id==='paintedBank'?bankEnabled:zoom));draw();});
 }
 document.getElementById('sceneChoice').addEventListener('change',draw);
 toggle('edges',()=>{edgesVisible=!edgesVisible;document.getElementById('edges').textContent=edgesVisible?'Hide temporary edging':'Show temporary edging';});
+toggle('paintedBank',()=>{bankEnabled=!bankEnabled;document.getElementById('paintedBank').textContent=bankEnabled?'Hide painted-bank candidate':'Show painted-bank candidate';});
 toggle('ports',()=>{guides=!guides;});
 toggle('zoom',()=>{zoom=!zoom;canvas.style.width=zoom?'1980px':'660px';});
 status();draw();
+bankArt.load().then(image=>{
+  bankImage=image;bankSource='committed candidate image loaded from GitHub';draw();
+}).catch(()=>{
+  bankSource='image binary pending: choose original Canal Bank Edge 01 PNG above';paintedBankStatus();
+});
 materials.loadAll().then(({images,missing})=>{
  for(const id of materials.ids){
   if(images[id]&&images[id].naturalWidth===1254&&images[id].naturalHeight===1254&&!chosen[id]){
