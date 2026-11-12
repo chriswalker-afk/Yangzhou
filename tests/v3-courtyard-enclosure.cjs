@@ -99,6 +99,18 @@ assert.deepEqual(cropped[0].slice(1,5),[51,154,1147,950],
  'The original 1254px upload is cropped non-destructively at render time');
 assert.deepEqual(cropped[0].slice(7,9),[29,24],
  'Painting retains its intended 29x24 world-unit aspect and wall height');
+// The replacement corner's crop coordinates are in original 1254x1254
+// pixels. Smaller preview derivatives must scale these crop offsets.
+const corner=court.pieces.find(p=>p.id==='white-garden-wall-corner-01');
+const compactDraw=[];
+art.drawSprite({drawImage(...args){compactDraw.push(args);}},
+ {naturalWidth:768,naturalHeight:768},corner);
+assert.equal(compactDraw.length,1);
+const ratio=768/1254;
+for(let i=0;i<4;i++)
+ assert(Math.abs(compactDraw[0][i+1]-[51,154,1147,950][i]*ratio)<1e-9,
+  'Crop coordinate must scale to actual preview pixels');
+assert.deepEqual(compactDraw[0].slice(7),[29,24]);
 assert.equal(art.draw(stub,grass,{}, {guides:false}).drawn,0,'Missing art must not be faked');
 assert(!art.draw(stub,unsafe,fakeImages,{guides:false}).valid);
 const page=fs.readFileSync('courtyard-enclosure-lab-v3.html','utf8');
