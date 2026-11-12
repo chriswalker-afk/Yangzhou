@@ -4,7 +4,7 @@
   "layer": 2,
   "previewOnly": true,
   "productionApproved": false,
-  "candidateStatus": "binaries-prepared-outside-repository-awaiting-upload",
+  "candidateStatus": "authentic-webps-committed-awaiting-seam-and-perspective-visual-review",
   "tileWorldSize": 220,
   "artifacts": [
     {
@@ -21,14 +21,15 @@
       },
       "ports": {
         "W": [
-          -35,
+          -33,
           0
         ],
         "E": [
-          35,
+          33,
           0
         ]
-      }
+      },
+      "paintedJoinInset": 2
     },
     {
       "id": "white-garden-wall-short-01",
@@ -44,14 +45,15 @@
       },
       "ports": {
         "W": [
-          -14.5,
+          -12.5,
           0
         ],
         "E": [
-          14.5,
+          12.5,
           0
         ]
-      }
+      },
+      "paintedJoinInset": 2
     },
     {
       "id": "white-garden-wall-corner-01",
@@ -67,14 +69,15 @@
       },
       "ports": {
         "W": [
-          -17,
+          -15,
           -3
         ],
         "S": [
           10,
           14.5
         ]
-      }
+      },
+      "paintedJoinInset": 2
     },
     {
       "id": "moon-gate-01",
@@ -90,15 +93,16 @@
       },
       "ports": {
         "W": [
-          -16,
+          -14,
           0
         ],
         "E": [
-          16,
+          14,
           0
         ]
       },
-      "walkThroughAxis": "north-south"
+      "walkThroughAxis": "north-south",
+      "paintedJoinInset": 2
     }
   ],
   "geometryGates": {
@@ -121,5 +125,18 @@
     "N-S wall orientation artwork",
     "Tile geometry / canal edges",
     "Historical plausibility"
-  ]
+  ],
+  "joinRules": {
+    "type": "paint-contact-overlap",
+    "horizontalPortInsetWorldUnits": 2,
+    "nominalHorizontalOverlapWorldUnits": 4,
+    "description": "The originally generated sprite ends include transparent/ornamental gaps. Touching outer rectangles exposed grass. Use inset connector anchors on both sides and overlap unchanged original painted bitmaps by four world units; do not stretch or draw fake filler.",
+    "appliesTo": [
+      "long-to-short",
+      "short-to-corner",
+      "long-to-moon-gate",
+      "moon-gate-to-short"
+    ],
+    "note": "This closes exposed grass at shared horizontal seams; a truly seamless repeating roof texture may need separate capless artwork variants."
+  }
 }
