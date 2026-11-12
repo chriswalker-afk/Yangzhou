@@ -88,5 +88,40 @@
     "artwork": "unapproved",
     "historical": "unreviewed"
   },
-  "materialPack": "assets/v3/materials/manifest.json"
+  "materialPack": "assets/v3/materials/manifest.json",
+  "edgeTreatments": [
+    {
+      "id": "path-verge",
+      "routeType": "S",
+      "geometry": "normal-offset-route-ribbon",
+      "coreMouthWorldUnits": 44,
+      "landSideWidthWorldUnits": 2.5,
+      "contactWidthWorldUnits": 0.8,
+      "status": "temporary-geometry-only",
+      "asset": null,
+      "productionApproved": false
+    },
+    {
+      "id": "canal-bank",
+      "routeType": "W",
+      "geometry": "normal-offset-route-ribbon",
+      "coreMouthWorldUnits": 88,
+      "landSideWidthWorldUnits": 4,
+      "contactWidthWorldUnits": 1.2,
+      "status": "temporary-geometry-only",
+      "asset": null,
+      "productionApproved": false
+    },
+    {
+      "id": "bridge-deck-edge",
+      "routeType": "S",
+      "geometry": "normal-offset-route-ribbon-over-water",
+      "coreMouthWorldUnits": 44,
+      "landSideWidthWorldUnits": 2.5,
+      "contactWidthWorldUnits": 0.8,
+      "status": "temporary-geometry-only",
+      "asset": null,
+      "productionApproved": false
+    }
+  ]
 }
