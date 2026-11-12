@@ -63,7 +63,7 @@ assert.equal(art.prepareImage({naturalWidth:2172,naturalHeight:724}).naturalWidt
 
 const calls=[];
 const saved=global.DOMMatrix;
-global.DOMMatrix=class{constructor(values){assert.equal(values.length,6);assert(values.every(Number.isFinite));calls.push(values);}};
+global.DOMMatrix=class{constructor(values){assert.equal(values.length,6);assert(values.every(Number.isFinite));this.values=values;calls.push(values);}};
 const image={naturalWidth:1992,naturalHeight:194};
 const mock={
  beginPath(){},moveTo(){},lineTo(){},closePath(){},fill(){},
