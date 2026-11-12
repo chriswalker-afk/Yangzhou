@@ -115,6 +115,7 @@ async function run(){
    {waitUntil:'load'});
   await stalled.waitForFunction(()=>
    document.querySelector('#enclosureStatus')?.textContent.includes('3/4 verified')&&
+   document.querySelector('#enclosureStatus')?.textContent.includes('Could not load')&&
    document.querySelector('#assetStatus')?.textContent.includes('8/8 checked'),
    {timeout:9000});
   const partialArt=await stalled.locator('#enclosureStatus').textContent();
