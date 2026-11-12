@@ -93,6 +93,16 @@ A dedicated [painted-bank adapter](../assets/v3/canal-bank-art.js) paints the la
 
 **Required before final artwork approval:** visually inspect the committed file at 1×/3×, prove repeatable seams and corner behaviour, and inspect whether perspective, linework and painted bank thickness match the overhead materials. CI verifies SHA-256, size, VP8L transparency and dimensions but cannot grant artistic approval. Keep V2 unchanged.
 
+## Path Verge Edge 01 — painted path boundary candidate
+
+The original, user-selected `2172 × 724` transparent PNG is preserved under `assets/v3/edges/sources/path-verge-edge-01-original.png` (SHA-256 `9e8b458c04d2af39a0c4df1bf1c059b3532526958676c736f139edbc0828557f`).
+
+The derived **1992 × 194** lossless transparent WebP at `assets/v3/edges/path-verge-edge-01.webp` (SHA-256 `5c99dfe5bf64ed71190a32246eec656f7df7561714045f0a984b3c25fe23e249`) retains the original painting but removes empty margins and blends 112 pixels on each horizontal end to join at identical edge pixels. Exact dimensions, alpha and hashes are mandatory CI checks.
+
+`assets/v3/path-verge-art.js` applies the asset to both land-side boundaries of **non-bridge** stone-paving geometry. Temporary verge geometry remains 2.5 world units outside the road; artist-painted grasses can extend up to **5 units landward** for visual legibility. This **does not change the exact 44/220 road opening** or the tile topology. Road cores are redrawn at junctions after decorative overlays to keep crossing roads clear. Bridges use the separate deck treatment, with no grass clumps on stone parapets.
+
+The [six-tile V3 lab](../layer-lab-v3.html) loads painted canal banks and path verges simultaneously, offers independent paint toggles and local comparisons, and exposes straights, bends, junctions and bridge tiles at 1× and 3×. Neither artwork is production-approved until a person checks repeated patterns, curvature/stretching, edge transitions, historic appearance and scale.
+
 ## V3 quality gates
 
 **Automated (mandatory for geometry/runtime):**

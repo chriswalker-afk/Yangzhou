@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "assetId": "path-verge-edge-01",
+  "name": "Yangzhou V3 Path Verge Edge 01",
+  "status": "candidate-committed-awaiting-visual-approval",
+  "fileCommitted": true,
+  "source": {
+    "path": "assets/v3/edges/sources/path-verge-edge-01-original.png",
+    "fileName": "yangzhou_watercolour_verge_edge.png",
+    "mimeType": "image/png",
+    "width": 2172,
+    "height": 724,
+    "bytes": 820025,
+    "rgba": true,
+    "sha256": "9e8b458c04d2af39a0c4df1bf1c059b3532526958676c736f139edbc0828557f"
+  },
+  "preparedBinary": {
+    "path": "assets/v3/edges/path-verge-edge-01.webp",
+    "mimeType": "image/webp",
+    "encoding": "VP8L",
+    "width": 1992,
+    "height": 194,
+    "bytes": 428866,
+    "hasAlpha": true,
+    "sha256": "5c99dfe5bf64ed71190a32246eec656f7df7561714045f0a984b3c25fe23e249",
+    "processing": "RGBA source: clear alpha <5; crop x=[90,2082), y=[269,463); symmetric 112-column cosine blend at both ends; lossless WebP"
+  },
+  "geometry": {
+    "material": "stone-road",
+    "roadCoreWorldUnits": 44,
+    "temporaryVergeWidthWorldUnits": 2.5,
+    "paintedLandwardSpreadWorldUnits": 5,
+    "routePeriodWorldUnits": 220,
+    "excludeBridgeDecks": true
+  },
+  "review": {
+    "userSelectedForV3Preview": true,
+    "artworkProductionApproved": false,
+    "horizontalPixelSeamMatch": true,
+    "humanSeamReviewCompleted": false,
+    "bendAppearanceApproved": false,
+    "detailScaleApproved": false,
+    "historicalSuitabilityApproved": false
+  },
+  "note": "This is the user-selected original artwork, not synthetic art or a placeholder. Exact source and derivative signatures are checked in CI. Visual appearance awaits separate review."
+}

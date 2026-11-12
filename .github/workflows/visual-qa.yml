@@ -25,6 +25,7 @@ jobs:
           sleep 2
           node tests/visual.cjs
           node tests/v3-edge-visual.cjs
+          node tests/v3-verge-visual.cjs
       - name: Keep preview screenshots (not painterly approval)
         if: always()
         uses: actions/upload-artifact@v4

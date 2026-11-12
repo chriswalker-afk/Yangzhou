@@ -147,6 +147,33 @@
       "height": 226,
       "bytes": 632080,
       "sha256": "ffbb109f2c44c2ab122299b973cc0fc6358a9486beefc1a9c358cf351eb7bdf5"
+    },
+    {
+      "id": "path-verge-edge-01",
+      "name": "Path Verge Edge 01",
+      "material": "path-verge",
+      "image": "assets/v3/edges/path-verge-edge-01.webp",
+      "source": "chat-generated RGBA PNG, 2172x724",
+      "sourcePath": "assets/v3/edges/sources/path-verge-edge-01-original.png",
+      "sourceSha256": "9e8b458c04d2af39a0c4df1bf1c059b3532526958676c736f139edbc0828557f",
+      "fileAvailable": true,
+      "status": "candidate-committed-awaiting-visual-approval",
+      "productionApproved": false,
+      "geometryTreatment": "normal-following-land-side-painted-overlay",
+      "colorSpace": "sRGB",
+      "routeCoreWidthWorldUnits": 44,
+      "paintedLandwardSpreadWorldUnits": 5,
+      "width": 1992,
+      "height": 194,
+      "bytes": 428866,
+      "sha256": "5c99dfe5bf64ed71190a32246eec656f7df7561714045f0a984b3c25fe23e249",
+      "requiresHumanReview": [
+        "grass-to-paving transition",
+        "horizontal tiling and asset repetition",
+        "bending routes and intersections",
+        "decorative legibility at normal zoom",
+        "compatibility with canal-bank painting"
+      ]
     }
   ]
 }
