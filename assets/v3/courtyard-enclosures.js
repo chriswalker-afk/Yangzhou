@@ -38,11 +38,16 @@ const COMPONENTS=Object.freeze({
   ports:Object.freeze({W:[-12.5,0],E:[12.5,0]}),paintedJoinInset:PAINTED_JOIN_INSET,kind:'straight'
  }),
  'white-garden-wall-corner-01':Object.freeze({
-  id:'white-garden-wall-corner-01',name:'White Garden Wall Corner 01 — West-to-South',
-  filename:'white-garden-wall-corner-01.webp',width:34,height:29,
-  preparedWidth:1112,preparedHeight:940,bytes:939828,
-  sha256:'4f1298dc6e51cb5ee556c9a30e50db4b351f13d4ee8ada6dde7db6fd83671d1a',
-  ports:Object.freeze({W:[-15,-3],S:[10,14.5]}),paintedJoinInset:PAINTED_JOIN_INSET,kind:'corner'
+  id:'white-garden-wall-corner-01',name:'White Garden Wall Corner 01 — West-to-South (repaint)',
+  filename:'white-garden-wall-corner-01.webp',width:29,height:24,
+  // Keep the exact uploaded, lossless 1254px square file. The artwork's
+  // visible painting occupies an offset rectangle; crop only when drawing.
+  // This preserves the source painting and aligns its 12-unit-high horizontal
+  // wall with the adjoining long/short sections without stretching the square.
+  preparedWidth:1254,preparedHeight:1254,bytes:921018,
+  sha256:'3304e8073574782204fad405a53011a4e53599d169699d1258bc9aa1c0083501',
+  sourceCrop:Object.freeze({x:51,y:154,width:1147,height:950}),
+  ports:Object.freeze({W:[-12.5,-6],S:[10,12]}),paintedJoinInset:PAINTED_JOIN_INSET,kind:'corner'
  }),
  'moon-gate-01':Object.freeze({
   id:'moon-gate-01',name:'Moon Gate 01',
@@ -176,7 +181,13 @@ function draw(ctx,tile,images,options={}){
  for(const piece of layout.pieces){
   const c=COMPONENTS[piece.id],img=images&&images[piece.id];
   if(img){
-   ctx.drawImage(img,ox+piece.x-c.width/2,oy+piece.y-c.height/2,c.width,c.height);
+   if(c.sourceCrop){
+    const crop=c.sourceCrop;
+    ctx.drawImage(img,crop.x,crop.y,crop.width,crop.height,
+      ox+piece.x-c.width/2,oy+piece.y-c.height/2,c.width,c.height);
+   }else{
+    ctx.drawImage(img,ox+piece.x-c.width/2,oy+piece.y-c.height/2,c.width,c.height);
+   }
    drawn++;
   }else if(guides){
    // Geometry-only review box; do not counterfeit a painted sprite.
