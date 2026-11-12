@@ -56,7 +56,10 @@ async function run(){
 
   // A generated image may be previewed locally without importing an
   // unverified or substituted binary into GitHub.
-  assert.match(await page.locator('#bankStatus').textContent(),/image binary pending/);
+  await page.waitForFunction(()=>document.querySelector('#bankStatus')?.textContent.includes('committed candidate image loaded from GitHub'),{timeout:30000});
+  assert.match(await page.locator('#bankStatus').textContent(),/committed candidate image loaded from GitHub/);
+  const committedBankPixel=await page.evaluate(()=>[...document.querySelector('#scene').getContext('2d').getImageData(110*3,284*3,1,1).data]);
+  assert.notDeepEqual(committedBankPixel,before.canalBankTop,'Actual committed canal-bank artwork must replace temporary color');
   const paintedFixture=await page.evaluate(()=>{
     const c=document.createElement('canvas');c.width=32;c.height=8;
     const ctx=c.getContext('2d');ctx.fillStyle='#AB6B46';ctx.fillRect(0,0,32,8);
@@ -70,7 +73,7 @@ async function run(){
   await page.waitForFunction(()=>document.querySelector('#bankStatus')?.textContent.includes('local original preview only'));
   const bankPixel=()=>page.evaluate(()=>[...document.getElementById('scene').getContext('2d').getImageData(110*3,284*3,1,1).data]);
   const fixtureBank=await bankPixel();
-  assert.deepEqual(fixtureBank,[171,107,70,255],'Optional real image should replace temporary canal-bank pixels');
+  assert.notDeepEqual(fixtureBank,committedBankPixel,'Local image override should replace committed artwork');
   await page.locator('#paintedBank').click();
   assert.equal(await page.locator('#paintedBank').getAttribute('aria-pressed'),'false');
   assert.deepEqual(await bankPixel(),before.canalBankTop,'Painted bank OFF should restore temporary diagnostic edging');
