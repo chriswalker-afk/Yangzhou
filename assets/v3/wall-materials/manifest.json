@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "layer": 2,
   "materialId": "wall-roof-tiles-01",
-  "status": "candidate-awaiting-binary-upload-and-visual-review",
+  "status": "candidate-committed-awaiting-visual-review",
   "productionApproved": false,
   "renderingScope": "V3 Wall Geometry & Texture Lab only",
   "source": {
@@ -22,7 +22,9 @@
     "bytes": 174360,
     "sha256": "8a3a7abeb08c4e34bb0134c9a39ba301000435bed5d3c63ccad3bd7a949e578a",
     "compression": "lossy WebP quality 93, method 6",
-    "seamNormalization": "symmetric cosine edge correction limited to outer 60 pixels; first/last RGB columns equal before WebP encoding"
+    "seamNormalization": "symmetric cosine edge correction limited to outer 60 pixels; first/last RGB columns equal before WebP encoding",
+    "committed": true,
+    "gitBlobSha1": "724b075426f0e6fa2688a03e7ac366c50567a124"
   },
   "mapping": {
     "copingWidthWorld": 8,
