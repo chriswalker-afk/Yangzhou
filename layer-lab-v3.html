@@ -154,7 +154,7 @@ document.getElementById('bankFile').addEventListener('change',async e=>{
   const url=URL.createObjectURL(file);
   try{
     const image=await bankArt.load(url);
-    bankImage=image;bankSource='local original preview only (not uploaded to GitHub)';
+    bankImage=bankArt.prepareImage(image);bankSource='local original preview only (not uploaded to GitHub)';
     paintedBankStatus();draw();
   }catch(error){bankSource='local preview failed: '+String(error);paintedBankStatus();}
   finally{URL.revokeObjectURL(url);}
@@ -170,7 +170,7 @@ toggle('ports',()=>{guides=!guides;});
 toggle('zoom',()=>{zoom=!zoom;canvas.style.width=zoom?'1980px':'660px';});
 status();draw();
 bankArt.load().then(image=>{
-  bankImage=image;bankSource='committed candidate image loaded from GitHub';draw();
+  bankImage=bankArt.prepareImage(image);bankSource='committed candidate image loaded from GitHub';draw();
 }).catch(()=>{
   bankSource='image binary pending: choose original Canal Bank Edge 01 PNG above';paintedBankStatus();
 });
