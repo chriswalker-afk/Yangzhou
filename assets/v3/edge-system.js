@@ -108,6 +108,10 @@
       // All core masks are painted after all edge bands for a junction.
       // Water is underneath the bridge's road; paths cannot add water exits.
       for(const r of group)fillRibbon(ctx,r,'core',type==='W'?style.water:style.stone,ox,oy);
+      // A painted canal-bank overlay must remain BELOW an elevated road deck.
+      if(type==='W'&&edgesOn&&typeof options.paintedBankOverlay==='function'){
+        options.paintedBankOverlay(ctx,compiled,{x:ox,y:oy});
+      }
     }
   }
 
