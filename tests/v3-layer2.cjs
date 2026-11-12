@@ -88,7 +88,7 @@ assert.equal(layer2.draw({drawImage(){throw Error('Should not fake image')}},exp
 assert.equal(layer2.draw({drawImage(){throw Error('No hall for seed2')}},{...grass,seed:2},{[asset.id]:image}),0);
 const lab=fs.readFileSync('layer2-lab-v3.html','utf8');
 for(const marker of ['assets/v3/layer2-placements.js','id="scene"','id="showDetails"',
- 'id="tileInfo"','id="layoutData"','layer2.draw(ctx,tile,largeImages)',
+ 'id="tileInfo"','id="layoutData"','layer2.draw(ctx,tile,largeImages,{visible:visibleComponents})',
  'layers','Layer 2 Tile Composition Lab (rev 29)','id="showWillow"','id="showRockery"']){
   if(marker==='layers')continue;
   assert(lab.includes(marker),'Layer2 lab missing contract '+marker);
