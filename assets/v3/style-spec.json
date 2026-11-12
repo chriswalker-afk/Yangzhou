@@ -80,7 +80,31 @@
       "textureWorldPeriodUnits": 440
     }
   ],
-  "spriteLibrary": [],
+  "spriteLibrary": [
+    {
+      "id": "courtyard-hall-01",
+      "name": "Yangzhou Courtyard Hall 01",
+      "type": "architecture",
+      "image": "assets/v3/large/courtyard-hall-01.webp",
+      "source": "assets/v3/large/sources/courtyard-hall-01-original.png",
+      "manifest": "assets/v3/large/manifest.json",
+      "worldFootprint": {
+        "width": 96,
+        "height": 47
+      },
+      "placement": "tile-local-with-geometry-exclusion",
+      "compassUpright": true,
+      "status": "candidate-committed-awaiting-visual-review",
+      "productionApproved": false,
+      "requiresHumanReview": [
+        "strict overhead perspective",
+        "historical accuracy",
+        "relative scale",
+        "brushwork consistency",
+        "tile-to-tile repetition"
+      ]
+    }
+  ],
   "animationLibrary": [],
   "approval": {
     "geometry": "pending-qa",
