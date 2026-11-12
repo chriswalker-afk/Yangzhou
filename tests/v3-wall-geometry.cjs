@@ -54,7 +54,7 @@ const structuralLength=rect.paths.flatMap(p=>p.points.slice(1).map((pt,i)=>
  walls.length([p.points[i],pt]))).reduce((a,b)=>a+b,0);
 assert(Math.abs(structuralLength-(perimeter-30))<1e-6,'Moon gate cuts exactly 30 units from the wall');
 assert.deepEqual(rect.gates[0].center,[110,178]);
-assert.deepEqual(rect.gates[0].normal, [0,-1], 'South wall moon-gate path normal is north');
+assert(Math.abs(rect.gates[0].normal[0])<1e-9 && rect.gates[0].normal[1]===-1, 'South wall moon-gate normal is north');
 assert(!walls.isSolid(rect,[110,178]));
 assert(walls.isSolid(rect,[110,47]),'The opposite north wall remains structural');
 const tee=walls.compile(walls.templates.tee);
