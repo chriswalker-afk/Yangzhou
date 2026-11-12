@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Yangzhou V3 | Layer 2 tile-owned large details</title>
+<title>Yangzhou V3 | Layer 2 architecture, willow and rockery</title>
 <style>
 :root{color-scheme:light}*{box-sizing:border-box}
 body{background:#eee3cd;color:#343f3b;margin:0;font:16px/1.5 system-ui,sans-serif}
@@ -16,9 +16,9 @@ canvas{display:block;max-width:none;cursor:crosshair}
 small,.muted{color:#536459}
 pre{font-size:.8rem;max-height:220px;overflow:auto;white-space:pre;background:#f8f4e9;padding:12px;border:1px solid #ccc3b2;border-radius:6px}
 </style></head><body><main>
-<h1>Yangzhou V3 — Layer 2 Tile Composition Lab (rev 26)</h1>
-<p class="note"><strong>Isolated proof, not the playable game.</strong> Each square is a separate 220 × 220 tile with exact V3 road/canal mouths. The new transparent Courtyard Hall 01 belongs to one tile and has a local position and seed. Painted surfaces still share world-space coordinates. This is a <strong>candidate artwork and placement system</strong>, not final historical or artistic approval; V2 is unchanged.</p>
-<p>Click any tile to inspect its own topology, seed and decorations. Change that tile's seed to test deterministic variation without moving its roads or affecting neighbours. Buildings never rotate to follow roads, and they must fit on land outside protected street, canal and edge zones.</p>
+<h1>Yangzhou V3 — Layer 2 Tile Composition Lab (rev 29)</h1>
+<p class="note"><strong>Isolated proof, not the playable game.</strong> Each square is a separate 220 × 220 tile with exact V3 road/canal mouths. The three transparent painted assets — Courtyard Hall 01, Willow Tree 01 and Garden Rockery 01 — each belong to one tile, with their own local position and seed. Painted surfaces still share world-space coordinates. This is a <strong>candidate artwork and placement system</strong>, not final historical or artistic approval; V2 is unchanged.</p>
+<p>Click any tile to inspect its own topology, seed and decorations. Change that tile's seed to test deterministic variation without moving its roads or affecting neighbours. Artwork never rotates to follow roads. Halls and rockeries stay entirely on land; willow trunks stay on land while their foliage may overhang paving or water.</p>
 <div class="toolbar">
 <label for="study">Layout</label>
 <select id="study">
@@ -29,9 +29,12 @@ pre{font-size:.8rem;max-height:220px;overflow:auto;white-space:pre;background:#f
 <button id="showDetails" aria-pressed="true" type="button">Hide Layer 2</button>
 <button id="showGrid" aria-pressed="true" type="button">Hide tile outlines</button>
 <button id="zoom" aria-pressed="false" type="button">Inspect at 3×</button>
+<label><input id="showHall" type="checkbox" checked> Courtyard hall</label>
+<label><input id="showWillow" type="checkbox" checked> Willow trees</label>
+<label><input id="showRockery" type="checkbox" checked> Rockeries</label>
 </div>
-<div id="assetStatus" role="status" class="status">Loading the original V3 materials and first large-detail candidate…</div>
-<div class="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Six separately rendered 220-unit tiles with tile-owned courtyard halls"></canvas></div>
+<div id="assetStatus" role="status" class="status">Loading the original V3 materials, painted edges and three Layer 2 candidates…</div>
+<div class="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Six separately rendered 220-unit tiles with tile-owned halls, willow trees and rockeries"></canvas></div>
 <div class="toolbar">
 <button id="prevSeed" type="button">Previous tile seed</button>
 <button id="nextSeed" type="button">Next tile seed</button>
@@ -41,7 +44,7 @@ pre{font-size:.8rem;max-height:220px;overflow:auto;white-space:pre;background:#f
 <h2>Portable tile layout data</h2>
 <p class="muted">Each record stores grid coordinates, its N/E/S/W material ports, a reproducible seed and local Layer 2 anchors. Moving a tile on a future board changes only its grid x/y; its artwork stays attached to the tile. This export is a test of the V3 data model, not a V2 save-game import.</p>
 <pre id="layoutData" aria-label="Serialized V3 tile layout"></pre>
-<p class="muted">Current component: <code>courtyard-hall-01.webp</code> — compass-upright, 96 × 47 world units, transparent and candidate-only. Later Layer 2 candidates will include courtyard walls, willow trees, rockeries and bridges. One hall variant is intentionally insufficient for a production tile library.</p>
+<p class="muted">Current candidate assets: <code>courtyard-hall-01.webp</code> (96 × 47), <code>willow-tree-01.webp</code> (48 × 58) and <code>garden-rockery-01.webp</code> (52 × 37 world units). All three load from GitHub as transparent, compass-upright paintings. Each remains subject to historical and visual approval. Other walls, bridges and architectural variants are future additions.</p>
 <p><a href="layer-lab-v3.html?rev=25">Layer 1 canal/path lab</a> · <a href="index.html">Playable V2 game</a> · <a href="docs/ARTWORK-V3.md">V3 artwork rules</a></p>
 </main>
 <script src="tile-topology.js"></script><script src="assets/v3/base-geometry.js"></script><script src="assets/v3/material-runtime.js"></script><script src="assets/v3/edge-system.js"></script><script src="assets/v3/canal-bank-art.js"></script><script src="assets/v3/path-verge-art.js"></script><script src="assets/v3/layer2-placements.js"></script>
@@ -62,9 +65,12 @@ const CODES={
 };
 let images={},bankImage=null,vergeImage=null,largeImages={},tiles=[],selected=0,
  detailsVisible=true,gridVisible=true,zoom=false,ready=false;
+const visibleComponents={
+ 'courtyard-hall-01':true,'willow-tree-01':true,'garden-rockery-01':true
+};
 const tilesFor=name=>CODES[name].map((signature,i)=>({
  x:i%3,y:Math.floor(i/3),edges:signature.split(''),
- seed:(name==='garden'?(i===0?1:i===5?4:2):(i===0?1:i===5?4:2))
+ seed:[1,2,3,4,6,8][i]
 }));
 function style(id){
  try{return images[id]?materials.makePattern(ctx,images[id],materials.periodById[id]):fallback[id];}
@@ -88,7 +94,7 @@ function render(){
    paintedBankOverlay:bankImage?(c,g,p)=>bankArt.draw(c,g,bankImage,p):null,
    paintedVergeOverlay:vergeImage?(c,g,p)=>vergeArt.draw(c,g,vergeImage,p):null
   });
-  if(detailsVisible)layer2.draw(ctx,tile,largeImages);
+  if(detailsVisible)layer2.draw(ctx,tile,largeImages,{visible:visibleComponents});
   ctx.restore();
   if(gridVisible){
    ctx.save();ctx.strokeStyle='rgba(47,65,48,.33)';ctx.lineWidth=0.65;
@@ -129,12 +135,21 @@ button('zoom',()=>{zoom=!zoom;
 button('nextSeed',()=>{tiles[selected].seed++;render();});
 button('prevSeed',()=>{tiles[selected].seed=Math.max(0,tiles[selected].seed-1);render();});
 button('reset',()=>setStudy(document.getElementById('study').value));
+for(const [checkbox,id] of [
+ ['showHall','courtyard-hall-01'],
+ ['showWillow','willow-tree-01'],
+ ['showRockery','garden-rockery-01']
+]){
+ document.getElementById(checkbox).addEventListener('change',e=>{
+  visibleComponents[id]=e.target.checked;render();
+ });
+}
 setStudy('joined');
 Promise.all([materials.loadAll(),bankArt.load(),vergeArt.load(),layer2.loadImages()])
  .then(([base,bank,verge,large])=>{
   if(base.missing.length)throw Error('Missing base materials: '+base.missing.join(','));
   images=base.images;bankImage=bank;vergeImage=verge;largeImages=large;ready=true;
-  document.getElementById('assetStatus').textContent='Layer 1 materials and both painted edges loaded; Layer 2 Courtyard Hall 01 candidate loaded. Each component belongs to a tile, not the board background. Production approval pending.';
+  document.getElementById('assetStatus').textContent='Layer 1 materials and painted edges loaded; Layer 2 Courtyard Hall 01, Willow Tree 01 and Garden Rockery 01 loaded automatically. Each belongs to its tile. All three remain candidate artwork pending visual approval.';
   render();
  }).catch(error=>{
   document.getElementById('assetStatus').textContent='Missing authentic V3 asset: '+String(error)+' — no fake replacement image is used.';
