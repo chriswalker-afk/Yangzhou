@@ -57,11 +57,11 @@ a{color:#2f6457}
 <label><input type="checkbox" id="showTextures"> Use existing painted Layer 1 materials</label>
 <label><input type="checkbox" id="showRoofTexture" checked> Show painted roof-tile coping</label>
 </div>
-<div class="status" id="roofStatus" role="status" aria-live="polite">Checking Wall Roof-Tile Texture 01 (candidate artwork). The flat diagnostic roof remains available if the image is not yet committed.</div>
+<div class="status" id="roofStatus" role="status" aria-live="polite">Loading the exact committed Wall Roof-Tile Texture 01 candidate. Flat diagnostic coping remains available if the network request fails.</div>
 <div class="toolbar">
 <label for="roofFile">Preview accepted WebP locally:</label>
 <input id="roofFile" type="file" accept=".webp,image/webp">
-<a id="roofUpload" href="https://github.com/chriswalker-afk/Yangzhou/upload/main/assets/v3/wall-materials">Upload the matching WebP to this PR's branch</a>
+<a id="roofUpload" href="https://github.com/chriswalker-afk/Yangzhou/blob/main/assets/v3/wall-materials/wall-roof-tiles-01.webp">View the committed roof-tile artwork on GitHub</a>
 </div>
 <div class="status" id="readyStatus" role="status" aria-live="polite">Geometry ready. Optional existing artwork is loading independently; flat-colour proof is available now.</div>
 <div class="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Six Yangzhou V3 tiles showing rectangle, partial enclosure, L and T wall centreline examples over road and canal geometry"></canvas></div>
@@ -264,8 +264,8 @@ async function loadRoofFromGitHub(){
  roofStatus.textContent='Checking the exact painted roof texture on GitHub…';
  try{acceptRoof(await roofPainter.loadFromGitHub(), 'GitHub candidate WebP');}
  catch(e){
-  roofStatus.textContent='Painted roof candidate not available from GitHub yet: '+
-   String(e.message||e)+'. Select your downloaded WebP locally to test, or upload it to the PR branch. Flat grey coping remains visible.';
+  roofStatus.textContent='Could not load the committed candidate from GitHub: '+
+   String(e.message||e)+'. Use the local file selector as a fallback. Flat grey coping remains visible until verification succeeds.';
  }
 }
 document.getElementById('roofFile').addEventListener('change',async event=>{
