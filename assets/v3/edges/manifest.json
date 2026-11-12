@@ -19,5 +19,15 @@
     "curvedMappingApproved": false,
     "perspectiveApproved": false
   },
-  "note": "This manifest does NOT claim a WebP is committed. Upload the authentic original or a documented derivative on this PR branch, validate exact SHA-256/alpha/dimensions, then activate automatic loading. The V2 game remains untouched."
+  "note": "This manifest does NOT claim a WebP is committed. Upload the authentic original or a documented derivative on this PR branch, validate exact SHA-256/alpha/dimensions, then activate automatic loading. The V2 game remains untouched.",
+  "preparedBinary": {
+    "filename": "canal-bank-edge-01.webp",
+    "width": 2172,
+    "height": 226,
+    "mimeType": "image/webp",
+    "bytes": 632080,
+    "sha256": "ffbb109f2c44c2ab122299b973cc0fc6358a9486beefc1a9c358cf351eb7bdf5",
+    "conversion": "Original RGBA PNG, alpha under 5 cleared, cropped y=239..465, 72px symmetric seam blend at left/right, lossless VP8L WebP export",
+    "productionApproved": false
+  }
 }
