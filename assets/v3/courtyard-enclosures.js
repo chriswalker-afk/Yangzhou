@@ -320,7 +320,7 @@ async function loadCommitted(options={}){
   return {images,missing,errors};
  }
  if(options.preferPreviews){
-  try{manifest=await fetchPreviewManifest(timeoutMs);}
+  try{manifest=options.previewManifest||await fetchPreviewManifest(timeoutMs);}
   catch(err){errors.push('Preview manifest: '+String(err.message||err));}
  }
  progress();
@@ -358,5 +358,5 @@ async function loadLocal(files){
 }
 return Object.freeze({TILE,INSET,GAP,PAINTED_JOIN_INSET,BASE,PREVIEWS,PREVIEW_ROOT,IDS,COMPONENTS,CONFIG,
  port,horizontalChain,plannedCompound,safeForTile,audit,draw,drawSprite,
- loadCommitted,loadLocal});
+ fetchPreviewManifest,fetchFirstValid,loadCommitted,loadLocal});
 });
