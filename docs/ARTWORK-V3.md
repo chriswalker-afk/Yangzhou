@@ -87,11 +87,11 @@ This is **geometry infrastructure only**, not a painted border asset or a produc
 
 ## Canal Bank Edge 01 — painted candidate intake (pending binary)
 
-The Canal Bank Edge 01 painting was generated as an RGBA PNG with original dimensions **2172 × 724** and SHA-256 `cbef6e2ffad92e8a8171a944694ace9e498a7be97397de16f5a9bbe6fe048862`. The painting is **not approved** and has **not yet been transferred into GitHub**. Never substitute a procedural or remotely queried image and call it the accepted source.
+The Canal Bank Edge 01 painting was generated as an RGBA PNG with original dimensions **2172 × 724** and SHA-256 `cbef6e2ffad92e8a8171a944694ace9e498a7be97397de16f5a9bbe6fe048862`. The painting is **not production-approved**. Its processed, lossless transparent WebP has now been committed with an exact SHA-256/size/dimension integrity contract. Never substitute a procedural or remotely queried image and call it the accepted source.
 
-A dedicated [painted-bank adapter](../assets/v3/canal-bank-art.js) paints the land-side canal ribbons using tangent/normal geometry. For tests and human review the [V3 lab](../layer-lab-v3.html) can read the original candidate PNG **locally**, without uploading it. Once the actual WebP is committed to `assets/v3/edges/canal-bank-edge-01.webp`, the page will load it automatically. World-aligned grass, paving and water remain unchanged, and bridge decks render above the bank overlay.
+A dedicated [painted-bank adapter](../assets/v3/canal-bank-art.js) paints the land-side canal ribbons using tangent/normal geometry. For tests and human review the [V3 lab](../layer-lab-v3.html) can read the original candidate PNG **locally**, without uploading it. The actual WebP is committed at `assets/v3/edges/canal-bank-edge-01.webp` and the page loads it automatically. World-aligned grass, paving and water remain unchanged, and bridge decks render above the bank overlay.
 
-**Required before final artwork approval:** transfer the actual file, record its verified SHA-256/dimensions/alpha in the edge manifest, prove repeatable seams and corner behaviour at 1×/3× with the real binary, and inspect whether the original perspective, linework and painted bank thickness match the overhead materials. Keep V2 unchanged.
+**Required before final artwork approval:** visually inspect the committed file at 1×/3×, prove repeatable seams and corner behaviour, and inspect whether perspective, linework and painted bank thickness match the overhead materials. CI verifies SHA-256, size, VP8L transparency and dimensions but cannot grant artistic approval. Keep V2 unchanged.
 
 ## V3 quality gates
 
