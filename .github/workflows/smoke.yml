@@ -30,6 +30,7 @@ jobs:
           node --check assets/v3/path-verge-art.js
           node --check tests/v3-bank-art.cjs
           node --check tests/v3-verge-art.cjs
+          node --check tests/v3-junction-visual.cjs
           node --check tests/v3-materials.cjs
           node --check tests/v3-edges.cjs
           node tests/smoke.cjs

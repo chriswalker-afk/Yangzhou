@@ -15,7 +15,7 @@ async function run(){
     document.getElementById('bankStatus')?.textContent.includes('committed candidate image loaded from GitHub') &&
     document.getElementById('status')?.textContent.includes('All three texture candidates loaded'),
     {timeout:30000});
-  assert.match(await page.locator('h1').textContent(),/rev 24/);
+  assert.match(await page.locator('h1').textContent(),/rev 25/);
   assert.equal(await page.locator('#paintedVerge').getAttribute('aria-pressed'),'true');
   assert.equal(await page.locator('#paintedBank').getAttribute('aria-pressed'),'true');
 
