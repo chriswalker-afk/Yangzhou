@@ -14,6 +14,19 @@
  const isImage=image=>!!image&&Number.isFinite(image.naturalWidth||image.width)&&
    (image.naturalWidth||image.width)>0&&(image.naturalHeight||image.height)>0;
  const positiveMod=(value,mod)=>((value%mod)+mod)%mod;
+ function prepareImage(image){
+   if(!isImage(image))return image;
+   // The chat-generated original PNG is 2172x724 with transparent margins.
+   // Crop only for browser preview; never rewrite the original artwork.
+   if((image.naturalWidth||image.width)===2172&&(image.naturalHeight||image.height)===724){
+     if(typeof document==='undefined')return image;
+     const canvas=document.createElement('canvas');
+     canvas.width=2172;canvas.height=226;
+     canvas.getContext('2d').drawImage(image,0,239,2172,226,0,0,2172,226);
+     return canvas;
+   }
+   return image;
+ }
  function load(url=path){
    if(typeof Image==='undefined')return Promise.reject(Error('Browser Image required'));
    return new Promise((resolve,reject)=>{
@@ -77,5 +90,5 @@
    }
    return painted;
  }
- return Object.freeze({period,path,isImage,positiveMod,load,segment,draw});
+ return Object.freeze({period,path,isImage,prepareImage,positiveMod,load,segment,draw});
 });
