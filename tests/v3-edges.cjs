@@ -100,13 +100,16 @@ const styles={
  bridgeContact:'temporary-deck-rim'
 };
 function fakeCanvas(){
- const calls=[],moves=[];
+ const calls=[],moves=[],clips=[],rects=[],events=[];
  const ctx={
   beginPath(){},moveTo(x,y){moves.push([x,y]);},
-  lineTo(){},closePath(){},fill(){calls.push(ctx.fillStyle);},
+  lineTo(){},closePath(){},rect(...r){rects.push(r);},
+  save(){events.push('save');},restore(){events.push('restore');},
+  clip(rule){assert.equal(rule,'evenodd','Must subtract a single water core using even-odd winding');clips.push(rule);events.push('clip');},
+  fill(){calls.push(ctx.fillStyle);events.push(ctx.fillStyle);},
   fillStyle:''
  };
- return {ctx,calls,moves};
+ return {ctx,calls,moves,clips,rects,events};
 }
 let rendered=fakeCanvas();
 edges.draw(rendered.ctx,bridge,styles,{edges:true,x:440,y:220});
@@ -114,12 +117,17 @@ assert.deepEqual(rendered.calls,[
  'temporary-bank','temporary-bank-rim','water-texture',
  'temporary-deck','temporary-deck-rim','stone-texture'
 ],'Water and bank must render beneath the elevated bridge deck and rim');
-const first=bridge.traces[0].samples[0].outer.left;
-near(rendered.moves[0][0],first[0]+440,'World-space X offset');
-near(rendered.moves[0][1],first[1]+220,'World-space Y offset');
+const first=bridge.traces[0].samples[0].core.left;
+near(rendered.moves[0][0],first[0]+440,'Water exclusion mask global X');
+near(rendered.moves[0][1],first[1]+220,'Water exclusion mask global Y');
+assert.deepEqual(rendered.rects,[[440,220,220,220]],'Water mask uses tile-global extents');
+assert.equal(rendered.clips.length,1,'Bridge has one continuous water route to exclude');
+assert(rendered.events.indexOf('clip')<rendered.events.indexOf('temporary-bank'),'Bank fill must be clipped before painting');
+assert(rendered.events.indexOf('restore')<rendered.events.indexOf('water-texture'),'Water core must be drawn outside the land clip');
 rendered=fakeCanvas();
 edges.draw(rendered.ctx,bridge,styles,{edges:false,x:440,y:220});
 assert.deepEqual(rendered.calls,['water-texture','stone-texture'],'Off must retain exact base masks');
+assert.equal(rendered.clips.length,0,'No bank mask is required when edging is disabled');
 rendered=fakeCanvas();
 edges.draw(rendered.ctx,junction,styles,{edges:true});
 assert.deepEqual(rendered.calls,[
@@ -127,6 +135,32 @@ assert.deepEqual(rendered.calls,[
  'temporary-bank-rim','temporary-bank-rim','temporary-bank-rim',
  'water-texture','water-texture','water-texture'
 ],'Junction arms must each be painted before their common core to avoid internal border seams');
+assert.equal(rendered.clips.length,3,'T-junction must subtract ALL three canal arms, not just the branch');
+assert.deepEqual(rendered.rects,[[0,0,220,220],[0,0,220,220],[0,0,220,220]],'Every water arm must be clipped out');
+assert(rendered.events.lastIndexOf('clip')<rendered.events.indexOf('temporary-bank'),'All three arm exclusions precede bank drawing');
+
+// Each extra water arm intersects the current land clip. Taking the xor of
+// overlapping water polygons in ONE even-odd path would allow false banks in
+// intersections; clip once per arm to take intersection of their complements.
+for(const signature of geometry.signatures){
+ const compiled=edges.compile(geometry.compile(signature.split('')));
+ const context=fakeCanvas();
+ const count=edges.clipCanalBanksToLand(context.ctx,compiled,220,440);
+ const expected=compiled.traces.filter(t=>t.material==='W').length;
+ assert.equal(count,expected,'Number of canal-arm water exclusions for '+signature);
+ assert.equal(context.clips.length,expected,'One even-odd land intersection per arm for '+signature);
+ assert(context.rects.every(r=>JSON.stringify(r)===JSON.stringify([220,440,220,220])),
+   'All water exclusions are board-aligned for '+signature);
+}
+rendered=fakeCanvas();
+edges.draw(rendered.ctx,junction,styles,{edges:true,paintedBankOverlay:(ctx)=>{
+  rendered.events.push('painted-bank-overlay');
+}});
+assert.equal(rendered.clips.length,3);
+assert(rendered.events.indexOf('painted-bank-overlay')>rendered.events.indexOf('temporary-bank-rim'));
+assert(rendered.events.indexOf('painted-bank-overlay')<rendered.events.indexOf('restore'));
+assert(rendered.events.indexOf('painted-bank-overlay')<rendered.events.indexOf('water-texture'),
+  'Painterly bank must be under the union of all water cores, never on top');
 
 assert.throws(()=>edges.crossSection({type:'S',width:80},0));
 assert.throws(()=>edges.pointOnRoute({kind:'bogus'},0));
@@ -141,4 +175,4 @@ for(const marker of [
 ])assert(lab.includes(marker),'Missing V3 Layer 1B laboratory contract: '+marker);
 assert(!lab.includes('ctx.translate('),'Do not reset CanvasPattern phase per tile');
 assert(!lab.includes('approved edge artwork'),'Cannot declare placeholder edging as approved');
-console.log('V3 edge geometry passed: all 20 signatures, exact S/W masks, matching border ribbons, bends, junctions, bridge order and temporary-only art.');
+console.log('V3 edge geometry passed: all 20 signatures, exact S/W masks, per-arm water-union exclusions, T-junction protection, bridges and temporary-only art.');
