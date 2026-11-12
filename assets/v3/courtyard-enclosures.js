@@ -167,7 +167,13 @@ function drawSprite(ctx,img,piece,ox=0,oy=0){
  const dx=ox+piece.x-c.width/2,dy=oy+piece.y-c.height/2;
  if(c.sourceCrop){
   const crop=c.sourceCrop;
-  ctx.drawImage(img,crop.x,crop.y,crop.width,crop.height,dx,dy,c.width,c.height);
+  // Crop offsets were measured against the original 1254px artwork.
+  // Derivative previews retain that geometry, but use fewer source pixels.
+  const actualWidth=img.naturalWidth||img.width||c.preparedWidth;
+  const actualHeight=img.naturalHeight||img.height||c.preparedHeight;
+  const ratioX=actualWidth/c.preparedWidth,ratioY=actualHeight/c.preparedHeight;
+  ctx.drawImage(img,crop.x*ratioX,crop.y*ratioY,
+    crop.width*ratioX,crop.height*ratioY,dx,dy,c.width,c.height);
  }else{
   ctx.drawImage(img,dx,dy,c.width,c.height);
  }
