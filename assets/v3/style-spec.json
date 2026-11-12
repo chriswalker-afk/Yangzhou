@@ -123,5 +123,30 @@
       "asset": null,
       "productionApproved": false
     }
+  ],
+  "edgeArtworkCandidates": [
+    {
+      "id": "canal-bank-edge-01",
+      "name": "Canal Bank Edge 01",
+      "material": "canal-bank",
+      "image": "assets/v3/edges/canal-bank-edge-01.webp",
+      "source": "chat-generated original RGBA PNG, 2172x724",
+      "sourceSha256": "cbef6e2ffad92e8a8171a944694ace9e498a7be97397de16f5a9bbe6fe048862",
+      "fileAvailable": true,
+      "status": "candidate-committed-awaiting-visual-approval",
+      "productionApproved": false,
+      "geometryTreatment": "normal-following-painted-overlay",
+      "colorSpace": "sRGB",
+      "requiresHumanReview": [
+        "horizontal repetition",
+        "curved bend distortion",
+        "bank scale",
+        "historical and colour consistency"
+      ],
+      "width": 2172,
+      "height": 226,
+      "bytes": 632080,
+      "sha256": "ffbb109f2c44c2ab122299b973cc0fc6358a9486beefc1a9c358cf351eb7bdf5"
+    }
   ]
 }

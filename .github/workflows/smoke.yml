@@ -26,6 +26,8 @@ jobs:
           node --check tests/v3-geometry.cjs
           node --check assets/v3/material-runtime.js
           node --check assets/v3/edge-system.js
+          node --check assets/v3/canal-bank-art.js
+          node --check tests/v3-bank-art.cjs
           node --check tests/v3-materials.cjs
           node --check tests/v3-edges.cjs
           node tests/smoke.cjs
@@ -33,6 +35,7 @@ jobs:
           node tests/v3-geometry.cjs
           node tests/v3-materials.cjs
           node tests/v3-edges.cjs
+          node tests/v3-bank-art.cjs
           node tests/variant-deck.cjs
           node scripts/validate_art_batch_01.cjs
           node tests/scoring-contract.cjs

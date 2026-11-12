@@ -31,8 +31,17 @@ async function run(){
       canalContactTop:sample(110,285)
     };
   });
+  // Confirm the genuine committed painting loaded, then temporarily disable
+  // only the painted overlay to verify the original diagnostic edge contract.
+  await page.waitForFunction(()=>document.querySelector('#bankStatus')?.textContent.includes('committed candidate image loaded from GitHub'),{timeout:30000});
+  const paintedStartup=await pixel();
+  await page.screenshot({path:'artifacts/v3/layer1b-committed-painted-bank.png',fullPage:true});
+  await page.locator('#paintedBank').click();
+  assert.equal(await page.locator('#paintedBank').getAttribute('aria-pressed'),'false');
   const before=await pixel();
-  assert.match(await page.locator('#edgeState').textContent(),/Layer 1B rev 22.*Edging ON/);
+  assert.notDeepEqual(paintedStartup.canalBankTop,before.canalBankTop,
+    'Committed paint must differ from temporary diagnostic bank at top shoreline');
+  assert.match(await page.locator('#edgeState').textContent(),/Layer 1B.*Edging ON/);
   assert.deepEqual(before.canalBankTop,[186,167,137,255],
     'Real canvas must display the temporary canal-bank ribbon ABOVE the water');
   assert.deepEqual(before.canalBankBottom,[186,167,137,255],
@@ -53,6 +62,40 @@ async function run(){
   await page.locator('#edges').click();
   assert.equal(await page.locator('#edges').getAttribute('aria-pressed'),'true');
   assert.match(await page.locator('#edgeState').textContent(),/Edging ON/);
+
+  // With the diagnostic tests finished, restore the committed painting and
+  // then exercise the optional local-image override without replacing GitHub.
+  await page.locator('#paintedBank').click();
+  assert.equal(await page.locator('#paintedBank').getAttribute('aria-pressed'),'true');
+  assert.match(await page.locator('#bankStatus').textContent(),/committed candidate image loaded from GitHub/);
+  const committedBankPixel=await page.evaluate(()=>[...document.querySelector('#scene').getContext('2d').getImageData(110*3,284*3,1,1).data]);
+  assert.notDeepEqual(committedBankPixel,before.canalBankTop,'Actual committed canal-bank artwork must replace temporary color');
+  const paintedFixture=await page.evaluate(()=>{
+    const c=document.createElement('canvas');c.width=32;c.height=8;
+    const ctx=c.getContext('2d');ctx.fillStyle='#AB6B46';ctx.fillRect(0,0,32,8);
+    return c.toDataURL('image/png').split(',')[1];
+  });
+  await page.locator('#bankFile').setInputFiles({
+    name:'fixture-not-approved-art.png',
+    mimeType:'image/png',
+    buffer:Buffer.from(paintedFixture,'base64')
+  });
+  await page.waitForFunction(()=>document.querySelector('#bankStatus')?.textContent.includes('local original preview only'));
+  const bankPixel=()=>page.evaluate(()=>[...document.getElementById('scene').getContext('2d').getImageData(110*3,284*3,1,1).data]);
+  const fixtureBank=await bankPixel();
+  assert.notDeepEqual(fixtureBank,committedBankPixel,'Local image override should replace committed artwork');
+  await page.locator('#paintedBank').click();
+  assert.equal(await page.locator('#paintedBank').getAttribute('aria-pressed'),'false');
+  assert.deepEqual(await bankPixel(),before.canalBankTop,'Painted bank OFF should restore temporary diagnostic edging');
+  await page.locator('#paintedBank').click();
+  assert.equal(await page.locator('#paintedBank').getAttribute('aria-pressed'),'true');
+  assert.deepEqual(await bankPixel(),fixtureBank,'Painted bank ON should restore the local candidate image');
+  await page.screenshot({path:'artifacts/v3/layer1b-local-painted-bank-fixture.png',fullPage:true});
+
+  // Other scene captures should show the genuine committed artwork, not a
+  // synthetic local fixture. Reload the lab to restore GitHub's candidate.
+  await page.reload({waitUntil:'load'});
+  await page.waitForFunction(()=>document.querySelector('#bankStatus')?.textContent.includes('committed candidate image loaded from GitHub'),{timeout:30000});
 
   // All selected geometries are drawn through the same compositor.
   const studies=['street-bend','canal-bend','bridge','canal-junction','street-cross','joined'];

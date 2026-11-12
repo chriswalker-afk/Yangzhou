@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "assetId": "canal-bank-edge-01",
+  "name": "Yangzhou V3 Canal Bank Edge 01",
+  "status": "candidate-committed-awaiting-visual-approval",
+  "source": {
+    "filename": "watercolour_canal_bank_tile.png",
+    "mimeType": "image/png",
+    "width": 2172,
+    "height": 724,
+    "sha256": "cbef6e2ffad92e8a8171a944694ace9e498a7be97397de16f5a9bbe6fe048862",
+    "transparency": true
+  },
+  "intendedBinary": "canal-bank-edge-01.webp",
+  "fileCommitted": true,
+  "review": {
+    "artworkApproved": false,
+    "horizontalRepeatApproved": false,
+    "curvedMappingApproved": false,
+    "perspectiveApproved": false
+  },
+  "note": "The authentic image was committed as a lossless WebP derived from the generated transparent PNG. CI must verify exact SHA-256, dimensions and alpha flag. Human art approval is pending; V2 remains unchanged.",
+  "preparedBinary": {
+    "filename": "canal-bank-edge-01.webp",
+    "width": 2172,
+    "height": 226,
+    "mimeType": "image/webp",
+    "bytes": 632080,
+    "sha256": "ffbb109f2c44c2ab122299b973cc0fc6358a9486beefc1a9c358cf351eb7bdf5",
+    "conversion": "Original RGBA PNG, alpha under 5 cleared, cropped y=239..465, 72px symmetric seam blend at left/right, lossless VP8L WebP export",
+    "productionApproved": false
+  }
+}
