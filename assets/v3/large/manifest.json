@@ -28,7 +28,10 @@
         "hasAlpha": true,
         "preparation": "Clear alpha <5, crop source to x=165..1609 and y=90..796, export WebP lossless, exact color retention"
       },
-      "worldFootprint": {"width": 96,"height": 47},
+      "worldFootprint": {
+        "width": 96,
+        "height": 47
+      },
       "placement": {
         "coordinateSystem": "tile-local-world-units",
         "tileEdgeInset": 10,
@@ -44,6 +47,98 @@
       "orthographicViewReviewed": false,
       "repetitionReviewed": false,
       "notes": "First original painted hall asset for tile-ownership proof. Perspective, facade, scale and stylistic compatibility must be reviewed before adding variations. Do not confuse the large-details proof with a full playable V3 release."
+    },
+    {
+      "assetId": "willow-tree-01",
+      "name": "Yangzhou Willow Tree 01",
+      "classification": "reusable-compass-upright-vegetation",
+      "source": {
+        "path": null,
+        "availability": "original-master-preserved-in-chat-not-repository",
+        "mimeType": "image/png",
+        "width": 1254,
+        "height": 1254,
+        "bytes": 2936676,
+        "sha256": "716f2e40aefb9486b3246aa91f8c2e662ca069bcab3095debf3be124448b82a2",
+        "hasAlpha": true
+      },
+      "prepared": {
+        "path": "assets/v3/large/willow-tree-01.webp",
+        "mimeType": "image/webp",
+        "compression": "VP8L lossless",
+        "width": 1214,
+        "height": 1229,
+        "bytes": 2044912,
+        "sha256": "8e41982dd8d59a5476d5430cb865d9f86578bb69e9bc69c94c30373d5392fc9e",
+        "hasAlpha": true,
+        "preparation": "transparent sRGB sprite cropped from original candidate with lossless WebP export"
+      },
+      "worldFootprint": {
+        "width": 48,
+        "height": 58
+      },
+      "placement": {
+        "coordinateSystem": "tile-local-world-units",
+        "tileEdgeInset": 10,
+        "roadGapBeyondPaintedVerge": 6,
+        "canalGapBeyondBank": 6,
+        "requiresLand": "trunk-only",
+        "trunkRadius": 7,
+        "canopyMayOverhangRoutes": true,
+        "compassUpright": true,
+        "mayCrossTileBoundary": false
+      },
+      "productionApproved": false,
+      "humanVisualReviewComplete": false,
+      "historicAccuracyReviewed": false,
+      "orthographicViewReviewed": false,
+      "repetitionReviewed": false,
+      "notes": "Trunk must remain on land; canopy may drape over path or water, within the owning tile. Source master is retained outside the repository, prepared candidate binary committed and hash verified."
+    },
+    {
+      "assetId": "garden-rockery-01",
+      "name": "Yangzhou Garden Rockery 01",
+      "classification": "reusable-compass-upright-garden-rockery",
+      "source": {
+        "path": null,
+        "availability": "original-master-preserved-in-chat-not-repository",
+        "mimeType": "image/png",
+        "width": 1536,
+        "height": 1024,
+        "bytes": 2430404,
+        "sha256": "5a99b015099006be344d0f4974b8a353b4d1a1e57a7909e31d9df3e5ec278007",
+        "hasAlpha": true
+      },
+      "prepared": {
+        "path": "assets/v3/large/garden-rockery-01.webp",
+        "mimeType": "image/webp",
+        "compression": "VP8L lossless",
+        "width": 1238,
+        "height": 815,
+        "bytes": 1223626,
+        "sha256": "3a22cb438726d4a88cd9d24d6cf9be47faabd7ecff3aa604a9d3b5d131580e89",
+        "hasAlpha": true,
+        "preparation": "transparent sRGB sprite cropped from original candidate with lossless WebP export"
+      },
+      "worldFootprint": {
+        "width": 52,
+        "height": 37
+      },
+      "placement": {
+        "coordinateSystem": "tile-local-world-units",
+        "tileEdgeInset": 10,
+        "roadGapBeyondPaintedVerge": 6,
+        "canalGapBeyondBank": 6,
+        "requiresLand": "entire-footprint",
+        "compassUpright": true,
+        "mayCrossTileBoundary": false
+      },
+      "productionApproved": false,
+      "humanVisualReviewComplete": false,
+      "historicAccuracyReviewed": false,
+      "orthographicViewReviewed": false,
+      "repetitionReviewed": false,
+      "notes": "A solid decorative rockery: entire rectangular visual footprint stays clear of protected street and water zones. Historic style, brushwork and palette need review."
     }
   ]
 }
