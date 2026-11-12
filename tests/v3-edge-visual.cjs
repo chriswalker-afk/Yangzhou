@@ -32,7 +32,7 @@ async function run(){
     };
   });
   const before=await pixel();
-  assert.match(await page.locator('#edgeState').textContent(),/Layer 1B rev 22.*Edging ON/);
+  assert.match(await page.locator('#edgeState').textContent(),/Layer 1B.*Edging ON/);
   assert.deepEqual(before.canalBankTop,[186,167,137,255],
     'Real canvas must display the temporary canal-bank ribbon ABOVE the water');
   assert.deepEqual(before.canalBankBottom,[186,167,137,255],
@@ -53,6 +53,31 @@ async function run(){
   await page.locator('#edges').click();
   assert.equal(await page.locator('#edges').getAttribute('aria-pressed'),'true');
   assert.match(await page.locator('#edgeState').textContent(),/Edging ON/);
+
+  // A generated image may be previewed locally without importing an
+  // unverified or substituted binary into GitHub.
+  assert.match(await page.locator('#bankStatus').textContent(),/image binary pending/);
+  const paintedFixture=await page.evaluate(()=>{
+    const c=document.createElement('canvas');c.width=32;c.height=8;
+    const ctx=c.getContext('2d');ctx.fillStyle='#AB6B46';ctx.fillRect(0,0,32,8);
+    return c.toDataURL('image/png').split(',')[1];
+  });
+  await page.locator('#bankFile').setInputFiles({
+    name:'fixture-not-approved-art.png',
+    mimeType:'image/png',
+    buffer:Buffer.from(paintedFixture,'base64')
+  });
+  await page.waitForFunction(()=>document.querySelector('#bankStatus')?.textContent.includes('local original preview only'));
+  const bankPixel=()=>page.evaluate(()=>[...document.getElementById('scene').getContext('2d').getImageData(110*3,284*3,1,1).data]);
+  const fixtureBank=await bankPixel();
+  assert.deepEqual(fixtureBank,[171,107,70,255],'Optional real image should replace temporary canal-bank pixels');
+  await page.locator('#paintedBank').click();
+  assert.equal(await page.locator('#paintedBank').getAttribute('aria-pressed'),'false');
+  assert.deepEqual(await bankPixel(),before.canalBankTop,'Painted bank OFF should restore temporary diagnostic edging');
+  await page.locator('#paintedBank').click();
+  assert.equal(await page.locator('#paintedBank').getAttribute('aria-pressed'),'true');
+  assert.deepEqual(await bankPixel(),fixtureBank,'Painted bank ON should restore the local candidate image');
+  await page.screenshot({path:'artifacts/v3/layer1b-local-painted-bank-fixture.png',fullPage:true});
 
   // All selected geometries are drawn through the same compositor.
   const studies=['street-bend','canal-bend','bridge','canal-junction','street-cross','joined'];
