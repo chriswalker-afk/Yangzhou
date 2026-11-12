@@ -21,8 +21,8 @@ canvas{display:block;max-width:none;cursor:crosshair}
 small,.muted{color:#536459}
 pre{font-size:.8rem;max-height:220px;overflow:auto;white-space:pre;background:#f8f4e9;padding:12px;border:1px solid #ccc3b2;border-radius:6px}
 </style></head><body><main>
-<h1>Yangzhou V3 — Courtyard Enclosure Assembly Lab (rev 33)</h1>
-<p class="note"><strong>Separate V3-only art and geometry study — not the playable game.</strong> Here we test the four actual painted wall assets in combination with our Courtyard Hall 01, Willow Tree 01 and Garden Rockery 01. All four authentic WebP paintings are committed and verified from <code>assets/v3/enclosures/</code> at page load; missing artwork is never replaced with a fabricated painting. The dashed side walls are <strong>geometry proposals only</strong>: compass-upright north–south wall artwork is not yet available.</p>
+<h1>Yangzhou V3 — Courtyard Enclosure Assembly Lab (rev 34)</h1>
+<p class="note"><strong>Separate V3-only art and geometry study — not the playable game.</strong> Here we test the four actual painted wall assets in combination with our Courtyard Hall 01, Willow Tree 01 and Garden Rockery 01. All four authentic WebP paintings are committed and verified from <code>assets/v3/enclosures/</code> at page load; missing artwork is never replaced with a fabricated painting. The dashed side walls are <strong>geometry proposals only</strong>: compass-upright north–south wall artwork is not yet available. Images load independently and report individual errors instead of hanging.</p>
 <p>Start with <strong>All-land courtyards</strong> to inspect the full assembly. Select the canal junction study to confirm that compounds appear only on safe land tiles. Toggle artwork, adjust individual tile seeds, zoom in, and click a land tile to relocate the compound. The join bench below exposes measured connector points for the two straight wall lengths, corner and moon gate.</p>
 <div class="toolbar">
 <label for="study">Layout</label>
@@ -48,7 +48,9 @@ pre{font-size:.8rem;max-height:220px;overflow:auto;white-space:pre;background:#f
 <input id="enclosureFiles" type="file" accept="image/webp,.webp" multiple>
 <div id="enclosureStatus" role="status" aria-live="polite">Checking the four original sprite hashes…</div>
 </div>
-<div id="assetStatus" role="status" class="status">Loading V3 grass, stone, canal water, painted banks/verges and three existing large-detail assets…</div>
+<div id="assetStatus" role="status" aria-live="polite" class="status">Starting eight V3 scenery images…</div>
+<div class="toolbar"><button id="retryAssets" type="button">Retry image loading</button>
+<small>Preview remains available if any artwork request fails.</small></div>
 <div class="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Six V3 world-geometry tiles with one modular courtyard enclosure compound"></canvas></div>
 <div class="toolbar">
 <button id="prevSeed" type="button">Previous tile seed</button>
@@ -65,7 +67,7 @@ pre{font-size:.8rem;max-height:220px;overflow:auto;white-space:pre;background:#f
 <pre id="layoutData" aria-label="Serialized courtyard enclosure placement and join validation"></pre>
 <p><a href="layer2-lab-v3.html?rev=29">Existing six-tile Layer 2 lab</a> · <a href="layer-lab-v3.html?rev=25">Layer 1 canal/path lab</a> · <a href="index.html">Playable V2 game (unchanged)</a> · <a href="https://github.com/chriswalker-afk/Yangzhou">GitHub source</a></p>
 </main>
-<script src="tile-topology.js"></script><script src="assets/v3/base-geometry.js"></script><script src="assets/v3/material-runtime.js"></script><script src="assets/v3/edge-system.js"></script><script src="assets/v3/canal-bank-art.js"></script><script src="assets/v3/path-verge-art.js"></script><script src="assets/v3/layer2-placements.js"></script><script src="assets/v3/courtyard-enclosures.js"></script>
+<script src="tile-topology.js"></script><script src="assets/v3/base-geometry.js"></script><script src="assets/v3/material-runtime.js"></script><script src="assets/v3/edge-system.js"></script><script src="assets/v3/canal-bank-art.js"></script><script src="assets/v3/path-verge-art.js"></script><script src="assets/v3/layer2-placements.js"></script><script src="assets/v3/courtyard-enclosures.js?rev=34"></script>
 <script>
 (()=>{'use strict';
 const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d');
@@ -191,23 +193,42 @@ const chipNames={
  'white-garden-wall-corner-01':'Corner',
  'moon-gate-01':'Moon gate'
 };
-function showAssetStatus(missing,source){
- const el=document.getElementById('enclosureChips');
- el.textContent='';
+let renderQueued=false;
+function requestRender(){
+ if(renderQueued)return;
+ renderQueued=true;
+ requestAnimationFrame(()=>{
+  renderQueued=false;
+  try{render();}
+  catch(e){
+   document.getElementById('assetStatus').textContent='Courtyard render error: '+String(e.message||e);
+   console.error('Yangzhou V3:',e);
+  }
+ });
+}
+function showAssetStatus(missing,source,progress=null){
+ const el=document.getElementById('enclosureChips');el.textContent='';
+ const pending=progress&&!progress.done,missingNames=new Set(missing);
  for(const id of enclosure.IDS){
-  const span=document.createElement('span'),exists=!!enclosureImages[id];
+  const span=document.createElement('span'),c=enclosure.COMPONENTS[id],exists=!!enclosureImages[id];
+  const waiting=pending&&!missingNames.has(c.filename)&&!exists;
   span.className='chip '+(exists?'ok':'warning');
-  span.textContent=(exists?'✓ ':'○ ')+chipNames[id]+(exists?'':' — missing');
+  span.textContent=(exists?'✓ ':'○ ')+chipNames[id]+
+   (exists?'':' — '+(waiting?'loading':'unavailable'));
   el.appendChild(span);
  }
  enclosureSource=source;
  const count=enclosure.IDS.filter(id=>!!enclosureImages[id]).length;
+ const done=progress?.completed??4,total=progress?.total??4,errors=progress?.errors||[];
  document.getElementById('enclosureStatus').textContent=count+'/4 verified painted enclosure assets available ('+source+'). '+
-  (missing.length?'Still missing: '+missing.join(', '):'Join bench and courtyard now use all four authentic painted WebPs.');
+  (pending?'Checking: '+done+'/'+total+' files completed…':
+   missing.length?'Could not load '+missing.join(', ')+'. '+errors.join(' | '):
+   'All four authentic painted WebPs passed SHA-256 verification.');
  document.getElementById('uploadHelp').textContent=count===4&&source==='github'
- ?'All four artwork candidates loaded from GitHub automatically. Painted seams overlap by 4 world units; inspect at 3×.'
- :'Missing files never receive fake replacements. Select original prepared WebPs below for local troubleshooting.';
- render();
+  ?'All four paintings loaded automatically from GitHub. Inspect the joins at 3×.'
+  :pending?'Each image appears as soon as it loads and passes verification.':
+   'Missing paintings are not faked. Use Retry image loading or select a local WebP.';
+ requestRender();
 }
 document.getElementById('enclosureFiles').addEventListener('change',async e=>{
  const files=Array.from(e.target.files||[]);
@@ -254,22 +275,90 @@ for(const [checkbox,id] of [
   visibleComponents[id]=e.target.checked;render();
  });
 }
-enclosure.loadCommitted().then(result=>{
- enclosureImages=result.images;showAssetStatus(result.missing,'github');
- if(result.errors.length)console.info('Enclosure artwork not yet committed:',result.errors.join('; '));
-}).catch(error=>{showAssetStatus(enclosure.IDS.map(id=>enclosure.COMPONENTS[id].filename),'unavailable');
- document.getElementById('enclosureStatus').textContent='Could not load authentic artwork: '+String(error);
-});
-setStudy('garden');
-Promise.all([materials.loadAll(),bankArt.load(),vergeArt.load(),layer2.loadImages()])
- .then(([base,bank,verge,large])=>{
-  if(base.missing.length)throw Error('Missing base materials: '+base.missing.join(','));
-  images=base.images;bankImage=bank;vergeImage=verge;largeImages=large;ready=true;
-  document.getElementById('assetStatus').textContent='V3 continuous grass, stone, canal water, painted banks and verges loaded. Courtyard Hall, Willow Tree and Garden Rockery also available as authentic separate Layer 2 details.';
-  render();
- }).catch(error=>{
-  document.getElementById('assetStatus').textContent='Missing authentic V3 asset: '+String(error)+' — no fake replacement image is used.';
-  render();
+// Progressive, bounded loading: no single slow WebP can hold up the page.
+const requestedTimeout=Number(new URLSearchParams(location.search).get('assetTimeoutMs'));
+const IMAGE_TIMEOUT_MS=Number.isFinite(requestedTimeout)&&requestedTimeout>=350
+ ?Math.min(30000,Math.round(requestedTimeout)):16000;
+let enclosureRequest=0,sceneryRequest=0;
+const graphicSpecs=[
+ ...materials.ids.map(id=>({name:'material '+id,url:materials.base+materials.files[id],
+  apply:img=>{images[id]=img;}})),
+ {name:'canal bank',url:bankArt.path,apply:img=>{bankImage=img;}},
+ {name:'path verge',url:vergeArt.path,apply:img=>{vergeImage=img;}},
+ ...Object.values(layer2.COMPONENTS).map(c=>({name:c.name,url:c.image,
+  apply:img=>{largeImages[c.id]=img;}}))
+];
+function loadImageBounded(src,ms){
+ return new Promise((resolve,reject)=>{
+  const image=new Image();let settled=false;
+  const finish=err=>{
+   if(settled)return;settled=true;clearTimeout(timer);
+   image.onload=image.onerror=null;
+   if(err){image.src='';reject(err);}else resolve(image);
+  };
+  const timer=setTimeout(()=>finish(Error('Timed out after '+ms+'ms: '+src)),ms);
+  image.onload=()=>finish(null);
+  image.onerror=()=>finish(Error('Cannot load '+src));
+  image.src=src;
  });
+}
+async function startEnclosureLoading(){
+ const request=++enclosureRequest;
+ document.getElementById('enclosureStatus').textContent='Checking four original WebPs individually…';
+ const missing=()=>enclosure.IDS.filter(id=>!enclosureImages[id])
+  .map(id=>enclosure.COMPONENTS[id].filename);
+ try{
+  const result=await enclosure.loadCommitted({
+   timeoutMs:IMAGE_TIMEOUT_MS,
+   onProgress:state=>{
+    if(request!==enclosureRequest)return;
+    enclosureImages={...enclosureImages,...state.images};
+    const pending=enclosure.IDS.filter(id=>!enclosureImages[id]&&!state.missing.includes(enclosure.COMPONENTS[id].filename))
+     .map(id=>enclosure.COMPONENTS[id].filename);
+    showAssetStatus(state.missing,'github',state);
+   }
+  });
+  if(request!==enclosureRequest)return;
+  enclosureImages={...enclosureImages,...result.images};
+  showAssetStatus(missing(),'github',{completed:4,total:4,done:true,errors:result.errors});
+ }catch(err){
+  if(request!==enclosureRequest)return;
+  showAssetStatus(missing(),'github',{completed:4,total:4,done:true,errors:[String(err)]});
+ }
+}
+async function startSceneryLoading(){
+ const request=++sceneryRequest,total=graphicSpecs.length;
+ let completed=0,loaded=0;const failed=[];
+ function update(){
+  if(request!==sceneryRequest)return;
+  document.getElementById('assetStatus').textContent=completed===total&&!failed.length
+   ?'V3 continuous grass, stone, canal water, painted banks and verges loaded. Courtyard Hall, Willow Tree and Garden Rockery also available (8/8).'
+   :'V3 scenery: '+loaded+'/'+total+' images loaded, '+completed+'/'+total+
+    ' checked'+(completed===total?'. Load complete with errors.':'…')+
+    (failed.length?' Problems: '+failed.join('; '):'');
+  requestRender();
+ }
+ update();
+ await Promise.all(graphicSpecs.map(async spec=>{
+  try{
+   const img=await loadImageBounded(spec.url,IMAGE_TIMEOUT_MS);
+   if(request===sceneryRequest){spec.apply(img);loaded++;}
+  }catch(err){
+   if(request===sceneryRequest)failed.push(spec.name+': '+String(err.message||err));
+  }finally{
+   if(request===sceneryRequest){completed++;update();}
+  }
+ }));
+ ready=loaded===total;
+}
+button('retryAssets',()=>{startEnclosureLoading();startSceneryLoading();});
+window.addEventListener('error',event=>{
+ if(event.target===window)
+  document.getElementById('assetStatus').textContent='Courtyard script error: '+String(event.message||'unknown');
+});
+try{setStudy('garden');}
+catch(err){document.getElementById('assetStatus').textContent='Courtyard geometry error: '+String(err.message||err);}
+startEnclosureLoading();
+startSceneryLoading();
 })();
 </script></body></html>

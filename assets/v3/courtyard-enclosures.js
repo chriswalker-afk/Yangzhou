@@ -232,16 +232,52 @@ async function verify(id,blob){
   throw Error('Wrong sprite image dimensions for '+c.filename);
  return img;
 }
-async function loadCommitted(){
+// Do not hold the whole art preview hostage to one stalled request or WebP decode.
+// Report each independently verified original, with a hard deadline and safe abort.
+function validTimeout(value){
+ return Number.isFinite(value)?Math.max(350,Math.min(30000,Math.round(value))):16000;
+}
+function withDeadline(task,timeoutMs,controller,label){
+ return new Promise((resolve,reject)=>{
+  const timer=setTimeout(()=>{
+   try{controller?.abort();}catch(_){}
+   reject(Error(label+' timed out after '+timeoutMs+'ms'));
+  },timeoutMs);
+  Promise.resolve(task).then(
+   value=>{clearTimeout(timer);resolve(value);},
+   error=>{clearTimeout(timer);reject(error);}
+  );
+ });
+}
+async function loadCommitted(options={}){
  const images={},missing=[],errors=[];
- if(typeof fetch==='undefined')return {images,missing:IDS,errors:['Browser required']};
+ const total=IDS.length,timeoutMs=validTimeout(options.timeoutMs);
+ let completed=0;
+ function progress(){
+  try{options.onProgress?.({
+   images:{...images},missing:[...missing],errors:[...errors],
+   completed,total,done:completed===total
+  });}catch(_){} // UI callbacks must not prevent the other artworks loading.
+ }
+ if(typeof fetch==='undefined'){
+  missing.push(...IDS.map(id=>COMPONENTS[id].filename));errors.push('Browser fetch unavailable');
+  completed=total;progress();
+  return {images,missing,errors};
+ }
  await Promise.all(IDS.map(async id=>{
-  const c=COMPONENTS[id];
+  const c=COMPONENTS[id],controller=typeof AbortController!=='undefined'?new AbortController():null;
   try{
-   const response=await fetch(BASE+c.filename,{cache:'no-store'});
-   if(!response.ok)throw Error('HTTP '+response.status);
-   images[id]=await verify(id,await response.blob());
-  }catch(e){missing.push(c.filename);errors.push(id+': '+String(e.message||e));}
+   const task=(async()=>{
+    const response=await fetch(BASE+c.filename,{
+     cache:'no-store',...(controller?{signal:controller.signal}:{})
+    });
+    if(!response.ok)throw Error('HTTP '+response.status+' for '+c.filename);
+    return verify(id,await response.blob());
+   })();
+   images[id]=await withDeadline(task,timeoutMs,controller,c.filename);
+  }catch(e){
+   missing.push(c.filename);errors.push(id+': '+String(e.message||e));
+  }finally{completed++;progress();}
  }));
  return {images,missing,errors};
 }
