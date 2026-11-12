@@ -13,7 +13,7 @@ async function run(){
   await page.waitForFunction(()=>document.querySelector('#assetStatus')?.textContent.includes('V3 continuous grass'),{timeout:30000});
   await page.waitForFunction(()=>document.querySelector('#enclosureStatus')?.textContent.includes('/4 verified'),{timeout:30000});
   const initialArtworkStatus=await page.locator('#enclosureStatus').textContent();
-  assert.match(await page.locator('h1').textContent(),/rev 32/);
+  assert.match(await page.locator('h1').textContent(),/rev 33/);
   // Regression: exact mathematical joins are insufficient when the painted
   // sprites have transparent terminal pixels. Inspect the real 4/4 WebPs in
   // an alpha-only compositing canvas, not the opaque grass-backed screenshot.
