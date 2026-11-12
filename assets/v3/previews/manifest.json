@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 1,
+  "origin": "Yangzhou V3 isolated courtyard lab",
+  "generation": "Pillow WebP quality 91, method 6, exact RGBA, max dimensions on sprite classes only",
+  "status": "preview-only-not-production-asset",
+  "assets": {
+    "grass.webp": {
+      "source": "assets/v3/materials/grass-01-lossless.webp",
+      "sourceSha256": "6f2d66fe8de1091112609c65c6cb9a563dc0f8189d85b8e5a528c6b1273f5ebb",
+      "sourceBytes": 2271520,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "preview": "assets/v3/previews/grass.webp",
+      "previewSha256": "b08faa6afcbe8aa39c19f48407c75d7599fee8deeed1cf5a3b839fde28109520",
+      "previewBytes": 540254,
+      "previewDimensions": [
+        1254,
+        1254
+      ]
+    },
+    "stone.webp": {
+      "source": "assets/v3/materials/stone-01-lossless.webp",
+      "sourceSha256": "ba36e366d7d2a2c712a66408ece8afcdcb02d814a8e39be37f5ca10348579f84",
+      "sourceBytes": 2113914,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "preview": "assets/v3/previews/stone.webp",
+      "previewSha256": "1345a147a392baa5df2cdbffa93a1175eef50d5bd2ac8e8a09e4866c8c4e88af",
+      "previewBytes": 498894,
+      "previewDimensions": [
+        1254,
+        1254
+      ]
+    },
+    "water.webp": {
+      "source": "assets/v3/materials/water-01-lossless.webp",
+      "sourceSha256": "abdf3356f5c47520c59a58e0a506d983c7de5e2f40e58bfbc4fe1aca70627ad9",
+      "sourceBytes": 1610606,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "preview": "assets/v3/previews/water.webp",
+      "previewSha256": "115f7a2cb364b099b9195d2891789cdb596110aef58178bcdad093d620904e92",
+      "previewBytes": 226744,
+      "previewDimensions": [
+        1254,
+        1254
+      ]
+    },
+    "canal-bank-edge.webp": {
+      "source": "assets/v3/edges/canal-bank-edge-01.webp",
+      "sourceSha256": "ffbb109f2c44c2ab122299b973cc0fc6358a9486beefc1a9c358cf351eb7bdf5",
+      "sourceBytes": 632080,
+      "sourceDimensions": [
+        2172,
+        226
+      ],
+      "preview": "assets/v3/previews/canal-bank-edge.webp",
+      "previewSha256": "b6b0942f10acfd16bcb6df3003e5222c5464f02cd790e8afbf05d43056ea4907",
+      "previewBytes": 63052,
+      "previewDimensions": [
+        1024,
+        107
+      ]
+    },
+    "path-verge-edge.webp": {
+      "source": "assets/v3/edges/path-verge-edge-01.webp",
+      "sourceSha256": "5c99dfe5bf64ed71190a32246eec656f7df7561714045f0a984b3c25fe23e249",
+      "sourceBytes": 428866,
+      "sourceDimensions": [
+        1992,
+        194
+      ],
+      "preview": "assets/v3/previews/path-verge-edge.webp",
+      "previewSha256": "fb4cd73185f3c3219f026cf8ac008fab65af870970693c253999bbbe05fafc66",
+      "previewBytes": 63122,
+      "previewDimensions": [
+        1024,
+        100
+      ]
+    },
+    "courtyard-hall.webp": {
+      "source": "assets/v3/large/courtyard-hall-01.webp",
+      "sourceSha256": "3f28402dd8ba4b6cffb1fac693da4306a94631f8359f850d1ee97af8b372bc31",
+      "sourceBytes": 1321474,
+      "sourceDimensions": [
+        1445,
+        707
+      ],
+      "preview": "assets/v3/previews/courtyard-hall.webp",
+      "previewSha256": "6510961e84b9931cf1aecd9fc093bb9eaaf0a1ef0419ceb705e8366f8879a7e7",
+      "previewBytes": 135560,
+      "previewDimensions": [
+        768,
+        376
+      ]
+    },
+    "willow-tree.webp": {
+      "source": "assets/v3/large/willow-tree-01.webp",
+      "sourceSha256": "8e41982dd8d59a5476d5430cb865d9f86578bb69e9bc69c94c30373d5392fc9e",
+      "sourceBytes": 2044912,
+      "sourceDimensions": [
+        1214,
+        1229
+      ],
+      "preview": "assets/v3/previews/willow-tree.webp",
+      "previewSha256": "ef276bc17a733c5c449cbd00670c0df300f2b5b81aba9cda8f87ec1b2f1df30b",
+      "previewBytes": 426990,
+      "previewDimensions": [
+        759,
+        768
+      ]
+    },
+    "garden-rockery.webp": {
+      "source": "assets/v3/large/garden-rockery-01.webp",
+      "sourceSha256": "3a22cb438726d4a88cd9d24d6cf9be47faabd7ecff3aa604a9d3b5d131580e89",
+      "sourceBytes": 1223626,
+      "sourceDimensions": [
+        1238,
+        815
+      ],
+      "preview": "assets/v3/previews/garden-rockery.webp",
+      "previewSha256": "3cf0b6073d7286541048ed4ed0b0c63c969e64dec3935f6a80bd5ab0a0d783bf",
+      "previewBytes": 210006,
+      "previewDimensions": [
+        768,
+        506
+      ]
+    },
+    "white-garden-wall-long.webp": {
+      "source": "assets/v3/enclosures/white-garden-wall-long-01.webp",
+      "sourceSha256": "cdba1b3166c9bdc8b5ea9c4afaba24b3dc32b59035c202f17a72e112aa619577",
+      "sourceBytes": 1107696,
+      "sourceDimensions": [
+        2125,
+        389
+      ],
+      "preview": "assets/v3/previews/white-garden-wall-long.webp",
+      "previewSha256": "b87947fe6e3d37a849bbb81f3f5dd02674ba960a6299e012e212ed03dad9a722",
+      "previewBytes": 87440,
+      "previewDimensions": [
+        1024,
+        187
+      ]
+    },
+    "white-garden-wall-short.webp": {
+      "source": "assets/v3/enclosures/white-garden-wall-short-01.webp",
+      "sourceSha256": "3f6d358a9871ac1c5a68a1bf00b971c58c478aab3e249b5574a8d1fe8aabd1a0",
+      "sourceBytes": 833094,
+      "sourceDimensions": [
+        1225,
+        541
+      ],
+      "preview": "assets/v3/previews/white-garden-wall-short.webp",
+      "previewSha256": "fae192d5ffe06d01a97aeec0bb3c111cb233a3e0e7d42858d43e7172b686e8c8",
+      "previewBytes": 109590,
+      "previewDimensions": [
+        768,
+        339
+      ]
+    },
+    "white-garden-wall-corner.webp": {
+      "source": "assets/v3/enclosures/white-garden-wall-corner-01.webp",
+      "sourceSha256": "3304e8073574782204fad405a53011a4e53599d169699d1258bc9aa1c0083501",
+      "sourceBytes": 921018,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "preview": "assets/v3/previews/white-garden-wall-corner.webp",
+      "previewSha256": "f616daa42adda4c0263bb9b5f95ce66e4eb7c77df47f2a464df618462d765270",
+      "previewBytes": 121336,
+      "previewDimensions": [
+        768,
+        768
+      ]
+    },
+    "moon-gate.webp": {
+      "source": "assets/v3/enclosures/moon-gate-01.webp",
+      "sourceSha256": "e06e5a87395563c605b86f4777ebfa02a183ba40f09eca3fac70d755f5370853",
+      "sourceBytes": 1246684,
+      "sourceDimensions": [
+        1448,
+        721
+      ],
+      "preview": "assets/v3/previews/moon-gate.webp",
+      "previewSha256": "fbfa8292f9304e1cc8f0b871dbbee7763b362f25af5c352eb3985cd1f414a1ff",
+      "previewBytes": 108080,
+      "previewDimensions": [
+        768,
+        382
+      ]
+    }
+  }
+}

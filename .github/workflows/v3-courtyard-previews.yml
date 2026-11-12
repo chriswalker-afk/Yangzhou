@@ -1,0 +1,34 @@
+name: Prepare V3 lightweight artwork previews
+on:
+  push:
+    branches:
+      - v3-courtyard-preview-loader
+    paths:
+      - 'scripts/build_v3_courtyard_previews.py'
+      - '.github/workflows/v3-courtyard-previews.yml'
+permissions:
+  contents: write
+jobs:
+  build-previews:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'Pillow==11.3.0'
+      - run: python scripts/build_v3_courtyard_previews.py
+      - run: python scripts/build_v3_courtyard_previews.py --check
+      - name: Commit authentic source-derived preview images to the PR branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/v3/previews/
+          if git diff --cached --quiet; then
+            echo 'Preview derivatives already up to date'
+          else
+            git commit -m 'Generate 12 lightweight V3 test previews (preserve lossless masters)'
+            git push origin HEAD:refs/heads/v3-courtyard-preview-loader
+          fi
