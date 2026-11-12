@@ -8,7 +8,9 @@ const style=JSON.parse(fs.readFileSync('assets/v3/enclosures/manifest.json','utf
 const ids=['white-garden-wall-long-01','white-garden-wall-short-01','white-garden-wall-corner-01','moon-gate-01'];
 assert.deepEqual(art.IDS,ids);
 assert.equal(style.productionApproved,false);
-assert.equal(style.candidateStatus,'binaries-prepared-outside-repository-awaiting-upload');
+assert.equal(style.candidateStatus,'authentic-webps-committed-awaiting-seam-and-perspective-visual-review');
+assert.equal(style.joinRules.nominalHorizontalOverlapWorldUnits,4);
+assert.equal(art.PAINTED_JOIN_INSET,2);
 assert.equal(style.tileWorldSize,220);
 assert.equal(style.artifacts.length,4);
 const actualSizes={
@@ -24,6 +26,8 @@ for(const id of ids){
  assert.equal(item.sha256,listed.sha256);
  assert.equal(item.bytes,listed.bytes);
  assert.equal(item.preparedWidth,listed.width);
+ assert.deepEqual(item.ports,listed.ports,'Manifest contact ports must match runtime for '+id);
+ assert.equal(item.paintedJoinInset,listed.paintedJoinInset);
  assert.equal(item.preparedHeight,listed.height);
  assert.deepEqual([item.width,item.height],actualSizes[id]);
  const aspectError=Math.abs(item.width/item.height/(item.preparedWidth/item.preparedHeight)-1);
@@ -33,13 +37,21 @@ const court=art.plannedCompound();
 assert.equal(court.pieces.length,6);
 assert.equal(court.seams.length,4);
 assert(court.seams.every(s=>s.gap<1e-10),'Connector endpoints must be exactly coincident');
+assert(court.seams.every(s=>Math.abs(s.paintedOverlap-4)<1e-10),
+ 'Rendered neighbouring paintings must have a four-unit overlap, never exposed grass');
+assert.deepEqual(court.seams.map(s=>[s.aIndex,s.bIndex]),[[0,1],[1,2],[3,4],[4,5]]);
+assert(court.seams.every(s=>s.paintedOverlap>0 && s.paintedOverlap<6));
+assert.equal(court.seams[0].x,106);
+assert.equal(court.seams[1].x,131);
+assert.equal(court.seams[2].x,107);
+assert.equal(court.seams[3].x,135);
 assert.deepEqual(court.pieces.map(p=>p.id),[
  'white-garden-wall-long-01','white-garden-wall-short-01','white-garden-wall-corner-01',
  'white-garden-wall-long-01','moon-gate-01','white-garden-wall-short-01'
 ]);
 assert.equal(court.missingOrientedArtwork.length,2);
 assert.equal(court.guides.length,2);
-assert.equal(court.gateCorridor.centerX,127);
+assert.equal(court.gateCorridor.centerX,121);
 assert.equal(court.hall.x,107);
 const grass={x:0,y:0,edges:['L','L','L','L'],seed:1};
 assert(art.audit(grass).valid,'All-land courtyard should pass structural rule checks');
@@ -68,7 +80,7 @@ assert(drawCalls.every(x=>x[3]>0&&x[4]>0),'Image drawing must use declared world
 assert.equal(art.draw(stub,grass,{}, {guides:false}).drawn,0,'Missing art must not be faked');
 assert(!art.draw(stub,unsafe,fakeImages,{guides:false}).valid);
 const page=fs.readFileSync('courtyard-enclosure-lab-v3.html','utf8');
-for(const marker of ['Courtyard Enclosure Assembly Lab (rev 30)','id="enclosureFiles"',
+for(const marker of ['Courtyard Enclosure Assembly Lab (rev 32)','id="enclosureFiles"',
  'enclosure.loadCommitted()','enclosure.loadLocal(files)','id="joinBench"',
  'enclosure.draw(ctx,tile,enclosureImages','id="placeHere"','id="zoom"','painted'])
  assert(page.includes(marker),'Missing V3 isolated lab contract: '+marker);

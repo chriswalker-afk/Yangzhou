@@ -21,8 +21,8 @@ canvas{display:block;max-width:none;cursor:crosshair}
 small,.muted{color:#536459}
 pre{font-size:.8rem;max-height:220px;overflow:auto;white-space:pre;background:#f8f4e9;padding:12px;border:1px solid #ccc3b2;border-radius:6px}
 </style></head><body><main>
-<h1>Yangzhou V3 — Courtyard Enclosure Assembly Lab (rev 30)</h1>
-<p class="note"><strong>Separate V3-only art and geometry study — not the playable game.</strong> Here we test the four actual painted wall assets in combination with our Courtyard Hall 01, Willow Tree 01 and Garden Rockery 01. Authentic sprites are loaded from <code>assets/v3/enclosures/</code> when committed; missing artwork is never replaced with a fabricated painting. The dashed side walls are <strong>geometry proposals only</strong>: compass-upright north–south wall artwork is not yet available.</p>
+<h1>Yangzhou V3 — Courtyard Enclosure Assembly Lab (rev 32)</h1>
+<p class="note"><strong>Separate V3-only art and geometry study — not the playable game.</strong> Here we test the four actual painted wall assets in combination with our Courtyard Hall 01, Willow Tree 01 and Garden Rockery 01. All four authentic WebP paintings are committed and verified from <code>assets/v3/enclosures/</code> at page load; missing artwork is never replaced with a fabricated painting. The dashed side walls are <strong>geometry proposals only</strong>: compass-upright north–south wall artwork is not yet available.</p>
 <p>Start with <strong>All-land courtyards</strong> to inspect the full assembly. Select the canal junction study to confirm that compounds appear only on safe land tiles. Toggle artwork, adjust individual tile seeds, zoom in, and click a land tile to relocate the compound. The join bench below exposes measured connector points for the two straight wall lengths, corner and moon gate.</p>
 <div class="toolbar">
 <label for="study">Layout</label>
@@ -43,8 +43,7 @@ pre{font-size:.8rem;max-height:220px;overflow:auto;white-space:pre;background:#f
 <div class="status" id="enclosureArtwork">
 <strong>Four enclosure artwork files</strong>
 <div class="chips" id="enclosureChips" aria-label="Artwork availability"></div>
-<p class="muted" id="uploadHelp">Checking GitHub for the original painted sprites. If they are missing, select the four lossless WebPs below to test locally; no files leave your browser.</p>
-<p class="muted">To make the preview load automatically, <a href="https://github.com/chriswalker-afk/Yangzhou/upload/main/assets/v3/enclosures">upload all four prepared WebPs to GitHub</a> using their exact names: <code>white-garden-wall-long-01.webp</code>, <code>white-garden-wall-short-01.webp</code>, <code>white-garden-wall-corner-01.webp</code> and <code>moon-gate-01.webp</code>.</p>
+<p class="muted" id="uploadHelp">Checking the four authentic GitHub paintings and their SHA-256 checksums. They should load automatically; the optional file selector is only for local comparison.</p>
 <label for="enclosureFiles">Load four WebPs locally:</label>
 <input id="enclosureFiles" type="file" accept="image/webp,.webp" multiple>
 <div id="enclosureStatus" role="status" aria-live="polite">Checking the four original sprite hashes…</div>
@@ -58,7 +57,7 @@ pre{font-size:.8rem;max-height:220px;overflow:auto;white-space:pre;background:#f
 </div>
 <div id="tileInfo" class="status" role="status" aria-live="polite">Select a tile to see its data.</div>
 <h2>Modular join bench</h2>
-<p class="muted">Two reference chains share their mathematically exact join anchors (green dots): long → short → corner, and long → moon gate → short. This checks coping height and end treatments. At full zoom you may find the decorative terminal eaves double up at joins; that indicates artwork requiring capless derivatives, <strong>not permission to pretend the join is seamless</strong>.</p>
+<p class="muted">Both chains now connect at <strong>painted contact anchors</strong>, placed 2 world units inside each endpoint. Adjacent original, unstretched artwork overlaps by exactly 4 world units, closing the exposed-grass cracks visible in Rev 30. Green dots mark the contact points. Inspect the roof cap overlap closely at 3×: the geometry is continuous, but seamless ornamental tiles may still require capless variants.</p>
 <div class="preview"><canvas id="joinBench" width="1320" height="480" style="width:660px" aria-label="Exact two-row garden wall join bench, with painted originals where available"></canvas></div>
 <div id="joinInfo" class="status" role="status">Join geometry pending.</div>
 <h2>Courtyard layout contract</h2>
@@ -206,8 +205,8 @@ function showAssetStatus(missing,source){
  document.getElementById('enclosureStatus').textContent=count+'/4 verified painted enclosure assets available ('+source+'). '+
   (missing.length?'Still missing: '+missing.join(', '):'Join bench and courtyard now use all four authentic painted WebPs.');
  document.getElementById('uploadHelp').textContent=count===4&&source==='github'
- ?'All four artwork candidates loaded from GitHub automatically. Toggle guides and inspect at 3×.'
- :'Missing files never receive fake replacements. Select original prepared WebPs below to test locally, or upload them to assets/v3/enclosures/ on GitHub.';
+ ?'All four artwork candidates loaded from GitHub automatically. Painted seams overlap by 4 world units; inspect at 3×.'
+ :'Missing files never receive fake replacements. Select original prepared WebPs below for local troubleshooting.';
  render();
 }
 document.getElementById('enclosureFiles').addEventListener('change',async e=>{
@@ -244,7 +243,7 @@ function drawJoinBench(){
   }
  }
  document.getElementById('joinInfo').textContent='Join anchors: '+sequences.flatMap(x=>x.seams).map(x=>x.a.replace('white-garden-wall-','')+' → '+x.b.replace('white-garden-wall-','')+': '+x.gap.toFixed(3)+' units').join(' • ')+
- '. All mathematical join gaps are zero; visible roof-cap seams still require human artwork review.';
+ '. All join endpoints match; the painted bitmaps overlap by '+enclosure.PAINTED_JOIN_INSET*2+' world units. Ornamental roof-cap seams still require visual review.';
 }
 for(const [checkbox,id] of [
  ['showHall','courtyard-hall-01'],

@@ -1,6 +1,6 @@
 /* Yangzhou V3 - enclosure assembly prototype. Never used by playable V2.
  * Authoritative tile geometry is the existing V3 base renderer. Sprite sources
- * are real, independently painted PNGs; WebPs are not silently substituted.
+ * are authentic paintings; no textures or simulated join artwork are substituted.
  */
 (function(root,factory){
   const geometry=typeof module!=='undefined'&&module.exports?require('./base-geometry.js'):root.YangzhouV3Geometry;
@@ -12,6 +12,10 @@
 'use strict';
 if(!geometry||!layer2)throw Error('V3 exact geometry and Layer 2 must load before courtyard enclosures');
 const TILE=220, INSET=10, GAP=6;
+// The actual wall paintings have transparent endcap breathing room. Mathematical
+// rectangle-to-rectangle joins exposed grass. Paint-contact ports are 2 units
+// inside each joined side, making a controlled 4-unit overlap with no scaling.
+const PAINTED_JOIN_INSET=2;
 const BASE='assets/v3/enclosures/';
 /* The initial 70x12 / 40x12 / 36x36 / 32x22 footprints were art briefs.
  * These crop-ratio-conserving DRAW sizes were measured from the four authentic
@@ -24,28 +28,28 @@ const COMPONENTS=Object.freeze({
   filename:'white-garden-wall-long-01.webp',width:70,height:12,
   preparedWidth:2125,preparedHeight:389,bytes:1107696,
   sha256:'cdba1b3166c9bdc8b5ea9c4afaba24b3dc32b59035c202f17a72e112aa619577',
-  ports:Object.freeze({W:[-35,0],E:[35,0]}),kind:'straight'
+  ports:Object.freeze({W:[-33,0],E:[33,0]}),paintedJoinInset:PAINTED_JOIN_INSET,kind:'straight'
  }),
  'white-garden-wall-short-01':Object.freeze({
   id:'white-garden-wall-short-01',name:'White Garden Wall 02 — Short',
   filename:'white-garden-wall-short-01.webp',width:29,height:12,
   preparedWidth:1225,preparedHeight:541,bytes:833094,
   sha256:'3f6d358a9871ac1c5a68a1bf00b971c58c478aab3e249b5574a8d1fe8aabd1a0',
-  ports:Object.freeze({W:[-14.5,0],E:[14.5,0]}),kind:'straight'
+  ports:Object.freeze({W:[-12.5,0],E:[12.5,0]}),paintedJoinInset:PAINTED_JOIN_INSET,kind:'straight'
  }),
  'white-garden-wall-corner-01':Object.freeze({
   id:'white-garden-wall-corner-01',name:'White Garden Wall Corner 01 — West-to-South',
   filename:'white-garden-wall-corner-01.webp',width:34,height:29,
   preparedWidth:1112,preparedHeight:940,bytes:939828,
   sha256:'4f1298dc6e51cb5ee556c9a30e50db4b351f13d4ee8ada6dde7db6fd83671d1a',
-  ports:Object.freeze({W:[-17,-3],S:[10,14.5]}),kind:'corner'
+  ports:Object.freeze({W:[-15,-3],S:[10,14.5]}),paintedJoinInset:PAINTED_JOIN_INSET,kind:'corner'
  }),
  'moon-gate-01':Object.freeze({
   id:'moon-gate-01',name:'Moon Gate 01',
   filename:'moon-gate-01.webp',width:32,height:16,
   preparedWidth:1448,preparedHeight:721,bytes:1246684,
   sha256:'e06e5a87395563c605b86f4777ebfa02a183ba40f09eca3fac70d755f5370853',
-  ports:Object.freeze({W:[-16,0],E:[16,0]}),kind:'gate',passable:true,walkThroughAxis:'north-south'
+  ports:Object.freeze({W:[-14,0],E:[14,0]}),paintedJoinInset:PAINTED_JOIN_INSET,kind:'gate',passable:true,walkThroughAxis:'north-south'
  })
 });
 const IDS=Object.keys(COMPONENTS);
@@ -62,7 +66,13 @@ function horizontalChain(startX,centerY,ids){
   const piece=Object.freeze({id:ids[i],x:x-c.ports.W[0],y:y-c.ports.W[1]});
   if(parts.length){
    const prev=parts[parts.length-1],end=port(prev,'E'),start=port(piece,'W');
-   seams.push(Object.freeze({a:prev.id,b:piece.id,x:end.x,y:end.y,gap:Math.hypot(end.x-start.x,end.y-start.y)}));
+   const left=COMPONENTS[prev.id],right=c;
+   const rectOverlap=prev.x+left.width/2-(piece.x-right.width/2);
+   seams.push(Object.freeze({
+    a:prev.id,b:piece.id,aIndex:parts.length-1,bIndex:parts.length,
+    x:end.x,y:end.y,gap:Math.hypot(end.x-start.x,end.y-start.y),
+    paintedOverlap:rectOverlap
+   }));
   }
   parts.push(piece);
   if(c.ports.E){const e=port(piece,'E');x=e.x;y=e.y;}
@@ -81,7 +91,10 @@ function plannedCompound(){
  const corner=north.pieces.find(p=>p.id==='white-garden-wall-corner-01');
  return Object.freeze({
   pieces:Object.freeze([...north.pieces,...south.pieces]),
-  seams:Object.freeze([...north.seams,...south.seams]),
+  seams:Object.freeze([
+   ...north.seams,
+   ...south.seams.map(j=>Object.freeze({...j,aIndex:j.aIndex+north.pieces.length,bIndex:j.bIndex+north.pieces.length}))
+  ]),
   guides:Object.freeze([
    Object.freeze({from:{x:CONFIG.north.startX,y:CONFIG.north.y},to:{x:CONFIG.south.startX,y:CONFIG.south.y},reason:'north-south straight artwork missing'}),
    Object.freeze({from:port(corner,'S'),to:{x:CONFIG.south.startX+70+32+29,y:CONFIG.south.y},reason:'north-south straight artwork missing'})
@@ -118,8 +131,13 @@ function audit(tile,layout=plannedCompound()){
  const problems=[];
  for(const p of layout.pieces)
   if(!safeForTile(tile,p))problems.push('Protected street/canal, or tile-boundary overlap: '+p.id);
- for(let i=0;i<layout.pieces.length;i++)for(let j=i+1;j<layout.pieces.length;j++)
-  if(overlap(layout.pieces[i],layout.pieces[j]))problems.push('Two wall footprints overlap: '+i+', '+j);
+ for(let i=0;i<layout.pieces.length;i++)for(let j=i+1;j<layout.pieces.length;j++){
+  if(!overlap(layout.pieces[i],layout.pieces[j]))continue;
+  const intended=layout.seams.find(s=>s.aIndex===i&&s.bIndex===j);
+  if(intended&&intended.gap<0.001&&
+     intended.paintedOverlap>=3.9&&intended.paintedOverlap<=4.1)continue;
+  problems.push('Non-joined wall footprints overlap: '+i+', '+j);
+ }
  if(!layer2.validateDetail(tile,layout.hall))problems.push('Courtyard hall placement conflicts with routes');
  const hallBounds={id:'courtyard-hall-01',x:layout.hall.x,y:layout.hall.y};
  const hall=layer2.COMPONENTS[hallBounds.id];
@@ -129,7 +147,11 @@ function audit(tile,layout=plannedCompound()){
      Math.abs(p.y-hallBounds.y)<(c.height+hall.height)/2)
     problems.push('Courtyard wall intrudes into hall: '+p.id);
  }
- for(const j of layout.seams)if(j.gap>0.001)problems.push('Disconnected join: '+j.a+' / '+j.b);
+ for(const j of layout.seams){
+  if(j.gap>0.001)problems.push('Disconnected join: '+j.a+' / '+j.b);
+  if(j.paintedOverlap<3.9||j.paintedOverlap>4.1)
+   problems.push('Invalid painted join overlap: '+j.a+' / '+j.b);
+ }
  return Object.freeze({valid:problems.length===0,problems:Object.freeze(problems),seams:layout.seams.length,passableGateAxis:'north-south',visualClosed:false});
 }
 function draw(ctx,tile,images,options={}){
@@ -218,7 +240,7 @@ async function loadLocal(files){
  }));
  return {images,missing,errors};
 }
-return Object.freeze({TILE,INSET,GAP,BASE,IDS,COMPONENTS,CONFIG,
+return Object.freeze({TILE,INSET,GAP,PAINTED_JOIN_INSET,BASE,IDS,COMPONENTS,CONFIG,
  port,horizontalChain,plannedCompound,safeForTile,audit,draw,
  loadCommitted,loadLocal});
 });
