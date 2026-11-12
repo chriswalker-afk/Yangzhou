@@ -8,7 +8,7 @@
 
 Four user-generated paintings were prepared as cropped transparent lossless WebP sprites, preserving their original colours. Exact pixel dimensions, SHA-256 and file sizes are recorded in [manifest.json](../../assets/v3/enclosures/manifest.json). They are **not in this PR until actually uploaded**. Dashed shapes in the preview are geometry guides only, never substitute artwork.
 
-[Upload four WebPs directly into the PR branch](https://github.com/chriswalker-afk/Yangzhou/upload/v3-courtyard-enclosure-assembly-lab/assets/v3/enclosures):
+[Upload four WebPs directly into the PR branch](https://github.com/chriswalker-afk/Yangzhou/upload/main/assets/v3/enclosures):
 
 - white-garden-wall-long-01.webp
 - white-garden-wall-short-01.webp
