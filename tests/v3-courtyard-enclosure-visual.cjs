@@ -13,7 +13,36 @@ async function run(){
   await page.waitForFunction(()=>document.querySelector('#assetStatus')?.textContent.includes('V3 continuous grass'),{timeout:30000});
   await page.waitForFunction(()=>document.querySelector('#enclosureStatus')?.textContent.includes('/4 verified'),{timeout:30000});
   const initialArtworkStatus=await page.locator('#enclosureStatus').textContent();
-  assert.match(await page.locator('h1').textContent(),/rev 30/);
+  assert.match(await page.locator('h1').textContent(),/rev 32/);
+  // Regression: exact mathematical joins are insufficient when the painted
+  // sprites have transparent terminal pixels. Inspect the real 4/4 WebPs in
+  // an alpha-only compositing canvas, not the opaque grass-backed screenshot.
+  const contactCoverage=await page.evaluate(async()=>{
+   const enc=window.YangzhouV3Enclosures;
+   const loaded=await enc.loadCommitted();
+   if(loaded.missing.length)throw Error('Missing genuine WebP artwork: '+loaded.missing.join(','));
+   const tile={x:0,y:0,edges:['L','L','L','L'],seed:1};
+   const canvas=document.createElement('canvas'),scale=10;
+   canvas.width=220*scale;canvas.height=220*scale;
+   const c=canvas.getContext('2d',{willReadFrequently:true});
+   c.setTransform(scale,0,0,scale,0,0);
+   enc.draw(c,tile,loaded.images,{guides:false});
+   const alpha=(x,y)=>c.getImageData(Math.round(x*scale),Math.round(y*scale),1,1).data[3];
+   return enc.plannedCompound().seams.map(seam=>{
+    const rows=[-1,0,1.5,3,4.5];
+    const center=rows.map(d=>alpha(seam.x,seam.y+d));
+    const neighbours=[-1,1].flatMap(dx=>rows.map(d=>alpha(seam.x+dx,seam.y+d)));
+    return {names:seam.a+' -> '+seam.b,center,neighbours,paintedOverlap:seam.paintedOverlap};
+   });
+  });
+  for(const contact of contactCoverage){
+   assert.equal(contact.paintedOverlap,4,'Join overlap regressed at '+contact.names);
+   assert(contact.center.filter(a=>a>=160).length>=3,
+    'Grass-visible alpha gap survives at painted contact '+contact.names+' '+JSON.stringify(contact.center));
+   assert(contact.neighbours.filter(a=>a>=160).length>=6,
+    'Grass-visible alpha gap near contact '+contact.names+' '+JSON.stringify(contact.neighbours));
+  }
+  console.log('Four real painted courtyard joins contain no transparent contact cracks at the centre and neighbouring samples.');
   const data=JSON.parse(await page.locator('#layoutData').textContent());
   assert.equal(data.tileSize,220);
   assert.equal(data.courtyardReview.tileIndex,0);
@@ -52,7 +81,7 @@ async function run(){
   await mobile.waitForFunction(()=>document.querySelector('#assetStatus')?.textContent.includes('V3 continuous grass'),{timeout:30000});
   await mobile.screenshot({path:'artifacts/v3/enclosure-assembly-mobile.png',fullPage:true});
   assert.deepEqual(errors,[],'No runtime JavaScript exceptions on desktop/mobile');
-  console.log('V3 enclosure art lab browser QA passed: 6-tile study, exact seams, canal route safeguards, 3x, mobile, honest artwork status.');
+  console.log('V3 enclosure art lab browser QA passed: 6-tile study, real painted-overlap seam coverage, canal route safeguards, 3x, mobile, truthful artwork status.');
  }finally{await browser.close();}
 }
 run().catch(e=>{console.error(e);process.exitCode=1;});
