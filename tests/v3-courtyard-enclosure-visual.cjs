@@ -13,10 +13,24 @@ async function run(){
   await page.waitForFunction(()=>document.querySelector('#assetStatus')?.textContent.includes('V3 continuous grass'),{timeout:30000});
   await page.waitForFunction(()=>document.querySelector('#enclosureStatus')?.textContent.includes('/4 verified'),{timeout:30000});
   const initialArtworkStatus=await page.locator('#enclosureStatus').textContent();
-  assert.match(await page.locator('h1').textContent(),/rev 34/);
+  assert.match(await page.locator('h1').textContent(),/rev 35/);
   assert(await page.locator('#retryAssets').isVisible(),'Retry artwork loading control must be available');
   assert.match(await page.locator('#enclosureStatus').textContent(),/4\/4 verified/);
   assert.match(await page.locator('#assetStatus').textContent(),/8\/8/);
+  // The live lab must use compact previews; lossless masters remain in GitHub
+  // but are not required as 16MB of simultaneous browser downloads.
+  const previewTraffic=await page.evaluate(()=>performance.getEntriesByType('resource')
+   .filter(r=>r.name.includes('/assets/v3/previews/')).map(r=>r.name));
+  assert(previewTraffic.length>=12,
+   'The courtyard lab must actually request its 12 compact previews: '+previewTraffic.length);
+  const previewManifest=await page.evaluate(async()=>{
+   const response=await fetch('assets/v3/previews/manifest.json');
+   if(!response.ok)throw Error('Preview manifest unavailable');
+   return response.json();
+  });
+  assert.equal(Object.keys(previewManifest.assets).length,12);
+  assert(previewTraffic.some(u=>u.endsWith('/grass.webp')));
+  assert(previewTraffic.some(u=>u.endsWith('/white-garden-wall-corner.webp')));
   // Regression: exact mathematical joins are insufficient when the painted
   // sprites have transparent terminal pixels. Inspect the real 4/4 WebPs in
   // an alpha-only compositing canvas, not the opaque grass-backed screenshot.
@@ -89,8 +103,8 @@ async function run(){
   const stalled=await browser.newPage({viewport:{width:1000,height:750}});
   stalled.on('pageerror',e=>errors.push('stalled: '+e.message));
   for(const match of [
-   '**/assets/v3/enclosures/moon-gate-01.webp',
-   '**/assets/v3/materials/grass-01-lossless.webp'
+   '**/assets/v3/previews/moon-gate.webp',
+   '**/assets/v3/previews/grass.webp'
   ]){
    await stalled.route(match,async route=>{
     await new Promise(resolve=>setTimeout(resolve,1800));
