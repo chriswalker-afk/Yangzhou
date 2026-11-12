@@ -241,7 +241,7 @@ async function verify(id,blob){
 // Do not hold the whole art preview hostage to one stalled request or WebP decode.
 // Report each independently verified original, with a hard deadline and safe abort.
 function validTimeout(value){
- return Number.isFinite(value)?Math.max(350,Math.min(30000,Math.round(value))):16000;
+ return Number.isFinite(value)?Math.max(350,Math.min(60000,Math.round(value))):35000;
 }
 function withDeadline(task,timeoutMs,controller,label){
  return new Promise((resolve,reject)=>{
@@ -330,8 +330,12 @@ async function loadCommitted(options={}){
   catch(err){errors.push('Preview manifest: '+String(err.message||err));}
  }
  progress();
- await Promise.all(IDS.map(async id=>{
-  const c=COMPONENTS[id],name=PREVIEWS[id];
+ // No more than two enclosure requests in flight. Twelve simultaneous large
+ // images starved each other on a slow connection, triggering the old timeout.
+ let next=0;
+ async function worker(){
+ while(next<IDS.length){
+  const id=IDS[next++],c=COMPONENTS[id],name=PREVIEWS[id];
   try{
    if(manifest){
     const meta=manifest.assets[name];
@@ -348,7 +352,9 @@ async function loadCommitted(options={}){
    missing.push(c.filename);
    errors.push(id+': '+String(err.message||err));
   }finally{completed++;progress();}
- }));
+ }
+ }
+ await Promise.all([worker(),worker()]);
  return {images,missing,errors};
 }
 async function loadLocal(files){
