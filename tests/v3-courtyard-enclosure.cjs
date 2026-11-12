@@ -12,11 +12,12 @@ assert.equal(style.candidateStatus,'authentic-webps-committed-awaiting-seam-and-
 assert.equal(style.joinRules.nominalHorizontalOverlapWorldUnits,4);
 assert.equal(art.PAINTED_JOIN_INSET,2);
 assert.equal(style.tileWorldSize,220);
+assert.equal(style.cornerRepaint.status,'uploaded-user-repaint-integrated-as-candidate');
 assert.equal(style.artifacts.length,4);
 const actualSizes={
  'white-garden-wall-long-01':[70,12],
  'white-garden-wall-short-01':[29,12],
- 'white-garden-wall-corner-01':[34,29],
+ 'white-garden-wall-corner-01':[29,24],
  'moon-gate-01':[32,16]
 };
 for(const id of ids){
@@ -30,8 +31,17 @@ for(const id of ids){
  assert.equal(item.paintedJoinInset,listed.paintedJoinInset);
  assert.equal(item.preparedHeight,listed.height);
  assert.deepEqual([item.width,item.height],actualSizes[id]);
- const aspectError=Math.abs(item.width/item.height/(item.preparedWidth/item.preparedHeight)-1);
+ const paintedW=item.sourceCrop?.width||item.preparedWidth;
+ const paintedH=item.sourceCrop?.height||item.preparedHeight;
+ const aspectError=Math.abs(item.width/item.height/(paintedW/paintedH)-1);
  assert(aspectError<0.085,'Do not distort original painted candidate '+id);
+ assert.deepEqual(item.sourceCrop||null,listed.sourceCrop||null);
+ if(item.sourceCrop){
+  const crop=item.sourceCrop;
+  assert(crop.x>=0&&crop.y>=0&&crop.width>0&&crop.height>0);
+  assert(crop.x+crop.width<=item.preparedWidth);
+  assert(crop.y+crop.height<=item.preparedHeight);
+ }
 }
 const court=art.plannedCompound();
 assert.equal(court.pieces.length,6);
@@ -52,6 +62,12 @@ assert.deepEqual(court.pieces.map(p=>p.id),[
 assert.equal(court.missingOrientedArtwork.length,2);
 assert.equal(court.guides.length,2);
 assert.equal(court.gateCorridor.centerX,121);
+assert.deepEqual(art.COMPONENTS['white-garden-wall-corner-01'].sourceCrop,{x:51,y:154,width:1147,height:950});
+assert.equal(art.COMPONENTS['white-garden-wall-corner-01'].preparedWidth,1254);
+assert.equal(art.COMPONENTS['white-garden-wall-corner-01'].preparedHeight,1254);
+assert.equal(art.COMPONENTS['white-garden-wall-corner-01'].bytes,921018);
+assert.equal(art.COMPONENTS['white-garden-wall-corner-01'].sha256,
+  '3304e8073574782204fad405a53011a4e53599d169699d1258bc9aa1c0083501');
 assert.equal(court.hall.x,107);
 const grass={x:0,y:0,edges:['L','L','L','L'],seed:1};
 assert(art.audit(grass).valid,'All-land courtyard should pass structural rule checks');
@@ -76,13 +92,19 @@ const draw=art.draw(stub,grass,fakeImages,{guides:false});
 assert(draw.valid);
 assert.equal(draw.drawn,6);
 assert.equal(drawCalls.length,6);
-assert(drawCalls.every(x=>x[3]>0&&x[4]>0),'Image drawing must use declared world footprint');
+assert(drawCalls.every(x=>x[3]>0&&x[4]>0),'Image drawing must use positive dimensions');
+const cropped=drawCalls.filter(x=>x.length===9);
+assert.equal(cropped.length,1,'Only the repainted corner uses the source-cropping renderer');
+assert.deepEqual(cropped[0].slice(1,5),[51,154,1147,950],
+ 'The original 1254px upload is cropped non-destructively at render time');
+assert.deepEqual(cropped[0].slice(7,9),[29,24],
+ 'Painting retains its intended 29x24 world-unit aspect and wall height');
 assert.equal(art.draw(stub,grass,{}, {guides:false}).drawn,0,'Missing art must not be faked');
 assert(!art.draw(stub,unsafe,fakeImages,{guides:false}).valid);
 const page=fs.readFileSync('courtyard-enclosure-lab-v3.html','utf8');
-for(const marker of ['Courtyard Enclosure Assembly Lab (rev 32)','id="enclosureFiles"',
+for(const marker of ['Courtyard Enclosure Assembly Lab (rev 33)','id="enclosureFiles"',
  'enclosure.loadCommitted()','enclosure.loadLocal(files)','id="joinBench"',
- 'enclosure.draw(ctx,tile,enclosureImages','id="placeHere"','id="zoom"','painted'])
+ 'enclosure.draw(ctx,tile,enclosureImages','enclosure.drawSprite(c,img,p)','id="placeHere"','id="zoom"','painted'])
  assert(page.includes(marker),'Missing V3 isolated lab contract: '+marker);
 assert(!page.includes('ctx.rotate('),'Never rotate a facade to imitate compass-upright wall art');
 const existing=fs.readFileSync('layer2-lab-v3.html','utf8');
