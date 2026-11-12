@@ -8,6 +8,8 @@ assert.equal(art.period,220);
 assert.equal(art.positiveMod(-5,220),215);
 assert.equal(art.isImage(null),false);
 assert.equal(art.isImage({naturalWidth:2172,naturalHeight:724}),true);
+const original={naturalWidth:2172,naturalHeight:724};
+assert.equal(art.prepareImage(original),original,'Node without DOM must preserve source and avoid destructive cropping');
 assert.equal(art.draw({},edging.compile(geometry.compile('LSLS'.split(''))),null),0);
 const bridge=edging.compile(geometry.compile('WSWS'.split('')));
 const canal=edging.compile(geometry.compile('LWLW'.split('')));
