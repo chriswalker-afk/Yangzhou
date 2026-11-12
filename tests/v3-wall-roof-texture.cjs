@@ -6,7 +6,9 @@ const wall=require('../assets/v3/wall-geometry.js');
 const roof=require('../assets/v3/wall-roof-texture.js');
 const spec=JSON.parse(fs.readFileSync('assets/v3/wall-materials/manifest.json','utf8'));
 const digest=data=>crypto.createHash('sha256').update(data).digest('hex');
-assert.equal(spec.status,'candidate-awaiting-binary-upload-and-visual-review');
+assert.equal(spec.status,'candidate-committed-awaiting-visual-review');
+assert.equal(spec.prepared.committed,true);
+assert.equal(spec.prepared.gitBlobSha1,'724b075426f0e6fa2688a03e7ac366c50567a124');
 assert.equal(spec.productionApproved,false);
 assert.equal(spec.prepared.path,roof.ASSET.path);
 assert.equal(spec.prepared.bytes,roof.ASSET.bytes);
@@ -81,7 +83,7 @@ if(fs.existsSync(url)){
  assert.equal(bytes.subarray(8,12).toString(),'WEBP');
  console.log('Actual painter-generated V3 roof texture verified: '+bytes.length+' bytes');
 }else{
- console.log('Painter-generated roof texture binary awaits upload; metadata and geometry are staged.');
+ assert.fail('Committed authentic roof WebP missing from repository');
 }
 const page=fs.readFileSync('wall-geometry-lab-v3.html','utf8');
 for(const item of ['Wall Geometry &amp; Texture Lab (rev 37)',
