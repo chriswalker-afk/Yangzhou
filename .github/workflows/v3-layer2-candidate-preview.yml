@@ -1,0 +1,25 @@
+name: Yangzhou V3 Layer 2 candidate preview
+on:
+  push:
+    paths:
+      - 'assets/v3/layer2-candidate-preview.js'
+      - 'layer2-artwork-review-v3.html'
+      - 'tests/v3-layer2-candidate-preview.cjs'
+      - '.github/workflows/v3-layer2-candidate-preview.yml'
+  pull_request:
+    paths:
+      - 'assets/v3/layer2-candidate-preview.js'
+      - 'layer2-artwork-review-v3.html'
+      - 'tests/v3-layer2-candidate-preview.cjs'
+      - '.github/workflows/v3-layer2-candidate-preview.yml'
+jobs:
+  validate-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check assets/v3/layer2-candidate-preview.js
+      - run: node tests/v3-layer2.cjs
+      - run: node tests/v3-layer2-candidate-preview.cjs
