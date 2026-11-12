@@ -159,6 +159,20 @@ function audit(tile,layout=plannedCompound()){
  }
  return Object.freeze({valid:problems.length===0,problems:Object.freeze(problems),seams:layout.seams.length,passableGateAxis:'north-south',visualClosed:false});
 }
+// One rendering contract for the six-tile scene and the enlarged join bench.
+// Bitmap cropping is independent from the structural world footprint.
+function drawSprite(ctx,img,piece,ox=0,oy=0){
+ const c=COMPONENTS[piece.id];
+ if(!img||!c)return false;
+ const dx=ox+piece.x-c.width/2,dy=oy+piece.y-c.height/2;
+ if(c.sourceCrop){
+  const crop=c.sourceCrop;
+  ctx.drawImage(img,crop.x,crop.y,crop.width,crop.height,dx,dy,c.width,c.height);
+ }else{
+  ctx.drawImage(img,dx,dy,c.width,c.height);
+ }
+ return true;
+}
 function draw(ctx,tile,images,options={}){
  const layout=plannedCompound(),check=audit(tile,layout);
  if(!check.valid)return Object.freeze({drawn:0,valid:false,problems:check.problems});
@@ -180,16 +194,7 @@ function draw(ctx,tile,images,options={}){
  let drawn=0;
  for(const piece of layout.pieces){
   const c=COMPONENTS[piece.id],img=images&&images[piece.id];
-  if(img){
-   if(c.sourceCrop){
-    const crop=c.sourceCrop;
-    ctx.drawImage(img,crop.x,crop.y,crop.width,crop.height,
-      ox+piece.x-c.width/2,oy+piece.y-c.height/2,c.width,c.height);
-   }else{
-    ctx.drawImage(img,ox+piece.x-c.width/2,oy+piece.y-c.height/2,c.width,c.height);
-   }
-   drawn++;
-  }else if(guides){
+  if(img){if(drawSprite(ctx,img,piece,ox,oy))drawn++;}else if(guides){
    // Geometry-only review box; do not counterfeit a painted sprite.
    ctx.strokeStyle='rgba(150,67,53,.85)';ctx.lineWidth=.75;ctx.setLineDash([2,2]);
    ctx.strokeRect(ox+piece.x-c.width/2,oy+piece.y-c.height/2,c.width,c.height);
@@ -252,6 +257,6 @@ async function loadLocal(files){
  return {images,missing,errors};
 }
 return Object.freeze({TILE,INSET,GAP,PAINTED_JOIN_INSET,BASE,IDS,COMPONENTS,CONFIG,
- port,horizontalChain,plannedCompound,safeForTile,audit,draw,
+ port,horizontalChain,plannedCompound,safeForTile,audit,draw,drawSprite,
  loadCommitted,loadLocal});
 });
