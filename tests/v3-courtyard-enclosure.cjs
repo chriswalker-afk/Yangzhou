@@ -102,9 +102,9 @@ assert.deepEqual(cropped[0].slice(7,9),[29,24],
 assert.equal(art.draw(stub,grass,{}, {guides:false}).drawn,0,'Missing art must not be faked');
 assert(!art.draw(stub,unsafe,fakeImages,{guides:false}).valid);
 const page=fs.readFileSync('courtyard-enclosure-lab-v3.html','utf8');
-for(const marker of ['Courtyard Enclosure Assembly Lab (rev 33)','id="enclosureFiles"',
+for(const marker of ['Courtyard Enclosure Assembly Lab (rev 34)','id="enclosureFiles"',
  'enclosure.loadCommitted()','enclosure.loadLocal(files)','id="joinBench"',
- 'enclosure.draw(ctx,tile,enclosureImages','enclosure.drawSprite(c,img,p)','id="placeHere"','id="zoom"','painted'])
+ 'enclosure.draw(ctx,tile,enclosureImages','enclosure.drawSprite(c,img,p)','id="placeHere"','id="zoom"','id="retryAssets"','startSceneryLoading()','onProgress:state','painted'])
  assert(page.includes(marker),'Missing V3 isolated lab contract: '+marker);
 assert(!page.includes('ctx.rotate('),'Never rotate a facade to imitate compass-upright wall art');
 const existing=fs.readFileSync('layer2-lab-v3.html','utf8');
