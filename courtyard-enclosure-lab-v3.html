@@ -51,7 +51,7 @@ pre{font-size:.8rem;max-height:220px;overflow:auto;white-space:pre;background:#f
 <div id="assetStatus" role="status" aria-live="polite" class="status">Preparing compact V3 scenery previews…</div>
 <p class="muted"><strong>Connection diagnostic:</strong> <a href="assets/v3/previews/grass.webp" target="_blank" rel="noopener">Open the small grass preview directly</a> · <a href="https://raw.githubusercontent.com/chriswalker-afk/Yangzhou/main/assets/v3/previews/grass.webp" target="_blank" rel="noopener">Try the alternate image host</a>. The full-resolution lossless artwork remains preserved on GitHub.</p>
 <div class="toolbar"><button id="retryAssets" type="button">Retry image loading</button>
-<small>Preview remains available if any artwork request fails.</small></div>
+<small>Preview remains available if any artwork request fails. At most four compact images download concurrently.</small></div>
 <div class="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Six V3 world-geometry tiles with one modular courtyard enclosure compound"></canvas></div>
 <div class="toolbar">
 <button id="prevSeed" type="button">Previous tile seed</button>
@@ -279,7 +279,7 @@ for(const [checkbox,id] of [
 // Progressive, bounded loading: no single slow WebP can hold up the page.
 const requestedTimeout=Number(new URLSearchParams(location.search).get('assetTimeoutMs'));
 const IMAGE_TIMEOUT_MS=Number.isFinite(requestedTimeout)&&requestedTimeout>=350
- ?Math.min(30000,Math.round(requestedTimeout)):16000;
+ ?Math.min(60000,Math.round(requestedTimeout)):35000;
 let enclosureRequest=0,sceneryRequest=0;
 const graphicSpecs=[
  ...materials.ids.map(id=>({name:'material '+id,url:materials.base+materials.files[id],
@@ -348,7 +348,12 @@ async function startSceneryLoading(manifest){
   requestRender();
  }
  update();
- await Promise.all(graphicSpecs.map(async spec=>{
+ // Two scenery transfers at once keep texture preview requests responsive on
+ // slow links; four enclosure art requests are separately capped at two.
+ let next=0;
+ async function worker(){
+ while(next<graphicSpecs.length){
+  const spec=graphicSpecs[next++];
   try{
    let img;
    if(manifest){
@@ -366,7 +371,9 @@ async function startSceneryLoading(manifest){
   }finally{
    if(request===sceneryRequest){completed++;update();}
   }
- }));
+ }
+ }
+ await Promise.all([worker(),worker()]);
  ready=loaded===total;
 }
 async function startAllAssets(){
