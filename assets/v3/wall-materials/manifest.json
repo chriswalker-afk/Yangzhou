@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "layer": 2,
+  "materialId": "wall-roof-tiles-01",
+  "status": "candidate-awaiting-binary-upload-and-visual-review",
+  "productionApproved": false,
+  "renderingScope": "V3 Wall Geometry & Texture Lab only",
+  "source": {
+    "name": "Yangzhou V3 Wall Roof-Tile Texture 01",
+    "format": "PNG",
+    "pixelWidth": 2508,
+    "pixelHeight": 627,
+    "bytes": 3276001,
+    "sha256": "731df70b0143848f3c1f0bc4b0c51e3d845fa7f09ca16cab8b2bba339853dd39",
+    "stored": "ChatGPT generation, not yet committed to repository"
+  },
+  "prepared": {
+    "path": "assets/v3/wall-materials/wall-roof-tiles-01.webp",
+    "format": "WebP",
+    "pixelWidth": 1256,
+    "pixelHeight": 314,
+    "bytes": 174360,
+    "sha256": "8a3a7abeb08c4e34bb0134c9a39ba301000435bed5d3c63ccad3bd7a949e578a",
+    "compression": "lossy WebP quality 93, method 6",
+    "seamNormalization": "symmetric cosine edge correction limited to outer 60 pixels; first/last RGB columns equal before WebP encoding"
+  },
+  "mapping": {
+    "copingWidthWorld": 8,
+    "repeatPeriodWorld": 32,
+    "textureUV": "u=accumulated wall centreline arclength; v=cross-wall offset",
+    "corners": "miter-clipped contiguous segments",
+    "junctions": "exact T/L with underlying continuous coping band",
+    "gates": "real breaks through all layers, never painted closed"
+  },
+  "reviews": {
+    "normalZoom": false,
+    "threeTimesZoom": false,
+    "roofColourMatch": false,
+    "physicalSeam": false,
+    "intersectionSeam": false,
+    "historicalAccuracy": false
+  }
+}
