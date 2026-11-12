@@ -22,8 +22,9 @@ button[aria-pressed="true"]{background:#304f49;color:#fff}
 .legend span:before{content:"";display:inline-block;width:12px;height:12px;background:var(--swatch);border:1px solid #999;margin-right:5px}
 .subtle{color:#50655c;font-size:.93rem}
 .status{padding:10px 12px;border:1px solid #d1c8b4;background:#f6efe0;border-radius:6px}
+.edge-state{padding:9px 12px;margin:10px 0;border:1px solid #b1a287;background:#eee8dc;border-radius:6px;font-size:.93rem}
 </style></head><body><main>
-<h1>Yangzhou V3 — Layer 1B Edge Geometry Lab</h1>
+<h1>Yangzhou V3 — Layer 1B Edge Geometry Lab (rev 22)</h1>
 <p class="notice"><strong>Geometry and temporary-colour study only — not finished edge art.</strong> The three previously accepted grass, stone and water texture candidates load automatically. Narrow path verges, canal banks and contact rims now follow the exact V3 route geometry. These flat edge colours are placeholders awaiting separately painted assets and visual review. Nothing here modifies the live V2 game.</p>
 <p>Compare a connected 3 × 2 street-and-canal neighbourhood against individual bends, a bridge, and junctions. Select a study, hide/show temporary edges, enable exact port guides and inspect at 3×. The paving and water still occupy <strong>exactly 20% and 40%</strong> of their respective edge mouths. Verge and bank strips sit on the land side; textures share one board-wide origin.</p>
 <div class="controls">
@@ -41,8 +42,9 @@ button[aria-pressed="true"]{background:#304f49;color:#fff}
 <button id="zoom" aria-pressed="false" type="button">Inspect at 3× zoom</button>
 </div>
 <div id="status" class="status" role="status" aria-live="polite">Checking whether the three accepted texture images are available…</div>
+<div id="edgeState" class="edge-state" role="status" aria-live="polite">Checking the Layer 1B edge renderer…</div>
 <div class="preview" id="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Connected three-by-two road and canal material preview"></canvas></div>
-<div class="legend"><span style="--swatch:#D5D5B7">Fallback grass</span><span style="--swatch:#DFD1B5">Fallback paving</span><span style="--swatch:#7EA9A5">Fallback water</span><span style="--swatch:#B5A68C">Temporary path verge</span><span style="--swatch:#C9BC9E">Temporary canal bank</span></div>
+<div class="legend"><span style="--swatch:#D5D5B7">Fallback grass</span><span style="--swatch:#DFD1B5">Fallback paving</span><span style="--swatch:#7EA9A5">Fallback water</span><span style="--swatch:#B5A68C">Temporary path verge</span><span style="--swatch:#BAA789">Temporary canal bank</span><span style="--swatch:#567B70">Temporary waterline rim</span></div>
 <h2>Compare alternative textures locally (optional)</h2>
 <p class="subtle">The committed accepted candidates load automatically. These selectors only read alternatives from your device for this browser session; they do not upload or alter anything on GitHub.</p>
 <div class="inputs">
@@ -50,7 +52,7 @@ button[aria-pressed="true"]{background:#304f49;color:#fff}
 <label>Stone texture<input id="stoneFile" type="file" accept=".png,.webp,image/png,image/webp"></label>
 <label>Water texture<input id="waterFile" type="file" accept=".png,.webp,image/png,image/webp"></label>
 </div>
-<p class="subtle">At 3× zoom the canvas expands for close inspection; scroll within the preview to inspect joins. Grass and water repeat every two tiles (440 world units); paving every tile (220 units). The renderer draws route ribbons in global coordinates without resetting the pattern origin. Temporary verge widths: path 2.5 units per side, canal bank 4 units per side, plus a narrower contact rim. These do not widen the playable road or canal masks. No painted border-strip artwork, detail sprites or animation is included.</p>
+<p class="subtle">At 3× zoom the canvas expands for close inspection; scroll within the preview to inspect joins. Grass and water repeat every two tiles (440 world units); paving every tile (220 units). The renderer draws route ribbons in global coordinates without resetting the pattern origin. The warm stone-coloured canal band and dark waterline rim are deliberately more visible for this geometry diagnostic. If the page does not show <strong>Layer 1B rev 22</strong>, refresh the browser to obtain the current prototype. Temporary verge widths: path 2.5 units per side, canal bank 4 units per side, plus a narrower contact rim. These do not widen the playable road or canal masks. No painted border-strip artwork, detail sprites or animation is included.</p>
 <p><a href="index.html">Current playable game (V2)</a> · <a href="docs/ARTWORK-V3.md">V3 artwork specification</a> · <a href="assets/v3/materials/README.md">Committed materials and integrity checks</a></p>
 </main>
 <script src="tile-topology.js"></script><script src="assets/v3/base-geometry.js"></script><script src="assets/v3/material-runtime.js"></script><script src="assets/v3/edge-system.js"></script>
@@ -62,7 +64,7 @@ const materials=window.YangzhouV3Materials,edging=window.YangzhouV3Edges,topolog
 const chosen={},sources={},fallback={grass:'#D5D5B7',stone:'#DFD1B5',water:'#7EA9A5'};
 const provisionalEdges=Object.freeze({
   pathVerge:'#B5A68C',pathContact:'#839078',
-  canalBank:'#C9BC9E',canalContact:'#6A9189',
+  canalBank:'#BAA789',canalContact:'#567B70',
   bridgeEdge:'#B3A994',bridgeContact:'#707A73'
 });
 const scenes=Object.freeze({
@@ -108,6 +110,9 @@ function draw(){
     if(guides)for(const port of g.exits)drawPort(port,x,y);
     ctx.restore();
   }
+  const info=document.getElementById('edgeState');
+  info.textContent='Layer 1B rev 22 • Edging '+(edgesVisible?'ON':'OFF')+
+    ' • Canal bank 4 world units per side • Path verge 2.5 units per side • Temporary colours only; no painted edge asset yet';
 }
 function status(){
  const ids=materials.ids;
