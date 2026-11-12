@@ -10,7 +10,7 @@ The prepared derivative is gently normalized at its left/right boundaries, using
 
 **Binary upload**: the generated WebP should be placed at precisely `assets/v3/wall-materials/wall-roof-tiles-01.webp`. Until the binary is uploaded, the new lab intentionally falls back to diagnostic grey coping and offers a local selection control, rather than displaying fake painting.
 
-[Upload the candidate WebP to the PR branch](https://github.com/chriswalker-afk/Yangzhou/upload/v3-wall-roof-coping-texture-01/assets/v3/wall-materials)
+[Upload the candidate WebP to the PR branch](https://github.com/chriswalker-afk/Yangzhou/upload/main/assets/v3/wall-materials)
 
 ## Renderer
 
