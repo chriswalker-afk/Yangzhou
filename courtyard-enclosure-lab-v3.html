@@ -21,7 +21,7 @@ canvas{display:block;max-width:none;cursor:crosshair}
 small,.muted{color:#536459}
 pre{font-size:.8rem;max-height:220px;overflow:auto;white-space:pre;background:#f8f4e9;padding:12px;border:1px solid #ccc3b2;border-radius:6px}
 </style></head><body><main>
-<h1>Yangzhou V3 — Courtyard Enclosure Assembly Lab (rev 32)</h1>
+<h1>Yangzhou V3 — Courtyard Enclosure Assembly Lab (rev 33)</h1>
 <p class="note"><strong>Separate V3-only art and geometry study — not the playable game.</strong> Here we test the four actual painted wall assets in combination with our Courtyard Hall 01, Willow Tree 01 and Garden Rockery 01. All four authentic WebP paintings are committed and verified from <code>assets/v3/enclosures/</code> at page load; missing artwork is never replaced with a fabricated painting. The dashed side walls are <strong>geometry proposals only</strong>: compass-upright north–south wall artwork is not yet available.</p>
 <p>Start with <strong>All-land courtyards</strong> to inspect the full assembly. Select the canal junction study to confirm that compounds appear only on safe land tiles. Toggle artwork, adjust individual tile seeds, zoom in, and click a land tile to relocate the compound. The join bench below exposes measured connector points for the two straight wall lengths, corner and moon gate.</p>
 <div class="toolbar">
@@ -57,7 +57,7 @@ pre{font-size:.8rem;max-height:220px;overflow:auto;white-space:pre;background:#f
 </div>
 <div id="tileInfo" class="status" role="status" aria-live="polite">Select a tile to see its data.</div>
 <h2>Modular join bench</h2>
-<p class="muted">Both chains now connect at <strong>painted contact anchors</strong>, placed 2 world units inside each endpoint. Adjacent original, unstretched artwork overlaps by exactly 4 world units, closing the exposed-grass cracks visible in Rev 30. Green dots mark the contact points. Inspect the roof cap overlap closely at 3×: the geometry is continuous, but seamless ornamental tiles may still require capless variants.</p>
+<p class="muted">Both chains connect at <strong>painted contact anchors</strong> 2 world units inside each endpoint. Neighbouring artwork overlaps by 4 world units, closing the exposed-grass cracks. <strong>Corner 01 has now been repainted:</strong> its original 1254-pixel WebP is preserved, while the visible painting is cropped non-destructively to match the 12-unit-high straight walls. Green dots mark joins. Inspect the roof caps at 3×; decorative overlaps may still need seam-ready artwork.</p>
 <div class="preview"><canvas id="joinBench" width="1320" height="480" style="width:660px" aria-label="Exact two-row garden wall join bench, with painted originals where available"></canvas></div>
 <div id="joinInfo" class="status" role="status">Join geometry pending.</div>
 <h2>Courtyard layout contract</h2>
@@ -232,7 +232,7 @@ function drawJoinBench(){
  for(const chain of sequences){
   for(const p of chain.pieces){
    const a=enclosure.COMPONENTS[p.id],img=enclosureImages[p.id];
-   if(img)c.drawImage(img,p.x-a.width/2,p.y-a.height/2,a.width,a.height);
+   if(img)enclosure.drawSprite(c,img,p);
    else{
     c.save();c.strokeStyle='#a27360';c.setLineDash([2,2]);c.strokeRect(p.x-a.width/2,p.y-a.height/2,a.width,a.height);c.restore();
     c.fillStyle='#935543';c.font='4px system-ui';c.fillText('MISSING ART',p.x-a.width/2+1,p.y);
