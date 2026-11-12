@@ -2,7 +2,7 @@
 
 **Scope:** isolated experimental Layer 2. The playable V2 game, existing V3 geometry and current six-tile Layer 2 lab are unchanged.
 
-**New preview:** [Courtyard Enclosure Assembly Lab](../../courtyard-enclosure-lab-v3.html?rev=32).
+**New preview:** [Courtyard Enclosure Assembly Lab](../../courtyard-enclosure-lab-v3.html?rev=33).
 
 ## Authentic artwork intake
 
@@ -23,10 +23,10 @@ The page automatically loads and SHA-256 verifies the four painted WebPs. Local 
 |---|---|---|
 | Long wall | 70 x 12 | W (-33,0), E (+33,0) |
 | Short wall | 29 x 12 | W (-12.5,0), E (+12.5,0) |
-| W-to-S corner | 34 x 29 | W (-15,-3), S (+10,+14.5) |
+| W-to-S corner (repaint) | 29 x 24 | W (-12.5,-6), S (+10,+12) |
 | Moon gate | 32 x 16 | W (-14,0), E (+14,0), open north/south |
 
-The short wall was originally proposed as 40 x 12, but its actual cropped painting aspect ratio supports about 29 x 12. The moon gate was proposed as 32 x 22, but 32 x 16 fits its image. Both changes prevent forced image distortion. Dimensions remain provisional and require assessment at normal and 3x game zoom.
+The short wall was originally proposed as 40 x 12, but its actual cropped painting aspect ratio supports about 29 x 12. The moon gate was proposed as 32 x 22, but 32 x 16 fits its image. Both changes prevent forced image distortion. The replacement Corner 01 has a 1254 x 1254 original transparent lossless WebP (921,018 bytes; SHA-256 `3304e8073574782204fad405a53011a4e53599d169699d1258bc9aa1c0083501`). The image has substantial transparent padding, so the V3 renderer non-destructively crops its visible painted area from (51,154) over 1147 x 950 source pixels. The resulting 29 x 24 world footprint preserves its ratio to ~0.1% and aligns its horizontal wall branch with the straight segments' 12-unit height. Both the main six-tile scene and the join comparison bench use the **same** crop-aware rendering helper. The actual uploaded WebP remains unchanged. All dimensions remain subject to normal and 3x visual approval.
 
 ## Compound construction
 
