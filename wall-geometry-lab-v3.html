@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yangzhou V3 | Continuous Wall Geometry &amp; Texture Lab</title>
+<style>
+:root{color-scheme:light}*{box-sizing:border-box}
+body{margin:0;background:#eee3cd;color:#35433b;font:15px/1.5 system-ui,sans-serif}
+main{max-width:1110px;margin:22px auto 50px;padding:0 18px}
+h1,h2{font-family:Georgia,serif;line-height:1.22}h1{font-size:2rem}h2{font-size:1.2rem}
+.lead{background:#fff9ed;border-left:4px solid #798a72;padding:13px 17px;border-radius:6px}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:14px 0}
+button,select{font:inherit;border:1px solid #718276;color:#30433a;background:#fffdf6;border-radius:7px;padding:7px 11px}
+button{cursor:pointer}button[aria-pressed="true"]{background:#33594e;color:#fff}
+label{display:inline-flex;align-items:center;gap:5px;white-space:normal}
+label input{accent-color:#386854}
+.preview{overflow:auto;background:#f9f6ed;border:1px solid #cec3aa;border-radius:9px;padding:14px;max-width:100%}
+canvas{display:block;max-width:none;cursor:crosshair}
+.status{border:1px solid #d3c6a7;border-radius:6px;background:#faf0de;padding:10px;margin:10px 0}
+.muted,small{color:#57665a}
+.flex{display:flex;gap:16px;flex-wrap:wrap}
+.card{border:1px solid #c9c1af;border-radius:8px;background:#fff9ed;padding:12px;flex:1;min-width:250px}
+.card h2{margin-top:0}
+table{border-collapse:collapse;width:100%;font-size:.91rem}
+td,th{text-align:left;border-bottom:1px solid #d7cfbd;padding:7px}
+.swatch{display:inline-block;width:18px;height:11px;border:1px solid #888;vertical-align:middle}
+pre{background:#faf6ee;border:1px solid #cfc5b4;border-radius:6px;padding:12px;font-size:.77rem;max-height:240px;overflow:auto}
+a{color:#2f6457}
+#wallInfo{min-height:62px}
+@media(max-width:650px){h1{font-size:1.55rem}main{padding:0 10px}}
+</style></head><body><main>
+<h1>Yangzhou V3 — Wall Geometry &amp; Texture Lab (rev 36)</h1>
+<p class="lead"><strong>Isolated Layer 2 proof, not the playable game.</strong> These are continuous, tile-owned wall <em>centrelines</em> with exact mitered corners and T-connections. The moon gate is a genuine opening cut out of all four wall bands, not a painting laid over a solid wall. Wall colours are <strong>temporary geometry diagnostics</strong>; the first painted roof, plaster and foundation textures have not yet been made.</p>
+<p>Test a complete courtyard, a three-sided garden, an L-corner and a T-junction around our existing courtyard hall. Toggle the road/canal layouts: invalid courtyards are rejected instead of crossing an 88-unit water channel or 44-unit street. The older wall-sprite lab remains available for comparison.</p>
+<div class="toolbar">
+<label for="study">Six-tile neighbourhood
+<select id="study">
+<option value="garden">All-land courtyard workshop</option>
+<option value="street">Connected 44-unit streets</option>
+<option value="canal">Connected 88-unit canals</option>
+<option value="junction">Three-way canal junction</option>
+</select></label>
+<label for="plan">Selected tile
+<select id="plan">
+<option value="rectangle">Enclosed rectangle + moon gate</option>
+<option value="partial">Partial enclosure + moon gate</option>
+<option value="elbow">L-shaped wall</option>
+<option value="tee">T-junction wall + opening</option>
+<option value="none">No walls</option>
+</select></label>
+<button id="zoom" aria-pressed="false" type="button">Inspect at 3×</button>
+<button id="showGrid" aria-pressed="true" type="button">Hide tile grid</button>
+</div>
+<div class="toolbar">
+<label><input type="checkbox" id="showWall" checked> Show continuous walls</label>
+<label><input type="checkbox" id="showGate" checked> Show passable gate guides</label>
+<label><input type="checkbox" id="showJoints" checked> Mark L/T joints</label>
+<label><input type="checkbox" id="showHall" checked> Courtyard hall</label>
+<label><input type="checkbox" id="showTextures"> Use existing painted Layer 1 materials</label>
+</div>
+<div class="status" id="readyStatus" role="status" aria-live="polite">Geometry ready. Optional existing artwork is loading independently; flat-colour proof is available now.</div>
+<div class="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Six Yangzhou V3 tiles showing rectangle, partial enclosure, L and T wall centreline examples over road and canal geometry"></canvas></div>
+<div class="toolbar">
+<button id="reset" type="button">Reset wall plans</button>
+<button id="copy" type="button">Copy selected tile geometry JSON</button>
+</div>
+<div id="wallInfo" class="status" role="status" aria-live="polite">Select a tile to inspect its walls, entrances and safety report.</div>
+<div class="flex">
+<section class="card">
+<h2>Four exact material bands</h2>
+<table><thead><tr><th>Material slot</th><th>Width</th><th>Diagnostic fill</th></tr></thead><tbody>
+<tr><td>Stone foundation</td><td>16 units</td><td><span class="swatch" style="background:#aaa59b"></span></td></tr>
+<tr><td>Plaster wall body</td><td>12 units</td><td><span class="swatch" style="background:#e9e4d4"></span></td></tr>
+<tr><td>Grey tile coping</td><td>8 units</td><td><span class="swatch" style="background:#636d69"></span></td></tr>
+<tr><td>Roof ridge</td><td>2 units</td><td><span class="swatch" style="background:#a8afa5"></span></td></tr>
+</tbody></table>
+<small>One shared wall thickness everywhere. Future painted textures will follow the arclength and normal of each centreline, rather than restarting on individual wall pieces.</small>
+</section>
+<section class="card">
+<h2>Geometry acceptance checks</h2>
+<div id="summary" role="status" aria-live="polite">Compiling all six tile layouts.</div>
+<p class="muted">The physical aperture is wider than the solid wall thickness, leaving a real walk-through corridor. Solid geometry is not drawn inside the opening. Exact junction and route exclusions are checked by automated tests.</p>
+</section>
+</div>
+<h2>Selected tile's Layer 2 structure</h2>
+<pre id="export" aria-label="Selected tile wall and gate geometry"></pre>
+<p><a href="courtyard-enclosure-lab-v3.html?rev=35">Old wall-sprite assembly lab</a> · <a href="layer2-lab-v3.html?rev=29">Existing Layer 2 artwork lab</a> · <a href="layer-lab-v3.html?rev=25">Layer 1 geometry and edging</a> · <a href="index.html">Playable V2 game (unchanged)</a> · <a href="docs/V3-WALL-GEOMETRY.md">Design and future texture requirements</a></p>
+</main>
+<script src="tile-topology.js"></script>
+<script src="assets/v3/base-geometry.js"></script>
+<script src="assets/v3/edge-system.js"></script>
+<script src="assets/v3/material-runtime.js"></script>
+<script src="assets/v3/layer2-placements.js"></script>
+<script src="assets/v3/wall-geometry.js"></script>
+<script>
+(()=>{'use strict';
+const topology=window.YangzhouTileTopology,geometry=window.YangzhouV3Geometry,
+ edgeSystem=window.YangzhouV3Edges,materials=window.YangzhouV3Materials,
+ walls=window.YangzhouV3WallGeometry;
+const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d');
+const CODES=Object.freeze({
+ garden:['LLLL','LLLL','LLLL','LLLL','LLLL','LLLL'],
+ street:['LLLL','LLLL','LLLL','LSLS','LSLS','LSLS'],
+ canal:['LLLL','LLLL','LLLL','LWLW','LWLW','LWLW'],
+ junction:['LWLW','LWWW','LWLW','LLLL','WLLL','LLLL']
+});
+const starting=['rectangle','partial','tee','elbow','rectangle','partial'];
+const fallback=Object.freeze({grass:'#d7dcc7',stone:'#d7cdb7',water:'#8caea7'});
+const edgePalette=Object.freeze({
+ pathVerge:'#b8a88d',pathContact:'#889a82',
+ canalBank:'#baa88b',canalContact:'#5f847a',
+ bridgeEdge:'#9ba397',bridgeContact:'#677c75'
+});
+let tiles=[],selected=0,gridOn=true,zoomOn=false,study='garden',
+  choices=[...starting],gallery={},imageErrors=[];
+const visible=id=>document.getElementById(id).checked;
+const tileModel=i=>choices[i]==='none'?null:walls.templates[choices[i]];
+function tileList(name){
+ return CODES[name].map((code,i)=>({x:i%3,y:Math.floor(i/3),edges:code.split(''),seed:i+1}));
+}
+function pattern(id){
+ if(!visible('showTextures')||!gallery[id])return fallback[id];
+ try{return materials.makePattern(ctx,gallery[id],materials.periodById[id]);}
+ catch(_){return fallback[id];}
+}
+function render(){
+ ctx.setTransform(3,0,0,3,0,0);ctx.clearRect(0,0,660,440);
+ ctx.fillStyle=pattern('grass');ctx.fillRect(0,0,660,440);
+ const styles={...edgePalette,stone:pattern('stone'),water:pattern('water')};
+ let accepted=0,rejected=0,openings=0,ls=0,ts=0;
+ const info=[];
+ for(let i=0;i<tiles.length;i++){
+  const tile=tiles[i],model=tileModel(i),ox=tile.x*220,oy=tile.y*220;
+  const geometryTile=geometry.compile(tile.edges),compiledEdge=edgeSystem.compile(geometryTile);
+  ctx.save();ctx.beginPath();ctx.rect(ox,oy,220,220);ctx.clip();
+  edgeSystem.draw(ctx,compiledEdge,styles,{x:ox,y:oy,edges:true});
+  let report=null;
+  if(model){
+   report=walls.audit(model,tile);
+   if(report.valid){
+    accepted++;openings+=report.passableOpenings.filter(p=>p.open).length;
+    ls+=report.lCorners;ts+=report.tJunctions;
+    if(visible('showHall')&&gallery.hall){
+     const h=model.hall;
+     ctx.drawImage(gallery.hall,ox+h.x-48,oy+h.y-23.5,96,47);
+    }else if(visible('showHall')){
+     // The original painting is unavailable; the box is labelled DIAGNOSTIC.
+     const h=model.hall;
+     ctx.save();ctx.setLineDash([3,2]);ctx.strokeStyle='#a07f60';
+     ctx.strokeRect(ox+h.x-48,oy+h.y-23.5,96,47);
+     ctx.setLineDash([]);ctx.fillStyle='#8a7052';ctx.font='7px system-ui';
+     ctx.fillText('HALL IMAGE NOT LOADED',ox+h.x-44,oy+h.y);ctx.restore();
+    }
+    if(visible('showWall'))walls.draw(ctx,model,tile,{
+     showGates:visible('showGate'),showJoints:visible('showJoints')
+    });
+   }else{
+    rejected++;
+    ctx.save();ctx.fillStyle='rgba(244,233,222,.92)';
+    ctx.fillRect(ox+18,oy+84,184,34);ctx.fillStyle='#945d47';
+    ctx.font='8px system-ui';ctx.fillText('WALL REJECTED: ROUTE / CLEARANCE',ox+21,oy+99);
+    ctx.restore();
+   }
+  }
+  ctx.save();ctx.fillStyle='rgba(248,245,235,.85)';ctx.fillRect(ox+9,oy+9,170,23);
+  ctx.fillStyle='#334c42';ctx.font='9px system-ui';
+  ctx.fillText(model?model.name:'No walls',ox+12,oy+19,164);
+  ctx.font='8px system-ui';ctx.fillText(tile.edges.join(' / '),ox+12,oy+28);ctx.restore();
+  ctx.restore();
+  if(gridOn){
+   ctx.save();ctx.strokeStyle='rgba(41,63,51,.42)';ctx.lineWidth=.65;
+   ctx.strokeRect(ox+.3,oy+.3,219.4,219.4);ctx.restore();
+  }
+  info.push({tileIndex:i,grid:[tile.x,tile.y],edges:tile.edges,model:choices[i],audit:report});
+ }
+ const current=tiles[selected];
+ if(current){
+  ctx.save();ctx.setLineDash([5,4]);ctx.strokeStyle='#4e594d';ctx.lineWidth=1.2;
+  ctx.strokeRect(current.x*220+1,current.y*220+1,218,218);
+  ctx.restore();
+ }
+ const model=tileModel(selected),report=model?walls.audit(model,current):null;
+ const selectedDetail=model?walls.compile(model):null;
+ document.getElementById('summary').textContent=
+  accepted+' valid walled tiles; '+rejected+' deliberately rejected against routes; '+
+  ls+' exact L corners; '+ts+' exact T joins; '+openings+' passable moon gates. '+
+  'Protected V3 ports: 44-unit street, 88-unit canal.';
+ document.getElementById('wallInfo').textContent=
+  'Tile ('+current.x+','+current.y+') • edges '+current.edges.join('')+
+  ' • '+(model?model.name:'No wall layout')+
+  (report?' • '+(report.valid?'VALID':'REJECTED: '+report.issues.join('; '))+
+   ' • '+report.passableOpenings.length+' openings':'');
+ document.getElementById('export').textContent=JSON.stringify({
+  version:'V3-wall-geometry-study-01',tileSize:220,
+  tile:{...current,wallModel:choices[selected]},
+  model:model?{paths:model.paths,openings:model.openings,hall:model.hall}:null,
+  compiled:model?{gates:selectedDetail.gates,junctions:selectedDetail.junctions,
+   wallSegments:selectedDetail.ribbons.length}:null,
+  audit:report
+ },null,2);
+}
+function refresh(){
+ document.getElementById('plan').value=choices[selected];render();
+}
+function selectStudy(name){
+ const list=tileList(name),issues=topology.validateBoard(list);
+ if(issues.length)throw Error('Invalid six-tile topology: '+issues.join('; '));
+ study=name;tiles=list;selected=0;choices=[...starting];
+ document.getElementById('study').value=name;refresh();
+}
+function button(id,fn){document.getElementById(id).addEventListener('click',fn);}
+canvas.addEventListener('click',event=>{
+ const rect=canvas.getBoundingClientRect(),
+  x=(event.clientX-rect.left)/rect.width*660,
+  y=(event.clientY-rect.top)/rect.height*440;
+ const ix=Math.floor(x/220),iy=Math.floor(y/220);
+ if(ix<0||ix>2||iy<0||iy>1)return;
+ selected=3*iy+ix;refresh();
+});
+document.getElementById('study').addEventListener('change',e=>selectStudy(e.target.value));
+document.getElementById('plan').addEventListener('change',e=>{
+ choices[selected]=e.target.value;refresh();
+});
+for(const id of ['showWall','showGate','showJoints','showHall','showTextures'])
+ document.getElementById(id).addEventListener('change',render);
+button('zoom',()=>{
+ zoomOn=!zoomOn;canvas.style.width=zoomOn?'1980px':'660px';
+ const b=document.getElementById('zoom');b.setAttribute('aria-pressed',String(zoomOn));
+ render();
+});
+button('showGrid',()=>{
+ gridOn=!gridOn;const b=document.getElementById('showGrid');
+ b.setAttribute('aria-pressed',String(gridOn));b.textContent=gridOn?'Hide tile grid':'Show tile grid';render();
+});
+button('reset',()=>selectStudy(study));
+button('copy',()=>{
+ const content=document.getElementById('export').textContent;
+ if(navigator.clipboard?.writeText)navigator.clipboard.writeText(content)
+  .then(()=>document.getElementById('wallInfo').textContent='Selected tile JSON copied to clipboard.')
+  .catch(()=>{document.getElementById('wallInfo').textContent='Clipboard unavailable; select the JSON below.';});
+ else document.getElementById('wallInfo').textContent='Clipboard unavailable; select the JSON below.';
+});
+selectStudy('garden'); // Geometry has no network dependency.
+const artFiles=[
+ {id:'hall',file:'courtyard-hall.webp'},
+ {id:'grass',file:'grass.webp'},
+ {id:'stone',file:'stone.webp'},
+ {id:'water',file:'water.webp'}
+];
+let loaded=0,finished=0;
+function updateStatus(){
+ const count=artFiles.length;
+ document.getElementById('readyStatus').textContent=
+  'Continuous walls READY (no artwork required). Optional existing art: '+
+  loaded+'/'+count+' loaded; '+finished+'/'+count+' checked.'+
+  (imageErrors.length?' Unavailable: '+imageErrors.join('; '):'')+
+  ' All wall materials are flat diagnostic colours.';
+}
+function loadImage(file,deadline=18000){
+ return new Promise((resolve,reject)=>{
+  const img=new Image();let done=false;
+  const timer=setTimeout(()=>{
+   if(done)return;done=true;img.onload=img.onerror=null;img.src='';
+   reject(Error('Timed out: '+file));
+  },deadline);
+  img.onload=()=>{if(done)return;done=true;clearTimeout(timer);resolve(img);};
+  img.onerror=()=>{if(done)return;done=true;clearTimeout(timer);reject(Error('Unavailable: '+file));};
+  img.src='assets/v3/previews/'+file;
+ });
+}
+updateStatus();
+(async()=>{
+ for(const item of artFiles){
+  try{gallery[item.id]=await loadImage(item.file);loaded++;}
+  catch(err){imageErrors.push(item.id+': '+String(err.message||err));}
+  finally{finished++;updateStatus();render();}
+ }
+})();
+})();
+</script></body></html>
