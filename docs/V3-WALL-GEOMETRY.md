@@ -33,7 +33,7 @@ A tile is 220 x 220 local world units. A compound is a named set of centreline p
 
 **Revision 37:** the 8-unit coping strip accepts the first actual painted material candidate, Wall Roof-Tile Texture 01, alongside its old flat-colour fallback. The bitmap is **not production-approved**, and the preview loader refuses incorrect hashes. Material U is 32 world units per repeat and V is the 8-unit coping width. The shared coping substrate is still rendered before the miter-clipped image, so gaps cannot expose grass; moon-gate openings remain real. The ridge stroke is hidden when the painted roof surface is active, because the artwork already contains highlights. Existing V3 grass/paving/water can still appear behind the walls, and the hall remains an unchanged Layer 2 sprite.
 
-The original PNG has been preserved outside the repository; its prepared 1256×314, 174,360-byte WebP **requires exact binary upload** under `assets/v3/wall-materials/wall-roof-tiles-01.webp`. The new test works in flat diagnostic mode until it arrives, and has a local file selector for truthful visual preview. The material manifest and preparation steps live in `assets/v3/wall-materials/`.
+The original PNG has been preserved outside the repository; its exact prepared 1256×314, 174,360-byte WebP is **now committed and hash-verified** under `assets/v3/wall-materials/wall-roof-tiles-01.webp`. The new test loads it automatically and offers a local file selector only as a fallback. The material manifest and preparation steps live in `assets/v3/wall-materials/`.
 
 ## Geometry cases
 
