@@ -2,7 +2,7 @@
 
 **Status:** isolated, unapproved Layer 2 geometry experiment. The playable V2 game and existing V3 labs remain untouched.
 
-[Open the six-tile Wall Geometry & Texture Lab](../wall-geometry-lab-v3.html?rev=36) (once deployed).
+[Open the six-tile Wall Geometry & Texture Lab](../wall-geometry-lab-v3.html?rev=37) (once deployed).
 
 ## Why switch
 
@@ -28,10 +28,12 @@ A tile is 220 x 220 local world units. A compound is a named set of centreline p
 |---|---:|---|---|
 | stone foundation | 16 | #aaa59b | **Not yet created** |
 | ivory white plaster | 12 | #e9e4d4 | **Not yet created** |
-| grey clay-tile coping | 8 | #636d69 | **Not yet created** |
+| grey clay-tile coping | 8 | #636d69 (fallback) | **Wall Roof-Tile Texture 01 candidate** |
 | thin roof ridge / joint accent | 2 | #a8afa5 | **Not yet created** |
 
-The current code accepts replaceable palette slots but **no image materials are wired as production art**. Existing V3 grass/paving/water may be displayed separately behind the diagnostic bands. The painted hall is an unchanged Layer 2 asset.
+**Revision 37:** the 8-unit coping strip accepts the first actual painted material candidate, Wall Roof-Tile Texture 01, alongside its old flat-colour fallback. The bitmap is **not production-approved**, and the preview loader refuses incorrect hashes. Material U is 32 world units per repeat and V is the 8-unit coping width. The shared coping substrate is still rendered before the miter-clipped image, so gaps cannot expose grass; moon-gate openings remain real. The ridge stroke is hidden when the painted roof surface is active, because the artwork already contains highlights. Existing V3 grass/paving/water can still appear behind the walls, and the hall remains an unchanged Layer 2 sprite.
+
+The original PNG has been preserved outside the repository; its prepared 1256×314, 174,360-byte WebP **requires exact binary upload** under `assets/v3/wall-materials/wall-roof-tiles-01.webp`. The new test works in flat diagnostic mode until it arrives, and has a local file selector for truthful visual preview. The material manifest and preparation steps live in `assets/v3/wall-materials/`.
 
 ## Geometry cases
 
@@ -46,15 +48,15 @@ Gate widths exceed the full 16-unit foundation band. The exact centre of the gat
 
 ## Future painted texture contract
 
-**Recommended first image: wall-roof-tiles-01**, a reusable muted charcoal-grey **roof-coping surface** compatible with Jiangnan/Yangzhou late-Qianlong material and our existing Courtyard Hall 01. Unlike a standalone wall painting:
+**Completed first image candidate: wall-roof-tiles-01**, a reusable muted charcoal-grey **roof-coping surface** compatible with Jiangnan/Yangzhou late-Qianlong material and the existing Courtyard Hall 01. It is not yet production-approved. Unlike a standalone wall painting:
 
 - Render a horizontally repeatable, unbroken band of small grey traditional clay tiles; **seamless on its left and right edges**.
 - Keep a consistent top-down/orthographic surface and restrained ink-and-watercolour lighting. No white wall, foundations, corner caps, ground, vegetation, gates, shadows on grass, labels or borders.
 - The repeated material has no fake end caps; terminal and moon-gate finishing will be separate overlays if needed.
 - The artwork should be sharp enough at 1x and readable at 3x, with low-frequency variation to avoid identical repeats.
 - Source RGBA PNG and lossless WebP should be preserved and checksum-tracked after visual approval.
-- **Mapping** must use segment-local texture coordinates **u = accumulated arclength along the centreline, v = offset across the width**, *not* one unrotated global 2D brush pattern. The new geometry compiler exposes segment tangents, normals, u0/u1 and band widths so a later renderer can map the roof texture around bends at constant tile scale. T intersections need an explicit shared-junction texture phase and a seam-free join mask.
-- Start with roof tiles, then plaster, stone foundation, and a special moon-gate arch/rim painting (small ornamental overlay constrained to the true gap). Do not generate those other assets in the first image pass.
+- **Mapping is now implemented** with local arclength **u** and cross-wall offset **v**, using 32×8 world-unit repeats clipped by mathematical miter polygons. T intersections share continuous backing geometry; their paint motifs and phase still need close 1×/3× human review before final approval.
+- After approving roof-tile scale and joins, commission **one white-plaster material**, followed by stone foundation and a separate moon-gate surround constrained to the real passable gap. Do not generate these other assets until the coping material is reviewed.
 
 This is a **geometry acceptance stage**. It proves exact intersections and openings, not a finished roof-tile UV renderer or painterly quality.
 
