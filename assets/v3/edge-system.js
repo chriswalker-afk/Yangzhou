@@ -1,5 +1,6 @@
 /* Yangzhou V3 Layer 1B — geometry-following edge-treatment proof.
- * This file contains NO painted edge artwork and does not affect V2.
+ * Geometry remains artwork-independent; candidate images are injected by callbacks.
+ * No gameplay or V2 renderer is modified.
  * Surface masks retain the exact 44-unit street and 88-unit canal mouths.
  */
 (function(root,factory){
@@ -111,6 +112,12 @@
       // A painted canal-bank overlay must remain BELOW an elevated road deck.
       if(type==='W'&&edgesOn&&typeof options.paintedBankOverlay==='function'){
         options.paintedBankOverlay(ctx,compiled,{x:ox,y:oy});
+      }
+      if(type==='S'&&edgesOn&&typeof options.paintedVergeOverlay==='function'){
+        options.paintedVergeOverlay(ctx,compiled,{x:ox,y:oy});
+        // Street junctions must retain an uninterrupted 44-unit stone core.
+        // Re-cover any neighbouring arm crossed by a decorative grass tuft.
+        for(const r of group)fillRibbon(ctx,r,'core',style.stone,ox,oy);
       }
     }
   }
