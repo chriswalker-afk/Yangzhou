@@ -102,11 +102,37 @@ assert.deepEqual(cropped[0].slice(7,9),[29,24],
 assert.equal(art.draw(stub,grass,{}, {guides:false}).drawn,0,'Missing art must not be faked');
 assert(!art.draw(stub,unsafe,fakeImages,{guides:false}).valid);
 const page=fs.readFileSync('courtyard-enclosure-lab-v3.html','utf8');
-for(const marker of ['Courtyard Enclosure Assembly Lab (rev 34)','id="enclosureFiles"',
+for(const marker of ['Courtyard Enclosure Assembly Lab (rev 35)','id="enclosureFiles"',
  'enclosure.loadCommitted({','enclosure.loadLocal(files)','id="joinBench"',
  'enclosure.draw(ctx,tile,enclosureImages','enclosure.drawSprite(c,img,p)','id="placeHere"','id="zoom"','id="retryAssets"','startSceneryLoading()','onProgress:state','painted'])
  assert(page.includes(marker),'Missing V3 isolated lab contract: '+marker);
 assert(!page.includes('ctx.rotate('),'Never rotate a facade to imitate compass-upright wall art');
+// Preview derivatives must be actual WebPs, backed by unmodified masters,
+// and substantially smaller than the original group of 12 artwork files.
+const previewHash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+const previewPath='assets/v3/previews/manifest.json';
+assert(fs.existsSync(previewPath),'The courtyard lab requires committed compact previews');
+const derivativeManifest=JSON.parse(fs.readFileSync(previewPath,'utf8'));
+assert.equal(derivativeManifest.schemaVersion,1);
+const previews=Object.entries(derivativeManifest.assets);
+assert.equal(previews.length,12);
+let masterBytes=0,previewBytes=0;
+for(const [name,info] of previews){
+ const source=fs.readFileSync(info.source);
+ const prepared=fs.readFileSync(info.preview);
+ assert.equal(previewHash(source),info.sourceSha256,'Master artwork changed unexpectedly: '+name);
+ assert.equal(source.length,info.sourceBytes);
+ assert.equal(previewHash(prepared),info.previewSha256,'Preview artwork integrity mismatch: '+name);
+ assert.equal(prepared.length,info.previewBytes);
+ assert.equal(prepared.toString('ascii',0,4),'RIFF');
+ assert.equal(prepared.toString('ascii',8,12),'WEBP');
+ assert.equal(info.preview,'assets/v3/previews/'+name);
+ masterBytes+=source.length;previewBytes+=prepared.length;
+}
+assert(previewBytes<masterBytes/3,'Compact previews must avoid full 16MB initial transfer');
+assert(page.includes('fetchPreviewManifest('),'Page must fetch preview manifest');
+assert(page.includes('enclosure.fetchFirstValid('),'Preview files must use alternate image hosts');
+assert(page.includes('id="retryAssets"'),'Must offer Retry image loading');
 const existing=fs.readFileSync('layer2-lab-v3.html','utf8');
 assert(existing.includes('Layer 2 Tile Composition Lab (rev 29)'),'Existing six-tile lab remains unchanged');
 const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
