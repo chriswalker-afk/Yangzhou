@@ -262,11 +262,19 @@ function draw(ctx,model,tile,options={}){
  ctx.save();ctx.lineCap='butt';ctx.lineJoin='miter';ctx.miterLimit=4;
  // Layer by layer across ALL centreline paths: intersections therefore
  // share one continuous substrate rather than exposing independent endcaps.
+ const useRoof=!!(options.roofImage&&options.roofPainter);
  for(const band of MATERIALS){
+  // The painterly roof image already contains its ridge/eave highlights,
+  // so do not paint a second synthetic line over the accepted painting.
+  if(useRoof&&band.slot==='ridge')continue;
   ctx.strokeStyle=ink[band.slot];ctx.lineWidth=band.width;
   for(const path of compiled.paths){
    trace(ctx,path.points,ox,oy,path.closed);ctx.stroke();
   }
+  // Draw atop the continuous grey coping substrate, clipped to miter-joined
+  // wall ribbons. The cut moon gate remains completely empty.
+  if(useRoof&&band.slot==='coping')
+   options.roofPainter.draw(ctx,compiled,tile,options.roofImage);
  }
  // Portal holes are true omissions from ALL 4 solid strokes. The dotted
  // threshold is an optional diagnostic overlay, never a solid collision mask.
@@ -291,7 +299,7 @@ function draw(ctx,model,tile,options={}){
   }
  }
  ctx.restore();
- return Object.freeze({...report,drawn:true});
+ return Object.freeze({...report,drawn:true,roofTextureUsed:useRoof});
 }
 return Object.freeze({TILE,INSET,SAFE_GAP,EPS,WIDTHS,PALETTE,MATERIALS,templates,
  length,pointAlong,distanceAlong,slice,compile,detectJunctions,distToSegment,isSolid,audit,draw});
