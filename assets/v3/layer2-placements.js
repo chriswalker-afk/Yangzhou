@@ -148,7 +148,7 @@
     let count=0;
     for(const p of details){
       const component=COMPONENTS[p.id],img=images?.[p.id];
-      if(!img)continue; // Missing binary: never draw a fake finished building.
+      if(!img||options.visible?.[p.id]===false)continue; // Never fake missing art.
       ctx.drawImage(img,ox+p.x-component.width/2,oy+p.y-component.height/2,component.width,component.height);
       count++;
     }
