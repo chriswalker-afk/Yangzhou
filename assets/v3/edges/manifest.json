@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "assetId": "canal-bank-edge-01",
+  "name": "Yangzhou V3 Canal Bank Edge 01",
+  "status": "candidate-generated-awaiting-binary-import",
+  "source": {
+    "filename": "watercolour_canal_bank_tile.png",
+    "mimeType": "image/png",
+    "width": 2172,
+    "height": 724,
+    "sha256": "cbef6e2ffad92e8a8171a944694ace9e498a7be97397de16f5a9bbe6fe048862",
+    "transparency": true
+  },
+  "intendedBinary": "canal-bank-edge-01.webp",
+  "fileCommitted": false,
+  "review": {
+    "artworkApproved": false,
+    "horizontalRepeatApproved": false,
+    "curvedMappingApproved": false,
+    "perspectiveApproved": false
+  },
+  "note": "This manifest does NOT claim a WebP is committed. Upload the authentic original or a documented derivative on this PR branch, validate exact SHA-256/alpha/dimensions, then activate automatic loading. The V2 game remains untouched."
+}
