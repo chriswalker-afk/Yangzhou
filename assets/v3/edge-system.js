@@ -67,18 +67,37 @@
     return Object.freeze({geometry,traces:Object.freeze(geometry.paths.map(r=>traceRoute(r,geometry.bridge)))});
   }
 
-  // Fill the two offset boundaries as a polygon. We never rotate artwork
-  // or reset a texture's pattern origin at the tile boundary.
-  function fillRibbon(ctx,trace,boundary,fill,offsetX=0,offsetY=0){
+  // Append one continuous ribbon's polygon to the existing canvas path.
+  // Coordinates are board-global; this preserves painting and material phase.
+  function appendRibbonPath(ctx,trace,boundary,offsetX=0,offsetY=0){
     const points=trace.samples;
     if(!points.length)return;
-    ctx.beginPath();
     const pos=point=>[point[0]+offsetX,point[1]+offsetY];
     ctx.moveTo(...pos(points[0][boundary].left));
     for(let i=1;i<points.length;i++)ctx.lineTo(...pos(points[i][boundary].left));
     for(let i=points.length-1;i>=0;i--)ctx.lineTo(...pos(points[i][boundary].right));
     ctx.closePath();
+  }
+  function fillRibbon(ctx,trace,boundary,fill,offsetX=0,offsetY=0){
+    ctx.beginPath();
+    appendRibbonPath(ctx,trace,boundary,offsetX,offsetY);
     ctx.fillStyle=fill;ctx.fill();
+  }
+
+  // Intersect the land side of EACH water route. Repeated even-odd clips
+  // subtract the UNION of every canal core, not the xor of overlapping arms:
+  // a T-junction's bank can no longer cross the mouth of another canal.
+  // Keep this clip active for BOTH diagnostic bands and painted-bank strips.
+  // The clip affects artwork only; surface width and port geometry do not change.
+  function clipCanalBanksToLand(ctx,compiled,offsetX=0,offsetY=0){
+    const group=compiled.traces.filter(r=>r.material==='W');
+    for(const route of group){
+      ctx.beginPath();
+      ctx.rect(offsetX,offsetY,compiled.geometry.size,compiled.geometry.size);
+      appendRibbonPath(ctx,route,'core',offsetX,offsetY);
+      ctx.clip('evenodd');
+    }
+    return group.length;
   }
 
   // The ribbon vertices are offset into board space, never translated via ctx:
@@ -92,6 +111,11 @@
     const traces=compiled.traces;
     for(const type of ['W','S']){
       const group=traces.filter(r=>r.material===type);
+      const maskedWater=type==='W'&&edgesOn&&group.length>0;
+      if(maskedWater){
+        ctx.save();
+        clipCanalBanksToLand(ctx,compiled,ox,oy);
+      }
       if(edgesOn){
         for(const r of group){
           const bridge=r.role==='bridge-deck';
@@ -106,13 +130,16 @@
           fillRibbon(ctx,r,'contact',contact,ox,oy);
         }
       }
-      // All core masks are painted after all edge bands for a junction.
-      // Water is underneath the bridge's road; paths cannot add water exits.
-      for(const r of group)fillRibbon(ctx,r,'core',type==='W'?style.water:style.stone,ox,oy);
-      // A painted canal-bank overlay must remain BELOW an elevated road deck.
-      if(type==='W'&&edgesOn&&typeof options.paintedBankOverlay==='function'){
+      // All painted and flat bank edges share the same land-only union clip.
+      // Never draw canal-bank artwork AFTER restoring the water core: that
+      // caused the long false borders through the T-junction in rev 24.
+      if(maskedWater&&typeof options.paintedBankOverlay==='function'){
         options.paintedBankOverlay(ctx,compiled,{x:ox,y:oy});
       }
+      if(maskedWater)ctx.restore();
+      // Render every core last so all canal arms form one uninterrupted water
+      // surface. A bridge deck is then placed above the water in the S pass.
+      for(const r of group)fillRibbon(ctx,r,'core',type==='W'?style.water:style.stone,ox,oy);
       if(type==='S'&&edgesOn&&typeof options.paintedVergeOverlay==='function'){
         options.paintedVergeOverlay(ctx,compiled,{x:ox,y:oy});
         // Street junctions must retain an uninterrupted 44-unit stone core.
@@ -122,5 +149,6 @@
     }
   }
 
-  return Object.freeze({treatments,samplesPerCurve,pointOnRoute,crossSection,traceRoute,compile,fillRibbon,draw});
+  return Object.freeze({treatments,samplesPerCurve,pointOnRoute,crossSection,traceRoute,compile,
+    appendRibbonPath,clipCanalBanksToLand,fillRibbon,draw});
 });
