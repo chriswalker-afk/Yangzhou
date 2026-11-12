@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "artFamily": "yangzhou-v3-courtyard-enclosures",
+  "layer": 2,
+  "previewOnly": true,
+  "productionApproved": false,
+  "candidateStatus": "binaries-prepared-outside-repository-awaiting-upload",
+  "tileWorldSize": 220,
+  "artifacts": [
+    {
+      "id": "white-garden-wall-long-01",
+      "filename": "white-garden-wall-long-01.webp",
+      "sourceFile": "a_clean_isolated_architectural_illustration_asset.png",
+      "width": 2125,
+      "height": 389,
+      "bytes": 1107696,
+      "sha256": "cdba1b3166c9bdc8b5ea9c4afaba24b3dc32b59035c202f17a72e112aa619577",
+      "world": {
+        "width": 70,
+        "height": 12
+      },
+      "ports": {
+        "W": [
+          -35,
+          0
+        ],
+        "E": [
+          35,
+          0
+        ]
+      }
+    },
+    {
+      "id": "white-garden-wall-short-01",
+      "filename": "white-garden-wall-short-01.webp",
+      "sourceFile": "a_clean_high_resolution_isolated_artwork_on_a_tra.png",
+      "width": 1225,
+      "height": 541,
+      "bytes": 833094,
+      "sha256": "3f6d358a9871ac1c5a68a1bf00b971c58c478aab3e249b5574a8d1fe8aabd1a0",
+      "world": {
+        "width": 29,
+        "height": 12
+      },
+      "ports": {
+        "W": [
+          -14.5,
+          0
+        ],
+        "E": [
+          14.5,
+          0
+        ]
+      }
+    },
+    {
+      "id": "white-garden-wall-corner-01",
+      "filename": "white-garden-wall-corner-01.webp",
+      "sourceFile": "a_clean_high_resolution_digital_watercolor_ink_il.png",
+      "width": 1112,
+      "height": 940,
+      "bytes": 939828,
+      "sha256": "4f1298dc6e51cb5ee556c9a30e50db4b351f13d4ee8ada6dde7db6fd83671d1a",
+      "world": {
+        "width": 34,
+        "height": 29
+      },
+      "ports": {
+        "W": [
+          -17,
+          -3
+        ],
+        "S": [
+          10,
+          14.5
+        ]
+      }
+    },
+    {
+      "id": "moon-gate-01",
+      "filename": "moon-gate-01.webp",
+      "sourceFile": "a_detailed_isolated_architectural_illustration_on.png",
+      "width": 1448,
+      "height": 721,
+      "bytes": 1246684,
+      "sha256": "e06e5a87395563c605b86f4777ebfa02a183ba40f09eca3fac70d755f5370853",
+      "world": {
+        "width": 32,
+        "height": 16
+      },
+      "ports": {
+        "W": [
+          -16,
+          0
+        ],
+        "E": [
+          16,
+          0
+        ]
+      },
+      "walkThroughAxis": "north-south"
+    }
+  ],
+  "geometryGates": {
+    "exactStreetPort": 44,
+    "exactCanalPort": 88,
+    "minimumTileInset": 10,
+    "routeSafetyGap": 6,
+    "wallsMustAvoidPaths": true,
+    "wallPiecesMayNotRotate": true,
+    "allowMoonGatePassage": true,
+    "sideWallsPainted": false,
+    "oppositeTurnCornerPainted": false
+  },
+  "reviewGates": [
+    "Overhead perspective and 3x readability",
+    "Straight/corner tile coping join quality",
+    "Terminal eave double-caps",
+    "Wall lengths and scene scale",
+    "Moon-gate aperture fully transparent",
+    "N-S wall orientation artwork",
+    "Tile geometry / canal edges",
+    "Historical plausibility"
+  ]
+}

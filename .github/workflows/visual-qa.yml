@@ -28,6 +28,7 @@ jobs:
           node tests/v3-verge-visual.cjs
           node tests/v3-junction-visual.cjs
           node tests/v3-layer2-visual.cjs
+          node tests/v3-courtyard-enclosure-visual.cjs
       - name: Keep preview screenshots (not painterly approval)
         if: always()
         uses: actions/upload-artifact@v4

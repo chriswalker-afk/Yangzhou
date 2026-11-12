@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yangzhou V3 | Courtyard Enclosure Assembly Lab</title>
+<style>
+:root{color-scheme:light}*{box-sizing:border-box}
+body{background:#eee3cd;color:#343f3b;margin:0;font:16px/1.5 system-ui,sans-serif}
+main{max-width:1080px;margin:22px auto;padding:0 18px}
+h1{font-family:Georgia,serif;line-height:1.2;font-size:2rem}h2{font-family:Georgia,serif;font-size:1.15rem}
+.note{padding:12px 16px;background:#fff9e9;border-left:4px solid #ad755d;border-radius:5px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:12px 0}
+button,select{border:1px solid #718176;border-radius:7px;background:#fff;padding:8px 12px;color:#283c32}
+button{cursor:pointer}button[aria-pressed="true"]{background:#304f49;color:#fff}
+button:disabled{opacity:.5;cursor:not-allowed}
+input[type=file]{max-width:100%;padding:7px;border:1px solid #718176;background:#fff;border-radius:7px}
+.ok{color:#385c49}.warning{color:#874c36}
+#joinBench{cursor:default}.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:4px 8px;border:1px solid #c4bea9;border-radius:5px;background:#fff9ef;font-size:.8rem}
+.preview{overflow:auto;background:#faf6eb;border:1px solid #c8bea9;padding:14px;border-radius:10px}
+canvas{display:block;max-width:none;cursor:crosshair}
+.status{padding:10px;border:1px solid #cec4aa;background:#f9f0df;border-radius:6px;margin:10px 0}
+small,.muted{color:#536459}
+pre{font-size:.8rem;max-height:220px;overflow:auto;white-space:pre;background:#f8f4e9;padding:12px;border:1px solid #ccc3b2;border-radius:6px}
+</style></head><body><main>
+<h1>Yangzhou V3 — Courtyard Enclosure Assembly Lab (rev 30)</h1>
+<p class="note"><strong>Separate V3-only art and geometry study — not the playable game.</strong> Here we test the four actual painted wall assets in combination with our Courtyard Hall 01, Willow Tree 01 and Garden Rockery 01. Authentic sprites are loaded from <code>assets/v3/enclosures/</code> when committed; missing artwork is never replaced with a fabricated painting. The dashed side walls are <strong>geometry proposals only</strong>: compass-upright north–south wall artwork is not yet available.</p>
+<p>Start with <strong>All-land courtyards</strong> to inspect the full assembly. Select the canal junction study to confirm that compounds appear only on safe land tiles. Toggle artwork, adjust individual tile seeds, zoom in, and click a land tile to relocate the compound. The join bench below exposes measured connector points for the two straight wall lengths, corner and moon gate.</p>
+<div class="toolbar">
+<label for="study">Layout</label>
+<select id="study">
+<option value="joined">Six connected street / canal tiles — no safe courtyard</option>
+<option value="junction">Canal T-junction</option>
+<option value="garden" selected>All-land courtyard study</option>
+</select>
+<button id="showDetails" aria-pressed="true" type="button">Hide Layer 2</button>
+<button id="showGrid" aria-pressed="true" type="button">Hide tile outlines</button>
+<button id="zoom" aria-pressed="false" type="button">Inspect at 3×</button>
+<button id="showGuides" aria-pressed="true" type="button">Hide join / side-wall guides</button>
+<button id="placeHere" type="button">Build on selected tile</button>
+<label><input id="showHall" type="checkbox" checked> Courtyard hall</label>
+<label><input id="showWillow" type="checkbox" checked> Willow trees</label>
+<label><input id="showRockery" type="checkbox" checked> Rockeries</label>
+</div>
+<div class="status" id="enclosureArtwork">
+<strong>Four enclosure artwork files</strong>
+<div class="chips" id="enclosureChips" aria-label="Artwork availability"></div>
+<p class="muted" id="uploadHelp">Checking GitHub for the original painted sprites. If they are missing, select the four lossless WebPs below to test locally; no files leave your browser.</p>
+<p class="muted">To make the preview load automatically, <a href="https://github.com/chriswalker-afk/Yangzhou/upload/main/assets/v3/enclosures">upload all four prepared WebPs to GitHub</a> using their exact names: <code>white-garden-wall-long-01.webp</code>, <code>white-garden-wall-short-01.webp</code>, <code>white-garden-wall-corner-01.webp</code> and <code>moon-gate-01.webp</code>.</p>
+<label for="enclosureFiles">Load four WebPs locally:</label>
+<input id="enclosureFiles" type="file" accept="image/webp,.webp" multiple>
+<div id="enclosureStatus" role="status" aria-live="polite">Checking the four original sprite hashes…</div>
+</div>
+<div id="assetStatus" role="status" class="status">Loading V3 grass, stone, canal water, painted banks/verges and three existing large-detail assets…</div>
+<div class="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Six V3 world-geometry tiles with one modular courtyard enclosure compound"></canvas></div>
+<div class="toolbar">
+<button id="prevSeed" type="button">Previous tile seed</button>
+<button id="nextSeed" type="button">Next tile seed</button>
+<button id="reset" type="button">Reset layout</button>
+</div>
+<div id="tileInfo" class="status" role="status" aria-live="polite">Select a tile to see its data.</div>
+<h2>Modular join bench</h2>
+<p class="muted">Two reference chains share their mathematically exact join anchors (green dots): long → short → corner, and long → moon gate → short. This checks coping height and end treatments. At full zoom you may find the decorative terminal eaves double up at joins; that indicates artwork requiring capless derivatives, <strong>not permission to pretend the join is seamless</strong>.</p>
+<div class="preview"><canvas id="joinBench" width="1320" height="480" style="width:660px" aria-label="Exact two-row garden wall join bench, with painted originals where available"></canvas></div>
+<div id="joinInfo" class="status" role="status">Join geometry pending.</div>
+<h2>Courtyard layout contract</h2>
+<p class="muted">Pieces are attached to the selected <strong>220 × 220</strong> tile using local world coordinates. The two proposed wall rows enclose the existing hall with a passable moon gate on the south. Dashed north–south side runs are geometry-only future work, not painted substitutes. All solid wall footprints must remain clear of the exact 44-unit street and 88-unit canal mouths, their edging and a 6-unit margin. No automatic tiling rotation is allowed for these compass-upright paintings.</p>
+<pre id="layoutData" aria-label="Serialized courtyard enclosure placement and join validation"></pre>
+<p><a href="layer2-lab-v3.html?rev=29">Existing six-tile Layer 2 lab</a> · <a href="layer-lab-v3.html?rev=25">Layer 1 canal/path lab</a> · <a href="index.html">Playable V2 game (unchanged)</a> · <a href="https://github.com/chriswalker-afk/Yangzhou">GitHub source</a></p>
+</main>
+<script src="tile-topology.js"></script><script src="assets/v3/base-geometry.js"></script><script src="assets/v3/material-runtime.js"></script><script src="assets/v3/edge-system.js"></script><script src="assets/v3/canal-bank-art.js"></script><script src="assets/v3/path-verge-art.js"></script><script src="assets/v3/layer2-placements.js"></script><script src="assets/v3/courtyard-enclosures.js"></script>
+<script>
+(()=>{'use strict';
+const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d');
+const geometry=window.YangzhouV3Geometry,materials=window.YangzhouV3Materials,
+ edges=window.YangzhouV3Edges,bankArt=window.YangzhouV3CanalBankArt,
+ vergeArt=window.YangzhouV3PathVergeArt,layer2=window.YangzhouV3Layer2,
+ topology=window.YangzhouTileTopology,enclosure=window.YangzhouV3Enclosures;
+const fallback={grass:'#D5D5B7',stone:'#DFD1B5',water:'#7EA9A5'};
+const edgeStyle={pathVerge:'#B5A68C',pathContact:'#839078',canalBank:'#BAA789',
+ canalContact:'#567B70',bridgeEdge:'#B3A994',bridgeContact:'#707A73'};
+const CODES={
+ joined:['LSLS','LSLS','LSLS','LWLW','LWLW','LWLW'],
+ junction:['LWLW','LWWW','LWLW','LLLL','WLLL','LLLL'],
+ garden:['LLLL','LLLL','LLLL','LLLL','LLLL','LLLL']
+};
+let images={},bankImage=null,vergeImage=null,largeImages={},tiles=[],selected=0,
+ detailsVisible=true,gridVisible=true,zoom=false,ready=false,
+ enclosureImages={},enclosureSource='missing',guidesVisible=true,compoundTile=0,boardStudy='garden';
+const visibleComponents={
+ 'courtyard-hall-01':true,'willow-tree-01':true,'garden-rockery-01':true
+};
+const tilesFor=name=>CODES[name].map((signature,i)=>({
+ x:i%3,y:Math.floor(i/3),edges:signature.split(''),
+ seed:[1,2,3,4,6,8][i]
+}));
+function style(id){
+ try{return images[id]?materials.makePattern(ctx,images[id],materials.periodById[id]):fallback[id];}
+ catch(_){return fallback[id];}
+}
+function setStudy(name){
+ tiles=tilesFor(name);selected=name==='junction'?3:0;boardStudy=name;
+ const issues=topology.validateBoard(tiles);
+ if(issues.length)throw Error('Prototype has invalid tile connections: '+issues.join('; '));
+ compoundTile=name==='joined'?null:selected;
+ render();
+}
+function render(){
+ ctx.setTransform(3,0,0,3,0,0);ctx.clearRect(0,0,660,440);
+ ctx.fillStyle=style('grass');ctx.fillRect(0,0,660,440);
+ const palette={...edgeStyle,stone:style('stone'),water:style('water')};
+ for(let i=0;i<tiles.length;i++){
+  const tile=tiles[i],ox=tile.x*220,oy=tile.y*220;
+  const shape=geometry.compile(tile.edges),compiled=edges.compile(shape);
+  ctx.save();ctx.beginPath();ctx.rect(ox,oy,220,220);ctx.clip();
+  edges.draw(ctx,compiled,palette,{x:ox,y:oy,edges:true,
+   paintedBankOverlay:bankImage?(c,g,p)=>bankArt.draw(c,g,bankImage,p):null,
+   paintedVergeOverlay:vergeImage?(c,g,p)=>vergeArt.draw(c,g,vergeImage,p):null
+  });
+  if(detailsVisible){
+   if(i===compoundTile){
+    // Do not scatter free-standing flora into an assembled courtyard.
+    const contract=enclosure.plannedCompound();
+    layer2.draw(ctx,{...tile,layer2:[contract.hall]},largeImages,{visible:visibleComponents});
+    enclosure.draw(ctx,tile,enclosureImages,{guides:guidesVisible});
+   }else layer2.draw(ctx,tile,largeImages,{visible:visibleComponents});
+  }
+  ctx.restore();
+  if(gridVisible){
+   ctx.save();ctx.strokeStyle='rgba(47,65,48,.33)';ctx.lineWidth=0.65;
+   ctx.strokeRect(ox+.3,oy+.3,219.4,219.4);ctx.restore();
+  }
+ }
+ const tile=tiles[selected];
+ if(tile){
+  ctx.save();ctx.strokeStyle='#4f5548';ctx.lineWidth=1.2;
+  ctx.setLineDash([5,4]);ctx.strokeRect(tile.x*220+1,tile.y*220+1,218,218);
+  ctx.setLineDash([]);ctx.restore();
+ }
+ const status=tile?enclosure.audit(tile):null;
+ document.getElementById('tileInfo').textContent=tile
+  ?'Selected tile '+tile.x+','+tile.y+' • N/E/S/W: '+tile.edges.join('')+
+   ' • seed '+tile.seed+' • courtyard geometry: '+(status.valid?'eligible':'blocked by '+status.problems.slice(0,2).join('; '))+
+   ' • built here: '+String(selected===compoundTile)
+  :'No tile selected';
+ const exportData=JSON.parse(layer2.saveBoard(tiles));
+ exportData.courtyardReview={
+  tileIndex:compoundTile,
+  status:'candidate-only',
+  authenticArtworkSource:enclosureSource,
+  layout:compoundTile===null?null:enclosure.plannedCompound(),
+  validation:compoundTile===null?null:enclosure.audit(tiles[compoundTile]),
+  canBuildCompleteEnclosure:false
+ };
+ document.getElementById('layoutData').textContent=JSON.stringify(exportData,null,2);
+ drawJoinBench();
+}
+canvas.addEventListener('click',event=>{
+ const r=canvas.getBoundingClientRect();
+ const x=(event.clientX-r.left)/r.width*660,y=(event.clientY-r.top)/r.height*440;
+ const ix=Math.floor(x/220),iy=Math.floor(y/220);
+ if(ix<0||ix>=3||iy<0||iy>=2)return;
+ selected=iy*3+ix;render();
+});
+document.getElementById('study').addEventListener('change',e=>setStudy(e.target.value));
+function button(id,fn){document.getElementById(id).addEventListener('click',fn);}
+button('showDetails',()=>{detailsVisible=!detailsVisible;
+ const b=document.getElementById('showDetails');b.setAttribute('aria-pressed',String(detailsVisible));
+ b.textContent=detailsVisible?'Hide Layer 2':'Show Layer 2';render();});
+button('showGrid',()=>{gridVisible=!gridVisible;
+ const b=document.getElementById('showGrid');b.setAttribute('aria-pressed',String(gridVisible));
+ b.textContent=gridVisible?'Hide tile outlines':'Show tile outlines';render();});
+button('zoom',()=>{zoom=!zoom;
+ canvas.style.width=zoom?'1980px':'660px';
+ document.getElementById('zoom').setAttribute('aria-pressed',String(zoom));
+ render();});
+button('nextSeed',()=>{tiles[selected].seed++;render();});
+button('prevSeed',()=>{tiles[selected].seed=Math.max(0,tiles[selected].seed-1);render();});
+button('reset',()=>setStudy(document.getElementById('study').value));
+button('showGuides',()=>{guidesVisible=!guidesVisible;
+ const b=document.getElementById('showGuides');b.setAttribute('aria-pressed',String(guidesVisible));
+ b.textContent=guidesVisible?'Hide join / side-wall guides':'Show join / side-wall guides';render();});
+button('placeHere',()=>{
+ const tile=tiles[selected],result=enclosure.audit(tile);
+ if(!result.valid){
+  document.getElementById('enclosureStatus').textContent='Cannot build courtyard on this tile: '+result.problems.join('; ');
+  return;
+ }
+ compoundTile=selected;render();
+});
+const chipNames={
+ 'white-garden-wall-long-01':'Long wall',
+ 'white-garden-wall-short-01':'Short wall',
+ 'white-garden-wall-corner-01':'Corner',
+ 'moon-gate-01':'Moon gate'
+};
+function showAssetStatus(missing,source){
+ const el=document.getElementById('enclosureChips');
+ el.textContent='';
+ for(const id of enclosure.IDS){
+  const span=document.createElement('span'),exists=!!enclosureImages[id];
+  span.className='chip '+(exists?'ok':'warning');
+  span.textContent=(exists?'✓ ':'○ ')+chipNames[id]+(exists?'':' — missing');
+  el.appendChild(span);
+ }
+ enclosureSource=source;
+ const count=enclosure.IDS.filter(id=>!!enclosureImages[id]).length;
+ document.getElementById('enclosureStatus').textContent=count+'/4 verified painted enclosure assets available ('+source+'). '+
+  (missing.length?'Still missing: '+missing.join(', '):'Join bench and courtyard now use all four authentic painted WebPs.');
+ document.getElementById('uploadHelp').textContent=count===4&&source==='github'
+ ?'All four artwork candidates loaded from GitHub automatically. Toggle guides and inspect at 3×.'
+ :'Missing files never receive fake replacements. Select original prepared WebPs below to test locally, or upload them to assets/v3/enclosures/ on GitHub.';
+ render();
+}
+document.getElementById('enclosureFiles').addEventListener('change',async e=>{
+ const files=Array.from(e.target.files||[]);
+ if(!files.length)return;
+ document.getElementById('enclosureStatus').textContent='Verifying original artwork SHA-256…';
+ const imported=await enclosure.loadLocal(files);
+ enclosureImages={...enclosureImages,...imported.images};
+ showAssetStatus(enclosure.IDS.filter(id=>!enclosureImages[id]).map(id=>enclosure.COMPONENTS[id].filename),'local browser files');
+ if(imported.errors.length)document.getElementById('enclosureStatus').textContent+=' Errors: '+imported.errors.join('; ');
+});
+function drawJoinBench(){
+ const canvas=document.getElementById('joinBench'),c=canvas.getContext('2d');
+ c.setTransform(4,0,0,4,0,0);c.clearRect(0,0,330,120);
+ c.fillStyle='#f1ecdd';c.fillRect(0,0,330,120);
+ c.fillStyle='#46544a';c.font='5px system-ui';
+ c.fillText('WALL + CORNER — geometry ports shown by green dots',12,10);
+ c.fillText('WALL + MOON GATE — entrance faces north/south',12,71);
+ const sequences=[
+  enclosure.horizontalChain(30,34,['white-garden-wall-long-01','white-garden-wall-short-01','white-garden-wall-corner-01']),
+  enclosure.horizontalChain(30,94,['white-garden-wall-long-01','moon-gate-01','white-garden-wall-short-01'])
+ ];
+ for(const chain of sequences){
+  for(const p of chain.pieces){
+   const a=enclosure.COMPONENTS[p.id],img=enclosureImages[p.id];
+   if(img)c.drawImage(img,p.x-a.width/2,p.y-a.height/2,a.width,a.height);
+   else{
+    c.save();c.strokeStyle='#a27360';c.setLineDash([2,2]);c.strokeRect(p.x-a.width/2,p.y-a.height/2,a.width,a.height);c.restore();
+    c.fillStyle='#935543';c.font='4px system-ui';c.fillText('MISSING ART',p.x-a.width/2+1,p.y);
+   }
+  }
+  for(const seam of chain.seams){
+   c.fillStyle='#28755f';c.beginPath();c.arc(seam.x,seam.y,1.7,0,Math.PI*2);c.fill();
+  }
+ }
+ document.getElementById('joinInfo').textContent='Join anchors: '+sequences.flatMap(x=>x.seams).map(x=>x.a.replace('white-garden-wall-','')+' → '+x.b.replace('white-garden-wall-','')+': '+x.gap.toFixed(3)+' units').join(' • ')+
+ '. All mathematical join gaps are zero; visible roof-cap seams still require human artwork review.';
+}
+for(const [checkbox,id] of [
+ ['showHall','courtyard-hall-01'],
+ ['showWillow','willow-tree-01'],
+ ['showRockery','garden-rockery-01']
+]){
+ document.getElementById(checkbox).addEventListener('change',e=>{
+  visibleComponents[id]=e.target.checked;render();
+ });
+}
+enclosure.loadCommitted().then(result=>{
+ enclosureImages=result.images;showAssetStatus(result.missing,'github');
+ if(result.errors.length)console.info('Enclosure artwork not yet committed:',result.errors.join('; '));
+}).catch(error=>{showAssetStatus(enclosure.IDS.map(id=>enclosure.COMPONENTS[id].filename),'unavailable');
+ document.getElementById('enclosureStatus').textContent='Could not load authentic artwork: '+String(error);
+});
+setStudy('garden');
+Promise.all([materials.loadAll(),bankArt.load(),vergeArt.load(),layer2.loadImages()])
+ .then(([base,bank,verge,large])=>{
+  if(base.missing.length)throw Error('Missing base materials: '+base.missing.join(','));
+  images=base.images;bankImage=bank;vergeImage=verge;largeImages=large;ready=true;
+  document.getElementById('assetStatus').textContent='V3 continuous grass, stone, canal water, painted banks and verges loaded. Courtyard Hall, Willow Tree and Garden Rockery also available as authentic separate Layer 2 details.';
+  render();
+ }).catch(error=>{
+  document.getElementById('assetStatus').textContent='Missing authentic V3 asset: '+String(error)+' — no fake replacement image is used.';
+  render();
+ });
+})();
+</script></body></html>
