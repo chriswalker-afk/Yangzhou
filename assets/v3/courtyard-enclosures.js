@@ -249,34 +249,98 @@ function withDeadline(task,timeoutMs,controller,label){
   );
  });
 }
-async function loadCommitted(options={}){
- const images={},missing=[],errors=[];
- const total=IDS.length,timeoutMs=validTimeout(options.timeoutMs);
- let completed=0;
- function progress(){
-  try{options.onProgress?.({
-   images:{...images},missing:[...missing],errors:[...errors],
-   completed,total,done:completed===total
-  });}catch(_){} // UI callbacks must not prevent the other artworks loading.
+// Preview assets are visual derivatives of the same painter-authored originals.
+// They are never treated as the production master. The manifest links each
+// derivative to the unchanged original SHA-256; both hashes are checked.
+const PREVIEWS=Object.freeze({
+ 'white-garden-wall-long-01':'white-garden-wall-long.webp',
+ 'white-garden-wall-short-01':'white-garden-wall-short.webp',
+ 'white-garden-wall-corner-01':'white-garden-wall-corner.webp',
+ 'moon-gate-01':'moon-gate.webp'
+});
+const PREVIEW_ROOT='assets/v3/previews/';
+const RAW_ROOT='https://raw.githubusercontent.com/chriswalker-afk/Yangzhou/main/';
+const CDN_ROOT='https://cdn.jsdelivr.net/gh/chriswalker-afk/Yangzhou@main/';
+async function fetchBounded(url,timeoutMs){
+ const controller=typeof AbortController!=='undefined'?new AbortController():null;
+ return withDeadline((async()=>{
+  const response=await fetch(url,{
+   cache:'no-store',...(controller?{signal:controller.signal}:{})
+  });
+  if(!response.ok)throw Error('HTTP '+response.status+' for '+url);
+  return response.blob();
+ })(),timeoutMs,controller,url);
+}
+async function fetchFirstValid(url,sha256,bytes,dimensions,timeoutMs){
+ const urls=[url,RAW_ROOT+url,CDN_ROOT+url];
+ let last=null;
+ for(const candidate of urls){
+  try{
+   const blob=await fetchBounded(candidate,timeoutMs);
+   if(blob.size!==bytes)throw Error('Unexpected size for '+candidate);
+   if(typeof crypto==='undefined'||!crypto.subtle)throw Error('HTTPS SHA-256 unavailable');
+   const digest=shaHex(await crypto.subtle.digest('SHA-256',await blob.arrayBuffer()));
+   if(digest!==sha256)throw Error('Integrity mismatch for '+candidate);
+   const image=await withDeadline(decodeBlob(blob),timeoutMs,null,candidate+' image decode');
+   if(dimensions&&(image.naturalWidth!==dimensions[0]||image.naturalHeight!==dimensions[1]))
+    throw Error('Wrong pixel dimensions for '+candidate);
+   return image;
+  }catch(err){last=err;}
  }
+ throw Error('All three image sources failed; last error: '+String(last?.message||last));
+}
+async function fetchPreviewManifest(timeoutMs){
+ const urls=[PREVIEW_ROOT+'manifest.json',RAW_ROOT+PREVIEW_ROOT+'manifest.json'];
+ let last=null;
+ for(const url of urls){
+  const controller=typeof AbortController!=='undefined'?new AbortController():null;
+  try{
+   const text=await withDeadline((async()=>{
+    const response=await fetch(url,{cache:'no-store',...(controller?{signal:controller.signal}:{})});
+    if(!response.ok)throw Error('HTTP '+response.status);
+    return response.json();
+   })(),timeoutMs,controller,'preview manifest '+url);
+   if(text.schemaVersion!==1||!text.assets)throw Error('Invalid preview provenance manifest');
+   return text;
+  }catch(err){last=err;}
+ }
+ throw Error('Could not reach compact V3 preview manifest: '+String(last?.message||last));
+}
+async function loadCommitted(options={}){
+ const images={},missing=[],errors=[],total=IDS.length;
+ const timeoutMs=validTimeout(options.timeoutMs);
+ let completed=0,manifest=null;
+ const progress=()=>{
+  try{options.onProgress?.({images:{...images},missing:[...missing],
+   errors:[...errors],completed,total,done:completed===total});}catch(_){}
+ };
  if(typeof fetch==='undefined'){
-  missing.push(...IDS.map(id=>COMPONENTS[id].filename));errors.push('Browser fetch unavailable');
-  completed=total;progress();
+  missing.push(...IDS.map(id=>COMPONENTS[id].filename));
+  errors.push('Browser image fetch unavailable');completed=total;progress();
   return {images,missing,errors};
  }
+ if(options.preferPreviews){
+  try{manifest=await fetchPreviewManifest(timeoutMs);}
+  catch(err){errors.push('Preview manifest: '+String(err.message||err));}
+ }
+ progress();
  await Promise.all(IDS.map(async id=>{
-  const c=COMPONENTS[id],controller=typeof AbortController!=='undefined'?new AbortController():null;
+  const c=COMPONENTS[id],name=PREVIEWS[id];
   try{
-   const task=(async()=>{
-    const response=await fetch(BASE+c.filename,{
-     cache:'no-store',...(controller?{signal:controller.signal}:{})
-    });
-    if(!response.ok)throw Error('HTTP '+response.status+' for '+c.filename);
-    return verify(id,await response.blob());
-   })();
-   images[id]=await withDeadline(task,timeoutMs,controller,c.filename);
-  }catch(e){
-   missing.push(c.filename);errors.push(id+': '+String(e.message||e));
+   if(manifest){
+    const meta=manifest.assets[name];
+    if(!meta||meta.sourceSha256!==c.sha256||
+       meta.source!==(BASE+c.filename))
+     throw Error('Preview provenance does not match original '+c.filename);
+    images[id]=await fetchFirstValid(meta.preview,meta.previewSha256,
+      meta.previewBytes,meta.previewDimensions,timeoutMs);
+   }else{
+    images[id]=await fetchFirstValid(BASE+c.filename,c.sha256,c.bytes,
+      [c.preparedWidth,c.preparedHeight],timeoutMs);
+   }
+  }catch(err){
+   missing.push(c.filename);
+   errors.push(id+': '+String(err.message||err));
   }finally{completed++;progress();}
  }));
  return {images,missing,errors};
@@ -292,7 +356,7 @@ async function loadLocal(files){
  }));
  return {images,missing,errors};
 }
-return Object.freeze({TILE,INSET,GAP,PAINTED_JOIN_INSET,BASE,IDS,COMPONENTS,CONFIG,
+return Object.freeze({TILE,INSET,GAP,PAINTED_JOIN_INSET,BASE,PREVIEWS,PREVIEW_ROOT,IDS,COMPONENTS,CONFIG,
  port,horizontalChain,plannedCompound,safeForTile,audit,draw,drawSprite,
  loadCommitted,loadLocal});
 });
