@@ -103,6 +103,53 @@
         "brushwork consistency",
         "tile-to-tile repetition"
       ]
+    },
+    {
+      "id": "willow-tree-01",
+      "name": "Yangzhou Willow Tree 01",
+      "type": "vegetation",
+      "image": "assets/v3/large/willow-tree-01.webp",
+      "source": null,
+      "manifest": "assets/v3/large/manifest.json",
+      "worldFootprint": {
+        "width": 48,
+        "height": 58
+      },
+      "placement": "tile-local-land-trunk-canopy-overhang-permitted",
+      "compassUpright": true,
+      "status": "candidate-committed-awaiting-visual-review",
+      "productionApproved": false,
+      "requiresHumanReview": [
+        "strict overhead viewpoint",
+        "historical accuracy",
+        "canopy opacity and shadows",
+        "scale at 1x/3x",
+        "brushwork consistency",
+        "repetition"
+      ]
+    },
+    {
+      "id": "garden-rockery-01",
+      "name": "Yangzhou Garden Rockery 01",
+      "type": "garden-rockery",
+      "image": "assets/v3/large/garden-rockery-01.webp",
+      "source": null,
+      "manifest": "assets/v3/large/manifest.json",
+      "worldFootprint": {
+        "width": 52,
+        "height": 37
+      },
+      "placement": "tile-local-land-solid-footprint",
+      "compassUpright": true,
+      "status": "candidate-committed-awaiting-visual-review",
+      "productionApproved": false,
+      "requiresHumanReview": [
+        "strict overhead viewpoint",
+        "Taihu rockery plausibility",
+        "brushwork consistency",
+        "scale and colour balance",
+        "repetition"
+      ]
     }
   ],
   "animationLibrary": [],
