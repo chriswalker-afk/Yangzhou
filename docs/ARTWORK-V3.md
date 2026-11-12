@@ -81,6 +81,8 @@ This is **geometry infrastructure only**, not a painted border asset or a produc
 - Unit tests inspect all 20 topology signatures, the exact edge cross-sections, adjoining-tile agreement, orthogonal edge tangents, junction layering and bridge draw order. The browser workflow captures actual desktop/mobile review screenshots and comparison with edging switched off.
 - The preview has **not** been visually approved. Curved edge-strip UV mapping, painted kerbs/banks, soft shadows, decorative overlap, naturally irregular outlines and bridge parapet artwork belong to later art passes.
 
+**Visibility diagnostic (rev 22):** The six-tile lab shows an explicit `Edging ON/OFF` state. Provisional canal-bank and waterline-rim colours were made more contrasting so the narrow 4-unit land-side strips can be located clearly. Browser tests sample actual upper/lower canal-bank pixels with edges on and off; a missing bank is now a CI failure rather than merely a subtle difference. These are **flat, non-artistic diagnostic colours** and are not a substitute for the next painted-bank asset. To distinguish cached preview HTML, check that the heading includes `rev 22`.
+
 **Next review gate:** Inspect edge continuity and thickness in the five basic geometries at 1× and 3×, then produce **one canal-bank painted strip** in the project's muted ink-and-watercolour language. Test it on a straight canal and bend before commissioning the path-verge strip. Keep the first painterly asset as an independently approved candidate, not a hidden code-generated substitute.
 
 ## V3 quality gates

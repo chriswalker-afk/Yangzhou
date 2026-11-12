@@ -25,19 +25,34 @@ async function run(){
   const pixel=()=>page.evaluate(()=>{
     const c=document.getElementById('scene'),ctx=c.getContext('2d');
     const sample=(x,y)=>[...ctx.getImageData(x*3,y*3,1,1).data];
-    return {edge:sample(110,133),core:sample(110,110),water:sample(110,330)};
+    return {
+      edge:sample(110,133),core:sample(110,110),water:sample(110,330),
+      canalBankTop:sample(110,284),canalBankBottom:sample(110,376),
+      canalContactTop:sample(110,285)
+    };
   });
   const before=await pixel();
+  assert.match(await page.locator('#edgeState').textContent(),/Layer 1B rev 22.*Edging ON/);
+  assert.deepEqual(before.canalBankTop,[186,167,137,255],
+    'Real canvas must display the temporary canal-bank ribbon ABOVE the water');
+  assert.deepEqual(before.canalBankBottom,[186,167,137,255],
+    'Real canvas must display the temporary canal-bank ribbon BELOW the water');
+  assert.deepEqual(before.canalContactTop,[86,123,112,255],
+    'A contrasting waterline rim must remain just outside the 40% water mouth');
   await page.screenshot({path:'artifacts/v3/layer1b-six-joined-edging.png',fullPage:true});
   await page.locator('#edges').click();
   assert.equal(await page.locator('#edges').getAttribute('aria-pressed'),'false');
   const after=await pixel();
   assert.notDeepEqual(before.edge,after.edge,'Land-side path edging should visibly differ when switched off');
+  assert.notDeepEqual(before.canalBankTop,after.canalBankTop,'Canal bank MUST visibly differ from grass when edging is disabled');
+  assert.notDeepEqual(before.canalBankBottom,after.canalBankBottom,'Lower canal bank MUST visibly differ from grass when edging is disabled');
+  assert.match(await page.locator('#edgeState').textContent(),/Edging OFF/);
   assert.deepEqual(before.core,after.core,'Exact route centre must use the same unchanged stone material');
   assert.deepEqual(before.water,after.water,'Water core must remain identical after hiding edges');
   await page.screenshot({path:'artifacts/v3/layer1b-six-joined-no-edging.png',fullPage:true});
   await page.locator('#edges').click();
   assert.equal(await page.locator('#edges').getAttribute('aria-pressed'),'true');
+  assert.match(await page.locator('#edgeState').textContent(),/Edging ON/);
 
   // All selected geometries are drawn through the same compositor.
   const studies=['street-bend','canal-bend','bridge','canal-junction','street-cross','joined'];
