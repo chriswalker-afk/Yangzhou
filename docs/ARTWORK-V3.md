@@ -103,6 +103,14 @@ The derived **1992 × 194** lossless transparent WebP at `assets/v3/edges/path-v
 
 The [six-tile V3 lab](../layer-lab-v3.html) loads painted canal banks and path verges simultaneously, offers independent paint toggles and local comparisons, and exposes straights, bends, junctions and bridge tiles at 1× and 3×. Neither artwork is production-approved until a person checks repeated patterns, curvature/stretching, edge transitions, historic appearance and scale.
 
+## Canal T-junction bank clipping — V3 rev 25
+
+At three-way canal junctions, independently painted bank ribbons used to continue across the **opening of another water arm**, producing thin stone-coloured lines through the channel. This was a rendering error, not a problem with Canal Bank Edge 01.
+
+The compositor now clips **all** canal-bank artwork and temporary bank/contact bands to the intersection of the land side of **each** canal core. Repeated even-odd Canvas clips subtract the **union** of the water arms, including shared junction mouths; a single XOR-like even-odd path for all arms would be incorrect. The full water core is drawn *after* the clipped banks, with bridge decks drawn afterwards as before. Exact 88-unit canal and 44-unit street mouths, artwork binaries, material phase and V2 gameplay remain unchanged.
+
+The 20-signature geometry test checks separate water-arm clips and paint order. A real-browser pixel test independently rasterizes the exact water-core union, verifies every fully covered water pixel stays identical with the edging on/off at **T-junctions, straight canals and bends**, and confirms land-side banks remain visible. Additional screenshots cover the T-junction at 1×/3×, the bridge and mobile. Passing CI establishes technical correctness; visual artwork approval is still separate.
+
 ## V3 quality gates
 
 **Automated (mandatory for geometry/runtime):**

@@ -1,6 +1,8 @@
 /* Yangzhou V3 — painted canal bank preview adapter.
  * Candidate only. Never invoked by the playable V2 game.
  * Image lands on both LAND-SIDE banks of each canal; core mask unchanged.
+ * The caller must composite via edge-system.draw() to clip to land outside
+ * the UNION of all water arms, especially at canal junctions.
  * Browser-only CanvasPattern affine mapping. No generated art fallback.
  */
 (function(root,factory){
