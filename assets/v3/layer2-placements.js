@@ -45,8 +45,12 @@
     [58,110],[162,110],[110,110]
   ].map(a=>Object.freeze(a)));
   const SCENERY_ANCHORS=Object.freeze([
-    [55,53],[165,53],[55,165],[165,165],[110,52],[110,168],
-    [55,110],[165,110],[110,110],[83,55],[138,164]
+    // Insets at 32/40/180/188 allow authentic land-bank greenery and rocks
+    // beside an 88-unit canal without pushing solid trunks into the water.
+    [40,40],[180,40],[40,180],[180,180],
+    [110,40],[110,180],[40,110],[180,110],[110,110],
+    [32,32],[188,32],[32,188],[188,188],
+    [55,55],[165,55],[55,165],[165,165]
   ].map(a=>Object.freeze(a)));
   const hash=(seed,str)=>{
     let h=(Math.trunc(seed)>>>0)^2166136261;
