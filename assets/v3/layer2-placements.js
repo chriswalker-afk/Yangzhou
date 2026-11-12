@@ -1,6 +1,7 @@
 /* Yangzhou V3 — Layer 2 tile-owned large details (experimental, not V2).
  * Local anchors survive moving a tile. Geometry masks decide safe placement.
- * An artist's building remains compass-upright; never rotate its source bitmap.
+ * Artist-authored objects remain compass-upright; never rotate their bitmaps.
+ * Trees have a land-only trunk footprint; their visual canopy may overhang routes.
  */
 (function(root,factory){
   const geometry=typeof module!=='undefined'&&module.exports
@@ -18,7 +19,21 @@
     'courtyard-hall-01':Object.freeze({
       id:'courtyard-hall-01',name:'Yangzhou Courtyard Hall 01',
       image:'assets/v3/large/courtyard-hall-01.webp',
-      width:96,height:47,shadow:0,compassUpright:true,
+      width:96,height:47,shadow:0,collision:'solid',compassUpright:true,
+      status:'candidate-awaiting-visual-and-historical-review',
+      productionApproved:false
+    }),
+    'willow-tree-01':Object.freeze({
+      id:'willow-tree-01',name:'Yangzhou Willow Tree 01',
+      image:'assets/v3/large/willow-tree-01.webp',
+      width:48,height:58,shadow:0,collision:'trunk',trunkRadius:7,compassUpright:true,
+      status:'candidate-awaiting-visual-and-historical-review',
+      productionApproved:false
+    }),
+    'garden-rockery-01':Object.freeze({
+      id:'garden-rockery-01',name:'Yangzhou Garden Rockery 01',
+      image:'assets/v3/large/garden-rockery-01.webp',
+      width:52,height:37,shadow:0,collision:'solid',compassUpright:true,
       status:'candidate-awaiting-visual-and-historical-review',
       productionApproved:false
     })
@@ -28,6 +43,10 @@
   const ANCHORS=Object.freeze([
     [110,35],[60,36],[160,36],[110,185],[60,185],[160,185],
     [58,110],[162,110],[110,110]
+  ].map(a=>Object.freeze(a)));
+  const SCENERY_ANCHORS=Object.freeze([
+    [55,53],[165,53],[55,165],[165,165],[110,52],[110,168],
+    [55,110],[165,110],[110,110],[83,55],[138,164]
   ].map(a=>Object.freeze(a)));
   const hash=(seed,str)=>{
     let h=(Math.trunc(seed)>>>0)^2166136261;
@@ -69,11 +88,22 @@
         return false;
     }
     const g=geometry.compile(tile.edges);
+    const routePoints=c.collision==='trunk'?[[detail.x,detail.y]]:points;
     for(const path of g.paths){
-      const radius=path.width/2+(path.type==='W'?4:5)+SAFE_GAP;
-      for(const point of points)if(minRouteDistance(point,path)<radius)return false;
+      // Only the willow's trunk is solid; willow canopy may drape over a route.
+      const radius=path.width/2+(path.type==='W'?4:5)+SAFE_GAP+
+        (c.collision==='trunk'?c.trunkRadius:0);
+      for(const point of routePoints)if(minRouteDistance(point,path)<radius)return false;
     }
     return true;
+  }
+  function distinctFootprints(candidate,existing,gap=7){
+    const a=COMPONENTS[candidate.id];
+    return existing.every(p=>{
+      const b=COMPONENTS[p.id];
+      return Math.abs(candidate.x-p.x)>=(a.width+b.width)/2+gap ||
+        Math.abs(candidate.y-p.y)>=(a.height+b.height)/2+gap;
+    });
   }
   function normaliseTile(tile){
     if(!tile||!Number.isInteger(tile.x)||!Number.isInteger(tile.y))throw Error('Tile needs integer board x/y');
@@ -84,21 +114,32 @@
   function plan(tile){
     const data=normaliseTile(tile);
     if(Array.isArray(data.layer2)){
-      return data.layer2.map(p=>{
+      const placed=[];
+      for(const p of data.layer2){
         if(!validateDetail(data,p))throw Error('Large detail would block a route or tile seam: '+p.id);
-        return Object.freeze({id:p.id,x:p.x,y:p.y});
-      });
+        if(!distinctFootprints(p,placed))throw Error('Layer 2 details overlap within a tile: '+p.id);
+        placed.push(Object.freeze({id:p.id,x:p.x,y:p.y}));
+      }
+      return placed;
     }
-    // Sparse deterministic proof only. Full tile variants will eventually
-    // store explicit Layer 2 layouts so whole-house patterns do not repeat.
-    if(data.seed%3!==1)return [];
-    const options=ANCHORS.map((_,i)=>ANCHORS[(i+hash(data.seed,data.edges.join('')))%ANCHORS.length]);
-    const c=COMPONENTS['courtyard-hall-01'];
-    for(const [x,y] of options){
-      const p={id:c.id,x,y};
-      if(validateDetail(data,p))return [Object.freeze(p)];
+    // All decisions use seed + topology, never board grid x/y.
+    // When moved to another board cell, the same tile keeps its own artwork.
+    const placed=[];
+    function tryAsset(id,anchors){
+      const offset=hash(data.seed,data.edges.join('')+id)%anchors.length;
+      for(let i=0;i<anchors.length;i++){
+        const [x,y]=anchors[(i+offset)%anchors.length],p={id,x,y};
+        if(validateDetail(data,p)&&distinctFootprints(p,placed)){
+          placed.push(Object.freeze(p));return true;
+        }
+      }
+      return false;
     }
-    return [];
+    // Deliberately sparse architecture, but frequent small-scale natural variety.
+    if(data.seed%3===1)tryAsset('courtyard-hall-01',ANCHORS);
+    if(data.seed%5!==0)tryAsset('willow-tree-01',SCENERY_ANCHORS);
+    if(data.seed%4!==3)tryAsset('garden-rockery-01',SCENERY_ANCHORS);
+    return placed;
   }
   function draw(ctx,tile,images,options={}){
     if(!ctx||typeof ctx.drawImage!=='function')throw Error('Canvas context required');
@@ -138,6 +179,6 @@
       image.onerror=()=>reject(Error('Missing V3 artwork candidate: '+c.image));image.src=c.image;
     }))).then(entries=>Object.fromEntries(entries));
   }
-  return Object.freeze({TILE_SIZE,EDGE_INSET,SAFE_GAP,COMPONENTS,ANCHORS,
-    minRouteDistance,footprintSamples,validateDetail,normaliseTile,plan,draw,saveBoard,restoreBoard,loadImages});
+  return Object.freeze({TILE_SIZE,EDGE_INSET,SAFE_GAP,COMPONENTS,ANCHORS,SCENERY_ANCHORS,
+    minRouteDistance,footprintSamples,validateDetail,distinctFootprints,normaliseTile,plan,draw,saveBoard,restoreBoard,loadImages});
 });
