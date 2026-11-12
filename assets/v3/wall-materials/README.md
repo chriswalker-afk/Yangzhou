@@ -8,9 +8,9 @@ Source PNG (2508×627 RGB) is preserved in ChatGPT and has SHA-256 `731df70b0143
 
 The prepared derivative is gently normalized at its left/right boundaries, using a symmetric correction over only the outer 60 pixels; this is a **seam candidate**, not yet proof of a perfect painted transition at every camera zoom. See `scripts/prepare_v3_wall_roof_tiles.py` for exact source steps. This preserves the painting's physical roof-tile detail while preventing a visible large colour step in horizontal repeats.
 
-**Binary upload**: the generated WebP should be placed at precisely `assets/v3/wall-materials/wall-roof-tiles-01.webp`. Until the binary is uploaded, the new lab intentionally falls back to diagnostic grey coping and offers a local selection control, rather than displaying fake painting.
+**Binary integrated:** the exact 174,360-byte painted WebP is now committed to `assets/v3/wall-materials/wall-roof-tiles-01.webp`, Git blob SHA-1 `724b075426f0e6fa2688a03e7ac366c50567a124`. The new lab loads and SHA-256 verifies it automatically. If a network request fails, the lab falls back to diagnostic grey and offers a local file selector; it never draws fake painting.
 
-[Upload the candidate WebP to the PR branch](https://github.com/chriswalker-afk/Yangzhou/upload/main/assets/v3/wall-materials)
+[View the committed painted candidate](https://github.com/chriswalker-afk/Yangzhou/blob/main/assets/v3/wall-materials/wall-roof-tiles-01.webp)
 
 ## Renderer
 
@@ -25,6 +25,6 @@ The isolated V3 lab uses `assets/v3/wall-roof-texture.js` to map the single pain
 - Genuine moon-gate openings still cut through **all** wall bands. Painted coping cannot cover the gap.
 - The original hall remains compass-upright; geometry is tile-local and preserves Layer 1 geometry. The V2 game is untouched.
 
-**QA:** `node tests/v3-wall-roof-texture.cjs` and `node tests/v3-wall-roof-texture-visual.cjs` (the latter uses Playwright and a local server). These verify the source filename and exact checksum if the binary is present, and do not claim missing artwork is committed.
+**QA:** `node tests/v3-wall-roof-texture.cjs` and `node tests/v3-wall-roof-texture-visual.cjs` (the latter uses Playwright and a local server). These verify the exact committed file length, SHA-256 and Git provenance; the original source PNG remains separately preserved outside the repository.
 
 This is candidate-only until reviewed at **1× and 3×**, with focus on roof-tile scale, grey palette relative to Courtyard Hall 01, the L-corner tile join, the T-junction and the visible moon-gate ends.
