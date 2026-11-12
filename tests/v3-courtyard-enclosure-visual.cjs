@@ -13,7 +13,10 @@ async function run(){
   await page.waitForFunction(()=>document.querySelector('#assetStatus')?.textContent.includes('V3 continuous grass'),{timeout:30000});
   await page.waitForFunction(()=>document.querySelector('#enclosureStatus')?.textContent.includes('/4 verified'),{timeout:30000});
   const initialArtworkStatus=await page.locator('#enclosureStatus').textContent();
-  assert.match(await page.locator('h1').textContent(),/rev 33/);
+  assert.match(await page.locator('h1').textContent(),/rev 34/);
+  assert(await page.locator('#retryAssets').isVisible(),'Retry artwork loading control must be available');
+  assert.match(await page.locator('#enclosureStatus').textContent(),/4\/4 verified/);
+  assert.match(await page.locator('#assetStatus').textContent(),/8\/8/);
   // Regression: exact mathematical joins are insufficient when the painted
   // sprites have transparent terminal pixels. Inspect the real 4/4 WebPs in
   // an alpha-only compositing canvas, not the opaque grass-backed screenshot.
@@ -80,7 +83,36 @@ async function run(){
   await mobile.goto('http://127.0.0.1:8765/courtyard-enclosure-lab-v3.html',{waitUntil:'load'});
   await mobile.waitForFunction(()=>document.querySelector('#assetStatus')?.textContent.includes('V3 continuous grass'),{timeout:30000});
   await mobile.screenshot({path:'artifacts/v3/enclosure-assembly-mobile.png',fullPage:true});
-  assert.deepEqual(errors,[],'No runtime JavaScript exceptions on desktop/mobile');
+  // A slow remote WebP must never leave all scenery on "Loading" forever.
+  // Stall one artwork fetch and one material Image request longer than the
+  // deliberately short test timeout. Other original paintings stay visible.
+  const stalled=await browser.newPage({viewport:{width:1000,height:750}});
+  stalled.on('pageerror',e=>errors.push('stalled: '+e.message));
+  for(const match of [
+   '**/assets/v3/enclosures/moon-gate-01.webp',
+   '**/assets/v3/materials/grass-01-lossless.webp'
+  ]){
+   await stalled.route(match,async route=>{
+    await new Promise(resolve=>setTimeout(resolve,1800));
+    try{await route.abort();}catch(_){} // The webpage may have aborted first.
+   });
+  }
+  await stalled.goto('http://127.0.0.1:8765/courtyard-enclosure-lab-v3.html?assetTimeoutMs=600',
+   {waitUntil:'load'});
+  await stalled.waitForFunction(()=>
+   document.querySelector('#enclosureStatus')?.textContent.includes('3/4 verified')&&
+   document.querySelector('#assetStatus')?.textContent.includes('8/8 checked'),
+   {timeout:9000});
+  const partialArt=await stalled.locator('#enclosureStatus').textContent();
+  const partialBase=await stalled.locator('#assetStatus').textContent();
+  assert.match(partialArt,/moon-gate-01\.webp.*timed out/i,'Stalled gate must show a useful timeout');
+  assert.match(partialBase,/grass.*Timed out/i,'Stalled material must show a useful timeout');
+  assert(await stalled.locator('#scene').isVisible(),'Preview remains available despite stalled images');
+  const available=await stalled.locator('#enclosureChips .ok').count();
+  assert.equal(available,3,'Three verified original walls should remain visible');
+  await stalled.screenshot({path:'artifacts/v3/enclosure-timeout-diagnostic.png',fullPage:true});
+  await stalled.close();
+  assert.deepEqual(errors,[],'No runtime JavaScript exceptions on desktop/mobile/stalled requests');
   console.log('V3 enclosure art lab browser QA passed: 6-tile study, real painted-overlap seam coverage, canal route safeguards, 3x, mobile, truthful artwork status.');
  }finally{await browser.close();}
 }
