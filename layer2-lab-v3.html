@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yangzhou V3 | Layer 2 tile-owned large details</title>
+<style>
+:root{color-scheme:light}*{box-sizing:border-box}
+body{background:#eee3cd;color:#343f3b;margin:0;font:16px/1.5 system-ui,sans-serif}
+main{max-width:1080px;margin:22px auto;padding:0 18px}
+h1{font-family:Georgia,serif;line-height:1.2;font-size:2rem}h2{font-family:Georgia,serif;font-size:1.15rem}
+.note{padding:12px 16px;background:#fff9e9;border-left:4px solid #ad755d;border-radius:5px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:12px 0}
+button,select{border:1px solid #718176;border-radius:7px;background:#fff;padding:8px 12px;color:#283c32}
+button{cursor:pointer}button[aria-pressed="true"]{background:#304f49;color:#fff}
+.preview{overflow:auto;background:#faf6eb;border:1px solid #c8bea9;padding:14px;border-radius:10px}
+canvas{display:block;max-width:none;cursor:crosshair}
+.status{padding:10px;border:1px solid #cec4aa;background:#f9f0df;border-radius:6px;margin:10px 0}
+small,.muted{color:#536459}
+pre{font-size:.8rem;max-height:220px;overflow:auto;white-space:pre;background:#f8f4e9;padding:12px;border:1px solid #ccc3b2;border-radius:6px}
+</style></head><body><main>
+<h1>Yangzhou V3 — Layer 2 Tile Composition Lab (rev 26)</h1>
+<p class="note"><strong>Isolated proof, not the playable game.</strong> Each square is a separate 220 × 220 tile with exact V3 road/canal mouths. The new transparent Courtyard Hall 01 belongs to one tile and has a local position and seed. Painted surfaces still share world-space coordinates. This is a <strong>candidate artwork and placement system</strong>, not final historical or artistic approval; V2 is unchanged.</p>
+<p>Click any tile to inspect its own topology, seed and decorations. Change that tile's seed to test deterministic variation without moving its roads or affecting neighbours. Buildings never rotate to follow roads, and they must fit on land outside protected street, canal and edge zones.</p>
+<div class="toolbar">
+<label for="study">Layout</label>
+<select id="study">
+<option value="joined">Six connected street / canal tiles</option>
+<option value="junction">Canal T-junction</option>
+<option value="garden">All-land courtyard study</option>
+</select>
+<button id="showDetails" aria-pressed="true" type="button">Hide Layer 2</button>
+<button id="showGrid" aria-pressed="true" type="button">Hide tile outlines</button>
+<button id="zoom" aria-pressed="false" type="button">Inspect at 3×</button>
+</div>
+<div id="assetStatus" role="status" class="status">Loading the original V3 materials and first large-detail candidate…</div>
+<div class="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Six separately rendered 220-unit tiles with tile-owned courtyard halls"></canvas></div>
+<div class="toolbar">
+<button id="prevSeed" type="button">Previous tile seed</button>
+<button id="nextSeed" type="button">Next tile seed</button>
+<button id="reset" type="button">Reset layout</button>
+</div>
+<div id="tileInfo" class="status" role="status" aria-live="polite">Select a tile to see its data.</div>
+<h2>Portable tile layout data</h2>
+<p class="muted">Each record stores grid coordinates, its N/E/S/W material ports, a reproducible seed and local Layer 2 anchors. Moving a tile on a future board changes only its grid x/y; its artwork stays attached to the tile. This export is a test of the V3 data model, not a V2 save-game import.</p>
+<pre id="layoutData" aria-label="Serialized V3 tile layout"></pre>
+<p class="muted">Current component: <code>courtyard-hall-01.webp</code> — compass-upright, 96 × 47 world units, transparent and candidate-only. Later Layer 2 candidates will include courtyard walls, willow trees, rockeries and bridges. One hall variant is intentionally insufficient for a production tile library.</p>
+<p><a href="layer-lab-v3.html?rev=25">Layer 1 canal/path lab</a> · <a href="index.html">Playable V2 game</a> · <a href="docs/ARTWORK-V3.md">V3 artwork rules</a></p>
+</main>
+<script src="tile-topology.js"></script><script src="assets/v3/base-geometry.js"></script><script src="assets/v3/material-runtime.js"></script><script src="assets/v3/edge-system.js"></script><script src="assets/v3/canal-bank-art.js"></script><script src="assets/v3/path-verge-art.js"></script><script src="assets/v3/layer2-placements.js"></script>
+<script>
+(()=>{'use strict';
+const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d');
+const geometry=window.YangzhouV3Geometry,materials=window.YangzhouV3Materials,
+ edges=window.YangzhouV3Edges,bankArt=window.YangzhouV3CanalBankArt,
+ vergeArt=window.YangzhouV3PathVergeArt,layer2=window.YangzhouV3Layer2,
+ topology=window.YangzhouTileTopology;
+const fallback={grass:'#D5D5B7',stone:'#DFD1B5',water:'#7EA9A5'};
+const edgeStyle={pathVerge:'#B5A68C',pathContact:'#839078',canalBank:'#BAA789',
+ canalContact:'#567B70',bridgeEdge:'#B3A994',bridgeContact:'#707A73'};
+const CODES={
+ joined:['LSLS','LSLS','LSLS','LWLW','LWLW','LWLW'],
+ junction:['LWLW','LWWW','LWLW','LLLL','WLLL','LLLL'],
+ garden:['LLLL','LLLL','LLLL','LLLL','LLLL','LLLL']
+};
+let images={},bankImage=null,vergeImage=null,largeImages={},tiles=[],selected=0,
+ detailsVisible=true,gridVisible=true,zoom=false,ready=false;
+const tilesFor=name=>CODES[name].map((signature,i)=>({
+ x:i%3,y:Math.floor(i/3),edges:signature.split(''),
+ seed:(name==='garden'?(i===0?1:i===5?4:2):(i===0?1:i===5?4:2))
+}));
+function style(id){
+ try{return images[id]?materials.makePattern(ctx,images[id],materials.periodById[id]):fallback[id];}
+ catch(_){return fallback[id];}
+}
+function setStudy(name){
+ tiles=tilesFor(name);selected=0;
+ const issues=topology.validateBoard(tiles);
+ if(issues.length)throw Error('Prototype has invalid tile connections: '+issues.join('; '));
+ render();
+}
+function render(){
+ ctx.setTransform(3,0,0,3,0,0);ctx.clearRect(0,0,660,440);
+ ctx.fillStyle=style('grass');ctx.fillRect(0,0,660,440);
+ const palette={...edgeStyle,stone:style('stone'),water:style('water')};
+ for(const tile of tiles){
+  const ox=tile.x*220,oy=tile.y*220;
+  const shape=geometry.compile(tile.edges),compiled=edges.compile(shape);
+  ctx.save();ctx.beginPath();ctx.rect(ox,oy,220,220);ctx.clip();
+  edges.draw(ctx,compiled,palette,{x:ox,y:oy,edges:true,
+   paintedBankOverlay:bankImage?(c,g,p)=>bankArt.draw(c,g,bankImage,p):null,
+   paintedVergeOverlay:vergeImage?(c,g,p)=>vergeArt.draw(c,g,vergeImage,p):null
+  });
+  if(detailsVisible)layer2.draw(ctx,tile,largeImages);
+  ctx.restore();
+  if(gridVisible){
+   ctx.save();ctx.strokeStyle='rgba(47,65,48,.33)';ctx.lineWidth=0.65;
+   ctx.strokeRect(ox+.3,oy+.3,219.4,219.4);ctx.restore();
+  }
+ }
+ const tile=tiles[selected];
+ if(tile){
+  ctx.save();ctx.strokeStyle='#4f5548';ctx.lineWidth=1.2;
+  ctx.setLineDash([5,4]);ctx.strokeRect(tile.x*220+1,tile.y*220+1,218,218);
+  ctx.setLineDash([]);ctx.restore();
+ }
+ document.getElementById('tileInfo').textContent=tile
+  ?'Selected tile '+tile.x+','+tile.y+' • N/E/S/W: '+tile.edges.join('')+
+   ' • seed '+tile.seed+' • local Layer 2: '+JSON.stringify(layer2.plan(tile))
+  :'No tile selected';
+ document.getElementById('layoutData').textContent=layer2.saveBoard(tiles);
+}
+canvas.addEventListener('click',event=>{
+ const r=canvas.getBoundingClientRect();
+ const x=(event.clientX-r.left)/r.width*660,y=(event.clientY-r.top)/r.height*440;
+ const ix=Math.floor(x/220),iy=Math.floor(y/220);
+ if(ix<0||ix>=3||iy<0||iy>=2)return;
+ selected=iy*3+ix;render();
+});
+document.getElementById('study').addEventListener('change',e=>setStudy(e.target.value));
+function button(id,fn){document.getElementById(id).addEventListener('click',fn);}
+button('showDetails',()=>{detailsVisible=!detailsVisible;
+ const b=document.getElementById('showDetails');b.setAttribute('aria-pressed',String(detailsVisible));
+ b.textContent=detailsVisible?'Hide Layer 2':'Show Layer 2';render();});
+button('showGrid',()=>{gridVisible=!gridVisible;
+ const b=document.getElementById('showGrid');b.setAttribute('aria-pressed',String(gridVisible));
+ b.textContent=gridVisible?'Hide tile outlines':'Show tile outlines';render();});
+button('zoom',()=>{zoom=!zoom;
+ canvas.style.width=zoom?'1980px':'660px';
+ document.getElementById('zoom').setAttribute('aria-pressed',String(zoom));
+ render();});
+button('nextSeed',()=>{tiles[selected].seed++;render();});
+button('prevSeed',()=>{tiles[selected].seed=Math.max(0,tiles[selected].seed-1);render();});
+button('reset',()=>setStudy(document.getElementById('study').value));
+setStudy('joined');
+Promise.all([materials.loadAll(),bankArt.load(),vergeArt.load(),layer2.loadImages()])
+ .then(([base,bank,verge,large])=>{
+  if(base.missing.length)throw Error('Missing base materials: '+base.missing.join(','));
+  images=base.images;bankImage=bank;vergeImage=verge;largeImages=large;ready=true;
+  document.getElementById('assetStatus').textContent='Layer 1 materials and both painted edges loaded; Layer 2 Courtyard Hall 01 candidate loaded. Each component belongs to a tile, not the board background. Production approval pending.';
+  render();
+ }).catch(error=>{
+  document.getElementById('assetStatus').textContent='Missing authentic V3 asset: '+String(error)+' — no fake replacement image is used.';
+  render();
+ });
+})();
+</script></body></html>

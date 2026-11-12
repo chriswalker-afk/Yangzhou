@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "layer": 2,
+  "status": "candidate-committed-awaiting-visual-review",
+  "tileWorldSize": 220,
+  "components": [
+    {
+      "assetId": "courtyard-hall-01",
+      "name": "Yangzhou Courtyard Hall 01",
+      "classification": "reusable-compass-upright-architecture",
+      "source": {
+        "path": "assets/v3/large/sources/courtyard-hall-01-original.png",
+        "mimeType": "image/png",
+        "width": 1774,
+        "height": 887,
+        "bytes": 2099041,
+        "sha256": "ea66d963c1f86acbda5376267d5591f6b184bd36e864048b916b3748e1bfb1f9",
+        "hasAlpha": true
+      },
+      "prepared": {
+        "path": "assets/v3/large/courtyard-hall-01.webp",
+        "mimeType": "image/webp",
+        "compression": "VP8L lossless",
+        "width": 1445,
+        "height": 707,
+        "bytes": 1321474,
+        "sha256": "3f28402dd8ba4b6cffb1fac693da4306a94631f8359f850d1ee97af8b372bc31",
+        "hasAlpha": true,
+        "preparation": "Clear alpha <5, crop source to x=165..1609 and y=90..796, export WebP lossless, exact color retention"
+      },
+      "worldFootprint": {"width": 96,"height": 47},
+      "placement": {
+        "coordinateSystem": "tile-local-world-units",
+        "tileEdgeInset": 10,
+        "roadGapBeyondPaintedVerge": 6,
+        "canalGapBeyondBank": 6,
+        "requiresLand": true,
+        "compassUpright": true,
+        "mayCrossTileBoundary": false
+      },
+      "productionApproved": false,
+      "humanVisualReviewComplete": false,
+      "historicAccuracyReviewed": false,
+      "orthographicViewReviewed": false,
+      "repetitionReviewed": false,
+      "notes": "First original painted hall asset for tile-ownership proof. Perspective, facade, scale and stylistic compatibility must be reviewed before adding variations. Do not confuse the large-details proof with a full playable V3 release."
+    }
+  ]
+}
