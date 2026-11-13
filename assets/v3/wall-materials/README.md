@@ -28,3 +28,16 @@ The isolated V3 lab uses `assets/v3/wall-roof-texture.js` to map the single pain
 **QA:** `node tests/v3-wall-roof-texture.cjs` and `node tests/v3-wall-roof-texture-visual.cjs` (the latter uses Playwright and a local server). These verify the exact committed file length, SHA-256 and Git provenance; the original source PNG remains separately preserved outside the repository.
 
 This is candidate-only until reviewed at **1× and 3×**, with focus on roof-tile scale, grey palette relative to Courtyard Hall 01, the L-corner tile join, the T-junction and the visible moon-gate ends.
+
+## Ivory Plaster 01 and Stone Foundation 01 (rev 39)
+
+The original generated paintings are incorporated into the isolated V3 laboratory as two SHA-verified lightweight WebP derivatives. The masters were not modified and remain accessible as the original images in the ChatGPT conversation. Both derived WebPs are real user-selected artwork; no procedural substitute or dummy painting was committed.
+
+- `wall-plaster-ivory-01.webp`: 1256×314, 56,950 bytes. Warm weathered ivory Jiangnan lime plaster, original source `yangzhou_ivory_watercolour_plaster.png` (2508×627). Full face uses a natural 4:1 repeat.
+- `wall-stone-base-01.webp`: 1256×157, 69,958 bytes. One course cropped from the top half of the original two-course source `weathered_yangzhou_stone_wall_texture.png` (2508×627). The single course better fits a 1.7-world-unit narrow foundation, using a natural 8:1 repeat length of 13.6 world units.
+
+Both are horizontally repeatable: the outer 8% of pixels is softly adjusted to align colour across the left/right boundary without repainting the interior stones or plaster. Source SHA-256, prepared SHA-256 and Git blob hashes are recorded in `manifest.json`.
+
+The `wall-face-materials.js` painter maps each surface strictly to **south/east-facing wall geometry**. There is no plaster on the upper/northern hidden face, no texture in genuine gate gaps and no resizing of entire wall images to suit particular straight lengths. All turns stay camera-orientated; vertical surfaces reuse the same strip rotated −90°.
+
+Artwork status: **visual review candidates only**. Check the apparent block scale and plaster shading at 1× / 3× next to the existing courtyard hall, particularly at the southeastern corner and along the moon-gate jambs. Production approval remains pending. The playable game and previous V3 labs are unchanged.
