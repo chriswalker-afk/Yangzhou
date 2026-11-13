@@ -27,9 +27,9 @@ a{color:#2f6457}
 #wallInfo{min-height:62px}
 @media(max-width:650px){h1{font-size:1.55rem}main{padding:0 10px}}
 </style></head><body><main>
-<h1>Yangzhou V3 — Wall Geometry &amp; Texture Lab (rev 38)</h1>
-<p class="lead"><strong>Isolated Layer 2 proof, not the playable game.</strong> These are continuous, tile-owned wall <em>centrelines</em> with exact mitered corners and T-connections. The moon gate is a genuine opening cut out of all four wall bands, not a painting laid over a solid wall. <strong>New perspective-aware wall profile:</strong> the same painted roof coping now sits over a visible ivory plaster face, with a subtle stone footing. Far (top) walls have a shallow façade; near (bottom) walls show more wall height. Side walls rotate the roof tiles 90° and expose the face only to screen-right. No plaster is drawn above or behind the coping. Plaster and foundation remain flat diagnostic finishes; roof tiles remain an unapproved painted candidate.</p>
-<p>Test a complete courtyard, a three-sided garden, an L-corner and a T-junction around our existing courtyard hall. Toggle the new perspective profile off to compare it with the original symmetrical bands. Toggle the road/canal layouts: invalid courtyards are rejected instead of crossing an 88-unit water channel or 44-unit street. The older wall-sprite lab remains available for comparison.</p>
+<h1>Yangzhou V3 — Wall Geometry &amp; Texture Lab (rev 39)</h1>
+<p class="lead"><strong>Isolated Layer 2 proof, not the playable game.</strong> These are continuous, tile-owned wall <em>centrelines</em> with exact mitered corners and T-connections. The moon gate is a genuine opening cut out of all four wall bands, not a painting laid over a solid wall. <strong>New perspective-aware wall profile:</strong> the same painted roof coping now sits over a visible ivory plaster face, with a subtle stone footing. Far (top) walls have a shallow façade; near (bottom) walls show more wall height. Side walls rotate the roof tiles 90° and expose the face only to screen-right. No plaster is drawn above or behind the coping. Ivory plaster and stone foundations now use our two authentic watercolour texture candidates. They repeat along the camera-facing wall profiles and rotate to suit the side walls, while remaining available as flat diagnostics for comparison. All three paintings are review candidates.</p>
+<p>Test a complete courtyard, a three-sided garden, an L-corner and a T-junction around our existing courtyard hall. Toggle each painted material independently, or switch off the perspective profile to compare against the old symmetric diagnostic bands. Toggle the road/canal layouts: invalid courtyards are rejected instead of crossing an 88-unit water channel or 44-unit street. The older wall-sprite lab remains available for comparison.</p>
 <div class="toolbar">
 <label for="study">Six-tile neighbourhood
 <select id="study">
@@ -57,12 +57,23 @@ a{color:#2f6457}
 <label><input type="checkbox" id="showTextures"> Use existing painted Layer 1 materials</label>
 <label><input type="checkbox" id="showRoofTexture" checked> Show painted roof-tile coping</label>
 <label><input type="checkbox" id="showPerspective" checked> Show perspective-aware wall faces</label>
+<label><input type="checkbox" id="showPlasterTexture" checked> Painted ivory plaster</label>
+<label><input type="checkbox" id="showStoneTexture" checked> Painted stone foundation</label>
 </div>
 <div class="status" id="roofStatus" role="status" aria-live="polite">Loading the exact committed Wall Roof-Tile Texture 01 candidate. Flat diagnostic coping remains available if the network request fails.</div>
 <div class="toolbar">
 <label for="roofFile">Preview accepted WebP locally:</label>
 <input id="roofFile" type="file" accept=".webp,image/webp">
 <a id="roofUpload" href="https://github.com/chriswalker-afk/Yangzhou/blob/main/assets/v3/wall-materials/wall-roof-tiles-01.webp">View the committed roof-tile artwork on GitHub</a>
+</div>
+<div class="status" id="faceStatus" role="status" aria-live="polite">Checking the two new watercolour materials on GitHub…</div>
+<div class="toolbar">
+<label>Inspect original candidate locally:
+  <input id="plasterFile" type="file" accept=".webp,image/webp" aria-label="Load plaster material WebP locally">
+</label>
+<label>Stone base:
+  <input id="stoneFile" type="file" accept=".webp,image/webp" aria-label="Load stone base material WebP locally">
+</label>
 </div>
 <div class="status" id="readyStatus" role="status" aria-live="polite">Geometry ready. Optional existing artwork is loading independently; flat-colour proof is available now.</div>
 <div class="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Six Yangzhou V3 tiles showing rectangle, partial enclosure, L and T wall centreline examples over road and canal geometry"></canvas></div>
@@ -73,14 +84,14 @@ a{color:#2f6457}
 <div id="wallInfo" class="status" role="status" aria-live="polite">Select a tile to inspect its walls, entrances and safety report.</div>
 <div class="flex">
 <section class="card">
-<h2>Wall profile and painted coping</h2>
-<table><thead><tr><th>Material slot</th><th>Width</th><th>Diagnostic fill</th></tr></thead><tbody>
-<tr><td>Visible stone base</td><td>1.7 units at lower/right edge</td><td><span class="swatch" style="background:#999a90"></span></td></tr>
-<tr><td>Visible plaster face</td><td>Top wall: 6 · Bottom wall: 10 · West/East: 7/8 units</td><td><span class="swatch" style="background:#e9e4d4"></span></td></tr>
+<h2>Three painted wall materials</h2>
+<table><thead><tr><th>Material slot</th><th>Width</th><th>Watercolour material</th></tr></thead><tbody>
+<tr><td>Visible stone base</td><td>1.7 units at lower/right edge</td><td><span class="swatch" style="background:#999a90"></span> Stone Base 01</td></tr>
+<tr><td>Visible plaster face</td><td>Top wall: 6 · Bottom wall: 10 · West/East: 7/8 units</td><td><span class="swatch" style="background:#e9e4d4"></span> Ivory Plaster 01</td></tr>
 <tr><td>Grey tile coping</td><td>8 units</td><td><span class="swatch" style="background:#636d69"></span></td></tr>
 <tr><td>Roof ridge</td><td>2 units</td><td><span class="swatch" style="background:#a8afa5"></span></td></tr>
 </tbody></table>
-<small>Roof coping remains 8 units wide, using the accepted 32-unit repeat period. The horizontal strip is unrotated on both top and bottom walls; on either side wall it is rotated -90° to keep the painted eave facing the visible plaster. Roof, face and stone remain separate render layers. Switch off perspective mode to compare the previous symmetric diagnostic treatment.</small>
+<small>Roof coping retains its accepted 32×8 world-unit repeat. Ivory plaster covers only the camera-facing wall elevation, and the single-course stone painting follows the 1.7-unit visible base. All three textures rotate −90° on vertical walls. Flat diagnostic colours remain underneath the painting, so a missing file never produces transparent walls or closes a moon-gate opening.</small>
 </section>
 <section class="card">
 <h2>Geometry acceptance checks</h2>
@@ -97,15 +108,17 @@ a{color:#2f6457}
 <script src="assets/v3/edge-system.js"></script>
 <script src="assets/v3/material-runtime.js"></script>
 <script src="assets/v3/layer2-placements.js"></script>
-<script src="assets/v3/wall-geometry.js?rev=38"></script>
-<script src="assets/v3/wall-profile.js?rev=38"></script>
+<script src="assets/v3/wall-geometry.js?rev=39"></script>
+<script src="assets/v3/wall-profile.js?rev=39"></script>
+<script src="assets/v3/wall-face-materials.js?rev=39"></script>
 <script src="assets/v3/wall-roof-texture.js?rev=38"></script>
 <script>
 (()=>{'use strict';
 const topology=window.YangzhouTileTopology,geometry=window.YangzhouV3Geometry,
  edgeSystem=window.YangzhouV3Edges,materials=window.YangzhouV3Materials,
  walls=window.YangzhouV3WallGeometry,roofPainter=window.YangzhouV3WallRoofTexture,
- wallProfile=window.YangzhouV3WallProfile;
+ wallProfile=window.YangzhouV3WallProfile,
+ wallFaceMaterials=window.YangzhouV3WallFaceMaterials;
 const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d');
 const CODES=Object.freeze({
  garden:['LLLL','LLLL','LLLL','LLLL','LLLL','LLLL'],
@@ -121,7 +134,8 @@ const edgePalette=Object.freeze({
  bridgeEdge:'#9ba397',bridgeContact:'#677c75'
 });
 let tiles=[],selected=0,gridOn=true,zoomOn=false,study='garden',
-  choices=[...starting],gallery={},imageErrors=[],roofImage=null,roofSource='none';
+  choices=[...starting],gallery={},imageErrors=[],roofImage=null,roofSource='none',
+ faceImages={},faceErrors=[],faceSource={};
 const visible=id=>document.getElementById(id).checked;
 const tileModel=i=>choices[i]==='none'?null:walls.templates[choices[i]];
 function tileList(name){
@@ -165,7 +179,10 @@ function render(){
     if(visible('showWall'))walls.draw(ctx,model,tile,{
      showGates:visible('showGate'),showJoints:visible('showJoints'),
      roofImage:visible('showRoofTexture')?roofImage:null,roofPainter,
-     profilePainter:visible('showPerspective')?wallProfile:null
+     profilePainter:visible('showPerspective')?wallProfile:null,
+     materialPainter:wallFaceMaterials,
+     plasterImage:visible('showPlasterTexture')?faceImages.plaster:null,
+     stoneImage:visible('showStoneTexture')?faceImages.stone:null
     });
    }else{
     rejected++;
@@ -201,7 +218,9 @@ function render(){
   ls+' exact L corners; '+ts+' exact T joins; '+openings+' passable moon gates. '+
   'Protected V3 ports: 44-unit street, 88-unit canal. '+
   'Roof material: '+(visible('showRoofTexture')&&roofImage?'painted (candidate)':'flat diagnostic')+'. '+
-  'Wall face: '+(visible('showPerspective')?'camera-facing ivory plaster / stone':'old symmetric diagnostic bands')+'.';
+  'Wall face: '+(visible('showPerspective')?'camera-facing ivory plaster / stone':'old symmetric diagnostic bands')+'. '+
+  'Plaster: '+(visible('showPerspective')&&visible('showPlasterTexture')&&faceImages.plaster?'painted (candidate)':'flat diagnostic')+'. '+
+  'Stone: '+(visible('showPerspective')&&visible('showStoneTexture')&&faceImages.stone?'painted (candidate)':'flat diagnostic')+'.';
  document.getElementById('wallInfo').textContent=
   'Tile ('+current.x+','+current.y+') • edges '+current.edges.join('')+
   ' • '+(model?model.name:'No wall layout')+
@@ -217,6 +236,12 @@ function render(){
   perspectiveWallProfile:visible('showPerspective')
    ?{cameraFacing:['south','east'],faceDepth:wallProfile.DEPTH,plasterAboveCoping:false,
      sideRoofRotationDegrees:-90,status:'candidate-for-review'}:null,
+  faceTextures:{
+   plaster:faceImages.plaster?{id:wallFaceMaterials.ASSETS.plaster.id,
+    source:faceSource.plaster||'GitHub',status:'candidate-for-review'}:null,
+   stone:faceImages.stone?{id:wallFaceMaterials.ASSETS.stone.id,
+    source:faceSource.stone||'GitHub',status:'candidate-for-review'}:null
+  },
   roofTexture:roofImage?
    {id:roofPainter.ASSET.id,source:roofSource,period:roofPainter.ASSET.period,
     bandWidth:roofPainter.ASSET.bandWidth,status:'candidate-for-review'}:null
@@ -244,7 +269,8 @@ document.getElementById('study').addEventListener('change',e=>selectStudy(e.targ
 document.getElementById('plan').addEventListener('change',e=>{
  choices[selected]=e.target.value;refresh();
 });
-for(const id of ['showWall','showGate','showJoints','showHall','showTextures','showRoofTexture','showPerspective'])
+for(const id of ['showWall','showGate','showJoints','showHall','showTextures',
+ 'showRoofTexture','showPerspective','showPlasterTexture','showStoneTexture'])
  document.getElementById(id).addEventListener('change',render);
 button('zoom',()=>{
  zoomOn=!zoomOn;canvas.style.width=zoomOn?'1980px':'660px';
@@ -287,8 +313,47 @@ document.getElementById('roofFile').addEventListener('change',async event=>{
  try{acceptRoof(await roofPainter.verifyFile(file),'local review file');}
  catch(e){roofStatus.textContent='Artwork rejected: '+String(e.message||e);}
 });
-selectStudy('garden'); // Geometry has no network dependency.
+// Independently verify the original two painted wall materials and update
+// the current canvas as each verified candidate arrives.
+const faceStatus=document.getElementById('faceStatus');
+function updateFaceStatus(){
+ const count=['plaster','stone'].filter(k=>!!faceImages[k]).length;
+ faceStatus.textContent=count+'/2 authentic wall-face materials verified. '+
+  (faceImages.plaster?'Ivory plaster ready. ':'Ivory plaster not yet available. ')+
+  (faceImages.stone?'Stone foundation ready. ':'Stone foundation not yet available. ')+
+  (faceErrors.length?'Problems: '+faceErrors.join(' | ')+'. ':'')+
+  'Unavailable files use flat diagnostic colours. Original watercolour artwork remains unchanged.';
+ render();
+}
+async function startFaceMaterials(){
+ faceStatus.textContent='Checking painted ivory plaster and stone against SHA-256 hashes…';
+ const result=await wallFaceMaterials.loadAll({timeoutMs:20000,onProgress:state=>{
+  faceImages={...faceImages,...state.images};
+  faceErrors=state.errors;
+  for(const kind of Object.keys(state.images))faceSource[kind]='GitHub candidate';
+  updateFaceStatus();
+ }});
+ faceImages={...faceImages,...result.images};
+ faceErrors=result.errors;
+ updateFaceStatus();
+}
+function attachLocalTexture(inputId,kind){
+ document.getElementById(inputId).addEventListener('change',async e=>{
+  const file=e.target.files?.[0];if(!file)return;
+  faceStatus.textContent='Verifying selected '+kind+' WebP…';
+  try{
+   faceImages[kind]=await wallFaceMaterials.verify(kind,file);
+   faceSource[kind]='local review file';updateFaceStatus();
+  }catch(error){
+   faceErrors.push(kind+': '+String(error.message||error));updateFaceStatus();
+  }
+ });
+}
+attachLocalTexture('plasterFile','plaster');
+attachLocalTexture('stoneFile','stone');
+selectStudy('garden'); // Geometry is independent of optional art requests.
 loadRoofFromGitHub();
+startFaceMaterials();
 const artFiles=[
  {id:'hall',file:'courtyard-hall.webp'},
  {id:'grass',file:'grass.webp'},
@@ -302,7 +367,7 @@ function updateStatus(){
   'Continuous walls READY (no artwork required). Optional existing art: '+
   loaded+'/'+count+' loaded; '+finished+'/'+count+' checked.'+
   (imageErrors.length?' Unavailable: '+imageErrors.join('; '):'')+
-  ' All wall materials are flat diagnostic colours.';
+  ' Wall artwork paints independently; geometry never waits for optional image downloads.';
 }
 function loadImage(file,deadline=18000){
  return new Promise((resolve,reject)=>{
