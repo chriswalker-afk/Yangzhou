@@ -32,8 +32,8 @@ a{color:#2f6457}
 #wallInfo{min-height:62px}
 @media(max-width:650px){h1{font-size:1.55rem}main{padding:0 10px}}
 </style></head><body><main>
-<h1>Yangzhou V3 — Wall Geometry &amp; Texture Lab (rev 41)</h1>
-<p class="lead"><strong>Isolated Layer 2 proof, not the playable game.</strong> These are continuous, tile-owned wall <em>centrelines</em> with exact mitered corners and T-connections. The moon gate is a genuine opening cut out of all four wall bands, not a painting laid over a solid wall. <strong>New perspective-aware wall profile:</strong> the same painted roof coping now sits over a visible ivory plaster face, with a subtle stone footing. Far (top) walls have a shallow façade; near (bottom) walls show more wall height. Side walls rotate the roof tiles 90° but have only a thin shaded coping/eave edge, with <strong>no exposed side-wall plaster or stone</strong>. No plaster is drawn above or behind the coping. <strong>Revision 41: every L corner now shares the actual roof vertex; horizontal masonry is tucked beneath the roof overhang instead of adding oversized corner infill rectangles.</strong> Ivory plaster and stone foundations now use our two authentic watercolour texture candidates. They repeat along horizontal south-facing wall façades only, while remaining available as flat diagnostics for comparison. All three paintings are review candidates.</p>
+<h1>Yangzhou V3 — Wall Geometry &amp; Texture Lab (rev 42)</h1>
+<p class="lead"><strong>Isolated Layer 2 proof, not the playable game.</strong> These are continuous, tile-owned wall <em>centrelines</em> with exact mitered corners and T-connections. The moon gate is a genuine opening cut out of all four wall bands, not a painting laid over a solid wall. <strong>New perspective-aware wall profile:</strong> the same painted roof coping now sits over a visible ivory plaster face, with a subtle stone footing. Far (top) walls have a shallow façade; near (bottom) walls show more wall height. Side walls rotate the roof tiles 90° but have only a thin shaded coping/eave edge, with <strong>no exposed side-wall plaster or stone</strong>. No plaster is drawn above or behind the coping. <strong>Revision 42: south/bottom-wall ivory plaster and stone now reach the full outer corner endpoints, closing the visible gaps; north/top-wall faces remain tucked beneath the roof. Moon-gate jambs and roof joins remain unchanged.</strong> Ivory plaster and stone foundations now use our two authentic watercolour texture candidates. They repeat along horizontal south-facing wall façades only, while remaining available as flat diagnostics for comparison. All three paintings are review candidates.</p>
 <p>Test a complete courtyard, a three-sided garden, an L-corner and a T-junction around our existing courtyard hall. Toggle each painted material independently, or switch off the perspective profile to compare against the old symmetric diagnostic bands. Toggle the road/canal layouts: invalid courtyards are rejected instead of crossing an 88-unit water channel or 44-unit street. The older wall-sprite lab remains available for comparison.</p>
 <div class="toolbar">
 <label for="study">Six-tile neighbourhood
@@ -84,7 +84,7 @@ a{color:#2f6457}
 <div class="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Six Yangzhou V3 tiles showing rectangle, partial enclosure, L and T wall centreline examples over road and canal geometry"></canvas></div>
 <section aria-label="Four corner joint inspections" id="cornerInspection">
 <h2>Corner joins — close inspection</h2>
-<p class="muted">Live crops from the upper-left courtyard, magnified from the same painted canvas. Compare all four shared roof miters: south-facing plaster and stone should terminate cleanly under the coping overhang, without white side-wall slabs, artificial corner piers or gaps. Turn on <strong>Show diagnostic L/T joint markers</strong> only when you want the geometry anchors highlighted.</p>
+<p class="muted">Live crops from the upper-left courtyard, magnified from the same painted canvas. Check especially the southwest and southeast corners: the bottom ivory plaster and stone should reach the true wall ends, while the top corners remain tucked beneath the roof. The moon-gate opening must stay clear. Turn on <strong>Show diagnostic L/T joint markers</strong> only when you want the geometry anchors highlighted.</p>
 <div class="corner-gallery">
 <figure><canvas id="cornerNW" width="180" height="180" aria-label="North-west corner close-up"></canvas><figcaption>North-west</figcaption></figure>
 <figure><canvas id="cornerNE" width="180" height="180" aria-label="North-east corner close-up"></canvas><figcaption>North-east</figcaption></figure>
@@ -123,10 +123,10 @@ a{color:#2f6457}
 <script src="assets/v3/edge-system.js"></script>
 <script src="assets/v3/material-runtime.js"></script>
 <script src="assets/v3/layer2-placements.js"></script>
-<script src="assets/v3/wall-geometry.js?rev=41"></script>
-<script src="assets/v3/wall-profile.js?rev=41"></script>
-<script src="assets/v3/wall-face-materials.js?rev=41"></script>
-<script src="assets/v3/wall-roof-texture.js?rev=41"></script>
+<script src="assets/v3/wall-geometry.js?rev=42"></script>
+<script src="assets/v3/wall-profile.js?rev=42"></script>
+<script src="assets/v3/wall-face-materials.js?rev=42"></script>
+<script src="assets/v3/wall-roof-texture.js?rev=42"></script>
 <script>
 (()=>{'use strict';
 const topology=window.YangzhouTileTopology,geometry=window.YangzhouV3Geometry,
@@ -266,7 +266,7 @@ function render(){
   perspectiveWallProfile:visible('showPerspective')
    ?{cameraFacing:['south'],faceDepth:wallProfile.DEPTH,
      verticalWalls:'roof plus narrow shaded eave only',plasterAboveCoping:false,
-     cornerMethod:'shared roof vertices with tucked horizontal facades',
+     cornerMethod:'north horizontal face tucked; south horizontal face reaches true L corners and gate ends',
      sideRoofRotationDegrees:-90,status:'candidate-for-review'}:null,
   faceTextures:{
    plaster:faceImages.plaster?{id:wallFaceMaterials.ASSETS.plaster.id,
