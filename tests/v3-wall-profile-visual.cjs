@@ -11,6 +11,8 @@ async function main(){
   const page=await browser.newPage({viewport:{width:1450,height:970},deviceScaleFactor:1});
   page.on('pageerror',e=>errors.push('desktop: '+e.message));
   await page.goto(URL,{waitUntil:'domcontentloaded'});
+  // Keep legacy wall-material pixel baselines on the original grass surface.
+  await page.locator('#showPaving').uncheck();
   await page.waitForFunction(()=>document.querySelector('#summary')?.textContent.includes('Protected V3 ports'),{timeout:9000});
   await page.waitForFunction(()=>document.querySelector('#roofStatus')?.textContent.includes('verified'),{timeout:30000});
   await page.waitForFunction(()=>document.querySelector('#faceStatus')?.textContent.includes('2/2 authentic'),{timeout:30000});
