@@ -17,6 +17,11 @@ canvas{display:block;max-width:none;cursor:crosshair}
 .status{border:1px solid #d3c6a7;border-radius:6px;background:#faf0de;padding:10px;margin:10px 0}
 .muted,small{color:#57665a}
 .flex{display:flex;gap:16px;flex-wrap:wrap}
+.corner-gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.corner-gallery figure{margin:0;border:1px solid #c8bfaa;background:#f9f6ef;padding:7px;border-radius:7px}
+.corner-gallery canvas{display:block;width:100%;height:auto;image-rendering:auto;border:1px solid #d4cbb8}
+.corner-gallery figcaption{font-size:.78rem;text-align:center;margin-top:5px;color:#57695a}
+@media(max-width:650px){.corner-gallery{grid-template-columns:repeat(2,minmax(0,1fr));}}
 .card{border:1px solid #c9c1af;border-radius:8px;background:#fff9ed;padding:12px;flex:1;min-width:250px}
 .card h2{margin-top:0}
 table{border-collapse:collapse;width:100%;font-size:.91rem}
@@ -27,8 +32,8 @@ a{color:#2f6457}
 #wallInfo{min-height:62px}
 @media(max-width:650px){h1{font-size:1.55rem}main{padding:0 10px}}
 </style></head><body><main>
-<h1>Yangzhou V3 — Wall Geometry &amp; Texture Lab (rev 39)</h1>
-<p class="lead"><strong>Isolated Layer 2 proof, not the playable game.</strong> These are continuous, tile-owned wall <em>centrelines</em> with exact mitered corners and T-connections. The moon gate is a genuine opening cut out of all four wall bands, not a painting laid over a solid wall. <strong>New perspective-aware wall profile:</strong> the same painted roof coping now sits over a visible ivory plaster face, with a subtle stone footing. Far (top) walls have a shallow façade; near (bottom) walls show more wall height. Side walls rotate the roof tiles 90° and expose the face only to screen-right. No plaster is drawn above or behind the coping. Ivory plaster and stone foundations now use our two authentic watercolour texture candidates. They repeat along the camera-facing wall profiles and rotate to suit the side walls, while remaining available as flat diagnostics for comparison. All three paintings are review candidates.</p>
+<h1>Yangzhou V3 — Wall Geometry &amp; Texture Lab (rev 40)</h1>
+<p class="lead"><strong>Isolated Layer 2 proof, not the playable game.</strong> These are continuous, tile-owned wall <em>centrelines</em> with exact mitered corners and T-connections. The moon gate is a genuine opening cut out of all four wall bands, not a painting laid over a solid wall. <strong>New perspective-aware wall profile:</strong> the same painted roof coping now sits over a visible ivory plaster face, with a subtle stone footing. Far (top) walls have a shallow façade; near (bottom) walls show more wall height. Side walls rotate the roof tiles 90° and expose the face only to screen-right. No plaster is drawn above or behind the coping. <strong>Revision 40: all four corners now share a projected masonry joint with complete plaster, wrapping stone foundation and real opening returns.</strong> Ivory plaster and stone foundations now use our two authentic watercolour texture candidates. They repeat along the camera-facing wall profiles and rotate to suit the side walls, while remaining available as flat diagnostics for comparison. All three paintings are review candidates.</p>
 <p>Test a complete courtyard, a three-sided garden, an L-corner and a T-junction around our existing courtyard hall. Toggle each painted material independently, or switch off the perspective profile to compare against the old symmetric diagnostic bands. Toggle the road/canal layouts: invalid courtyards are rejected instead of crossing an 88-unit water channel or 44-unit street. The older wall-sprite lab remains available for comparison.</p>
 <div class="toolbar">
 <label for="study">Six-tile neighbourhood
@@ -77,6 +82,16 @@ a{color:#2f6457}
 </div>
 <div class="status" id="readyStatus" role="status" aria-live="polite">Geometry ready. Optional existing artwork is loading independently; flat-colour proof is available now.</div>
 <div class="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Six Yangzhou V3 tiles showing rectangle, partial enclosure, L and T wall centreline examples over road and canal geometry"></canvas></div>
+<section aria-label="Four corner joint inspections" id="cornerInspection">
+<h2>Corner joins — close inspection</h2>
+<p class="muted">Live crops from the upper-left courtyard, magnified from the same painted canvas. Check that the ivory plaster reaches the roof and the stone courses wrap around each visible corner without bare grass, doubled strips or missing masonry.</p>
+<div class="corner-gallery">
+<figure><canvas id="cornerNW" width="180" height="180" aria-label="North-west corner close-up"></canvas><figcaption>North-west</figcaption></figure>
+<figure><canvas id="cornerNE" width="180" height="180" aria-label="North-east corner close-up"></canvas><figcaption>North-east</figcaption></figure>
+<figure><canvas id="cornerSW" width="180" height="180" aria-label="South-west corner close-up"></canvas><figcaption>South-west</figcaption></figure>
+<figure><canvas id="cornerSE" width="180" height="180" aria-label="South-east corner close-up"></canvas><figcaption>South-east</figcaption></figure>
+</div>
+</section>
 <div class="toolbar">
 <button id="reset" type="button">Reset wall plans</button>
 <button id="copy" type="button">Copy selected tile geometry JSON</button>
@@ -108,10 +123,10 @@ a{color:#2f6457}
 <script src="assets/v3/edge-system.js"></script>
 <script src="assets/v3/material-runtime.js"></script>
 <script src="assets/v3/layer2-placements.js"></script>
-<script src="assets/v3/wall-geometry.js?rev=39"></script>
-<script src="assets/v3/wall-profile.js?rev=39"></script>
-<script src="assets/v3/wall-face-materials.js?rev=39"></script>
-<script src="assets/v3/wall-roof-texture.js?rev=38"></script>
+<script src="assets/v3/wall-geometry.js?rev=40"></script>
+<script src="assets/v3/wall-profile.js?rev=40"></script>
+<script src="assets/v3/wall-face-materials.js?rev=40"></script>
+<script src="assets/v3/wall-roof-texture.js?rev=40"></script>
 <script>
 (()=>{'use strict';
 const topology=window.YangzhouTileTopology,geometry=window.YangzhouV3Geometry,
@@ -145,6 +160,21 @@ function pattern(id){
  if(!visible('showTextures')||!gallery[id])return fallback[id];
  try{return materials.makePattern(ctx,gallery[id],materials.periodById[id]);}
  catch(_){return fallback[id];}
+}
+function renderCornerInspection(){
+ // Derive all four details from the actual tile canvas. No mock drawings or
+ // alternate corner sprites: these crops show exactly what the game would get.
+ const points={NW:[42,47],NE:[178,47],SW:[42,178],SE:[178,178]};
+ for(const [key,point] of Object.entries(points)){
+  const close=document.getElementById('corner'+key);
+  if(!close)continue;
+  const c=close.getContext('2d');
+  c.clearRect(0,0,close.width,close.height);
+  c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';
+  const radius=18,size=2*radius;
+  c.drawImage(canvas,(point[0]-radius)*3,(point[1]-radius)*3,
+   size*3,size*3,0,0,close.width,close.height);
+ }
 }
 function render(){
  ctx.setTransform(3,0,0,3,0,0);ctx.clearRect(0,0,660,440);
@@ -246,6 +276,7 @@ function render(){
    {id:roofPainter.ASSET.id,source:roofSource,period:roofPainter.ASSET.period,
     bandWidth:roofPainter.ASSET.bandWidth,status:'candidate-for-review'}:null
  },null,2);
+ renderCornerInspection();
 }
 function refresh(){
  document.getElementById('plan').value=choices[selected];render();
