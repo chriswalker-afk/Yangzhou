@@ -43,11 +43,20 @@ assert.equal(north.cornerReveal,profile.CORNER_REVEAL,
 const southRuns=form.faces.filter(f=>f.hasFacade&&f.location==='south');
 assert.equal(southRuns.length,2,'Moon gate still splits the near wall into two façades');
 for(const run of southRuns){
- assert.equal(run.cornerReveal,0,'Near/south wall must not be cut short at L corners');
- assert.deepEqual(run.a,run.sourceA,'Visible southern plaster begins at the true segment end');
- assert.deepEqual(run.b,run.sourceB,'Visible southern stone finishes at the true segment end');
+ assert.equal(run.cornerReveal,-profile.COPING_HALF,
+  'Southern facade must reach the outer perpendicular roof edge at L corners');
+ assert.notEqual(run.cornerStart,run.cornerEnd,
+  'Each open southern segment has exactly one real L corner and one moon-gate jamb');
+ const dx=Math.sign(run.sourceB[0]-run.sourceA[0]);
+ if(run.cornerStart){
+  assert(Math.abs(run.a[0]-(run.sourceA[0]-dx*profile.COPING_HALF))<1e-8);
+  assert.deepEqual(run.b,run.sourceB,'Opening-adjacent jamb remains unextended');
+ }else{
+  assert.deepEqual(run.a,run.sourceA,'Opening-adjacent jamb remains unextended');
+  assert(Math.abs(run.b[0]-(run.sourceB[0]+dx*profile.COPING_HALF))<1e-8);
+ }
 }
-assert.equal(form.cornerJoins.filter(j=>j.southFacadeReveal===0).length,4);
+assert.equal(form.cornerJoins.filter(j=>j.southFacadeReveal===-profile.COPING_HALF).length,4);
 assert(inside(north.face,[85,54])&&inside(south.face,[85,186]));
 assert(!inside(north.face,[85,40])&&!inside(south.face,[85,170]));
 for(const face of [west,east]){
@@ -125,10 +134,10 @@ const complete=walls.draw(paintCtx,rectangle,tile,{
 assert(complete.valid&&complete.roofTextureUsed&&complete.perspectiveProfileUsed);
 assert(!walls.draw(paintCtx,rectangle,badCanal,{profilePainter:profile}).valid);
 const html=fs.readFileSync('wall-geometry-lab-v3.html','utf8');
-for(const marker of ['rev 42','assets/v3/wall-profile.js?rev=42',
+for(const marker of ['rev 43','assets/v3/wall-profile.js?rev=43',
  'id="showPerspective"','profilePainter:visible(',
  'perspectiveWallProfile:',"cameraFacing:['south']",
  'plasterAboveCoping:false'])assert(html.includes(marker),marker);
 assert(!fs.readFileSync('layer2-lab-v3.html','utf8').includes('wall-profile.js'));
 assert(!fs.readFileSync('courtyard-enclosure-lab-v3.html','utf8').includes('wall-profile.js'));
-console.log('V3 south-camera geometry passed: south plaster/stone at true L endpoints, north roof reveal retained, no gate trim, zero side facades, open gates and unchanged routes.');
+console.log('V3 south-camera geometry passed: south plaster/stone beyond L vertices to outer eave edge, north reveal retained, gate ends unchanged and Layer 1 safe.');
