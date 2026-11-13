@@ -13,7 +13,7 @@ async function main(){
   await page.goto(URL,{waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>document.querySelector('#summary')?.textContent.includes('Protected V3 ports'),{timeout:9000});
   await page.waitForFunction(()=>document.querySelector('#roofStatus')?.textContent.includes('verified'),{timeout:30000});
-  assert.match(await page.locator('h1').textContent(),/rev 39/);
+  assert.match(await page.locator('h1').textContent(),/rev 40/);
   assert(await page.locator('#showPerspective').isChecked());
   assert(await page.locator('#showRoofTexture').isChecked());
   assert.match(await page.locator('#summary').textContent(),/camera-facing ivory plaster/);
