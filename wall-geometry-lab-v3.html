@@ -32,8 +32,8 @@ a{color:#2f6457}
 #wallInfo{min-height:62px}
 @media(max-width:650px){h1{font-size:1.55rem}main{padding:0 10px}}
 </style></head><body><main>
-<h1>Yangzhou V3 — Wall Geometry &amp; Texture Lab (rev 40)</h1>
-<p class="lead"><strong>Isolated Layer 2 proof, not the playable game.</strong> These are continuous, tile-owned wall <em>centrelines</em> with exact mitered corners and T-connections. The moon gate is a genuine opening cut out of all four wall bands, not a painting laid over a solid wall. <strong>New perspective-aware wall profile:</strong> the same painted roof coping now sits over a visible ivory plaster face, with a subtle stone footing. Far (top) walls have a shallow façade; near (bottom) walls show more wall height. Side walls rotate the roof tiles 90° and expose the face only to screen-right. No plaster is drawn above or behind the coping. <strong>Revision 40: all four corners now share a projected masonry joint with complete plaster, wrapping stone foundation and real opening returns.</strong> Ivory plaster and stone foundations now use our two authentic watercolour texture candidates. They repeat along the camera-facing wall profiles and rotate to suit the side walls, while remaining available as flat diagnostics for comparison. All three paintings are review candidates.</p>
+<h1>Yangzhou V3 — Wall Geometry &amp; Texture Lab (rev 41)</h1>
+<p class="lead"><strong>Isolated Layer 2 proof, not the playable game.</strong> These are continuous, tile-owned wall <em>centrelines</em> with exact mitered corners and T-connections. The moon gate is a genuine opening cut out of all four wall bands, not a painting laid over a solid wall. <strong>New perspective-aware wall profile:</strong> the same painted roof coping now sits over a visible ivory plaster face, with a subtle stone footing. Far (top) walls have a shallow façade; near (bottom) walls show more wall height. Side walls rotate the roof tiles 90° but have only a thin shaded coping/eave edge, with <strong>no exposed side-wall plaster or stone</strong>. No plaster is drawn above or behind the coping. <strong>Revision 41: every L corner now shares the actual roof vertex; horizontal masonry is tucked beneath the roof overhang instead of adding oversized corner infill rectangles.</strong> Ivory plaster and stone foundations now use our two authentic watercolour texture candidates. They repeat along horizontal south-facing wall façades only, while remaining available as flat diagnostics for comparison. All three paintings are review candidates.</p>
 <p>Test a complete courtyard, a three-sided garden, an L-corner and a T-junction around our existing courtyard hall. Toggle each painted material independently, or switch off the perspective profile to compare against the old symmetric diagnostic bands. Toggle the road/canal layouts: invalid courtyards are rejected instead of crossing an 88-unit water channel or 44-unit street. The older wall-sprite lab remains available for comparison.</p>
 <div class="toolbar">
 <label for="study">Six-tile neighbourhood
@@ -61,7 +61,7 @@ a{color:#2f6457}
 <label><input type="checkbox" id="showHall" checked> Courtyard hall</label>
 <label><input type="checkbox" id="showTextures"> Use existing painted Layer 1 materials</label>
 <label><input type="checkbox" id="showRoofTexture" checked> Show painted roof-tile coping</label>
-<label><input type="checkbox" id="showPerspective" checked> Show perspective-aware wall faces</label>
+<label><input type="checkbox" id="showPerspective" checked> South-facing wall projection (new)</label>
 <label><input type="checkbox" id="showPlasterTexture" checked> Painted ivory plaster</label>
 <label><input type="checkbox" id="showStoneTexture" checked> Painted stone foundation</label>
 </div>
@@ -84,7 +84,7 @@ a{color:#2f6457}
 <div class="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Six Yangzhou V3 tiles showing rectangle, partial enclosure, L and T wall centreline examples over road and canal geometry"></canvas></div>
 <section aria-label="Four corner joint inspections" id="cornerInspection">
 <h2>Corner joins — close inspection</h2>
-<p class="muted">Live crops from the upper-left courtyard, magnified from the same painted canvas. Check that the ivory plaster reaches the roof and stone wraps around each corner without bare grass or doubled strips. Turn on <strong>Show diagnostic L/T joint markers</strong> only when you want the geometry anchors highlighted.</p>
+<p class="muted">Live crops from the upper-left courtyard, magnified from the same painted canvas. Compare all four shared roof miters: south-facing plaster and stone should terminate cleanly under the coping overhang, without white side-wall slabs, artificial corner piers or gaps. Turn on <strong>Show diagnostic L/T joint markers</strong> only when you want the geometry anchors highlighted.</p>
 <div class="corner-gallery">
 <figure><canvas id="cornerNW" width="180" height="180" aria-label="North-west corner close-up"></canvas><figcaption>North-west</figcaption></figure>
 <figure><canvas id="cornerNE" width="180" height="180" aria-label="North-east corner close-up"></canvas><figcaption>North-east</figcaption></figure>
@@ -102,11 +102,11 @@ a{color:#2f6457}
 <h2>Three painted wall materials</h2>
 <table><thead><tr><th>Material slot</th><th>Width</th><th>Watercolour material</th></tr></thead><tbody>
 <tr><td>Visible stone base</td><td>1.7 units at lower/right edge</td><td><span class="swatch" style="background:#999a90"></span> Stone Base 01</td></tr>
-<tr><td>Visible plaster face</td><td>Top wall: 6 · Bottom wall: 10 · West/East: 7/8 units</td><td><span class="swatch" style="background:#e9e4d4"></span> Ivory Plaster 01</td></tr>
+<tr><td>Visible plaster face</td><td>Top (north): 6 · Bottom (south): 10 · Side: no plaster</td><td><span class="swatch" style="background:#e9e4d4"></span> Ivory Plaster 01</td></tr>
 <tr><td>Grey tile coping</td><td>8 units</td><td><span class="swatch" style="background:#636d69"></span></td></tr>
 <tr><td>Roof ridge</td><td>2 units</td><td><span class="swatch" style="background:#a8afa5"></span></td></tr>
 </tbody></table>
-<small>Roof coping retains its accepted 32×8 world-unit repeat. Ivory plaster covers only the camera-facing wall elevation, and the single-course stone painting follows the 1.7-unit visible base. All three textures rotate −90° on vertical walls. Flat diagnostic colours remain underneath the painting, so a missing file never produces transparent walls or closes a moon-gate opening.</small>
+<small>Roof coping retains its 32×8 world-unit repeat. Plaster and single-course stone follow only the horizontal south-facing wall elevations. Vertical walls reuse the same roof rotated −90°, with a narrow shaded edge, not painted plaster or foundation. Each horizontal façade ends under the shared mitered roof overhang. Missing textures fall back to diagnostic colours; real moon-gate openings remain clear.</small>
 </section>
 <section class="card">
 <h2>Geometry acceptance checks</h2>
@@ -123,10 +123,10 @@ a{color:#2f6457}
 <script src="assets/v3/edge-system.js"></script>
 <script src="assets/v3/material-runtime.js"></script>
 <script src="assets/v3/layer2-placements.js"></script>
-<script src="assets/v3/wall-geometry.js?rev=40"></script>
-<script src="assets/v3/wall-profile.js?rev=40"></script>
-<script src="assets/v3/wall-face-materials.js?rev=40"></script>
-<script src="assets/v3/wall-roof-texture.js?rev=40"></script>
+<script src="assets/v3/wall-geometry.js?rev=41"></script>
+<script src="assets/v3/wall-profile.js?rev=41"></script>
+<script src="assets/v3/wall-face-materials.js?rev=41"></script>
+<script src="assets/v3/wall-roof-texture.js?rev=41"></script>
 <script>
 (()=>{'use strict';
 const topology=window.YangzhouTileTopology,geometry=window.YangzhouV3Geometry,
@@ -248,7 +248,7 @@ function render(){
   ls+' exact L corners; '+ts+' exact T joins; '+openings+' passable moon gates. '+
   'Protected V3 ports: 44-unit street, 88-unit canal. '+
   'Roof material: '+(visible('showRoofTexture')&&roofImage?'painted (candidate)':'flat diagnostic')+'. '+
-  'Wall face: '+(visible('showPerspective')?'camera-facing ivory plaster / stone':'old symmetric diagnostic bands')+'. '+
+  'Wall face: '+(visible('showPerspective')?'south-facing ivory plaster / stone; side roofing only':'old symmetric diagnostic bands')+'. '+
   'Plaster: '+(visible('showPerspective')&&visible('showPlasterTexture')&&faceImages.plaster?'painted (candidate)':'flat diagnostic')+'. '+
   'Stone: '+(visible('showPerspective')&&visible('showStoneTexture')&&faceImages.stone?'painted (candidate)':'flat diagnostic')+'.';
  document.getElementById('wallInfo').textContent=
@@ -264,7 +264,9 @@ function render(){
    wallSegments:selectedDetail.ribbons.length}:null,
   audit:report,
   perspectiveWallProfile:visible('showPerspective')
-   ?{cameraFacing:['south','east'],faceDepth:wallProfile.DEPTH,plasterAboveCoping:false,
+   ?{cameraFacing:['south'],faceDepth:wallProfile.DEPTH,
+     verticalWalls:'roof plus narrow shaded eave only',plasterAboveCoping:false,
+     cornerMethod:'shared roof vertices with tucked horizontal facades',
      sideRoofRotationDegrees:-90,status:'candidate-for-review'}:null,
   faceTextures:{
    plaster:faceImages.plaster?{id:wallFaceMaterials.ASSETS.plaster.id,
