@@ -2,7 +2,7 @@
 
 **Status:** isolated, unapproved Layer 2 geometry experiment. The playable V2 game and existing V3 labs remain untouched.
 
-[Open the six-tile Wall Geometry & Texture Lab](../wall-geometry-lab-v3.html?rev=40) (once deployed).
+[Open the six-tile Wall Geometry & Texture Lab](../wall-geometry-lab-v3.html?rev=41) (once deployed).
 
 ## Why switch
 
@@ -34,6 +34,23 @@ A tile is 220 x 220 local world units. A compound is a named set of centreline p
 **Revision 37:** the 8-unit coping strip accepts the first actual painted material candidate, Wall Roof-Tile Texture 01, alongside its old flat-colour fallback. The bitmap is **not production-approved**, and the preview loader refuses incorrect hashes. Material U is 32 world units per repeat and V is the 8-unit coping width. The shared coping substrate is still rendered before the miter-clipped image, so gaps cannot expose grass; moon-gate openings remain real. The ridge stroke is hidden when the painted roof surface is active, because the artwork already contains highlights. Existing V3 grass/paving/water can still appear behind the walls, and the hall remains an unchanged Layer 2 sprite.
 
 The original PNG has been preserved outside the repository; its exact prepared 1256×314, 174,360-byte WebP is **now committed and hash-verified** under `assets/v3/wall-materials/wall-roof-tiles-01.webp`. The new test loads it automatically and offers a local file selector only as a fallback. The material manifest and preparation steps live in `assets/v3/wall-materials/`.
+
+## Single camera-consistent south-facing wall projection — rev 41
+
+The user found that the previous rev40 "four-corner infill" created large white masonry blocks projecting to the right of north–south walls. That architecture mixed two camera directions: south-facing plaster for horizontal walls and east-facing plaster for vertical walls. Rev41 **supersedes the rev38–40 side façade/corner-infill treatment in the isolated V3 Wall Geometry Lab**. The historical sections below describe the experiments they replace, not the current production candidate.
+
+**New rendering contract:**
+
+- Camera looks slightly downward from the south. **Both east–west walls** expose ivory plaster and a single-course stone base **south of the roof coping**. North/top wall depth remains 6 units, south/bottom depth remains 10 units, matching the previous hall-relative scale.
+- **North–south walls:** retain exactly the original mitered grey roof-tile painting, compass rotated **−90°**, plus just a **1.05-world-unit shaded eastern eave** and a faint 0.55-unit shadow. They have **zero visible ivory plaster or stone foundation**. This is a narrow roof edge, not a second perpendicular architectural façade.
+- All L corners continue to use **the same single shared centreline vertex and roof-miter polygons**. Horizontal wall-face endpoints are trimmed by 3.75 units (just under the roof's 4-unit half-width) whenever they meet a perpendicular centreline. The roof conceals the trim at the actual turn. **No synthetic plaster pier, upper-right white rectangle, stone-return slab or extra corner sprite is drawn.**
+- Existing authentic roof, plaster and stone WebP files, pixel dimensions, SHA-256 checksums, and natural texture scale are preserved. Painted plaster and stone are only mapped to the horizontal façade quads, not stretched onto hidden sides.
+- The horizontal frontage retains real moon-gate apertures: all material masks are cut by the existing compiled geometry. Thin jamb return strokes terminate on the exact gap boundaries and cannot bridge the opening.
+- The profile's new narrow vertical eave, contact shadow and precisely trimmed horizontal polygons feed the existing **tile inset, hall clearance, 44-unit street and 88-unit canal exclusion** checks. Neither Layer 1 nor V2 gameplay are touched.
+
+The four NW/NE/SW/SE close-up previews are still **live crops from the real painted six-tile scene**, not separately painted corner assets. Check the absence of grass-filled seams directly beneath the roof, and ensure that there is **no oversized white or stone block visible to the right of either vertical roof**. Desktop and mobile Playwright screenshot tests record both **1× and 3×**, the genuine moon-gate cutout, material toggles, all corner orientations and the protected Layer 1 routes.
+
+**Status:** geometry-and-occlusion candidate; visually review at 1×/3×. No new image has been generated. All three paintings remain candidate artworks and the playable V2 game is unchanged.
 
 ## Continuous projected corner masonry — rev 40
 

@@ -47,7 +47,9 @@ assert.deepEqual(painter.frame(north),{
  phase:Math.min(north.a[0],north.b[0]),visibleSide:'south'
 });
 assert.equal(painter.frame(vertical).angle,-Math.PI/2);
-assert.equal(painter.frame(vertical).visibleSide,'east');
+assert.equal(painter.frame(vertical).visibleSide,'coping-eave-only');
+assert.equal(vertical.face,null);
+assert.equal(vertical.base,null);
 const forward=painter.frame({axis:'vertical',a:[43,10],b:[43,190]});
 const reverse=painter.frame({axis:'vertical',a:[43,190],b:[43,10]});
 assert.deepEqual(forward,reverse,'Material texture must stay upright when a wall path reverses');
@@ -69,9 +71,11 @@ for(const call of strips){
  const ratio=source===plaster?4:8;
  assert(Math.abs(period/height-ratio)<1e-8,'Texture pixels may not stretch differently along U and V');
 }
-assert(calls.some(x=>x[0]==='rotate'&&x[1]===-Math.PI/2));
+assert(!calls.some(x=>x[0]==='rotate'&&x[1]===-Math.PI/2),
+ 'Ivory plaster and stone must not be mapped onto north-south side walls');
 assert(calls.some(x=>x[0]==='rotate'&&x[1]===0));
 function inside(q,p){
+ if(!q)return false;
  let minX=Math.min(...q.map(v=>v[0])),maxX=Math.max(...q.map(v=>v[0]));
  let minY=Math.min(...q.map(v=>v[1])),maxY=Math.max(...q.map(v=>v[1]));
  return p[0]>minX+1e-8&&p[0]<maxX-1e-8&&p[1]>minY+1e-8&&p[1]<maxY-1e-8;
@@ -103,7 +107,7 @@ const rejected=wall.draw(fakeCtx,wall.templates.rectangle,
  {profilePainter:profile,materialPainter:painter,plasterImage:plaster,stoneImage:stone});
 assert(!rejected.drawn,'New material cannot change exact V3 canal exclusion');
 const html=fs.readFileSync('wall-geometry-lab-v3.html','utf8');
-for(const target of ['rev 40','assets/v3/wall-face-materials.js?rev=40',
+for(const target of ['rev 41','assets/v3/wall-face-materials.js?rev=41',
  'id="showPlasterTexture"','id="showStoneTexture"','id="faceStatus"',
  'wallFaceMaterials.loadAll','plasterImage:visible(','stoneImage:visible(']){
  assert(html.includes(target),'V3 lab missing genuine painted material control: '+target);
@@ -111,4 +115,4 @@ for(const target of ['rev 40','assets/v3/wall-face-materials.js?rev=40',
 assert(!fs.readFileSync('layer2-lab-v3.html','utf8').includes('wall-face-materials.js'),
  'Existing Layer 2 art lab must not be modified');
 assert(!fs.readFileSync('courtyard-enclosure-lab-v3.html','utf8').includes('wall-face-materials.js'));
-console.log('V3 painted plaster & stone QA passed: genuine source hashes, 4:1 / 8:1 UV, camera-facing rotation, real gate openings, canal safety and V2 isolation.');
+console.log('V3 south-facing painted wall QA passed: authentic plaster/stone hashes, native UV ratios on horizontal façades only, no side-wall slabs, real gates and canal protection.');

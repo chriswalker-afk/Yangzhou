@@ -26,7 +26,7 @@ const ASSETS=Object.freeze({
   status:'visual-review-candidate'
  })
 });
-const FACING=Object.freeze({horizontal:'south',vertical:'east'});
+const FACING=Object.freeze({horizontal:'south',vertical:'coping-eave-only'});
 const hashHex=b=>Array.from(new Uint8Array(b),x=>x.toString(16).padStart(2,'0')).join('');
 async function decode(blob){
  if(typeof createImageBitmap==='function')return createImageBitmap(blob);
@@ -133,56 +133,30 @@ function renderBand(ctx,image,tile,face,quad,inner,outer,alpha=1){
  ctx.restore();
  return count;
 }
+// A single south-facing camera has no visible north-south plaster façade.
+// The vertical stroke is roof coping plus a narrow shaded right eave only.
+// Tiling the ivory/stone art on those vertical sides would recreate the
+// oversize right-hand slabs rejected in the previous corner prototype.
 function drawPlaster(ctx,form,tile,image,geom){
  if(!image)return 0;
- let count=0;
+ let tiles=0;
  for(const face of form.faces){
-  // The roof covers the first 0.75 units of the top edge. Opaque painting
-  // avoids the doubled opacity that formerly produced dark joint stripes.
+  if(!face.hasFacade)continue;
   const top=geom.FACE_START,bottom=face.outer-geom.BASE_HEIGHT;
-  const q=geom.quad(face.a,face.b,face.normal,top,bottom);
-  count+=renderBand(ctx,image,tile,face,q,top,bottom,1);
+  const quad=geom.quad(face.a,face.b,face.normal,top,bottom);
+  tiles+=renderBand(ctx,image,tile,face,quad,top,bottom,1);
  }
- for(const joint of form.cornerFills){
-  const [x,y]=joint.joint,outerX=joint.outerX;
-  const segment={a:[x,y],b:[outerX,y],axis:'horizontal'};
-  // The principal visible face keeps exactly the same V height and X-phase
-  // as the adjoining horizontal segment. No cap bitmap is stretched to fit.
-  // renderBand expects distances from this corner's own centreline,
-  // NEVER absolute world Y (which would shift/stretch the texture off-canvas).
-  const low=joint.outerY-y-geom.BASE_HEIGHT;
-  count+=renderBand(ctx,image,tile,segment,joint.plaster,
-   geom.FACE_START,low,1);
-  // This little quadrant sits UNDER the mitered roof. At NE and SE it also
-  // closes the exposed hole between the two offset wall-face rectangles.
-  count+=renderBand(ctx,image,tile,segment,joint.underEave,
-   0,geom.FACE_START,1);
- }
- return count;
+ return tiles;
 }
 function drawStone(ctx,form,tile,image,geom){
  if(!image)return 0;
- let count=0;
+ let tiles=0;
  for(const face of form.faces){
+  if(!face.hasFacade)continue;
   const top=face.outer-geom.BASE_HEIGHT,bottom=face.outer;
-  count+=renderBand(ctx,image,tile,face,face.base,top,bottom,1);
+  tiles+=renderBand(ctx,image,tile,face,face.base,top,bottom,1);
  }
- for(const joint of form.cornerFills){
-  const [x,y]=joint.joint,outerX=joint.outerX,outerY=joint.outerY;
-  const bottomTop=outerY-y-geom.BASE_HEIGHT;
-  const bottomLocal=outerY-y;
-  // Horizontal sill and vertical return share the *same* original stone
-  // painting and meet in a single opaque lower-right corner. No blank
-  // plaster square and no overlapping translucent stripes.
-  const horizontal={axis:'horizontal',a:[x,y],b:[outerX,y]};
-  count+=renderBand(ctx,image,tile,horizontal,joint.base,
-   bottomTop,bottomLocal,1);
-  const eastLeft=outerX-geom.BASE_HEIGHT;
-  const vertical={axis:'vertical',a:[eastLeft,y],b:[eastLeft,outerY]};
-  count+=renderBand(ctx,image,tile,vertical,joint.baseEast,
-   0,geom.BASE_HEIGHT,1);
- }
- return count;
+ return tiles;
 }
 return Object.freeze({ASSETS,FACING,verify,loadOne,loadAll,frame,renderBand,drawPlaster,drawStone});
 });

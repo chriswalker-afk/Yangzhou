@@ -30,7 +30,7 @@
     "copingWidthWorld": 8,
     "repeatPeriodWorld": 32,
     "textureUV": "u=accumulated wall centreline arclength; v=cross-wall offset",
-    "corners": "miter-clipped contiguous segments",
+    "corners": "miter-clipped roof with a shared vertex; horizontal façade endpoints tucked beneath eaves; zero synthetic masonry patches",
     "junctions": "exact T/L with underlying continuous coping band",
     "gates": "real breaks through all layers, never painted closed",
     "directionalOrientation": {
@@ -50,22 +50,26 @@
     "historicalAccuracy": false
   },
   "wallProfile": {
-    "type": "camera-facing-painted-plaster-and-stone-elevation",
+    "type": "single-south-facing-camera-with-roof-only-vertical-walls",
     "productionApproved": false,
-    "cameraFacingSide": "south on horizontal sections, east on vertical sections",
+    "cameraFacingSide": "south on horizontal wall elevations; vertical walls show rotated roof plus a narrow shaded eastern eave only",
     "copingWidthWorld": 8,
     "faceDepthWorld": {
       "north": 6,
       "south": 10,
-      "west": 7,
-      "east": 8
+      "west": 0,
+      "east": 0
     },
     "faceStartsInsideRoofFromCentreline": 3.25,
     "visibleStoneBaseHeightWorld": 1.7,
     "hiddenSidePlaster": false,
     "realMoonGateGap": true,
     "geometrySource": "assets/v3/wall-profile.js",
-    "notes": "Roof, plaster and stone now use independent painter-origin watercolour candidates, checksum-verified and texture-clipped to wall geometry. Geometry and both master paintings remain candidate-only; no V2 migration."
+    "notes": "Canonical south-facing projection; original paintings, their hashes, mitered roof, genuine moon gate gaps and Layer 1 route geometry unchanged. Candidate awaiting 1x/3x human review.",
+    "verticalSideEaveWorld": 1.05,
+    "verticalPlasterVisible": false,
+    "verticalStoneVisible": false,
+    "cornerMethod": "one shared roof vertex; horizontal plaster/stone tucked 3.75 world units underneath coping overhang; no invented masonry infill polygons"
   },
   "faceMaterials": {
     "plaster": {
@@ -96,10 +100,10 @@
       "mapping": {
         "material": "camera-facing plaster",
         "sourceRatio": 4,
-        "placement": "only south/east-facing plaster quads",
+        "placement": "south-facing horizontal plaster façades only (north/south wall runs), never north-south side walls",
         "visibleFaceHeight": "wallProfile.outer - BASE_HEIGHT - FACE_START",
         "uPeriod": "(1256/314) * visibleFaceHeight",
-        "sideRotationDegrees": -90
+        "sideRotationDegrees": null
       }
     },
     "stone": {
@@ -138,7 +142,8 @@
         "sourceRatio": 8,
         "visibleHeight": 1.7,
         "uPeriod": 13.6,
-        "sideRotationDegrees": -90
+        "sideRotationDegrees": null,
+        "placement": "south-facing horizontal lowest stone course only; no stone panels to right of vertical walls"
       }
     }
   },

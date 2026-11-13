@@ -8,104 +8,106 @@ const coping=require('../assets/v3/wall-roof-texture.js');
 const tile={x:0,y:0,edges:['L','L','L','L'],seed:1};
 const rectModel=wall.templates.rectangle,compiled=wall.compile(rectModel);
 const form=profile.build(compiled,rectModel.hall);
-const locationByName={NW:[42,47],NE:[178,47],SW:[42,178],SE:[178,178]};
-const equals=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1])<1e-7;
-function inside(quad,point){
- let ok=false;
- for(let i=0,j=quad.length-1;i<quad.length;j=i++){
-  const a=quad[i],b=quad[j];
-  if((a[1]>point[1])!==(b[1]>point[1]) &&
-     point[0]<(b[0]-a[0])*(point[1]-a[1])/(b[1]-a[1])+a[0])ok=!ok;
- }
- return ok;
+const corners={NW:[42,47],NE:[178,47],SW:[42,178],SE:[178,178]};
+const close=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1])<1e-7;
+function covered(point,polys){
+ return polys.some(q=>{
+  let isInside=false;
+  for(let i=0,j=q.length-1;i<q.length;j=i++){
+   const a=q[i],b=q[j];
+   if((a[1]>point[1])!==(b[1]>point[1])&&
+      point[0]<(b[0]-a[0])*(point[1]-a[1])/(b[1]-a[1])+a[0])
+    isInside=!isInside;
+  }
+  return isInside;
+ });
 }
-assert.equal(form.cornerFills.length,4,
- 'Every L orientation must receive a real projected plaster/stone corner, not just SE');
-assert.equal(profile.cornerFills(compiled,rectModel.hall).length,4,
- 'Direct legacy cornerFills API remains supported');
-const cornerTypes=new Set();
-for(const [kind,point] of Object.entries(locationByName)){
- const join=form.cornerFills.find(f=>equals(f.joint,point));
- assert(join,'Missing physical '+kind+' corner');
- cornerTypes.add(kind);
- assert(join.horizontal.axis==='horizontal'&&join.vertical.axis==='vertical');
- assert(join.outerX>point[0]+profile.COPING_HALF);
- assert(join.outerY>point[1]+profile.COPING_HALF);
- assert(inside(join.face,[point[0]+2,point[1]+8]),
-  'Projected plaster pier must fill old exposed grass behind the '+kind+' miter');
- assert(inside(join.base,[point[0]+3,join.outerY-.65]),
-  'Stone foundation must continue around the lower '+kind+' edge');
- assert(inside(join.baseEast,[join.outerX-.65,point[1]+3]),
-  'Stone foundation must wrap around the right '+kind+' edge');
- assert(inside(join.underEave,[point[0]+3,point[1]+1]),
-  'Plaster must reach beneath the coping without showing on its hidden side');
- assert(inside(join.shadowSouth,[point[0]+3,join.outerY+.25]));
- assert(inside(join.shadowEast,[join.outerX+.25,point[1]+3]));
- assert(!inside(join.face,[point[0]-2,point[1]-2]),
-  'The projected pier may not place plaster above/left of the visible roofing');
- const segments=coping.segments(compiled);
- assert(segments.some(s=>coping.pointInPolygon([point[0]+1,point[1]+1],s.quad)),
-  'The original roof remains painted across the '+kind+' corner footprint');
+assert.equal(form.cornerJoins.length,4);
+assert.equal(form.cornerFills.length,4,'Legacy name now means metadata, not masonry fills');
+assert(form.cornerJoins.every(j=>j.kind==='roof-shared-vertex'&&!j.artificialPier));
+assert.equal(profile.cornerFills(compiled,rectModel.hall).length,4);
+const polygons=profile.extentQuads(compiled,rectModel.hall);
+for(const [kind,vertex] of Object.entries(corners)){
+ const j=form.cornerJoins.find(q=>close(q.joint,vertex));
+ assert(j,'Missing shared roof vertex '+kind);
+ assert.equal(j.reveal,3.75);
+ assert(!('face' in j)&&!('base' in j)&&!('shadowSouth' in j),
+  'Corner '+kind+' must not invent a rectangular projected plaster pier');
+ const h=form.faces.find(f=>f.hasFacade&&
+  (close(f.sourceA,vertex)||close(f.sourceB,vertex)));
+ assert(h,'A continuous horizontal façade must terminate at '+kind);
+ const end=close(h.sourceA,vertex)?h.a:h.b;
+ assert(Math.abs(end[0]-vertex[0])>3.7&&Math.abs(end[0]-vertex[0])<3.9,
+  'Painted face is tucked beneath 4-unit roof overhang at '+kind);
+ const roof=coping.segments(compiled);
+ assert(roof.some(s=>coping.pointInPolygon([vertex[0]+1,vertex[1]+1],s.quad)),
+  'Original mitered roof covers the shared vertex '+kind);
 }
-assert.equal(cornerTypes.size,4);
-assert.equal(profile.build(wall.compile(wall.templates.partial),wall.templates.partial.hall).cornerFills.length,2);
-assert.equal(profile.build(wall.compile(wall.templates.elbow),wall.templates.elbow.hall).cornerFills.length,1);
-assert.equal(profile.build(wall.compile(wall.templates.tee),wall.templates.tee.hall).cornerFills.length,0);
-const logged=[],ctx={
- globalAlpha:1,
- save(){logged.push('save')},restore(){logged.push('restore')},
- beginPath(){},moveTo(){},lineTo(){},closePath(){},clip(){},
- translate(){},rotate(theta){logged.push(['angle',theta])},
- drawImage(img,x,y,w,h){logged.push(['image',img,w,h,this.globalAlpha,y])},
- stroke(){logged.push('stroke')},
- createLinearGradient(){return {addColorStop(){}}},
- fill(){logged.push('fill')},setLineDash(){},arc(){}
+for(const pt of [[189,55],[189,185],[180,186],[43,186],[50,90],[190,90]])
+ assert(!covered(pt,polygons),
+  'Old oversized side-wall/corner plaster must be removed at '+pt);
+for(const pt of [[48,54],[172,54],[48,186],[172,186]])
+ assert(covered(pt,polygons),
+  'Horizontal masonry must still meet the coping at '+pt);
+const north=form.faces.find(f=>f.location==='north');
+const south=form.faces.find(f=>f.location==='south');
+assert(south.outer>north.outer,'Near-wall plaster is visibly deeper');
+for(const side of form.faces.filter(f=>f.axis==='vertical')){
+ assert.equal(side.face,null,'No vertical ivory plaster');
+ assert.equal(side.base,null,'No vertical stone foundation');
+ assert(side.sideEave,'The side roof still has a thin shaded eave');
+}
+const images=[],rotations=[],ctx={
+ globalAlpha:1,save(){},restore(){},beginPath(){},moveTo(){},lineTo(){},
+ closePath(){},clip(){},translate(){},rotate(x){rotations.push(x)},
+ drawImage(img,x,y,w,h){images.push({img,x,y,w,h,alpha:this.globalAlpha})},
+ fill(){},stroke(){},setLineDash(){},arc(){},
+ createLinearGradient(){return {addColorStop(){}}}
 };
-const ivory={width:1256,height:314},stone={width:1256,height:157};
-const plasterTiles=paint.drawPlaster(ctx,form,tile,ivory,profile);
-const stoneTiles=paint.drawStone(ctx,form,tile,stone,profile);
-assert(plasterTiles>0&&stoneTiles>0);
-const images=logged.filter(x=>Array.isArray(x)&&x[0]==='image');
-assert.equal(images.length,plasterTiles+stoneTiles);
-assert(images.every(x=>x[4]===1),
- 'Opaque painting must not darken overlapping joint regions twice');
-assert(images.every(x=>Number.isFinite(x[5])&&x[5]>=0&&
- x[5]<=profile.COPING_HALF+profile.DEPTH.south+1e-7),
- 'Every corner material uses LOCAL distance (0–14 units), not its 178-unit world Y');
-assert(images.some(x=>x[1]===stone&&x[5]>12&&x[5]<13),
- 'The lower southeast foundation course must paint inside its real 12.3–14 unit depth');
-assert(images.some(x=>x[1]===ivory)&&images.some(x=>x[1]===stone));
-assert(logged.some(x=>Array.isArray(x)&&x[0]==='angle'&&x[1]===-Math.PI/2),
- 'Vertical stone returns reuse the genuine source painting rotated by 90 degrees');
-const actual=profile.draw(ctx,compiled,tile,{
- hall:rectModel.hall,materialPainter:paint,plasterImage:ivory,stoneImage:stone
+const plaster={width:1256,height:314},stone={width:1256,height:157};
+const p=paint.drawPlaster(ctx,form,tile,plaster,profile);
+const st=paint.drawStone(ctx,form,tile,stone,profile);
+assert(p>0&&st>0);
+assert.equal(images.length,p+st);
+assert(images.every(i=>i.alpha===1),'Material at the joins must not double darken');
+assert(!rotations.includes(-Math.PI/2),
+ 'Plaster/stone must never rotate onto a perpendicular side-wall façade');
+for(const i of images){
+ assert(i.h>0&&i.w>0);
+ assert(Math.abs(i.w/i.h-(i.img===plaster?4:8))<1e-8,
+  'Paint material retains its native aspect ratio');
+}
+const real=profile.draw(ctx,compiled,tile,{
+ hall:rectModel.hall,materialPainter:paint,plasterImage:plaster,stoneImage:stone
 });
-assert.equal(actual.outerCornerFills,4);
-assert(actual.plasterTextureUsed&&actual.stoneTextureUsed);
-const ret=profile.drawGateReturns(ctx,compiled,tile,{hall:rectModel.hall});
-assert.equal(ret,2,'Each moon gate needs a visible return at both real wall ends');
-assert(!form.cornerFills.some(j=>inside(j.face,[110,178])),
- 'Masonry corner patches must not fabricate geometry across the moon-gate opening');
-for(const m of Object.values(wall.templates)){
- const c=wall.compile(m),f=profile.build(c,m.hall);
+assert.equal(real.outerCornerFills,0);
+assert.equal(real.cornerJoins,4);
+assert.equal(real.verticalEaves,2);
+assert(real.plasterTextureUsed&&real.stoneTextureUsed);
+assert.equal(profile.drawGateReturns(ctx,compiled,tile,{hall:rectModel.hall}),2);
+const roofAngles=[],roofCtx={...ctx,rotate(x){roofAngles.push(x);}};
+coping.draw(roofCtx,compiled,tile,{naturalWidth:1256,naturalHeight:314});
+assert(roofAngles.includes(-Math.PI/2)&&roofAngles.includes(0),
+ 'Same roof watercolour remains rotated on vertical walls');
+for(const model of Object.values(wall.templates)){
+ const c=wall.compile(model),f=profile.build(c,model.hall);
+ assert.equal(f.cornerJoins.length,c.junctions.filter(j=>j.kind==='L').length);
+ assert(f.faces.filter(x=>x.axis==='vertical').every(x=>x.base===null));
  for(const gate of c.gates){
-  assert(!f.cornerFills.some(j=>inside(j.face,gate.center)),
-   'Junction plaster must leave the centre of every gate passable');
+  assert(!covered(gate.center,profile.extentQuads(c,model.hall)),
+   'No rendered plaster/stone/side eave may close the real moon gate');
  }
- const report=wall.audit(m,tile,{profilePainter:profile});
- assert(report.valid,m.id+' corner geometry must fit original grass tile: '+report.issues.join('; '));
- assert.deepEqual(report,wall.audit(m,{...tile,x:5,y:3},{profilePainter:profile}),
-  'Projected corners must remain tile-local, independent of board placement');
+ const report=wall.audit(model,tile,{profilePainter:profile});
+ assert(report.valid,model.id+' must stay tile-safe: '+report.issues.join('; '));
+ assert.deepEqual(report,wall.audit(model,{...tile,x:5,y:3},{profilePainter:profile}));
 }
-for(const edges of [['L','W','L','W'],['L','S','L','S']]){
- assert(!wall.audit(rectModel,{...tile,edges},{profilePainter:profile}).valid,
-  'Expanded corner footprints must never overlap the original street/canal routes');
-}
+for(const edges of [['L','W','L','W'],['L','S','L','S']])
+ assert(!wall.audit(rectModel,{...tile,edges},{profilePainter:profile}).valid);
 const page=fs.readFileSync('wall-geometry-lab-v3.html','utf8');
-for(const marker of ['rev 40','id="cornerNW"','id="cornerNE"','id="cornerSW"','id="cornerSE"',
- 'renderCornerInspection()','assets/v3/wall-profile.js?rev=40',
- 'assets/v3/wall-face-materials.js?rev=40'])
- assert(page.includes(marker),'Missing review-ready V3 corner detail '+marker);
+for(const item of ['rev 41','id="cornerNW"','id="cornerNE"',
+ 'id="cornerSW"','id="cornerSE"','renderCornerInspection()',
+ 'assets/v3/wall-profile.js?rev=41','assets/v3/wall-face-materials.js?rev=41'])
+ assert(page.includes(item),item);
 assert(!fs.readFileSync('layer2-lab-v3.html','utf8').includes('wall-profile.js'));
 assert(!fs.readFileSync('courtyard-enclosure-lab-v3.html','utf8').includes('wall-face-materials.js'));
-console.log('V3 corner masonry QA passed: NW/NE/SW/SE projected piers, continuous plaster, two-sided stone bases, roof coverage, exact gate jambs and original route exclusions.');
+console.log('V3 four-corner QA passed: no artificial masonry piers, hidden side slabs removed, south-facing façade under all miters, original roof rotation, passable gates and protected routes.');
