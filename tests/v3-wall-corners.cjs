@@ -31,7 +31,8 @@ for(const [kind,vertex] of Object.entries(corners)){
  const j=form.cornerJoins.find(q=>close(q.joint,vertex));
  assert(j,'Missing shared roof vertex '+kind);
  assert.equal(j.reveal,3.75);
- assert.equal(j.southFacadeReveal,0,'Near wall has no L-corner plaster/stone crop');
+ assert.equal(j.southFacadeReveal,-profile.COPING_HALF,
+  'Near wall extends 4 world units beyond the centreline to the roof outer edge');
  assert(!('face' in j)&&!('base' in j)&&!('shadowSouth' in j),
   'Corner '+kind+' must not invent a rectangular projected plaster pier');
  const h=form.faces.find(f=>f.hasFacade&&
@@ -42,18 +43,19 @@ for(const [kind,vertex] of Object.entries(corners)){
   assert(Math.abs(end[0]-vertex[0])>3.7&&Math.abs(end[0]-vertex[0])<3.9,
    'North face remains tucked behind the roof at '+kind);
  }else{
-  assert(Math.abs(end[0]-vertex[0])<1e-8,
-   'Bottom wall plaster and stone must reach the true visible corner at '+kind);
+  assert(Math.abs(end[0]-vertex[0]- (vertex[0]<110?-profile.COPING_HALF:profile.COPING_HALF))<1e-8,
+   'Bottom wall plaster and stone must reach the OUTER roof edge at '+kind);
  }
  const roof=coping.segments(compiled);
  assert(roof.some(s=>coping.pointInPolygon([vertex[0]+1,vertex[1]+1],s.quad)),
   'Original mitered roof covers the shared vertex '+kind);
 }
-for(const pt of [[189,55],[189,185],[180,186],[50,90],[190,90]])
+for(const pt of [[189,55],[189,185],[37,186],[183,186],[50,90],[190,90]])
  assert(!covered(pt,polygons),
   'Old oversized side-wall/corner plaster must be removed at '+pt);
 for(const pt of [[48,54],[172,54],[48,186],[172,186],
- [43,186],[177,186],[43,191],[177,191]])
+ [43,186],[177,186],[43,191],[177,191],
+ [39,186],[181,186],[39,191],[181,191]])
  assert(covered(pt,polygons),
   'Horizontal masonry must still meet the coping at '+pt);
 const north=form.faces.find(f=>f.location==='north');
@@ -111,10 +113,10 @@ for(const model of Object.values(wall.templates)){
 for(const edges of [['L','W','L','W'],['L','S','L','S']])
  assert(!wall.audit(rectModel,{...tile,edges},{profilePainter:profile}).valid);
 const page=fs.readFileSync('wall-geometry-lab-v3.html','utf8');
-for(const item of ['rev 42','id="cornerNW"','id="cornerNE"',
+for(const item of ['rev 43','id="cornerNW"','id="cornerNE"',
  'id="cornerSW"','id="cornerSE"','renderCornerInspection()',
- 'assets/v3/wall-profile.js?rev=42','assets/v3/wall-face-materials.js?rev=42'])
+ 'assets/v3/wall-profile.js?rev=43','assets/v3/wall-face-materials.js?rev=43'])
  assert(page.includes(item),item);
 assert(!fs.readFileSync('layer2-lab-v3.html','utf8').includes('wall-profile.js'));
 assert(!fs.readFileSync('courtyard-enclosure-lab-v3.html','utf8').includes('wall-face-materials.js'));
-console.log('V3 four-corner QA passed: north corners tucked, both bottom plaster/stone end caps extended, true gate opening, original roof unchanged and protected routes.');
+console.log('V3 rev43 corners QA passed: both lower material quads reach roof OUTER edges; far face tucked, gate open, materials unchanged, Layer 1 safe.');
