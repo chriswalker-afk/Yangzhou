@@ -56,7 +56,7 @@ const logged=[],ctx={
  save(){logged.push('save')},restore(){logged.push('restore')},
  beginPath(){},moveTo(){},lineTo(){},closePath(){},clip(){},
  translate(){},rotate(theta){logged.push(['angle',theta])},
- drawImage(img,x,y,w,h){logged.push(['image',img,w,h,this.globalAlpha])},
+ drawImage(img,x,y,w,h){logged.push(['image',img,w,h,this.globalAlpha,y])},
  stroke(){logged.push('stroke')},
  createLinearGradient(){return {addColorStop(){}}},
  fill(){logged.push('fill')},setLineDash(){},arc(){}
@@ -69,6 +69,11 @@ const images=logged.filter(x=>Array.isArray(x)&&x[0]==='image');
 assert.equal(images.length,plasterTiles+stoneTiles);
 assert(images.every(x=>x[4]===1),
  'Opaque painting must not darken overlapping joint regions twice');
+assert(images.every(x=>Number.isFinite(x[5])&&x[5]>=0&&
+ x[5]<=profile.COPING_HALF+profile.DEPTH.south+1e-7),
+ 'Every corner material uses LOCAL distance (0–14 units), not its 178-unit world Y');
+assert(images.some(x=>x[1]===stone&&x[5]>12&&x[5]<13),
+ 'The lower southeast foundation course must paint inside its real 12.3–14 unit depth');
 assert(images.some(x=>x[1]===ivory)&&images.some(x=>x[1]===stone));
 assert(logged.some(x=>Array.isArray(x)&&x[0]==='angle'&&x[1]===-Math.PI/2),
  'Vertical stone returns reuse the genuine source painting rotated by 90 degrees');
