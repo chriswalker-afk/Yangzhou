@@ -266,7 +266,7 @@ function render(){
   perspectiveWallProfile:visible('showPerspective')
    ?{cameraFacing:['south'],faceDepth:wallProfile.DEPTH,
      verticalWalls:'roof plus narrow shaded eave only',plasterAboveCoping:false,
-     cornerMethod:'north horizontal face tucked; south horizontal face reaches true L corners and gate ends',
+     cornerMethod:'shared roof vertices; north horizontal face tucked; south horizontal face reaches true L corners and gate ends',
      sideRoofRotationDegrees:-90,status:'candidate-for-review'}:null,
   faceTextures:{
    plaster:faceImages.plaster?{id:wallFaceMaterials.ASSETS.plaster.id,
