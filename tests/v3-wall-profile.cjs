@@ -56,7 +56,7 @@ assert(!walls.audit(rectangle,street,{profilePainter:profile}).valid);
 // symmetric centreline passes: the visible-face extents are audited separately.
 const shifted={
  id:'shifted-test',hall:null,
- paths:[{id:'south-face-near-tile',points:[[25,204],[190,204]]}],
+ paths:[{id:'south-face-near-tile',points:[[25,200],[190,200]]}],
  openings:[]
 };
 assert(walls.audit(shifted,tile).valid,'Legacy centreline fit should be permitted');
