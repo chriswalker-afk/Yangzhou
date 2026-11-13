@@ -4,7 +4,6 @@ const fs=require('node:fs');
 const crypto=require('node:crypto');
 const painter=require('../assets/v3/courtyard-paving.js');
 const walls=require('../assets/v3/wall-geometry.js');
-const geometry=require('../assets/v3/base-geometry.js');
 const packageManifest=JSON.parse(fs.readFileSync('assets/v3/materials/manifest.json','utf8'));
 const spec=packageManifest.layer1BCourtyardPaving;
 assert(spec,'Layer 1B courtyard candidate requires a manifest entry');
@@ -64,7 +63,7 @@ assert(painter.paint(ctx2,tile2,rect,image,{valid:true}).drawn);
 const positions=records.filter(x=>x[0]==='global-image');
 assert(positions.length>0&&positions.every(row=>row[1]%96===0&&row[2]%96===0),
  'Texture phase remains world-aligned when a courtyard is on a different tile');
-assert.deepEqual(geometry.PORT_WIDTHS||{street:44,canal:88},geometry.PORT_WIDTHS||{street:44,canal:88});
+// Existing 44/88 street and canal route contracts remain covered by the unchanged V3 geometry test suite.
 for(const model of Object.values(walls.templates)){
  const legal=walls.audit(model,tile);
  assert(legal.valid,'No alteration to wall or road/canal geometry for '+model.id);
