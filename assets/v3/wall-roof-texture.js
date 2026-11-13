@@ -69,6 +69,24 @@ function segments(compiled){
  }
  return result;
 }
+// Compass-stable UV orientation is essential for a slightly oblique camera:
+// horizontal coping always reads west→east with the painted eave on SOUTH;
+// vertical coping is the SAME image rotated -90° so its eave faces EAST.
+// The winding of a closed courtyard path must not flip the roof lighting.
+function compassFrame(part){
+ const dx=part.b[0]-part.a[0],dy=part.b[1]-part.a[1];
+ if(Math.abs(dy)<EPS&&Math.abs(dx)>EPS){
+  const minX=Math.min(part.a[0],part.b[0]);
+  return Object.freeze({orientation:'horizontal',angle:0,
+   origin:[minX,part.a[1]],phase:minX,visibleSide:'south'});
+ }
+ if(Math.abs(dx)<EPS&&Math.abs(dy)>EPS){
+  const maxY=Math.max(part.a[1],part.b[1]);
+  return Object.freeze({orientation:'vertical',angle:-Math.PI/2,
+   origin:[part.a[0],maxY],phase:-maxY,visibleSide:'east'});
+ }
+ throw Error('Roof coping requires straight horizontal or vertical geometry');
+}
 // A full image repeat takes exactly 32x8 world units. Image source pixels
 // are never stretched differently along the two material directions.
 function draw(ctx,compiled,tile,image,options={}){
@@ -80,7 +98,7 @@ function draw(ctx,compiled,tile,image,options={}){
  const ox=tile.x*220,oy=tile.y*220;
  ctx.save();
  for(const part of segments(compiled)){
-  const a=part.a,angle=Math.atan2(part.tangent[1],part.tangent[0]);
+  const frame=compassFrame(part);
   ctx.save();
   // Clip in world coordinates to the exact miter wedges. The adjacent wall
   // sections meet edge-to-edge, even when the texture direction changes.
@@ -88,10 +106,10 @@ function draw(ctx,compiled,tile,image,options={}){
   ctx.beginPath();ctx.moveTo(ox+q[0][0],oy+q[0][1]);
   for(let i=1;i<q.length;i++)ctx.lineTo(ox+q[i][0],oy+q[i][1]);
   ctx.closePath();ctx.clip();
-  ctx.translate(ox+a[0],oy+a[1]);ctx.rotate(angle);
-  // Keep U phase continuous across segments of the same wall path. An extra
-  // repeat each side covers both end miters without leaving grass pixels.
-  const offset=((part.u0%period)+period)%period;
+  ctx.translate(ox+frame.origin[0],oy+frame.origin[1]);ctx.rotate(frame.angle);
+  // World-axis-anchored phase: reverse path winding never flips the painting
+  // or restarts repeats at a corner. A padded repeat covers each miter.
+  const offset=((frame.phase%period)+period)%period;
   const begin=-offset-period;
   for(let x=begin;x<part.length+period;x+=period){
    ctx.drawImage(image,x,-band/2,period,band);
@@ -136,5 +154,6 @@ async function loadFromGitHub(timeoutMs=20000){
   return await verifyFile(await response.blob());
  }finally{clearTimeout(timer);}
 }
-return Object.freeze({ASSET,normal,miter,segmentQuad,segments,pointInPolygon,draw,verifyFile,loadFromGitHub});
+return Object.freeze({ASSET,normal,miter,segmentQuad,segments,compassFrame,
+ pointInPolygon,draw,verifyFile,loadFromGitHub});
 });
