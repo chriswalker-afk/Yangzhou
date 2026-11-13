@@ -103,7 +103,7 @@ const rejected=wall.draw(fakeCtx,wall.templates.rectangle,
  {profilePainter:profile,materialPainter:painter,plasterImage:plaster,stoneImage:stone});
 assert(!rejected.drawn,'New material cannot change exact V3 canal exclusion');
 const html=fs.readFileSync('wall-geometry-lab-v3.html','utf8');
-for(const target of ['rev 39','assets/v3/wall-face-materials.js?rev=39',
+for(const target of ['rev 40','assets/v3/wall-face-materials.js?rev=40',
  'id="showPlasterTexture"','id="showStoneTexture"','id="faceStatus"',
  'wallFaceMaterials.loadAll','plasterImage:visible(','stoneImage:visible(']){
  assert(html.includes(target),'V3 lab missing genuine painted material control: '+target);

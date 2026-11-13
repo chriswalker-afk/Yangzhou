@@ -18,7 +18,7 @@ async function run(){
   page.on('pageerror',e=>errors.push('desktop '+e.message));
   await page.goto(PORT,{waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>document.querySelector('#summary')?.textContent.includes('Protected V3 ports'),{timeout:9000});
-  assert.match(await page.locator('h1').textContent(),/rev 39/);
+  assert.match(await page.locator('h1').textContent(),/rev 40/);
   assert.equal(await page.locator('#scene').evaluate(el=>el.style.width),'660px');
   assert.match(await page.locator('#summary').textContent(),/6 valid walled tiles/);
   let selection=JSON.parse(await page.locator('#export').textContent());

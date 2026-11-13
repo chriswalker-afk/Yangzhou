@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const {chromium}=require('playwright');
 fs.mkdirSync('artifacts/v3',{recursive:true});
-const URL='http://127.0.0.1:8765/wall-geometry-lab-v3.html?rev=39';
+const URL='http://127.0.0.1:8765/wall-geometry-lab-v3.html?rev=40';
 async function run(){
  const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
  const errs=[];
@@ -14,7 +14,7 @@ async function run(){
   await page.waitForFunction(()=>document.querySelector('#summary')?.textContent.includes('Protected V3 ports'),{timeout:11000});
   await page.waitForFunction(()=>document.querySelector('#faceStatus')?.textContent.includes('2/2 authentic'),{timeout:25000});
   await page.waitForFunction(()=>document.querySelector('#roofStatus')?.textContent.includes('verified'),{timeout:25000});
-  assert.match(await page.locator('h1').textContent(),/rev 39/);
+  assert.match(await page.locator('h1').textContent(),/rev 40/);
   for(const id of ['#showRoofTexture','#showPlasterTexture','#showStoneTexture','#showPerspective']){
    assert(await page.locator(id).isChecked(),'Both new paintings load by default '+id);
   }

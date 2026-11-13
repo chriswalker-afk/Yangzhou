@@ -2,7 +2,7 @@
 
 **Status:** isolated, unapproved Layer 2 geometry experiment. The playable V2 game and existing V3 labs remain untouched.
 
-[Open the six-tile Wall Geometry & Texture Lab](../wall-geometry-lab-v3.html?rev=39) (once deployed).
+[Open the six-tile Wall Geometry & Texture Lab](../wall-geometry-lab-v3.html?rev=40) (once deployed).
 
 ## Why switch
 
@@ -34,6 +34,21 @@ A tile is 220 x 220 local world units. A compound is a named set of centreline p
 **Revision 37:** the 8-unit coping strip accepts the first actual painted material candidate, Wall Roof-Tile Texture 01, alongside its old flat-colour fallback. The bitmap is **not production-approved**, and the preview loader refuses incorrect hashes. Material U is 32 world units per repeat and V is the 8-unit coping width. The shared coping substrate is still rendered before the miter-clipped image, so gaps cannot expose grass; moon-gate openings remain real. The ridge stroke is hidden when the painted roof surface is active, because the artwork already contains highlights. Existing V3 grass/paving/water can still appear behind the walls, and the hall remains an unchanged Layer 2 sprite.
 
 The original PNG has been preserved outside the repository; its exact prepared 1256×314, 174,360-byte WebP is **now committed and hash-verified** under `assets/v3/wall-materials/wall-roof-tiles-01.webp`. The new test loads it automatically and offers a local file selector only as a fallback. The material manifest and preparation steps live in `assets/v3/wall-materials/`.
+
+## Continuous projected corner masonry — rev 40
+
+**User-observed defect:** the top-down roof was correctly mitered, but the ivory plaster and grey stone foundation stopped at each straight segment. Only the southeast turn received a partial infill, producing bare slivers and abrupt texture/stone endings where side and front façades met.
+
+**Revised rule:** one 90-degree wall joint has a single **projected masonry pier**. The join is derived mathematically from the actual intersection of the two orthogonal centreline segments, their camera-facing façade depths and the visible 1.7-unit foundation bands. This is applied to **NW, NE, SW and SE**, with no new painted sprite or altered roof artwork.
+
+- All four joints receive a camera-facing +X/+Y plaster envelope under the mitered coping. The formerly exposed positive-quadrant between the two offset straight faces is now closed, including the 0–3.25 unit under-eave return previously unpainted at southeast.
+- The horizontal plaster material retains its original world-axis texture phase through the visible joint; a short under-eave strip is only used behind the coping so no grass appears at corners where straight faces meet. Stone Base 01 continues around **both** the south/bottom edge and the east/right edge. Both original material paintings are rendered **opaque** at shared joins, avoiding dark double-alpha stripes.
+- Contact shadows follow the two projected outer edges. The roof itself remains the same miter-clipped Wall Roof-Tile 01 painting and still turns by exactly 90 degrees.
+- Real moon gates keep their physical cut-out. The two terminating plaster/stone faces get thin **return-edge** details along their wall boundary, rather than another wall image or an artificial solid gate.
+- The enlarged projected corner and its shadows are included in **Layer 1 route/inset and hall-clearance checks**. There is no change to tile port widths (street 44, canal 88), exact base material masks, or the playable game.
+- The lab now has **four real live cropped inspection canvases**, one for each corner, derived directly from the painted six-tile scene rather than mock images. They update when an artwork file loads, a material is toggled, or the courtyard geometry changes.
+
+The four corner joints are a **rendering pass and candidate**, not historical visual approval. Pixel-level desktop, 3× and mobile regressions check no exposed grass at the southeast turn, wrapped stone on two faces, transparent/passable gate centres, and unchanged roof when other materials are toggled. The accepted master artwork files and their SHA-256 provenance remain untouched. Review the directional painted seam at the corners at both zoom levels before commissioning any specialist corner-coping artwork.
 
 ## Painted ivory plaster and stone foundation — rev 39
 

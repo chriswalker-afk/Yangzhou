@@ -318,6 +318,10 @@ function draw(ctx,model,tile,options={}){
  // threshold is an optional diagnostic overlay, never a solid collision mask.
  if(useProfile&&typeof options.profilePainter.drawEaves==='function')
   options.profilePainter.drawEaves(ctx,compiled,tile,{hall:model.hall});
+ // Architectural return edges at the true opening ends are permanent
+ // features, not optional guide lines. Never bridge the gate itself.
+ if(useProfile&&typeof options.profilePainter.drawGateReturns==='function')
+  options.profilePainter.drawGateReturns(ctx,compiled,tile,{hall:model.hall});
  if(options.showGates!==false){
   for(const g of compiled.gates){
    const [x,y]=g.center,[tx,ty]=g.tangent,[nx,ny]=g.normal;
