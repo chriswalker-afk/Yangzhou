@@ -209,7 +209,7 @@ function isSolid(compiled,point,band='foundation'){
  }
  return false;
 }
-function audit(model,tile,{protectHall=true}={}){
+function audit(model,tile,{protectHall=true,profilePainter=null}={}){
  const compiled=compile(model),issues=[];
  const tileEdges=geometry.compile(tile.edges);
  const hall=model.hall&&protectHall?layer2.COMPONENTS[model.hall.id]:null;
@@ -238,6 +238,35 @@ function audit(model,tile,{protectHall=true}={}){
    }
   }
  }
+ // The camera-facing wall face extends DOWN/RIGHT from the roof. Check its
+ // actual asymmetrical polygons against the immutable Layer 1 geometry. Using
+ // a symmetric inflated wall radius would incorrectly reject the west wall
+ // beside our Courtyard Hall even when its visible face has enough space.
+ if(profilePainter){
+  const visualQuads=profilePainter.extentQuads(compiled,model.hall);
+  for(const q of visualQuads){
+   for(let side=0;side<q.length;side++){
+    const a=q[side],b=q[(side+1)%q.length];
+    const count=Math.max(1,Math.ceil(dist(a,b)/2));
+    for(let i=0;i<=count;i++){
+     const pt=lerp(a,b,i/count);
+     if(pt[0]<INSET-EPS||pt[0]>TILE-INSET+EPS||
+        pt[1]<INSET-EPS||pt[1]>TILE-INSET+EPS)
+      issues.push('Perspective wall face crosses tile inset');
+     for(const road of tileEdges.paths){
+      const edge=road.type==='W'?4:5;
+      const clearance=road.width/2+edge+SAFE_GAP;
+      if(layer2.minRouteDistance(pt,road)<clearance-EPS)
+       issues.push('Perspective wall face enters protected '+(road.type==='W'?'canal':'street')+' corridor');
+     }
+     if(hall&&
+       Math.abs(pt[0]-model.hall.x)<hall.width/2+SAFE_GAP-EPS&&
+       Math.abs(pt[1]-model.hall.y)<hall.height/2+SAFE_GAP-EPS)
+      issues.push('Perspective wall face intrudes into courtyard hall clearance');
+    }
+   }
+  }
+ }
  // Exactly shared L/T vertices, rather than separate wall-sprite borders.
  if(compiled.junctions.some(j=>j.seamGap!==0))issues.push('Disconnected wall junction');
  return Object.freeze({valid:issues.length===0,issues:Object.freeze([...new Set(issues)]),
@@ -255,7 +284,10 @@ function trace(ctx,points,ox,oy,closed=false){
  if(closed)ctx.closePath();
 }
 function draw(ctx,model,tile,options={}){
- const compiled=compile(model),report=audit(model,tile);
+ const useProfile=!!(options.profilePainter&&options.perspective!==false);
+ const compiled=compile(model),report=audit(model,tile,{
+  profilePainter:useProfile?options.profilePainter:null
+ });
  if(!report.valid)return Object.freeze({...report,drawn:false});
  const ox=tile.x*TILE,oy=tile.y*TILE;
  const ink={...PALETTE,...options.palette};
@@ -263,7 +295,11 @@ function draw(ctx,model,tile,options={}){
  // Layer by layer across ALL centreline paths: intersections therefore
  // share one continuous substrate rather than exposing independent endcaps.
  const useRoof=!!(options.roofImage&&options.roofPainter);
+ if(useProfile)options.profilePainter.draw(ctx,compiled,tile,{
+  hall:model.hall,palette:options.profilePalette
+ });
  for(const band of MATERIALS){
+  if(useProfile&&(band.slot==='foundation'||band.slot==='plaster'))continue;
   // The painterly roof image already contains its ridge/eave highlights,
   // so do not paint a second synthetic line over the accepted painting.
   if(useRoof&&band.slot==='ridge')continue;
@@ -278,6 +314,8 @@ function draw(ctx,model,tile,options={}){
  }
  // Portal holes are true omissions from ALL 4 solid strokes. The dotted
  // threshold is an optional diagnostic overlay, never a solid collision mask.
+ if(useProfile&&typeof options.profilePainter.drawEaves==='function')
+  options.profilePainter.drawEaves(ctx,compiled,tile,{hall:model.hall});
  if(options.showGates!==false){
   for(const g of compiled.gates){
    const [x,y]=g.center,[tx,ty]=g.tangent,[nx,ny]=g.normal;
@@ -299,7 +337,8 @@ function draw(ctx,model,tile,options={}){
   }
  }
  ctx.restore();
- return Object.freeze({...report,drawn:true,roofTextureUsed:useRoof});
+ return Object.freeze({...report,drawn:true,roofTextureUsed:useRoof,
+  perspectiveProfileUsed:useProfile});
 }
 return Object.freeze({TILE,INSET,SAFE_GAP,EPS,WIDTHS,PALETTE,MATERIALS,templates,
  length,pointAlong,distanceAlong,slice,compile,detectJunctions,distToSegment,isSolid,audit,draw});

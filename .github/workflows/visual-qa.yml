@@ -31,6 +31,7 @@ jobs:
           node tests/v3-courtyard-enclosure-visual.cjs
           node tests/v3-wall-geometry-visual.cjs
           node tests/v3-wall-roof-texture-visual.cjs
+          node tests/v3-wall-profile-visual.cjs
       - name: Keep preview screenshots (not painterly approval)
         if: always()
         uses: actions/upload-artifact@v4

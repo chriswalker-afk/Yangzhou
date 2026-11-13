@@ -2,7 +2,7 @@
 
 **Status:** isolated, unapproved Layer 2 geometry experiment. The playable V2 game and existing V3 labs remain untouched.
 
-[Open the six-tile Wall Geometry & Texture Lab](../wall-geometry-lab-v3.html?rev=37) (once deployed).
+[Open the six-tile Wall Geometry & Texture Lab](../wall-geometry-lab-v3.html?rev=38) (once deployed).
 
 ## Why switch
 
@@ -34,6 +34,23 @@ A tile is 220 x 220 local world units. A compound is a named set of centreline p
 **Revision 37:** the 8-unit coping strip accepts the first actual painted material candidate, Wall Roof-Tile Texture 01, alongside its old flat-colour fallback. The bitmap is **not production-approved**, and the preview loader refuses incorrect hashes. Material U is 32 world units per repeat and V is the 8-unit coping width. The shared coping substrate is still rendered before the miter-clipped image, so gaps cannot expose grass; moon-gate openings remain real. The ridge stroke is hidden when the painted roof surface is active, because the artwork already contains highlights. Existing V3 grass/paving/water can still appear behind the walls, and the hall remains an unchanged Layer 2 sprite.
 
 The original PNG has been preserved outside the repository; its exact prepared 1256×314, 174,360-byte WebP is **now committed and hash-verified** under `assets/v3/wall-materials/wall-roof-tiles-01.webp`. The new test loads it automatically and offers a local file selector only as a fallback. The material manifest and preparation steps live in `assets/v3/wall-materials/`.
+
+## Perspective-aware wall profile — rev 38
+
+The previous symmetric 16/12/8-unit material strokes made ivory plaster appear **above** roof tiles and on both sides of each wall. That is appropriate as a structural placeholder but not consistent with the slightly oblique, overhead Courtyard Hall 01. The revised wall material is drawn as a *one-sided elevation* underneath the original coping, not as a new wall sprite.
+
+- **Horizontal north/top wall:** ivory plaster face projects **6 world units downscreen (south)** from the outer roof edge. This is deliberately shallow because the far wall sits farther back in the picture.
+- **Horizontal south/bottom wall:** the face projects **10 world units south** of the roof, making its façade and stone base more visible, as with the existing hall painting.
+- **West/east side walls:** faces project **7 / 8 world units to screen-right (east)** respectively. The roof uses the **same accepted 32×8 roof tile texture rotated −90°**, not a new or stretched painting.
+- **Hidden side:** no foundation or plaster extends north of horizontal coping or west of vertical coping. All wall faces begin **3.25 units from the centreline** (within the coping's 4-unit half-width), so the overhanging roof hides their top edges.
+- **Foundation:** a **1.7-world-unit** stone band is painted at the *far* visible edge of each plaster face, with a soft 0.75-unit ground shadow. It is not a symmetric stone halo.
+- **Corners and T junctions:** one physically shared roof remains centred on the vector wall paths; the face polygons follow the viewer-facing side and a single southeast outer corner receives a proper connected infill. A gate remains an actual omission through **roof, plaster and foundation**.
+- **Safety:** the rendered one-sided plaster, foundation and faint shadow footprints are sampled against tile insets, courtyard hall clearance and the **existing exact street/canal route masks**. This is an *additional visual-envelope audit*, not a change to canonical Layer 1 geometry.
+- **Comparison:** the V3 wall lab defaults to this new profile and provides a **Show perspective-aware wall faces** toggle to compare it with the prior symmetric diagnostic rendering. Painted roof tiles are independently toggleable.
+
+The roof painter now orients texture by **compass/view side**, rather than by the arbitrary traversal direction of each polyline: east–west sections use angle 0°, north–south sections use angle −90°. This prevents the same tile artwork from appearing upside down or changing its shading when the centreline turns or reverses.
+
+The plaster and base are still *diagnostic colour gradients*, pending separate painted textures. The roof artwork remains the accepted **candidate** rather than a final production-approved material. Perspective depth and proportion require 1× and 3× human review against the hall.
 
 ## Geometry cases
 

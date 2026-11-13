@@ -27,9 +27,9 @@ a{color:#2f6457}
 #wallInfo{min-height:62px}
 @media(max-width:650px){h1{font-size:1.55rem}main{padding:0 10px}}
 </style></head><body><main>
-<h1>Yangzhou V3 — Wall Geometry &amp; Texture Lab (rev 37)</h1>
-<p class="lead"><strong>Isolated Layer 2 proof, not the playable game.</strong> These are continuous, tile-owned wall <em>centrelines</em> with exact mitered corners and T-connections. The moon gate is a genuine opening cut out of all four wall bands, not a painting laid over a solid wall. Stone, plaster and the unpainted ridge remain temporary diagnostic colours. <strong>Wall Roof-Tile Texture 01</strong> is our first painted material candidate: its repeating image follows each coping band at a fixed scale. It stays an unapproved candidate pending inspection at corners and gate ends.</p>
-<p>Test a complete courtyard, a three-sided garden, an L-corner and a T-junction around our existing courtyard hall. Toggle the road/canal layouts: invalid courtyards are rejected instead of crossing an 88-unit water channel or 44-unit street. The older wall-sprite lab remains available for comparison.</p>
+<h1>Yangzhou V3 — Wall Geometry &amp; Texture Lab (rev 38)</h1>
+<p class="lead"><strong>Isolated Layer 2 proof, not the playable game.</strong> These are continuous, tile-owned wall <em>centrelines</em> with exact mitered corners and T-connections. The moon gate is a genuine opening cut out of all four wall bands, not a painting laid over a solid wall. <strong>New perspective-aware wall profile:</strong> the same painted roof coping now sits over a visible ivory plaster face, with a subtle stone footing. Far (top) walls have a shallow façade; near (bottom) walls show more wall height. Side walls rotate the roof tiles 90° and expose the face only to screen-right. No plaster is drawn above or behind the coping. Plaster and foundation remain flat diagnostic finishes; roof tiles remain an unapproved painted candidate.</p>
+<p>Test a complete courtyard, a three-sided garden, an L-corner and a T-junction around our existing courtyard hall. Toggle the new perspective profile off to compare it with the original symmetrical bands. Toggle the road/canal layouts: invalid courtyards are rejected instead of crossing an 88-unit water channel or 44-unit street. The older wall-sprite lab remains available for comparison.</p>
 <div class="toolbar">
 <label for="study">Six-tile neighbourhood
 <select id="study">
@@ -56,6 +56,7 @@ a{color:#2f6457}
 <label><input type="checkbox" id="showHall" checked> Courtyard hall</label>
 <label><input type="checkbox" id="showTextures"> Use existing painted Layer 1 materials</label>
 <label><input type="checkbox" id="showRoofTexture" checked> Show painted roof-tile coping</label>
+<label><input type="checkbox" id="showPerspective" checked> Show perspective-aware wall faces</label>
 </div>
 <div class="status" id="roofStatus" role="status" aria-live="polite">Loading the exact committed Wall Roof-Tile Texture 01 candidate. Flat diagnostic coping remains available if the network request fails.</div>
 <div class="toolbar">
@@ -72,14 +73,14 @@ a{color:#2f6457}
 <div id="wallInfo" class="status" role="status" aria-live="polite">Select a tile to inspect its walls, entrances and safety report.</div>
 <div class="flex">
 <section class="card">
-<h2>Four exact material bands</h2>
+<h2>Wall profile and painted coping</h2>
 <table><thead><tr><th>Material slot</th><th>Width</th><th>Diagnostic fill</th></tr></thead><tbody>
-<tr><td>Stone foundation</td><td>16 units</td><td><span class="swatch" style="background:#aaa59b"></span></td></tr>
-<tr><td>Plaster wall body</td><td>12 units</td><td><span class="swatch" style="background:#e9e4d4"></span></td></tr>
+<tr><td>Visible stone base</td><td>1.7 units at lower/right edge</td><td><span class="swatch" style="background:#999a90"></span></td></tr>
+<tr><td>Visible plaster face</td><td>Top wall: 6 · Bottom wall: 10 · West/East: 7/8 units</td><td><span class="swatch" style="background:#e9e4d4"></span></td></tr>
 <tr><td>Grey tile coping</td><td>8 units</td><td><span class="swatch" style="background:#636d69"></span></td></tr>
 <tr><td>Roof ridge</td><td>2 units</td><td><span class="swatch" style="background:#a8afa5"></span></td></tr>
 </tbody></table>
-<small>The 8-unit coping strip now supports a 32-unit repeating painted material along each segment's local arclength. Miter-clipped corner strips meet without ground gaps, with diagnostic grey underneath. The 16-unit foundation and 12-unit plaster remain flat diagnostic colours.</small>
+<small>Roof coping remains 8 units wide, using the accepted 32-unit repeat period. The horizontal strip is unrotated on both top and bottom walls; on either side wall it is rotated -90° to keep the painted eave facing the visible plaster. Roof, face and stone remain separate render layers. Switch off perspective mode to compare the previous symmetric diagnostic treatment.</small>
 </section>
 <section class="card">
 <h2>Geometry acceptance checks</h2>
@@ -96,13 +97,15 @@ a{color:#2f6457}
 <script src="assets/v3/edge-system.js"></script>
 <script src="assets/v3/material-runtime.js"></script>
 <script src="assets/v3/layer2-placements.js"></script>
-<script src="assets/v3/wall-geometry.js"></script>
-<script src="assets/v3/wall-roof-texture.js?rev=37"></script>
+<script src="assets/v3/wall-geometry.js?rev=38"></script>
+<script src="assets/v3/wall-profile.js?rev=38"></script>
+<script src="assets/v3/wall-roof-texture.js?rev=38"></script>
 <script>
 (()=>{'use strict';
 const topology=window.YangzhouTileTopology,geometry=window.YangzhouV3Geometry,
  edgeSystem=window.YangzhouV3Edges,materials=window.YangzhouV3Materials,
- walls=window.YangzhouV3WallGeometry,roofPainter=window.YangzhouV3WallRoofTexture;
+ walls=window.YangzhouV3WallGeometry,roofPainter=window.YangzhouV3WallRoofTexture,
+ wallProfile=window.YangzhouV3WallProfile;
 const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d');
 const CODES=Object.freeze({
  garden:['LLLL','LLLL','LLLL','LLLL','LLLL','LLLL'],
@@ -142,7 +145,9 @@ function render(){
   edgeSystem.draw(ctx,compiledEdge,styles,{x:ox,y:oy,edges:true});
   let report=null;
   if(model){
-   report=walls.audit(model,tile);
+   report=walls.audit(model,tile,{
+    profilePainter:visible('showPerspective')?wallProfile:null
+   });
    if(report.valid){
     accepted++;openings+=report.passableOpenings.filter(p=>p.open).length;
     ls+=report.lCorners;ts+=report.tJunctions;
@@ -159,7 +164,8 @@ function render(){
     }
     if(visible('showWall'))walls.draw(ctx,model,tile,{
      showGates:visible('showGate'),showJoints:visible('showJoints'),
-     roofImage:visible('showRoofTexture')?roofImage:null,roofPainter
+     roofImage:visible('showRoofTexture')?roofImage:null,roofPainter,
+     profilePainter:visible('showPerspective')?wallProfile:null
     });
    }else{
     rejected++;
@@ -186,13 +192,16 @@ function render(){
   ctx.strokeRect(current.x*220+1,current.y*220+1,218,218);
   ctx.restore();
  }
- const model=tileModel(selected),report=model?walls.audit(model,current):null;
+ const model=tileModel(selected),report=model?walls.audit(model,current,{
+  profilePainter:visible('showPerspective')?wallProfile:null
+ }):null;
  const selectedDetail=model?walls.compile(model):null;
  document.getElementById('summary').textContent=
   accepted+' valid walled tiles; '+rejected+' deliberately rejected against routes; '+
   ls+' exact L corners; '+ts+' exact T joins; '+openings+' passable moon gates. '+
   'Protected V3 ports: 44-unit street, 88-unit canal. '+
-  'Roof material: '+(visible('showRoofTexture')&&roofImage?'painted (candidate)':'flat diagnostic')+'.';
+  'Roof material: '+(visible('showRoofTexture')&&roofImage?'painted (candidate)':'flat diagnostic')+'. '+
+  'Wall face: '+(visible('showPerspective')?'camera-facing ivory plaster / stone':'old symmetric diagnostic bands')+'.';
  document.getElementById('wallInfo').textContent=
   'Tile ('+current.x+','+current.y+') • edges '+current.edges.join('')+
   ' • '+(model?model.name:'No wall layout')+
@@ -204,7 +213,11 @@ function render(){
   model:model?{paths:model.paths,openings:model.openings,hall:model.hall}:null,
   compiled:model?{gates:selectedDetail.gates,junctions:selectedDetail.junctions,
    wallSegments:selectedDetail.ribbons.length}:null,
-  audit:report,roofTexture:roofImage?
+  audit:report,
+  perspectiveWallProfile:visible('showPerspective')
+   ?{cameraFacing:['south','east'],faceDepth:wallProfile.DEPTH,plasterAboveCoping:false,
+     sideRoofRotationDegrees:-90,status:'candidate-for-review'}:null,
+  roofTexture:roofImage?
    {id:roofPainter.ASSET.id,source:roofSource,period:roofPainter.ASSET.period,
     bandWidth:roofPainter.ASSET.bandWidth,status:'candidate-for-review'}:null
  },null,2);
@@ -231,7 +244,7 @@ document.getElementById('study').addEventListener('change',e=>selectStudy(e.targ
 document.getElementById('plan').addEventListener('change',e=>{
  choices[selected]=e.target.value;refresh();
 });
-for(const id of ['showWall','showGate','showJoints','showHall','showTextures','showRoofTexture'])
+for(const id of ['showWall','showGate','showJoints','showHall','showTextures','showRoofTexture','showPerspective'])
  document.getElementById(id).addEventListener('change',render);
 button('zoom',()=>{
  zoomOn=!zoomOn;canvas.style.width=zoomOn?'1980px':'660px';
