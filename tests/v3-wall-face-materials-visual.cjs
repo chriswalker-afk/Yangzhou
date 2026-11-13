@@ -12,6 +12,9 @@ async function run(){
   page.on('pageerror',e=>errs.push('desktop '+e.message));
   await page.goto(URL,{waitUntil:'domcontentloaded'});
   // Preserve the pre-Layer 1B grass baseline for wall and gate pixel regression.
+  // Preserve the legacy unadorned-gap pixel baseline. Moon Gate 01 has
+  // its own painted-asset regression, including transparency and joins.
+  await page.locator('#showMoonGate').uncheck();
   await page.locator('#showPaving').uncheck();
   await page.waitForFunction(()=>document.querySelector('#summary')?.textContent.includes('Protected V3 ports'),{timeout:11000});
   await page.waitForFunction(()=>document.querySelector('#faceStatus')?.textContent.includes('2/2 authentic'),{timeout:25000});

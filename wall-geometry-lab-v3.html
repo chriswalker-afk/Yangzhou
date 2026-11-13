@@ -59,7 +59,8 @@ a{color:#2f6457}
 </div>
 <div class="toolbar">
 <label><input type="checkbox" id="showWall" checked> Show continuous walls</label>
-<label><input type="checkbox" id="showGate" checked> Show passable gate guides</label>
+<label><input type="checkbox" id="showGate"> Show passable gate guides (diagnostic)</label>
+<label><input type="checkbox" id="showMoonGate" checked> Show original painted Moon Gate 01</label>
 <label><input type="checkbox" id="showJoints"> Show diagnostic L/T joint markers</label>
 <label><input type="checkbox" id="showHall" checked> Courtyard hall</label>
 <label><input type="checkbox" id="showTextures"> Use existing painted Layer 1A materials</label>
@@ -88,6 +89,10 @@ a{color:#2f6457}
 <div class="toolbar"><label for="pavingFile">Compare exact paving WebP locally:</label>
 <input id="pavingFile" type="file" accept=".webp,image/webp">
 <a href="https://github.com/chriswalker-afk/Yangzhou/blob/main/assets/v3/materials/courtyard-paving-01.webp">Paving artwork on GitHub</a></div>
+<div class="status" id="moonGateStatus" role="status" aria-live="polite">Checking the original painted Moon Gate 01 (SHA-256 verified)…</div>
+<div class="toolbar"><label for="moonGateFile">Compare exact original WebP locally:</label>
+<input id="moonGateFile" type="file" accept=".webp,image/webp">
+<a href="https://github.com/chriswalker-afk/Yangzhou/blob/main/assets/v3/enclosures/moon-gate-01.webp">Moon Gate 01 original artwork on GitHub</a></div>
 <div class="status" id="readyStatus" role="status" aria-live="polite">Geometry ready. Optional existing artwork is loading independently; flat-colour proof is available now.</div>
 <div class="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Six Yangzhou V3 tiles showing rectangle, partial enclosure, L and T wall centreline examples over road and canal geometry"></canvas></div>
 <section aria-label="Layer 1B courtyard paving repeat inspection" id="pavingInspection">
@@ -97,6 +102,11 @@ a{color:#2f6457}
 <canvas id="pavingRepeat" width="360" height="360" aria-label="2 by 2 repeated courtyard paving artwork for seam inspection"></canvas>
 <p class="muted">Inspect the centre horizontal and vertical joins. We keep this candidate and its checksum unchanged; any future repeat-edge improvement should be a separate artwork revision.</p>
 </div></section>
+<section aria-label="Architectural moon-gate close-up from the actual painted tile" id="moonGateInspection">
+<h2>Moon Gate 01 — actual painted junction close-up</h2>
+<p class="muted">Shows the original transparent tiled-roof moon gate rendered over the genuine cut wall opening, not a new vector semicircle. The visible aperture remains clear; the image and physical collision geometry are separate. Review the stone base, roof joins, threshold and perspective at normal size and at 3×.</p>
+<div class="preview"><canvas id="moonGateClose" width="324" height="240" style="width:324px;max-width:100%;height:auto" aria-label="Magnified crop from the actual courtyard tile showing the painted moon gate and adjoining white wall"></canvas></div>
+</section>
 <section aria-label="Four corner joint inspections" id="cornerInspection">
 <h2>Corner joins — close inspection</h2>
 <p class="muted">Live crops from the real painted courtyard. Check the southwest and southeast corners: the bottom plaster and stone must continue beneath the perpendicular roof all the way to its outside edge, not stop at the centreline. The far wall stays tucked, and the moon gate stays open. Turn on <strong>Show diagnostic L/T joint markers</strong> only when you want the geometry anchors highlighted.</p>
@@ -142,6 +152,7 @@ a{color:#2f6457}
 <script src="assets/v3/wall-profile.js?rev=44"></script>
 <script src="assets/v3/wall-face-materials.js?rev=44"></script>
 <script src="assets/v3/wall-roof-texture.js?rev=44"></script>
+<script src="assets/v3/moon-gate-frame.js?rev=45"></script>
 <script src="assets/v3/courtyard-paving.js?rev=44"></script>
 <script>
 (()=>{'use strict';
@@ -149,6 +160,7 @@ const topology=window.YangzhouTileTopology,geometry=window.YangzhouV3Geometry,
  edgeSystem=window.YangzhouV3Edges,materials=window.YangzhouV3Materials,
  walls=window.YangzhouV3WallGeometry,roofPainter=window.YangzhouV3WallRoofTexture,
  wallProfile=window.YangzhouV3WallProfile,
+ moonGate=window.YangzhouV3MoonGate,
  wallFaceMaterials=window.YangzhouV3WallFaceMaterials,
  courtyardPaving=window.YangzhouV3CourtyardPaving;
 const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d');
@@ -167,7 +179,8 @@ const edgePalette=Object.freeze({
 });
 let tiles=[],selected=0,gridOn=true,zoomOn=false,study='garden',
   choices=[...starting],gallery={},imageErrors=[],roofImage=null,roofSource='none',
- faceImages={},faceErrors=[],faceSource={},pavingImage=null,pavingSource='none';
+ faceImages={},faceErrors=[],faceSource={},pavingImage=null,pavingSource='none',
+ moonGateImage=null,moonGateSource='none';
 const visible=id=>document.getElementById(id).checked;
 const tileModel=i=>choices[i]==='none'?null:walls.templates[choices[i]];
 function tileList(name){
@@ -192,6 +205,24 @@ function renderCornerInspection(){
   c.drawImage(canvas,(point[0]-radius)*3,(point[1]-radius)*3,
    size*3,size*3,0,0,close.width,close.height);
  }
+}
+function renderMoonGateInspection(){
+ const close=document.getElementById('moonGateClose');
+ if(!close)return;
+ const out=close.getContext('2d');
+ out.clearRect(0,0,close.width,close.height);
+ const index=tiles.findIndex((tile,i)=>{
+  const model=tileModel(i);
+  if(!model)return false;
+  const audit=walls.audit(model,tile,{profilePainter:visible('showPerspective')?wallProfile:null});
+  return audit.valid&&walls.compile(model).gates.length>0;
+ });
+ if(index<0)return;
+ const gate=walls.compile(tileModel(index)).gates[0],tile=tiles[index];
+ const x=(tile.x*220+gate.center[0]-27)*3;
+ const y=(tile.y*220+gate.center[1]-20)*3;
+ out.imageSmoothingEnabled=true;out.imageSmoothingQuality='high';
+ out.drawImage(canvas,x,y,54*3,40*3,0,0,close.width,close.height);
 }
 function renderPavingRepeat(){
  const c=document.getElementById('pavingRepeat');
@@ -239,6 +270,8 @@ function render(){
     }
     if(visible('showWall'))walls.draw(ctx,model,tile,{
      showGates:visible('showGate'),showJoints:visible('showJoints'),
+     moonGatePainter:visible('showMoonGate')?moonGate:null,
+     moonGateImage,
      roofImage:visible('showRoofTexture')?roofImage:null,roofPainter,
      profilePainter:visible('showPerspective')?wallProfile:null,
      materialPainter:wallFaceMaterials,
@@ -282,7 +315,8 @@ function render(){
   'Wall face: '+(visible('showPerspective')?'south-facing ivory plaster / stone; side roofing only':'old symmetric diagnostic bands')+'. '+
   'Plaster: '+(visible('showPerspective')&&visible('showPlasterTexture')&&faceImages.plaster?'painted (candidate)':'flat diagnostic')+'. '+
   'Stone: '+(visible('showPerspective')&&visible('showStoneTexture')&&faceImages.stone?'painted (candidate)':'flat diagnostic')+'. '+
-  'Courtyard paving: '+(visible('showPaving')&&pavingImage?'genuine Layer 1B candidate (enclosed rectangles only)':'off/unavailable')+'.';
+  'Courtyard paving: '+(visible('showPaving')&&pavingImage?'genuine Layer 1B candidate (enclosed rectangles only)':'off/unavailable')+'. '+
+  'Moon gate: '+(visible('showMoonGate')&&moonGateImage?'original painted Moon Gate 01':'off / original artwork unavailable')+'.';
  document.getElementById('wallInfo').textContent=
   'Tile ('+current.x+','+current.y+') • edges '+current.edges.join('')+
   ' • '+(model?model.name:'No wall layout')+
@@ -295,6 +329,10 @@ function render(){
   compiled:model?{gates:selectedDetail.gates,junctions:selectedDetail.junctions,
    wallSegments:selectedDetail.ribbons.length}:null,
   audit:report,
+  moonGateFrame:{id:moonGate.ASSET.id,enabled:visible('showMoonGate'),
+   painted:!!(moonGateImage&&visible('showMoonGate')),imageVerified:!!moonGateImage,
+   source:moonGateSource,visualOnly:true,solidMaskUnchanged:true,
+   status:'original-painting-reused-awaiting-visual-review'},
   courtyardPaving:model?{
    layer:'1B',region:courtyardPaving.regionFor(model),enabled:visible('showPaving'),
    painted:!!(report?.valid&&visible('showPaving')&&pavingImage&&courtyardPaving.regionFor(model)),
@@ -318,6 +356,7 @@ function render(){
     bandWidth:roofPainter.ASSET.bandWidth,status:'candidate-for-review'}:null
  },null,2);
  renderCornerInspection();
+ renderMoonGateInspection();
  renderPavingRepeat();
 }
 function refresh(){
@@ -343,7 +382,7 @@ document.getElementById('plan').addEventListener('change',e=>{
  choices[selected]=e.target.value;refresh();
 });
 for(const id of ['showWall','showGate','showJoints','showHall','showTextures',
- 'showRoofTexture','showPerspective','showPlasterTexture','showStoneTexture','showPaving'])
+ 'showRoofTexture','showPerspective','showPlasterTexture','showStoneTexture','showPaving','showMoonGate'])
  document.getElementById(id).addEventListener('change',render);
 button('zoom',()=>{
  zoomOn=!zoomOn;canvas.style.width=zoomOn?'1980px':'660px';
@@ -447,10 +486,37 @@ document.getElementById('pavingFile').addEventListener('change',async event=>{
  try{acceptPaving(await courtyardPaving.verify(file),'local verified WebP');}
  catch(error){pavingStatus.textContent='Paving artwork rejected: '+String(error.message||error);}
 });
+// Reuse the proven historical Moon Gate 01 painting instead of drawing an
+// unconvincing circular line. A failed integrity check leaves the real gap.
+const moonGateStatus=document.getElementById('moonGateStatus');
+function acceptMoonGate(img,source){
+ moonGateImage=img;moonGateSource=source;
+ moonGateStatus.textContent='Original Moon Gate 01 verified ('+
+  moonGate.ASSET.width+'×'+moonGate.ASSET.height+
+  '; exact WebP SHA-256 matches). Its roof, stone ring, plaster and threshold are preserved. '+
+  'Source: '+source+'. Awaiting 1×/3× visual review of adjoining wall materials.';
+ render();
+}
+async function loadMoonGate(){
+ moonGateStatus.textContent='Checking the original painted Moon Gate 01 on GitHub…';
+ try{acceptMoonGate(await moonGate.loadFromGitHub(),'GitHub original WebP')}
+ catch(error){
+  moonGateStatus.textContent='Original moon gate unavailable: '+String(error.message||error)+
+   '. Real wall aperture remains open; no synthetic arc will be drawn.';
+  render();
+ }
+}
+document.getElementById('moonGateFile').addEventListener('change',async event=>{
+ const file=event.target.files?.[0];if(!file)return;
+ moonGateStatus.textContent='Verifying original Moon Gate 01 local comparison…';
+ try{acceptMoonGate(await moonGate.verifyFile(file),'local original WebP')}
+ catch(error){moonGateStatus.textContent='Moon gate artwork rejected: '+String(error.message||error)}
+});
 selectStudy('garden'); // Geometry is independent of optional art requests.
 loadRoofFromGitHub();
 startFaceMaterials();
 loadPaving();
+loadMoonGate();
 const artFiles=[
  {id:'hall',file:'courtyard-hall.webp'},
  {id:'grass',file:'grass.webp'},
