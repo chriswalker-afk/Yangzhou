@@ -86,8 +86,8 @@ if(fs.existsSync(url)){
  assert.fail('Committed authentic roof WebP missing from repository');
 }
 const page=fs.readFileSync('wall-geometry-lab-v3.html','utf8');
-for(const item of ['Wall Geometry &amp; Texture Lab (rev 43)',
- 'assets/v3/wall-roof-texture.js?rev=43','id="showRoofTexture"','id="roofFile"',
+for(const item of ['Courtyard Paving &amp; Wall Texture Lab (rev 44)',
+ 'assets/v3/wall-roof-texture.js?rev=44','id="showRoofTexture"','id="roofFile"',
  'roofPainter.loadFromGitHub','roofPainter.verifyFile','roofPainter:roofPainter']){
  // HTML uses the shorthand roofPainter; check literal separately below
  if(item==='roofPainter:roofPainter')continue;
