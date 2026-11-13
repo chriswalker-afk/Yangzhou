@@ -102,7 +102,7 @@ const report=walls.draw(visualCtx,rectangle,tile,{
 assert(report.valid&&report.perspectiveProfileUsed&&report.roofTextureUsed);
 assert(!walls.draw(visualCtx,rectangle,canal,{profilePainter:profile}).valid);
 const html=fs.readFileSync('wall-geometry-lab-v3.html','utf8');
-for(const marker of ['rev 39','assets/v3/wall-profile.js?rev=39',
+for(const marker of ['rev 40','assets/v3/wall-profile.js?rev=40',
  'id="showPerspective"','profilePainter:visible(','perspectiveWallProfile:',
  'plasterAboveCoping:false']){
  assert(html.includes(marker),'Missing perspective review control '+marker);
