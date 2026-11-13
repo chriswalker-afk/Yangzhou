@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "layer": 2,
   "materialId": "wall-roof-tiles-01",
-  "status": "three-authentic-wall-material-candidates-awaiting-visual-review",
+  "status": "candidate-committed-awaiting-visual-review",
   "productionApproved": false,
   "renderingScope": "V3 Wall Geometry & Texture Lab only",
   "source": {
@@ -141,5 +141,6 @@
         "sideRotationDegrees": -90
       }
     }
-  }
+  },
+  "faceMaterialsStatus": "three-authentic-wall-material-candidates-awaiting-visual-review"
 }
