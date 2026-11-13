@@ -50,6 +50,9 @@ async function main(){
     source:'rectangle-wall-centreline'});
   assert.equal(details.courtyardPaving.worldPeriod,96);
   await page.screenshot({path:'artifacts/v3/courtyard-layer1b-painted-1x.png',fullPage:true});
+  // Preserve the legacy unadorned-gap pixel baseline. Moon Gate 01 has
+  // its own painted-asset regression, including transparency and joins.
+  await page.locator('#showMoonGate').uncheck();
   await page.locator('#showPaving').uncheck();
   const without=await samples(Object.values(pts));
   for(const name of ['paving','pavedOtherTile','leftInterior','rightInterior']){
