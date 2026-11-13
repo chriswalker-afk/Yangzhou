@@ -296,7 +296,9 @@ function draw(ctx,model,tile,options={}){
  // share one continuous substrate rather than exposing independent endcaps.
  const useRoof=!!(options.roofImage&&options.roofPainter);
  if(useProfile)options.profilePainter.draw(ctx,compiled,tile,{
-  hall:model.hall,palette:options.profilePalette
+  hall:model.hall,palette:options.profilePalette,
+  materialPainter:options.materialPainter,
+  plasterImage:options.plasterImage,stoneImage:options.stoneImage
  });
  for(const band of MATERIALS){
   if(useProfile&&(band.slot==='foundation'||band.slot==='plaster'))continue;
@@ -338,7 +340,9 @@ function draw(ctx,model,tile,options={}){
  }
  ctx.restore();
  return Object.freeze({...report,drawn:true,roofTextureUsed:useRoof,
-  perspectiveProfileUsed:useProfile});
+  perspectiveProfileUsed:useProfile,
+  plasterTextureUsed:!!(useProfile&&options.materialPainter&&options.plasterImage),
+  stoneTextureUsed:!!(useProfile&&options.materialPainter&&options.stoneImage)});
 }
 return Object.freeze({TILE,INSET,SAFE_GAP,EPS,WIDTHS,PALETTE,MATERIALS,templates,
  length,pointAlong,distanceAlong,slice,compile,detectJunctions,distToSegment,isSolid,audit,draw});
