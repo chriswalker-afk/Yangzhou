@@ -5,8 +5,9 @@
  *
  * Exact wall corners share the roof vertex. The NORTH horizontal face is
  * tucked beneath the roof overhang; the SOUTH/BOTTOM horizontal face reaches
- * the true shared-corner vertices for full plaster/stone end caps. Actual
- * moon-gate ends already reach their endpoints and remain unchanged.
+ * the OUTER 4-unit roof edge at each true L corner, preventing bare ground
+ * under the perpendicular coping. The moon-gate ends remain full-length
+ * but are never extended into the opening.
  * No independent corner infill rectangles.
  * All paint/geometry is tile-local; V2 and the previous labs are untouched.
  */
@@ -53,12 +54,15 @@ function faceFor(a,b,hall,{cornerStart=false,cornerEnd=false}={}){
  const direction=orientation(a,b,hall),horizontal=direction.axis==='horizontal';
  let paintedA=[...a],paintedB=[...b];
  // The roof owns the 90-degree miter, but the *visible* near/bottom
- // facade must reach its shared vertex at the wall's outside ends. Rev41
- // trimmed both north and south by 3.75 world units and exposed ground under
- // the roof's two outer bottom corners. Only the far/NORTH facade remains
- // tucked under the coping. Gate jambs and ordinary open ends are never
- // trimmed because cornerStart/End are only true geometric L junctions.
- const cornerReveal=horizontal&&direction.location==='north'?CORNER_REVEAL:0;
+ // facade must reach the OUTSIDE of the perpendicular roof at each L turn.
+ // Rev42 ended on the centreline and left a visible 4-unit strip of grass
+ // beneath the roof's western/eastern half. Signed reveals fix the mismatch:
+ // NORTH corners: +3.75 (hidden beneath coping);
+ // SOUTH corners: -4 (extend to the perpendicular roof's outer edge).
+ // Gate jambs and free ends are NEVER extended: only geometric L corners
+ // set cornerStart/End, and no wall-face paint crosses a true opening.
+ const cornerReveal=!horizontal?0:direction.location==='north'
+  ?CORNER_REVEAL:-COPING_HALF;
  if(horizontal){
   const towards=Math.sign(b[0]-a[0]);
   if(cornerStart)paintedA=[a[0]+towards*cornerReveal,a[1]];
@@ -98,7 +102,8 @@ function cornerFills(compiled,hall,faces){
   if(!horizontal||!vertical)throw Error('A shared L corner needs orthogonal wall centrelines');
   joins.push(Object.freeze({
    joint:Object.freeze([...pt]),kind:'roof-shared-vertex',
-   reveal:CORNER_REVEAL,southFacadeReveal:0,artificialPier:false,
+   reveal:CORNER_REVEAL,southFacadeReveal:-COPING_HALF,
+   southFacadeExtension:COPING_HALF,artificialPier:false,
    horizontal:horizontal,vertical:vertical
   }));
  }
