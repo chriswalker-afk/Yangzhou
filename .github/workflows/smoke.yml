@@ -39,6 +39,7 @@ jobs:
           node --check tests/v3-courtyard-enclosure-visual.cjs
           node --check assets/v3/moon-gate-frame.js
           node --check tests/v3-moon-gate.cjs
+          node --check tests/v3-moon-gate-visual.cjs
           node --check assets/v3/wall-geometry.js
           node --check tests/v3-wall-geometry.cjs
           node --check tests/v3-wall-geometry-visual.cjs
