@@ -35,7 +35,7 @@ a{color:#2f6457}
 #wallInfo{min-height:62px}
 @media(max-width:650px){h1{font-size:1.55rem}main{padding:0 10px}}
 </style></head><body><main>
-<h1>Yangzhou V3 — Courtyard Paving &amp; Wall Texture Lab (rev 44)</h1>
+<h1>Yangzhou V3 — Courtyard Paving &amp; Wall Texture Lab (rev 45)</h1>
 <p class="lead"><strong>Isolated Layer 2 proof, not the playable game.</strong> These are continuous, tile-owned wall <em>centrelines</em> with exact mitered corners and T-connections. The moon gate is a genuine opening cut out of all four wall bands, not a painting laid over a solid wall. <strong>New perspective-aware wall profile:</strong> the same painted roof coping now sits over a visible ivory plaster face, with a subtle stone footing. Far (top) walls have a shallow façade; near (bottom) walls show more wall height. Side walls rotate the roof tiles 90° but have only a thin shaded coping/eave edge, with <strong>no exposed side-wall plaster or stone</strong>. No plaster is drawn above or behind the coping. <strong>Revision 43: bottom-wall ivory plaster and stone continue four world units beyond the wall centreline to the outside edge of the perpendicular roof. This closes the remaining green strip visible below the lower corners. Top-wall faces stay tucked; moon-gate gaps and roof tiles are unchanged.</strong> Ivory plaster and stone foundations now use our two authentic watercolour texture candidates. They repeat along horizontal south-facing wall façades only, while remaining available as flat diagnostics for comparison. All three paintings are review candidates.</p>
 <p>Test a complete courtyard, a three-sided garden, an L-corner and a T-junction around our existing courtyard hall. <strong>New Layer 1B:</strong> the genuine Jiangnan courtyard paving painting is clipped to the enclosed rectangle beneath the hall and walls, leaving all original grass, street and canal geometry untouched. Toggle each painted material independently, or switch off the perspective profile to compare against the old symmetric diagnostic bands. Toggle the road/canal layouts: invalid courtyards are rejected instead of crossing an 88-unit water channel or 44-unit street. The older wall-sprite lab remains available for comparison.</p>
 <div class="toolbar">
@@ -60,6 +60,7 @@ a{color:#2f6457}
 <div class="toolbar">
 <label><input type="checkbox" id="showWall" checked> Show continuous walls</label>
 <label><input type="checkbox" id="showGate" checked> Show passable gate guides</label>
+<label><input type="checkbox" id="showMoonGate" checked> Show circular moon-gate frame</label>
 <label><input type="checkbox" id="showJoints"> Show diagnostic L/T joint markers</label>
 <label><input type="checkbox" id="showHall" checked> Courtyard hall</label>
 <label><input type="checkbox" id="showTextures"> Use existing painted Layer 1A materials</label>
@@ -138,17 +139,19 @@ a{color:#2f6457}
 <script src="assets/v3/edge-system.js"></script>
 <script src="assets/v3/material-runtime.js"></script>
 <script src="assets/v3/layer2-placements.js"></script>
-<script src="assets/v3/wall-geometry.js?rev=44"></script>
-<script src="assets/v3/wall-profile.js?rev=44"></script>
-<script src="assets/v3/wall-face-materials.js?rev=44"></script>
-<script src="assets/v3/wall-roof-texture.js?rev=44"></script>
-<script src="assets/v3/courtyard-paving.js?rev=44"></script>
+<script src="assets/v3/wall-geometry.js?rev=45"></script>
+<script src="assets/v3/wall-profile.js?rev=45"></script>
+<script src="assets/v3/wall-face-materials.js?rev=45"></script>
+<script src="assets/v3/wall-roof-texture.js?rev=45"></script>
+<script src="assets/v3/moon-gate-frame.js?rev=45"></script>
+<script src="assets/v3/courtyard-paving.js?rev=45"></script>
 <script>
 (()=>{'use strict';
 const topology=window.YangzhouTileTopology,geometry=window.YangzhouV3Geometry,
  edgeSystem=window.YangzhouV3Edges,materials=window.YangzhouV3Materials,
  walls=window.YangzhouV3WallGeometry,roofPainter=window.YangzhouV3WallRoofTexture,
  wallProfile=window.YangzhouV3WallProfile,
+ moonGate=window.YangzhouV3MoonGate,
  wallFaceMaterials=window.YangzhouV3WallFaceMaterials,
  courtyardPaving=window.YangzhouV3CourtyardPaving;
 const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d');
@@ -239,6 +242,7 @@ function render(){
     }
     if(visible('showWall'))walls.draw(ctx,model,tile,{
      showGates:visible('showGate'),showJoints:visible('showJoints'),
+     moonGatePainter:visible('showMoonGate')?moonGate:null,
      roofImage:visible('showRoofTexture')?roofImage:null,roofPainter,
      profilePainter:visible('showPerspective')?wallProfile:null,
      materialPainter:wallFaceMaterials,
@@ -295,6 +299,7 @@ function render(){
   compiled:model?{gates:selectedDetail.gates,junctions:selectedDetail.junctions,
    wallSegments:selectedDetail.ribbons.length}:null,
   audit:report,
+  moonGateFrame:{id:'moon-gate-frame-01',enabled:visible('showMoonGate'),visualOnly:true,solidMaskUnchanged:true,status:'candidate-for-visual-review'},
   courtyardPaving:model?{
    layer:'1B',region:courtyardPaving.regionFor(model),enabled:visible('showPaving'),
    painted:!!(report?.valid&&visible('showPaving')&&pavingImage&&courtyardPaving.regionFor(model)),
@@ -343,7 +348,7 @@ document.getElementById('plan').addEventListener('change',e=>{
  choices[selected]=e.target.value;refresh();
 });
 for(const id of ['showWall','showGate','showJoints','showHall','showTextures',
- 'showRoofTexture','showPerspective','showPlasterTexture','showStoneTexture','showPaving'])
+ 'showRoofTexture','showPerspective','showPlasterTexture','showStoneTexture','showPaving','showMoonGate'])
  document.getElementById(id).addEventListener('change',render);
 button('zoom',()=>{
  zoomOn=!zoomOn;canvas.style.width=zoomOn?'1980px':'660px';
