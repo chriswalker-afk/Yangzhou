@@ -55,41 +55,47 @@ function faceFor(a,b,hall){
   eaveEnd:[b[0]+dir.normal[0]*COPING_HALF,b[1]+dir.normal[1]*COPING_HALF]
  });
 }
-function cornerFills(compiled,hall){
- // Only a camera-facing SE *outside* corner has a missing quadrant:
- // the horizontal arm arrives from W and the vertical arm arrives from N.
- // Else the two directed face rectangles already overlap at the join.
- const fills=[];
+function close(a,b){return Math.hypot(a[0]-b[0],a[1]-b[1])<EPS;}
+function box(x1,y1,x2,y2){
+ return [[x1,y1],[x2,y1],[x2,y2],[x1,y2]];
+}
+// A physical 90-degree wall must have ONE projected masonry corner, not two
+// abruptly terminated rectangular faces. Both visible faces project south/
+// east in the camera view; their outside quadrant can be missing at NE/SE.
+// These shared corner piers close that quadrant for *all* four arm pairings.
+// The roof miter is painted after these quads and hides the plaster under eaves.
+function cornerFills(compiled,hall,faces){
+ const result=[];
  for(const joint of compiled.junctions.filter(j=>j.kind==='L')){
-  const [x,y]=joint.point;
-  const arms=[];
-  for(const path of compiled.paths)for(let i=1;i<path.points.length;i++){
-   const [a,b]=[path.points[i],path.points[i-1]];
-   if(Math.hypot(a[0]-x,a[1]-y)<EPS)arms.push(b);
-   else if(Math.hypot(b[0]-x,b[1]-y)<EPS)arms.push(a);
-  }
-  const west=arms.some(p=>p[0]<x-EPS&&Math.abs(p[1]-y)<EPS);
-  const north=arms.some(p=>p[1]<y-EPS&&Math.abs(p[0]-x)<EPS);
-  if(!west||!north)continue;
-  const eastDepth=orientation([x,y-1],[x,y],hall).depth;
-  const southDepth=orientation([x-1,y],[x,y],hall).depth;
-  const xOuter=x+COPING_HALF+eastDepth,yOuter=y+COPING_HALF+southDepth;
-  fills.push(Object.freeze({
-   joint:joint.point,
-   face:[[x+FACE_START,y+FACE_START],[xOuter,y+FACE_START],
-    [xOuter,yOuter],[x+FACE_START,yOuter]],
-   base:[[x+FACE_START,yOuter-BASE_HEIGHT],[xOuter,yOuter-BASE_HEIGHT],
-    [xOuter,yOuter],[x+FACE_START,yOuter]]
+  const p=joint.point,[x,y]=p;
+  const touches=f=>close(f.a,p)||close(f.b,p);
+  const horizontal=faces.find(f=>f.axis==='horizontal'&&touches(f));
+  const vertical=faces.find(f=>f.axis==='vertical'&&touches(f));
+  if(!horizontal||!vertical)throw Error('An L joint must connect exactly one horizontal and one vertical wall face');
+  const outerX=x+vertical.outer,outerY=y+horizontal.outer;
+  const plasterEndY=outerY-BASE_HEIGHT,plasterEndX=outerX-BASE_HEIGHT;
+  // South-facing face carries its original west-to-east texture phase through
+  // the corner. East-facing base then wraps its outside right-hand edge.
+  result.push(Object.freeze({
+   joint:Object.freeze([...p]),
+   horizontal,vertical,outerX,outerY,
+   face:box(x,y,outerX,outerY),
+   plaster:box(x,y+FACE_START,outerX,plasterEndY),
+   underEave:box(x,y,outerX,y+FACE_START),
+   base:box(x,plasterEndY,outerX,outerY),
+   baseEast:box(plasterEndX,y,outerX,outerY),
+   shadowSouth:box(x,outerY,outerX+.75,outerY+.75),
+   shadowEast:box(outerX,y,outerX+.75,outerY+.75)
   }));
  }
- return Object.freeze(fills);
+ return Object.freeze(result);
 }
 function build(compiled,hall){
  const faces=[];
  for(const path of compiled.paths)for(let i=1;i<path.points.length;i++)
   faces.push(faceFor(path.points[i-1],path.points[i],hall));
  return Object.freeze({faces:Object.freeze(faces),
-  cornerFills:cornerFills(compiled,hall)});
+  cornerFills:cornerFills(compiled,hall,faces)});
 }
 function fillQuad(ctx,q,ox,oy,paint){
  ctx.beginPath();ctx.moveTo(q[0][0]+ox,q[0][1]+oy);
@@ -113,6 +119,10 @@ function draw(ctx,compiled,tile,options={}){
  // No foundations or wall faces are ever painted north/west of the coping.
  ctx.fillStyle=ink.shadow;
  for(const f of form.faces)fillQuad(ctx,f.shadow,ox,oy,ink.shadow);
+ for(const joint of form.cornerFills){
+  fillQuad(ctx,joint.shadowSouth,ox,oy,ink.shadow);
+  fillQuad(ctx,joint.shadowEast,ox,oy,ink.shadow);
+ }
  // Face polygons are projected consistently in screen space, regardless
  // of centreline winding. A south boundary exposes more plaster than north.
  for(const f of form.faces)fillQuad(ctx,f.face,ox,oy,gradient(ctx,f,ox,oy,ink));
@@ -126,7 +136,10 @@ function draw(ctx,compiled,tile,options={}){
  }
  // Stone base is at the LOWEST visible edge, not a symmetric halo on grass.
  for(const f of form.faces)fillQuad(ctx,f.base,ox,oy,ink.foundation);
- for(const f of form.cornerFills)fillQuad(ctx,f.base,ox,oy,ink.foundation);
+ for(const f of form.cornerFills){
+  fillQuad(ctx,f.base,ox,oy,ink.foundation);
+  fillQuad(ctx,f.baseEast,ox,oy,ink.foundation);
+ }
  if(stonePainted){
   options.materialPainter.drawStone(ctx,form,tile,options.stoneImage,{
    FACE_START,BASE_HEIGHT,quad
@@ -151,17 +164,37 @@ function drawEaves(ctx,compiled,tile,options={}){
  }
  ctx.restore();
 }
+function drawGateReturns(ctx,compiled,tile,options={}){
+ const ink={...PALETTE,...options.palette},ox=tile.x*220,oy=tile.y*220;
+ let painted=0;
+ ctx.save();ctx.strokeStyle=ink.foundationEdge;ctx.lineWidth=.85;
+ for(const gate of compiled.gates){
+  const direction=orientation(gate.start,gate.end,options.hall);
+  const n=direction.normal;
+  for(const end of [gate.start,gate.end]){
+   // On the actual gate boundary, never spanning the passage itself.
+   ctx.beginPath();
+   ctx.moveTo(ox+end[0]+n[0]*COPING_HALF,oy+end[1]+n[1]*COPING_HALF);
+   ctx.lineTo(ox+end[0]+n[0]*(COPING_HALF+direction.depth),
+    oy+end[1]+n[1]*(COPING_HALF+direction.depth));
+   ctx.stroke();painted++;
+  }
+ }
+ ctx.restore();
+ return painted;
+}
 function extentQuads(compiled,hall){
  const form=build(compiled,hall);
- // These quads are the actual off-centreline VISUAL envelope for safety QA,
- // including the .75-unit ground shadow. No symmetric radius inflation.
+ // The full projected corner, both connected stone courses and their
+ // shadows participate in the existing route/tile-clearance audit.
  return [
   ...form.faces.flatMap(f=>[f.face,f.shadow]),
-  ...form.cornerFills.map(f=>f.face)
+  ...form.cornerFills.flatMap(f=>[f.face,f.shadowSouth,f.shadowEast])
  ];
 }
 return Object.freeze({
  EPS,COPING_HALF,FACE_START,BASE_HEIGHT,DEPTH,PALETTE,
- orientation,quad,faceFor,cornerFills,build,extentQuads,draw,drawEaves
+ orientation,quad,faceFor,cornerFills,build,extentQuads,draw,drawEaves,
+ drawGateReturns
 });
 });
