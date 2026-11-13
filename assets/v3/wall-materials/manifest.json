@@ -65,14 +65,17 @@
     "hiddenSidePlaster": false,
     "realMoonGateGap": true,
     "geometrySource": "assets/v3/wall-profile.js",
-    "notes": "Rev42 full-length south/bottom painted facade and foundation; original roof/ivory plaster/stone files, SHA-256, true gate gaps, and Layer 1 route geometry unchanged. Candidate for 1x/3x visual review.",
+    "notes": "Rev43 fills the precise remaining x=38..42/x=178..182 green gaps beneath perpendicular coping using existing ivory plaster and stone textures; all source binary checksums, Layer 1 masks, gate openings and V2 preserved.",
     "verticalSideEaveWorld": 1.05,
     "verticalPlasterVisible": false,
     "verticalStoneVisible": false,
-    "cornerMethod": "Shared exact roof-miter vertices; north/top plaster and stone trimmed by 3.75 world units beneath eaves, south/bottom plaster and stone extend to full outer L corners (zero trim); gate jambs remain untrimmed and open; no independent corner patches.",
-    "southWallExteriorCornerRevealWorld": 0,
+    "cornerMethod": "Shared original L roof vertices and miter; north/top face tucked 3.75 units, south/bottom plaster/stone extends 4 units beyond centreline to outside of 8-unit-wide perpendicular roof; gate ends unchanged; no additional corner rectangles.",
+    "southWallExteriorCornerRevealWorld": -4,
     "northWallExteriorCornerRevealWorld": 3.75,
-    "moonGateFaceEndTrimWorld": 0
+    "moonGateFaceEndTrimWorld": 0,
+    "southWallExteriorExtensionBeyondCentrelineWorld": 4,
+    "southWallExteriorEdgeWestWorld": 38,
+    "southWallExteriorEdgeEastWorld": 182
   },
   "faceMaterials": {
     "plaster": {
