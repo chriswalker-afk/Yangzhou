@@ -110,8 +110,8 @@ assert.equal(manifest.prepared.sha256,roof.ASSET.sha256);
 assert.equal(manifest.faceMaterials.plaster.prepared.sha256,materials.ASSETS.plaster.sha256);
 assert.equal(manifest.faceMaterials.stone.prepared.sha256,materials.ASSETS.stone.sha256);
 const html=fs.readFileSync('wall-geometry-lab-v3.html','utf8');
-assert(html.includes('Wall Geometry &amp; Texture Lab (rev 43)'));
-assert(html.includes('assets/v3/wall-profile.js?rev=43'));
+assert(html.includes('Courtyard Paving &amp; Wall Texture Lab (rev 44)'));
+assert(html.includes('assets/v3/wall-profile.js?rev=44'));
 for(const key of ['showPlasterTexture','showStoneTexture','showPerspective','cornerNW','cornerNE','cornerSW','cornerSE'])
  assert(html.includes('id="'+key+'"'));
 assert(!fs.readFileSync('layer2-lab-v3.html','utf8').includes('wall-profile.js'));
