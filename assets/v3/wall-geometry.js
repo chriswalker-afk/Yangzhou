@@ -322,7 +322,7 @@ function draw(ctx,model,tile,options={}){
  // features, not optional guide lines. Never bridge the gate itself.
  if(useProfile&&typeof options.profilePainter.drawGateReturns==='function')
   options.profilePainter.drawGateReturns(ctx,compiled,tile,{hall:model.hall});
- if(options.moonGatePainter&&useProfile)options.moonGatePainter.draw(ctx,compiled,tile,{hall:model.hall,showDetail:true});
+ if(options.moonGatePainter&&useProfile)options.moonGatePainter.draw(ctx,compiled,tile,{hall:model.hall,image:options.moonGateImage,showDetail:true});
  if(options.showGates!==false){
   for(const g of compiled.gates){
    const [x,y]=g.center,[tx,ty]=g.tangent,[nx,ny]=g.normal;
