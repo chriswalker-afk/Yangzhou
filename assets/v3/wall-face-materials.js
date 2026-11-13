@@ -148,7 +148,9 @@ function drawPlaster(ctx,form,tile,image,geom){
   const segment={a:[x,y],b:[outerX,y],axis:'horizontal'};
   // The principal visible face keeps exactly the same V height and X-phase
   // as the adjoining horizontal segment. No cap bitmap is stretched to fit.
-  const low=joint.outerY-geom.BASE_HEIGHT;
+  // renderBand expects distances from this corner's own centreline,
+  // NEVER absolute world Y (which would shift/stretch the texture off-canvas).
+  const low=joint.outerY-y-geom.BASE_HEIGHT;
   count+=renderBand(ctx,image,tile,segment,joint.plaster,
    geom.FACE_START,low,1);
   // This little quadrant sits UNDER the mitered roof. At NE and SE it also
@@ -167,13 +169,14 @@ function drawStone(ctx,form,tile,image,geom){
  }
  for(const joint of form.cornerFills){
   const [x,y]=joint.joint,outerX=joint.outerX,outerY=joint.outerY;
-  const bottomTop=outerY-geom.BASE_HEIGHT;
+  const bottomTop=outerY-y-geom.BASE_HEIGHT;
+  const bottomLocal=outerY-y;
   // Horizontal sill and vertical return share the *same* original stone
   // painting and meet in a single opaque lower-right corner. No blank
   // plaster square and no overlapping translucent stripes.
   const horizontal={axis:'horizontal',a:[x,y],b:[outerX,y]};
   count+=renderBand(ctx,image,tile,horizontal,joint.base,
-   bottomTop,outerY,1);
+   bottomTop,bottomLocal,1);
   const eastLeft=outerX-geom.BASE_HEIGHT;
   const vertical={axis:'vertical',a:[eastLeft,y],b:[eastLeft,outerY]};
   count+=renderBand(ctx,image,tile,vertical,joint.baseEast,
