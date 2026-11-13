@@ -137,25 +137,24 @@ function drawPlaster(ctx,form,tile,image,geom){
  if(!image)return 0;
  let count=0;
  for(const face of form.faces){
-  // Coping overlaps 0.75 world units of this top edge.
-  const top=geom.FACE_START;
-  const bottom=face.outer-geom.BASE_HEIGHT;
-  const quad=geom.quad(face.a,face.b,face.normal,top,bottom);
-  count+=renderBand(ctx,image,tile,face,quad,top,bottom,.93);
+  // The roof covers the first 0.75 units of the top edge. Opaque painting
+  // avoids the doubled opacity that formerly produced dark joint stripes.
+  const top=geom.FACE_START,bottom=face.outer-geom.BASE_HEIGHT;
+  const q=geom.quad(face.a,face.b,face.normal,top,bottom);
+  count+=renderBand(ctx,image,tile,face,q,top,bottom,1);
  }
- // One exposed SE corner fill is not left as a flat diagnostic square.
- for(const cap of form.cornerFills){
-  const [a,b,c]=cap.face;
-  const corner={
-   a:[a[0],a[1]],b:[b[0],b[1]],axis:'horizontal'
-  };
-  const top=a[1],bottom=c[1]-geom.BASE_HEIGHT;
-  if(bottom>top){
-   const q=[[a[0],top],[b[0],top],[b[0],bottom],[a[0],bottom]];
-   // Render with local y=0 by using a fake centreline whose y is top.
-   const localFace={...corner,a:[a[0],top],b:[b[0],top]};
-   count+=renderBand(ctx,image,tile,localFace,q,0,bottom-top,.86);
-  }
+ for(const joint of form.cornerFills){
+  const [x,y]=joint.joint,outerX=joint.outerX;
+  const segment={a:[x,y],b:[outerX,y],axis:'horizontal'};
+  // The principal visible face keeps exactly the same V height and X-phase
+  // as the adjoining horizontal segment. No cap bitmap is stretched to fit.
+  const low=joint.outerY-geom.BASE_HEIGHT;
+  count+=renderBand(ctx,image,tile,segment,joint.plaster,
+   geom.FACE_START,low,1);
+  // This little quadrant sits UNDER the mitered roof. At NE and SE it also
+  // closes the exposed hole between the two offset wall-face rectangles.
+  count+=renderBand(ctx,image,tile,segment,joint.underEave,
+   0,geom.FACE_START,1);
  }
  return count;
 }
@@ -164,12 +163,21 @@ function drawStone(ctx,form,tile,image,geom){
  let count=0;
  for(const face of form.faces){
   const top=face.outer-geom.BASE_HEIGHT,bottom=face.outer;
-  count+=renderBand(ctx,image,tile,face,face.base,top,bottom,.98);
+  count+=renderBand(ctx,image,tile,face,face.base,top,bottom,1);
  }
- for(const cap of form.cornerFills){
-  const [a,b,c]=cap.base;
-  const q=cap.base,localFace={axis:'horizontal',a:[a[0],a[1]],b:[b[0],b[1]]};
-  count+=renderBand(ctx,image,tile,localFace,q,0,c[1]-a[1],.96);
+ for(const joint of form.cornerFills){
+  const [x,y]=joint.joint,outerX=joint.outerX,outerY=joint.outerY;
+  const bottomTop=outerY-geom.BASE_HEIGHT;
+  // Horizontal sill and vertical return share the *same* original stone
+  // painting and meet in a single opaque lower-right corner. No blank
+  // plaster square and no overlapping translucent stripes.
+  const horizontal={axis:'horizontal',a:[x,y],b:[outerX,y]};
+  count+=renderBand(ctx,image,tile,horizontal,joint.base,
+   bottomTop,outerY,1);
+  const eastLeft=outerX-geom.BASE_HEIGHT;
+  const vertical={axis:'vertical',a:[eastLeft,y],b:[eastLeft,outerY]};
+  count+=renderBand(ctx,image,tile,vertical,joint.baseEast,
+   0,geom.BASE_HEIGHT,1);
  }
  return count;
 }
