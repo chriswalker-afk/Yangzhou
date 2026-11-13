@@ -11,6 +11,8 @@ async function run(){
   const page=await browser.newPage({viewport:{width:1470,height:1000},deviceScaleFactor:1});
   page.on('pageerror',e=>errors.push('desktop: '+e.message));
   await page.goto(URL,{waitUntil:'domcontentloaded'});
+  // Preserve the pre-Layer 1B grass baseline for wall and gate pixel regression.
+  await page.locator('#showPaving').uncheck();
   await page.waitForFunction(()=>document.querySelector('#faceStatus')?.textContent.includes('2/2 authentic'),{timeout:30000});
   await page.waitForFunction(()=>document.querySelector('#roofStatus')?.textContent.includes('verified'),{timeout:30000});
   assert.match(await page.locator('h1').textContent(),/rev 44/);
