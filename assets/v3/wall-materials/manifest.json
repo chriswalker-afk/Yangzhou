@@ -32,7 +32,14 @@
     "textureUV": "u=accumulated wall centreline arclength; v=cross-wall offset",
     "corners": "miter-clipped contiguous segments",
     "junctions": "exact T/L with underlying continuous coping band",
-    "gates": "real breaks through all layers, never painted closed"
+    "gates": "real breaks through all layers, never painted closed",
+    "directionalOrientation": {
+      "horizontalDegrees": 0,
+      "sideWallDegrees": -90,
+      "visibleRoofEave": "south on horizontal walls; east on vertical walls",
+      "reversalInvariant": true,
+      "phase": "tile-local compass axis"
+    }
   },
   "reviews": {
     "normalZoom": false,
@@ -41,5 +48,23 @@
     "physicalSeam": false,
     "intersectionSeam": false,
     "historicalAccuracy": false
+  },
+  "wallProfile": {
+    "type": "camera-facing-diagnostic-elevation",
+    "productionApproved": false,
+    "cameraFacingSide": "south on horizontal sections, east on vertical sections",
+    "copingWidthWorld": 8,
+    "faceDepthWorld": {
+      "north": 6,
+      "south": 10,
+      "west": 7,
+      "east": 8
+    },
+    "faceStartsInsideRoofFromCentreline": 3.25,
+    "visibleStoneBaseHeightWorld": 1.7,
+    "hiddenSidePlaster": false,
+    "realMoonGateGap": true,
+    "geometrySource": "assets/v3/wall-profile.js",
+    "notes": "Painted roof texture unchanged; plaster and stone are projected diagnostic gradients pending separate artwork."
   }
 }
