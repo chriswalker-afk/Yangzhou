@@ -2,7 +2,7 @@
 
 **Status:** isolated, unapproved Layer 2 geometry experiment. The playable V2 game and existing V3 labs remain untouched.
 
-[Open the six-tile Wall Geometry & Texture Lab](../wall-geometry-lab-v3.html?rev=42) (once deployed).
+[Open the six-tile Wall Geometry & Texture Lab](../wall-geometry-lab-v3.html?rev=43) (once deployed).
 
 ## Why switch
 
@@ -34,6 +34,20 @@ A tile is 220 x 220 local world units. A compound is a named set of centreline p
 **Revision 37:** the 8-unit coping strip accepts the first actual painted material candidate, Wall Roof-Tile Texture 01, alongside its old flat-colour fallback. The bitmap is **not production-approved**, and the preview loader refuses incorrect hashes. Material U is 32 world units per repeat and V is the 8-unit coping width. The shared coping substrate is still rendered before the miter-clipped image, so gaps cannot expose grass; moon-gate openings remain real. The ridge stroke is hidden when the painted roof surface is active, because the artwork already contains highlights. Existing V3 grass/paving/water can still appear behind the walls, and the hall remains an unchanged Layer 2 sprite.
 
 The original PNG has been preserved outside the repository; its exact prepared 1256×314, 174,360-byte WebP is **now committed and hash-verified** under `assets/v3/wall-materials/wall-roof-tiles-01.webp`. The new test loads it automatically and offers a local file selector only as a fallback. The material manifest and preparation steps live in `assets/v3/wall-materials/`.
+
+## South corner outer-eave closure — rev 43
+
+**A further screenshot revealed the rev42 "full end cap" was still too short.** The wall centreline meets the vertical side at x=42 on the west and x=178 on the east, but the rotated vertical roof coping has an **8-unit total width**. At the south-facing façade below that roof, the western roof's outside edge is x=38, and the eastern roof's outside edge is x=182. Material stopping at x=42/178 exposed a **4-unit strip of grass beneath the roof**.
+
+This rev43 candidate corrects that precise depth/extent mismatch without restoring perpendicular plaster façades or adding painted corner sprites:
+
+- At an actual lower **L-corner**, extend the horizontal **south/bottom** ivory plaster, stone base, and matching shadow **by COPING_HALF = 4 world units beyond the centreline**, reaching the *outer edge* of the perpendicular roof. The shared mitered roof still paints over the extended masonry; there is no other corner polygon.
+- **North/top** wall remains tucked +3.75 units beneath the roof: the far-face occlusion is unchanged.
+- **Gate ends and other free ends** are not extended or trimmed. The real moon gate remains a continuous **30-unit void** centred at x=110 on the south wall, with its two face endpoints exactly at x=95 and x=125.
+- **Visual acceptance samples:** the original ivory plaster and stone must be present at x≈38.8 and x≈181.2, y=186 (plaster) and y=191 (stone). Outside the actual roof edge, at x=37.2 and x=182.8, those same y-values must remain ground. The former tests only sampled x≈42.7/177.3, so they missed the strip; both old and new probes now run in CI.
+- Preserve the grey roof-tile WebP, ivory plaster WebP and stone-base WebP unchanged with exact manifest SHA-256 checks. Preserve the original six-tile Layer 1 road/canal masks, all wall geometry collision and route clearance checks and the live V2 game. This remains isolated candidate geometry pending visual approval.
+
+The exact correction is signed and orientation-safe in `assets/v3/wall-profile.js`: north faces get a +3.75 corner reveal; south faces get a **−4.0** corner reveal, **only** for real L-corner endpoints. The roof itself remains unchanged.
 
 ## Full-length south/bottom-wall plaster and stone end caps — rev 42
 
