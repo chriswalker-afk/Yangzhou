@@ -12,7 +12,7 @@ async function main(){
   page.on('pageerror',err=>errors.push(err.message));
   await page.goto(PAGE,{waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>document.querySelector('#summary')?.textContent.includes('Protected V3 ports'),{timeout:9000});
-  assert.match(await page.locator('h1').textContent(),/rev 41/);
+  assert.match(await page.locator('h1').textContent(),/rev 42/);
   assert(await page.locator('#showRoofTexture').isChecked());
   assert(await page.locator('#roofFile').isVisible());
   const tests=await page.evaluate(()=>{

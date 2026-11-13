@@ -35,8 +35,19 @@ assert(south.outer>north.outer,'Near wall has visibly deeper south-facing plaste
 for(const face of [north,south]){
  assert(face.hasFacade&&face.face&&face.base);
  assert.deepEqual(face.normal,[0,1]);
- assert(face.cornerStart||face.cornerEnd,'A horizontal courtyard face must tuck into its shared roof');
+ assert(face.cornerStart||face.cornerEnd,
+  'Courtyard horizontal walls must retain their true roof-corner anchors');
 }
+assert.equal(north.cornerReveal,profile.CORNER_REVEAL,
+ 'Far/north wall keeps its roof-occluded 3.75-unit corner reveal');
+const southRuns=form.faces.filter(f=>f.hasFacade&&f.location==='south');
+assert.equal(southRuns.length,2,'Moon gate still splits the near wall into two façades');
+for(const run of southRuns){
+ assert.equal(run.cornerReveal,0,'Near/south wall must not be cut short at L corners');
+ assert.deepEqual(run.a,run.sourceA,'Visible southern plaster begins at the true segment end');
+ assert.deepEqual(run.b,run.sourceB,'Visible southern stone finishes at the true segment end');
+}
+assert.equal(form.cornerJoins.filter(j=>j.southFacadeReveal===0).length,4);
 assert(inside(north.face,[85,54])&&inside(south.face,[85,186]));
 assert(!inside(north.face,[85,40])&&!inside(south.face,[85,170]));
 for(const face of [west,east]){
@@ -114,10 +125,10 @@ const complete=walls.draw(paintCtx,rectangle,tile,{
 assert(complete.valid&&complete.roofTextureUsed&&complete.perspectiveProfileUsed);
 assert(!walls.draw(paintCtx,rectangle,badCanal,{profilePainter:profile}).valid);
 const html=fs.readFileSync('wall-geometry-lab-v3.html','utf8');
-for(const marker of ['rev 41','assets/v3/wall-profile.js?rev=41',
+for(const marker of ['rev 42','assets/v3/wall-profile.js?rev=42',
  'id="showPerspective"','profilePainter:visible(',
  'perspectiveWallProfile:',"cameraFacing:['south']",
  'plasterAboveCoping:false'])assert(html.includes(marker),marker);
 assert(!fs.readFileSync('layer2-lab-v3.html','utf8').includes('wall-profile.js'));
 assert(!fs.readFileSync('courtyard-enclosure-lab-v3.html','utf8').includes('wall-profile.js'));
-console.log('V3 south-camera geometry passed: 6/10 near/far façades, zero vertical plaster, shared L corners, narrow side eaves, 90° roof, open gates and unchanged routes.');
+console.log('V3 south-camera geometry passed: south plaster/stone at true L endpoints, north roof reveal retained, no gate trim, zero side facades, open gates and unchanged routes.');

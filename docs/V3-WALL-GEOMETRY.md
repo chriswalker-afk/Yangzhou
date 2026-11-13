@@ -2,7 +2,7 @@
 
 **Status:** isolated, unapproved Layer 2 geometry experiment. The playable V2 game and existing V3 labs remain untouched.
 
-[Open the six-tile Wall Geometry & Texture Lab](../wall-geometry-lab-v3.html?rev=41) (once deployed).
+[Open the six-tile Wall Geometry & Texture Lab](../wall-geometry-lab-v3.html?rev=42) (once deployed).
 
 ## Why switch
 
@@ -34,6 +34,23 @@ A tile is 220 x 220 local world units. A compound is a named set of centreline p
 **Revision 37:** the 8-unit coping strip accepts the first actual painted material candidate, Wall Roof-Tile Texture 01, alongside its old flat-colour fallback. The bitmap is **not production-approved**, and the preview loader refuses incorrect hashes. Material U is 32 world units per repeat and V is the 8-unit coping width. The shared coping substrate is still rendered before the miter-clipped image, so gaps cannot expose grass; moon-gate openings remain real. The ridge stroke is hidden when the painted roof surface is active, because the artwork already contains highlights. Existing V3 grass/paving/water can still appear behind the walls, and the hall remains an unchanged Layer 2 sprite.
 
 The original PNG has been preserved outside the repository; its exact prepared 1256×314, 174,360-byte WebP is **now committed and hash-verified** under `assets/v3/wall-materials/wall-roof-tiles-01.webp`. The new test loads it automatically and offers a local file selector only as a fallback. The material manifest and preparation steps live in `assets/v3/wall-materials/`.
+
+## Full-length south/bottom-wall plaster and stone end caps — rev 42
+
+**Observed issue:** the rev41 painted south-facing *bottom* wall stopped approximately **3.75 world units short of its outer southwest and southeast corners**, while the roof coping continued to the shared wall vertex. That exposed an unpainted strip at the two visible ends. The moon-gate jambs were **already full-length**; they were not the source of the screenshot defect.
+
+**Final endpoint contract for the isolated Layer 2 lab:**
+
+- Keep the roof-coping miter, the wall centreline positions and all three painter-origin WebPs **exactly unchanged**.
+- **North/top horizontal façade** still hides its true L-corner end under the roof by trimming **3.75 world units**. This is the established camera occlusion treatment.
+- **South/bottom horizontal façade**, including its ivory plaster, single-course stone foundation and contact shadow, must extend to the **actual shared roof corner vertices** (x=42 and x=178 on the reference rectangular compound). Apply **zero corner trim**. The roof draws over that shared vertex and creates the intended clean junction without a new corner sprite.
+- **Genuine moon-gate/open ends** at x=95 and x=125 on the bottom wall remain full-length and open. Do not widen the wall into the 30-unit gate or invent artificial capping polygons.
+- **North–south side walls** remain roof coping with a thin shaded eave only; no perpendicular plaster or stone face returns.
+- Both the **structural centreline** and the *full resulting painted wall-face polygon* continue to pass Layer 1 tile-inset, courtyard-hall and street/canal clearance audits. This is a wall-face extent correction only, not a gameplay or materials change.
+
+**QA:** `tests/v3-wall-endcaps.cjs` validates the exterior ends, inner gate jambs, top-wall reveal, original material hashes and route safety. `tests/v3-wall-endcaps-visual.cjs` samples the actual original ivory plaster and stone at both outer corner ends and both gate-adjacent ends, confirms zero painted material in the gate opening, verifies the three materials remain independent, and produces **1×/3×/mobile screenshots**. Existing six-tile corner and browser regressions also exercise the changed geometry.
+
+Revision 41 below remains the historical record of the earlier north/south trim strategy, but its *bottom-wall trim rule is superseded by this section*. This is still a **review candidate**, not production approval.
 
 ## Single camera-consistent south-facing wall projection — rev 41
 

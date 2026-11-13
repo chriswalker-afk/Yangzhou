@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const {chromium}=require('playwright');
 fs.mkdirSync('artifacts/v3',{recursive:true});
-const URL='http://127.0.0.1:8765/wall-geometry-lab-v3.html?rev=41';
+const URL='http://127.0.0.1:8765/wall-geometry-lab-v3.html?rev=42';
 async function run(){
  const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
  const errors=[];
@@ -13,7 +13,7 @@ async function run(){
   await page.goto(URL,{waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>document.querySelector('#faceStatus')?.textContent.includes('2/2 authentic'),{timeout:30000});
   await page.waitForFunction(()=>document.querySelector('#roofStatus')?.textContent.includes('verified'),{timeout:30000});
-  assert.match(await page.locator('h1').textContent(),/rev 41/);
+  assert.match(await page.locator('h1').textContent(),/rev 42/);
   assert(await page.locator('#showPerspective').isChecked());
   await page.locator('#showHall').uncheck();
   await page.locator('#showGate').uncheck();
@@ -27,7 +27,11 @@ async function run(){
    SWfacade:[48,186],SEfacade:[172,186],
    bottomStone:[172,191],northStone:[172,56],
    NWbeyond:[36,55],NEbeyond:[189,55],
-   SWbeyond:[43,186],SEbeyond:[180,186],
+   SWendPlaster:[43,186],SEendPlaster:[177,186],
+   SWendStone:[43,191],SEendStone:[177,191],
+   leftGatePlaster:[94,186],rightGatePlaster:[126,186],
+   leftGateStone:[94,191],rightGateStone:[126,191],
+   SEbeyond:[180,186],
    SEoldSlab:[189,185],westOldSlab:[50,90],eastOldSlab:[189,90],
    westEave:[47,90],eastEave:[183,90],
    roofSE:[178,178],gate:[110,178],gateBelow:[110,190],
@@ -38,11 +42,13 @@ async function run(){
   const scans=await at(Object.values(points));
   Object.keys(points).forEach((k,i)=>{values[k]=scans[i];});
   for(const key of ['NWfacade','NEfacade','SWfacade','SEfacade',
-   'bottomStone','northStone','roofSE','westEave','eastEave']){
+   'bottomStone','northStone','roofSE','westEave','eastEave',
+   'SWendPlaster','SEendPlaster','SWendStone','SEendStone',
+   'leftGatePlaster','rightGatePlaster','leftGateStone','rightGateStone']){
    assert.notDeepEqual(values[key],values.ground,
     'Painted roof/eave/south-facing façade must connect at '+key);
   }
-  for(const key of ['NWbeyond','NEbeyond','SWbeyond','SEbeyond',
+  for(const key of ['NWbeyond','NEbeyond','SEbeyond',
    'SEoldSlab','westOldSlab','eastOldSlab','gate','gateBelow',
    'hiddenNorth','hiddenWest']){
    assert.deepEqual(values[key],values.ground,
@@ -79,13 +85,23 @@ async function run(){
   // Original paintings must remain material-dependent, but the shared roof
   // cannot change when the user switches the face textures.
   await page.locator('#showPlasterTexture').uncheck();
-  const [noPlaster,roofAfterPlaster]=await at([points.SEfacade,points.roofSE]);
+  const [noPlaster,noLeftPlaster,noRightPlaster,roofAfterPlaster]=
+   await at([points.SEfacade,points.SWendPlaster,points.SEendPlaster,points.roofSE]);
   assert.notDeepEqual(noPlaster,values.SEfacade,'SE façade uses real ivory painting');
+  assert.notDeepEqual(noLeftPlaster,values.SWendPlaster,
+   'Painted ivory plaster must extend to the full southwest end cap');
+  assert.notDeepEqual(noRightPlaster,values.SEendPlaster,
+   'Painted ivory plaster must extend to the full southeast end cap');
   assert.deepEqual(roofAfterPlaster,values.roofSE,'Roof artwork is independent');
   await page.locator('#showPlasterTexture').check();
   await page.locator('#showStoneTexture').uncheck();
-  const [noStone,roofAfterStone]=await at([points.bottomStone,points.roofSE]);
+  const [noStone,noLeftStone,noRightStone,roofAfterStone]=
+   await at([points.bottomStone,points.SWendStone,points.SEendStone,points.roofSE]);
   assert.notDeepEqual(noStone,values.bottomStone,'South base uses original stone painting');
+  assert.notDeepEqual(noLeftStone,values.SWendStone,
+   'Painted foundation must reach the southwest exterior corner');
+  assert.notDeepEqual(noRightStone,values.SEendStone,
+   'Painted foundation must reach the southeast exterior corner');
   assert.deepEqual(roofAfterStone,values.roofSE,'Stone toggle must not change corner coping');
   await page.locator('#showStoneTexture').check();
   await page.locator('#plan').selectOption('partial');
@@ -110,7 +126,7 @@ async function run(){
    assert(await mobile.locator('#corner'+corner).isVisible());
   await mobile.screenshot({path:'artifacts/v3/wall-camera-4-corners-mobile.png',fullPage:true});
   assert.deepEqual(errors,[],'No runtime JS exceptions on desktop/mobile');
-  console.log('V3 camera-consistent corners browser QA passed: four authentic cropped joins at 1x/3x, zero white side slabs, roof eaves, open gate, route safety and mobile.');
+  console.log('V3 rev42 corner browser QA passed: both bottom ends painted to roof vertices, stone and plaster toggles, gate jambs intact, NW/NE unchanged, 1x/3x and mobile.');
  }finally{await browser.close();}
 }
 run().catch(e=>{console.error(e);process.exitCode=1;});
