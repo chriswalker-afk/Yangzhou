@@ -24,7 +24,7 @@ async function run(){
    leftGateStone:[94,191],rightGateStone:[126,191],
    moonGate:[110,186],moonGateBase:[110,191],
    outsideLeft:[40.4,186],outsideRight:[179.6,186],
-   northOldTrim:[43,54],northVisible:[48,54],
+   northCornerRoof:[43,54],northVisible:[48,54],
    roofSW:[42,178],roofSE:[178,178]
   };
   const at=async(list)=>page.evaluate(list=>{
@@ -35,12 +35,12 @@ async function run(){
   const values=Object.fromEntries(keys.map((k,i)=>[k,scan[i]]));
   for(const name of ['SWplaster','SEplaster','SWstone','SEstone',
    'leftGatePlaster','rightGatePlaster','leftGateStone','rightGateStone',
-   'northVisible','roofSW','roofSE'])
+   'northCornerRoof','northVisible','roofSW','roofSE'])
    assert.notDeepEqual(values[name],values.background,
     'Missing painted wall material at '+name);
-  for(const name of ['moonGate','moonGateBase','outsideLeft','outsideRight','northOldTrim'])
+  for(const name of ['moonGate','moonGateBase','outsideLeft','outsideRight'])
    assert.deepEqual(values[name],values.background,
-    'No fake plaster outside the wall, above far roof or across gate: '+name);
+    'No fake plaster outside the wall or across the gate: '+name);
   const exportData=JSON.parse(await page.locator('#export').textContent());
   assert.equal(exportData.audit.valid,true);
   assert.equal(exportData.audit.passableOpenings[0].open,true);
