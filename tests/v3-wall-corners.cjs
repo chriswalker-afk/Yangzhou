@@ -111,7 +111,7 @@ for(const model of Object.values(wall.templates)){
 for(const edges of [['L','W','L','W'],['L','S','L','S']])
  assert(!wall.audit(rectModel,{...tile,edges},{profilePainter:profile}).valid);
 const page=fs.readFileSync('wall-geometry-lab-v3.html','utf8');
-for(const item of ['rev 42','id="cornerNW"','id="cornerNE"'
+for(const item of ['rev 42','id="cornerNW"','id="cornerNE"',
  'id="cornerSW"','id="cornerSE"','renderCornerInspection()',
  'assets/v3/wall-profile.js?rev=42','assets/v3/wall-face-materials.js?rev=42'])
  assert(page.includes(item),item);
