@@ -2,7 +2,7 @@
 
 **Status:** isolated, unapproved Layer 2 geometry experiment. The playable V2 game and existing V3 labs remain untouched.
 
-[Open the six-tile Wall Geometry & Texture Lab](../wall-geometry-lab-v3.html?rev=43) (once deployed).
+[Open the six-tile Wall Geometry & Texture Lab](../wall-geometry-lab-v3.html?rev=44) (once deployed).
 
 ## Why switch
 
@@ -34,6 +34,20 @@ A tile is 220 x 220 local world units. A compound is a named set of centreline p
 **Revision 37:** the 8-unit coping strip accepts the first actual painted material candidate, Wall Roof-Tile Texture 01, alongside its old flat-colour fallback. The bitmap is **not production-approved**, and the preview loader refuses incorrect hashes. Material U is 32 world units per repeat and V is the 8-unit coping width. The shared coping substrate is still rendered before the miter-clipped image, so gaps cannot expose grass; moon-gate openings remain real. The ridge stroke is hidden when the painted roof surface is active, because the artwork already contains highlights. Existing V3 grass/paving/water can still appear behind the walls, and the hall remains an unchanged Layer 2 sprite.
 
 The original PNG has been preserved outside the repository; its exact prepared 1256×314, 174,360-byte WebP is **now committed and hash-verified** under `assets/v3/wall-materials/wall-roof-tiles-01.webp`. The new test loads it automatically and offers a local file selector only as a fallback. The material manifest and preparation steps live in `assets/v3/wall-materials/`.
+
+## Layer 1B courtyard ground paving — rev 44
+
+The first independent courtyard ground-surface candidate is now integrated into the **isolated V3 Wall Geometry & Courtyard Paving Lab**, without modifying Layer 1A geography or the live game.
+
+**Layer contract:** Layer 1A (grass, stone streets, canals, banks) → **Layer 1B (geometry-clipped enclosed courtyard paving)** → Layer 2 (courtyard hall, walls and moon gates) → Layer 3 (small decorative objects) → Layer 4 (animation).
+
+- Original user-generated **Jiangnan Courtyard Paving Texture 01**, 1254×1254, prepared as a high-quality 682,158-byte WebP with exact SHA-256 `fc7f03b7f047295ac0e1de8d7872d5f143874bc506c4b9d9bbd39a324da4a083`, stored under `assets/v3/materials/courtyard-paving-01.webp`. The original PNG source has separately recorded SHA-256 provenance.
+- Render geometry comes from the **closed rectangular courtyard wall centreline**, not a pasted sprite or a full-tile fill. The canonical region is x=42..178, y=47..178, clipped before placing the hall or walls. Grass stays outside.
+- Surface repeats in world coordinates at a candidate period of **96 world units**, to be judged next to the 96×47-world-unit hall artwork. No unvalidated painted ground appears across streets, canals, invalid wall profiles, or partial/L/T wall templates.
+- The V3 lab has a **Show Layer 1B courtyard paving** control, exact-checksum status, optional local exact-file comparison and independent **2×2 source-repeat proof** for visual assessment. The repeat preview intentionally displays the untouched candidate, rather than automatically disguising visible seams.
+- Node and Playwright checks verify genuine artwork bytes, SHA, dimensions, clipping, correct layer order, protected moon-gate and road/canal geometry, desktop/mobile and 1×/3× views. Automated pass does **not** constitute artistic seamlessness or production approval.
+
+The production gate after this PR is **human review of paving colour, slab scale and both repeat seams**. Future courtyards may use packed earth, planted grass and garden stone patches within new authored Layer 1B polygons. Other open wall shapes are deliberately left unfilled until their ground-surface rules are defined.
 
 ## South corner outer-eave closure — rev 43
 

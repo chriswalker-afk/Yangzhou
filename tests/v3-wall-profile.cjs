@@ -134,7 +134,7 @@ const complete=walls.draw(paintCtx,rectangle,tile,{
 assert(complete.valid&&complete.roofTextureUsed&&complete.perspectiveProfileUsed);
 assert(!walls.draw(paintCtx,rectangle,badCanal,{profilePainter:profile}).valid);
 const html=fs.readFileSync('wall-geometry-lab-v3.html','utf8');
-for(const marker of ['rev 43','assets/v3/wall-profile.js?rev=43',
+for(const marker of ['rev 44','assets/v3/wall-profile.js?rev=44',
  'id="showPerspective"','profilePainter:visible(',
  'perspectiveWallProfile:',"cameraFacing:['south']",
  'plasterAboveCoping:false'])assert(html.includes(marker),marker);

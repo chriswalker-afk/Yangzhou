@@ -11,8 +11,10 @@ async function main(){
   const page=await browser.newPage({viewport:{width:1450,height:930},deviceScaleFactor:1});
   page.on('pageerror',err=>errors.push(err.message));
   await page.goto(PAGE,{waitUntil:'domcontentloaded'});
+  // Keep legacy wall-material pixel baselines on the original grass surface.
+  await page.locator('#showPaving').uncheck();
   await page.waitForFunction(()=>document.querySelector('#summary')?.textContent.includes('Protected V3 ports'),{timeout:9000});
-  assert.match(await page.locator('h1').textContent(),/rev 43/);
+  assert.match(await page.locator('h1').textContent(),/rev 44/);
   assert(await page.locator('#showRoofTexture').isChecked());
   assert(await page.locator('#roofFile').isVisible());
   const tests=await page.evaluate(()=>{

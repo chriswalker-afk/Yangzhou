@@ -59,5 +59,27 @@
     "stone": 220,
     "water": 440
   },
-  "binarySource": "original chat-generated lossless WebP assets, imported byte-for-byte"
+  "binarySource": "original chat-generated lossless WebP assets, imported byte-for-byte",
+  "layer1BCourtyardPaving": {
+    "id": "courtyard-paving-01",
+    "name": "Jiangnan Courtyard Paving Texture 01",
+    "layer": "1B",
+    "path": "assets/v3/materials/courtyard-paving-01.webp",
+    "mimeType": "image/webp",
+    "encoding": "lossy WebP quality 95 from original user-approved generated PNG",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 682158,
+    "sha256": "fc7f03b7f047295ac0e1de8d7872d5f143874bc506c4b9d9bbd39a324da4a083",
+    "gitBlobSha1": "cf2b70e4a59ddf58f88d54798ae54eb29b26dfca",
+    "sourcePngSha256": "5eca68db68132e8f1350da2ac40f1546b37b37bcaa0c80cf623e736e5551f74e",
+    "sourcePngFilename": "jiangnan_courtyard_stonework.png",
+    "sourcePngLocation": "original user-conversation generated artwork, preserved outside repository; WebP derivative committed",
+    "worldTextureRepeat": 96,
+    "placement": "only inside valid closed rectangular enclosure derived from V3 wall centrelines, below Layer 2 hall/walls",
+    "productionApproved": false,
+    "repeatSeamApproved": false,
+    "reviewStatus": "committed-visual-review-candidate",
+    "seamNote": "Candidate image is repeated unchanged in a separate 2×2 proof; visual seam QA is required before final approval, no implicit claim of seamlessness."
+  }
 }

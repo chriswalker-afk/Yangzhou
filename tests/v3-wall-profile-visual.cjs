@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const {chromium}=require('playwright');
 fs.mkdirSync('artifacts/v3',{recursive:true});
-const URL='http://127.0.0.1:8765/wall-geometry-lab-v3.html?rev=43';
+const URL='http://127.0.0.1:8765/wall-geometry-lab-v3.html?rev=44';
 async function main(){
  const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
  const errors=[];
@@ -11,10 +11,12 @@ async function main(){
   const page=await browser.newPage({viewport:{width:1450,height:970},deviceScaleFactor:1});
   page.on('pageerror',e=>errors.push('desktop: '+e.message));
   await page.goto(URL,{waitUntil:'domcontentloaded'});
+  // Keep legacy wall-material pixel baselines on the original grass surface.
+  await page.locator('#showPaving').uncheck();
   await page.waitForFunction(()=>document.querySelector('#summary')?.textContent.includes('Protected V3 ports'),{timeout:9000});
   await page.waitForFunction(()=>document.querySelector('#roofStatus')?.textContent.includes('verified'),{timeout:30000});
   await page.waitForFunction(()=>document.querySelector('#faceStatus')?.textContent.includes('2/2 authentic'),{timeout:30000});
-  assert.match(await page.locator('h1').textContent(),/rev 43/);
+  assert.match(await page.locator('h1').textContent(),/rev 44/);
   assert(await page.locator('#showPerspective').isChecked());
   assert(await page.locator('#showRoofTexture').isChecked());
   assert.match(await page.locator('#summary').textContent(),/south-facing ivory plaster/);

@@ -17,8 +17,10 @@ async function run(){
   const page=await browser.newPage({viewport:{width:1400,height:930},deviceScaleFactor:1});
   page.on('pageerror',e=>errors.push('desktop '+e.message));
   await page.goto(PORT,{waitUntil:'domcontentloaded'});
+  // Keep legacy wall-material pixel baselines on the original grass surface.
+  await page.locator('#showPaving').uncheck();
   await page.waitForFunction(()=>document.querySelector('#summary')?.textContent.includes('Protected V3 ports'),{timeout:9000});
-  assert.match(await page.locator('h1').textContent(),/rev 43/);
+  assert.match(await page.locator('h1').textContent(),/rev 44/);
   assert.equal(await page.locator('#scene').evaluate(el=>el.style.width),'660px');
   assert.match(await page.locator('#summary').textContent(),/6 valid walled tiles/);
   let selection=JSON.parse(await page.locator('#export').textContent());
