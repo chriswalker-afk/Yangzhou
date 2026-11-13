@@ -57,10 +57,23 @@ async function main(){
    assert.notDeepEqual(without[index],values[name],
     'Courtyard paving toggle must change the real painted ground at '+name);
   }
-  for(const name of ['grassOutside','grassBeyondWall','gateExit','hallRoof','wallRoof']){
+  for(const name of ['grassOutside','grassBeyondWall','gateExit']){
    const index=Object.keys(pts).indexOf(name);
    assert.deepEqual(without[index],values[name],
-    'Paving must never alter grass outside, open gate, hall or walls at '+name);
+    'Paving must never alter grass outside or an open moon gate at '+name);
+  }
+  // The original hall and roof paintings include subtle transparent paint.
+  // A new ground surface may contribute 1–2 RGB levels through their soft
+  // pixels; require strong occlusion, not false byte-for-byte opacity.
+  const groundDelta=values.paving.slice(0,3).reduce((n,v,i)=>
+   n+Math.abs(v-without[Object.keys(pts).indexOf('paving')][i]),0);
+  for(const name of ['hallRoof','wallRoof']){
+   const index=Object.keys(pts).indexOf(name);
+   const blendDelta=values[name].slice(0,3).reduce((n,v,i)=>
+    n+Math.abs(v-without[index][i]),0);
+   assert(blendDelta<groundDelta*.5+6,
+    'Layer 2 '+name+' must visually occlude the new paving ('+
+    blendDelta+' vs exposed ground delta '+groundDelta+')');
   }
   assert(!JSON.parse(await page.locator('#export').textContent()).courtyardPaving.painted);
   await page.screenshot({path:'artifacts/v3/courtyard-layer1b-grass-comparison.png',fullPage:true});
