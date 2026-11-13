@@ -119,11 +119,6 @@ function draw(ctx,compiled,tile,options={}){
  // Stone base is at the LOWEST visible edge, not a symmetric halo on grass.
  for(const f of form.faces)fillQuad(ctx,f.base,ox,oy,ink.foundation);
  for(const f of form.cornerFills)fillQuad(ctx,f.base,ox,oy,ink.foundation);
- for(const f of form.faces){
-  ctx.beginPath();ctx.moveTo(ox+f.eaveStart[0],oy+f.eaveStart[1]);
-  ctx.lineTo(ox+f.eaveEnd[0],oy+f.eaveEnd[1]);
-  ctx.strokeStyle=ink.eave;ctx.lineWidth=.7;ctx.stroke();
- }
  ctx.restore();
  return Object.freeze({projected:true,faces:form.faces.length,
   north:form.faces.filter(f=>f.location==='north').length,
@@ -131,6 +126,16 @@ function draw(ctx,compiled,tile,options={}){
   west:form.faces.filter(f=>f.location==='west').length,
   east:form.faces.filter(f=>f.location==='east').length,
   outerCornerFills:form.cornerFills.length});
+}
+function drawEaves(ctx,compiled,tile,options={}){
+ const form=build(compiled,options.hall),ink={...PALETTE,...options.palette};
+ const ox=tile.x*220,oy=tile.y*220;
+ ctx.save();ctx.lineWidth=.65;ctx.strokeStyle=ink.eave;
+ for(const f of form.faces){
+  ctx.beginPath();ctx.moveTo(ox+f.eaveStart[0],oy+f.eaveStart[1]);
+  ctx.lineTo(ox+f.eaveEnd[0],oy+f.eaveEnd[1]);ctx.stroke();
+ }
+ ctx.restore();
 }
 function extentQuads(compiled,hall){
  const form=build(compiled,hall);
@@ -143,6 +148,6 @@ function extentQuads(compiled,hall){
 }
 return Object.freeze({
  EPS,COPING_HALF,FACE_START,BASE_HEIGHT,DEPTH,PALETTE,
- orientation,quad,faceFor,cornerFills,build,extentQuads,draw
+ orientation,quad,faceFor,cornerFills,build,extentQuads,draw,drawEaves
 });
 });
