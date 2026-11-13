@@ -65,6 +65,12 @@ function box(x1,y1,x2,y2){
 // These shared corner piers close that quadrant for *all* four arm pairings.
 // The roof miter is painted after these quads and hides the plaster under eaves.
 function cornerFills(compiled,hall,faces){
+ // Retain the original public API: callers may request joins directly.
+ if(!faces){
+  faces=[];
+  for(const path of compiled.paths)for(let i=1;i<path.points.length;i++)
+   faces.push(faceFor(path.points[i-1],path.points[i],hall));
+ }
  const result=[];
  for(const joint of compiled.junctions.filter(j=>j.kind==='L')){
   const p=joint.point,[x,y]=p;
