@@ -65,11 +65,14 @@
     "hiddenSidePlaster": false,
     "realMoonGateGap": true,
     "geometrySource": "assets/v3/wall-profile.js",
-    "notes": "Canonical south-facing projection; original paintings, their hashes, mitered roof, genuine moon gate gaps and Layer 1 route geometry unchanged. Candidate awaiting 1x/3x human review.",
+    "notes": "Rev42 full-length south/bottom painted facade and foundation; original roof/ivory plaster/stone files, SHA-256, true gate gaps, and Layer 1 route geometry unchanged. Candidate for 1x/3x visual review.",
     "verticalSideEaveWorld": 1.05,
     "verticalPlasterVisible": false,
     "verticalStoneVisible": false,
-    "cornerMethod": "one shared roof vertex; horizontal plaster/stone tucked 3.75 world units underneath coping overhang; no invented masonry infill polygons"
+    "cornerMethod": "Shared exact roof-miter vertices; north/top plaster and stone trimmed by 3.75 world units beneath eaves, south/bottom plaster and stone extend to full outer L corners (zero trim); gate jambs remain untrimmed and open; no independent corner patches.",
+    "southWallExteriorCornerRevealWorld": 0,
+    "northWallExteriorCornerRevealWorld": 3.75,
+    "moonGateFaceEndTrimWorld": 0
   },
   "faceMaterials": {
     "plaster": {
