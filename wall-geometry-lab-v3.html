@@ -193,6 +193,16 @@ function renderCornerInspection(){
    size*3,size*3,0,0,close.width,close.height);
  }
 }
+function renderPavingRepeat(){
+ const c=document.getElementById('pavingRepeat');
+ if(!c)return;
+ const pctx=c.getContext('2d');
+ if(pavingImage)courtyardPaving.repeatProof(pctx,pavingImage,c.width);
+ else{
+  pctx.clearRect(0,0,c.width,c.height);
+  pctx.fillStyle='#d7dcc7';pctx.fillRect(0,0,c.width,c.height);
+ }
+}
 function render(){
  ctx.setTransform(3,0,0,3,0,0);ctx.clearRect(0,0,660,440);
  ctx.fillStyle=pattern('grass');ctx.fillRect(0,0,660,440);
@@ -212,6 +222,10 @@ function render(){
    if(report.valid){
     accepted++;openings+=report.passableOpenings.filter(p=>p.open).length;
     ls+=report.lCorners;ts+=report.tJunctions;
+    // Layer 1B is drawn after Layer 1A geography but before Layer 2 art.
+    // Only route-safe, genuinely enclosed rectangles get a surface.
+    if(visible('showPaving')&&pavingImage)
+     courtyardPaving.paint(ctx,tile,model,pavingImage,{valid:true});
     if(visible('showHall')&&gallery.hall){
      const h=model.hall;
      ctx.drawImage(gallery.hall,ox+h.x-48,oy+h.y-23.5,96,47);
@@ -267,7 +281,8 @@ function render(){
   'Roof material: '+(visible('showRoofTexture')&&roofImage?'painted (candidate)':'flat diagnostic')+'. '+
   'Wall face: '+(visible('showPerspective')?'south-facing ivory plaster / stone; side roofing only':'old symmetric diagnostic bands')+'. '+
   'Plaster: '+(visible('showPerspective')&&visible('showPlasterTexture')&&faceImages.plaster?'painted (candidate)':'flat diagnostic')+'. '+
-  'Stone: '+(visible('showPerspective')&&visible('showStoneTexture')&&faceImages.stone?'painted (candidate)':'flat diagnostic')+'.';
+  'Stone: '+(visible('showPerspective')&&visible('showStoneTexture')&&faceImages.stone?'painted (candidate)':'flat diagnostic')+'. '+
+  'Courtyard paving: '+(visible('showPaving')&&pavingImage?'genuine Layer 1B candidate (enclosed rectangles only)':'off/unavailable')+'.';
  document.getElementById('wallInfo').textContent=
   'Tile ('+current.x+','+current.y+') • edges '+current.edges.join('')+
   ' • '+(model?model.name:'No wall layout')+
@@ -280,6 +295,13 @@ function render(){
   compiled:model?{gates:selectedDetail.gates,junctions:selectedDetail.junctions,
    wallSegments:selectedDetail.ribbons.length}:null,
   audit:report,
+  courtyardPaving:model?{
+   layer:'1B',region:courtyardPaving.regionFor(model),enabled:visible('showPaving'),
+   painted:!!(report?.valid&&visible('showPaving')&&pavingImage&&courtyardPaving.regionFor(model)),
+   imageVerified:!!pavingImage,textureId:courtyardPaving.ASSET.id,
+   worldPeriod:courtyardPaving.ASSET.worldPeriod,source:pavingSource,
+   status:'candidate-for-visual-review'
+  }:null,
   perspectiveWallProfile:visible('showPerspective')
    ?{cameraFacing:['south'],faceDepth:wallProfile.DEPTH,
      verticalWalls:'roof plus narrow shaded eave only',plasterAboveCoping:false,
@@ -296,6 +318,7 @@ function render(){
     bandWidth:roofPainter.ASSET.bandWidth,status:'candidate-for-review'}:null
  },null,2);
  renderCornerInspection();
+ renderPavingRepeat();
 }
 function refresh(){
  document.getElementById('plan').value=choices[selected];render();
@@ -320,7 +343,7 @@ document.getElementById('plan').addEventListener('change',e=>{
  choices[selected]=e.target.value;refresh();
 });
 for(const id of ['showWall','showGate','showJoints','showHall','showTextures',
- 'showRoofTexture','showPerspective','showPlasterTexture','showStoneTexture'])
+ 'showRoofTexture','showPerspective','showPlasterTexture','showStoneTexture','showPaving'])
  document.getElementById(id).addEventListener('change',render);
 button('zoom',()=>{
  zoomOn=!zoomOn;canvas.style.width=zoomOn?'1980px':'660px';
