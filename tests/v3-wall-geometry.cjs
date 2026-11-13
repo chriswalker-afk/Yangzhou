@@ -109,7 +109,7 @@ const blocked=walls.draw(mock,walls.templates.rectangle,canal);
 assert(!blocked.valid&&!blocked.drawn);
 assert.equal(strokes.length,n,'Reject full wall before touching a canal tile');
 const scene=fs.readFileSync('wall-geometry-lab-v3.html','utf8');
-for(const item of ['Wall Geometry &amp; Texture Lab (rev 41)','assets/v3/wall-geometry.js',
+for(const item of ['Wall Geometry &amp; Texture Lab (rev 42)','assets/v3/wall-geometry.js',
  'id="study"','id="plan"','id="showTextures"','id="showGate"',
  'id="zoom"','id="scene"','CODES','wallModel:choices[selected]','walls.audit(model,tile,{',
  'geometry.compile(tile.edges)','edgeSystem.draw(ctx,compiledEdge']){
