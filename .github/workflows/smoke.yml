@@ -46,6 +46,9 @@ jobs:
           node --check assets/v3/wall-profile.js
           node --check tests/v3-wall-profile.cjs
           node --check tests/v3-wall-profile-visual.cjs
+          node --check assets/v3/wall-face-materials.js
+          node --check tests/v3-wall-face-materials.cjs
+          node --check tests/v3-wall-face-materials-visual.cjs
           node --check tests/v3-materials.cjs
           node --check tests/v3-edges.cjs
           node tests/smoke.cjs
@@ -60,6 +63,7 @@ jobs:
           node tests/v3-wall-geometry.cjs
           node tests/v3-wall-roof-texture.cjs
           node tests/v3-wall-profile.cjs
+          node tests/v3-wall-face-materials.cjs
           node tests/variant-deck.cjs
           node scripts/validate_art_batch_01.cjs
           node tests/scoring-contract.cjs

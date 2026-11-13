@@ -50,7 +50,7 @@
     "historicalAccuracy": false
   },
   "wallProfile": {
-    "type": "camera-facing-diagnostic-elevation",
+    "type": "camera-facing-painted-plaster-and-stone-elevation",
     "productionApproved": false,
     "cameraFacingSide": "south on horizontal sections, east on vertical sections",
     "copingWidthWorld": 8,
@@ -65,6 +65,82 @@
     "hiddenSidePlaster": false,
     "realMoonGateGap": true,
     "geometrySource": "assets/v3/wall-profile.js",
-    "notes": "Painted roof texture unchanged; plaster and stone are projected diagnostic gradients pending separate artwork."
-  }
+    "notes": "Roof, plaster and stone now use independent painter-origin watercolour candidates, checksum-verified and texture-clipped to wall geometry. Geometry and both master paintings remain candidate-only; no V2 migration."
+  },
+  "faceMaterials": {
+    "plaster": {
+      "id": "wall-plaster-ivory-01",
+      "name": "Ivory Plaster Wall Texture 01",
+      "productionApproved": false,
+      "source": {
+        "filename": "yangzhou_ivory_watercolour_plaster.png",
+        "format": "PNG",
+        "dimensions": [
+          2508,
+          627
+        ],
+        "sha256": "80f30c1d61799ff45d192ab4d203385d4ba99d3cdace9fe600c376eb8d2a425e",
+        "sourcePreserved": "User-provided generated original in current ChatGPT conversation; not replaced"
+      },
+      "prepared": {
+        "path": "assets/v3/wall-materials/wall-plaster-ivory-01.webp",
+        "format": "WebP",
+        "width": 1256,
+        "height": 314,
+        "bytes": 56950,
+        "sha256": "f421d5853d2d85e1c71d42a14425f4d68ac611a15e2f1f5a68e5e43686a8d552",
+        "gitBlobSha1": "95ecfd1609e924408c83c7c3bf3777ae2ea22b53",
+        "quality": 91,
+        "seamCorrection": "cosine edge equalization over 8% of image width; mean decoded seam RGB error 2.37"
+      },
+      "mapping": {
+        "material": "camera-facing plaster",
+        "sourceRatio": 4,
+        "placement": "only south/east-facing plaster quads",
+        "visibleFaceHeight": "wallProfile.outer - BASE_HEIGHT - FACE_START",
+        "uPeriod": "(1256/314) * visibleFaceHeight",
+        "sideRotationDegrees": -90
+      }
+    },
+    "stone": {
+      "id": "wall-stone-base-01",
+      "name": "Weathered Stone Foundation Texture 01",
+      "productionApproved": false,
+      "source": {
+        "filename": "weathered_yangzhou_stone_wall_texture.png",
+        "format": "PNG",
+        "dimensions": [
+          2508,
+          627
+        ],
+        "sha256": "a505bc7d5dede1f9b59cc124cc79ecda01e9a814840ed7f3d3dce8ed6bdcf0a6",
+        "sourceCrop": [
+          0,
+          0,
+          2508,
+          314
+        ],
+        "sourcePreserved": "Upper single stone-block course cropped non-destructively from the original generated two-course painting"
+      },
+      "prepared": {
+        "path": "assets/v3/wall-materials/wall-stone-base-01.webp",
+        "format": "WebP",
+        "width": 1256,
+        "height": 157,
+        "bytes": 69958,
+        "sha256": "67cc0b16d2a6985737b7ed2decab5c1504f0763dd40e44dc779e1fcdf6e7918b",
+        "gitBlobSha1": "60fac53bd51538ad454f0b791c172457967ca4f5",
+        "quality": 91,
+        "seamCorrection": "cosine edge equalization over 8% of image width; mean decoded seam RGB error 2.25"
+      },
+      "mapping": {
+        "material": "lowest visible stone base",
+        "sourceRatio": 8,
+        "visibleHeight": 1.7,
+        "uPeriod": 13.6,
+        "sideRotationDegrees": -90
+      }
+    }
+  },
+  "faceMaterialsStatus": "three-authentic-wall-material-candidates-awaiting-visual-review"
 }

@@ -2,7 +2,7 @@
 
 **Status:** isolated, unapproved Layer 2 geometry experiment. The playable V2 game and existing V3 labs remain untouched.
 
-[Open the six-tile Wall Geometry & Texture Lab](../wall-geometry-lab-v3.html?rev=38) (once deployed).
+[Open the six-tile Wall Geometry & Texture Lab](../wall-geometry-lab-v3.html?rev=39) (once deployed).
 
 ## Why switch
 
@@ -34,6 +34,21 @@ A tile is 220 x 220 local world units. A compound is a named set of centreline p
 **Revision 37:** the 8-unit coping strip accepts the first actual painted material candidate, Wall Roof-Tile Texture 01, alongside its old flat-colour fallback. The bitmap is **not production-approved**, and the preview loader refuses incorrect hashes. Material U is 32 world units per repeat and V is the 8-unit coping width. The shared coping substrate is still rendered before the miter-clipped image, so gaps cannot expose grass; moon-gate openings remain real. The ridge stroke is hidden when the painted roof surface is active, because the artwork already contains highlights. Existing V3 grass/paving/water can still appear behind the walls, and the hall remains an unchanged Layer 2 sprite.
 
 The original PNG has been preserved outside the repository; its exact prepared 1256×314, 174,360-byte WebP is **now committed and hash-verified** under `assets/v3/wall-materials/wall-roof-tiles-01.webp`. The new test loads it automatically and offers a local file selector only as a fallback. The material manifest and preparation steps live in `assets/v3/wall-materials/`.
+
+## Painted ivory plaster and stone foundation — rev 39
+
+The two newly generated watercolour paintings are now committed as **original-art derivatives** in the same isolated Layer 2 materials library as Roof-Tile Texture 01:
+
+| Painted material | GitHub WebP | Source illustration | Renderer |
+|---|---|---|---|
+| Ivory plaster | `assets/v3/wall-materials/wall-plaster-ivory-01.webp` (1256×314; 56,950 bytes) | Original 2508×627 watercolour plaster image | Clips to the camera-facing ivory plaster quadrilaterals; repeats at the image's natural 4:1 ratio |
+| Weathered stone | `assets/v3/wall-materials/wall-stone-base-01.webp` (1256×157; 69,958 bytes) | Upper course of the original 2508×627 two-course stone illustration; original preserved | Clips to the 1.7-unit visible foundation strip; natural 8:1 strip ratio |
+
+The two original PNGs are preserved in the conversation assets. WebPs were resized with LANCZOS, encoded WebP quality 91, and the outer 8% of pixels were adjusted with a symmetric smooth cosine to reduce visible repeat seams. Original source and prepared derivative SHA-256 values, dimensions, exact git blob SHAs, and crop boundaries are recorded in `assets/v3/wall-materials/manifest.json`. The prepared WebP bytes on GitHub must match those hashes. **No new content has been generated or substituted during integration.**
+
+`assets/v3/wall-face-materials.js` maps both candidates using the wall's local centreline and perpendicular direction. Horizontal sections are painted west→east; vertical sections reuse the same surface rotated −90°. Material period is computed directly from the band height and original image aspect ratio: plaster's repeat length is four times the visible plaster-face height; the stone base repeats every 13.6 world units. Each visible face is individually clipped, so the moon-gate corridor stays truly open and hidden-side plaster does not reappear. The existing roof-tile texture remains exactly the same.
+
+The Wall Geometry Lab exposes independent **Painted ivory plaster** and **Painted stone foundation** toggles, progressive SHA-256-verified loading, and local WebP comparison controls. If an image is unavailable, only its diagnostic fill appears. Review all three candidates together at 1× and 3×, with special attention to foundation scale, joined walls and moon-gate ends. These are **candidates**, not production approval or a migration to the playable V2 game.
 
 ## Perspective-aware wall profile — rev 38
 
