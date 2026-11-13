@@ -1,8 +1,8 @@
-/* Yangzhou V3 Layer 2 architectural moon-gate framing.
- * Preserve the real wall aperture, including the roof and collision gap.
- * Painted stone/ivory rim details live on the two existing gate jambs;
- * a circular arch is an elevated SOUTH-facing facade decoration, never a
- * ground-plane obstruction or a synthetic solid bridge across the passage.
+/* Yangzhou V3 Layer 2 — painted moon gate mounted on a real opening.
+ * Reuses the repository's earlier original Moon Gate 01, not a fabricated arc.
+ * The gate illustration is an architectural elevation; the underlying
+ * compiled wall ribbons, physical opening and Layer 1B paving stay unchanged.
+ * Do not render a synthetic fallback when the verified art is unavailable.
  */
 (function(root,factory){
  const api=factory();
@@ -10,68 +10,91 @@
  if(root)root.YangzhouV3MoonGate=api;
 })(typeof window!=='undefined'?window:null,function(){
 'use strict';
-const RIM=Object.freeze({
- ink:'#6c7369',stone:'#a8a79a',light:'#e7e2d2',
- shadow:'rgba(54,61,55,.38)',inner:'rgba(74,79,69,.27)',
- threshold:'rgba(154,142,114,.32)'
+const ASSET=Object.freeze({
+ id:'moon-gate-01',path:'assets/v3/enclosures/moon-gate-01.webp',
+ width:1448,height:721,bytes:1246684,
+ sha256:'e06e5a87395563c605b86f4777ebfa02a183ba40f09eca3fac70d755f5370853',
+ source:'original V3 enclosure painting; untouched PNG-derived lossless WebP',
+ status:'original-painted-candidate-needs-wall-integration-review',
+ worldWidthForSouth30:40,visualOnly:true
 });
 const EPS=1e-7;
 function frame(gate,hall){
- const [x,y]=gate.center;
- const horizontal=Math.abs(gate.tangent[1])<EPS;
+ const [x,y]=gate.center,dx=gate.tangent[0],dy=gate.tangent[1];
+ const horizontal=Math.abs(dy)<EPS&&Math.abs(dx)>EPS;
  const north=horizontal&&y<(hall?.y??110);
- const radius=gate.width/2;
- // In an oblique overhead scene the architectural round opening is seen
- // in the facing wall elevation, while its centre remains empty on the map.
- // Its top is represented as a low projected arch on the existing wall ends:
- // the connecting upper lintel sits in image space, NOT in the ground plane.
- const facadeDepth=north?6:10;
- const faceY=y+4;
+ // Source is very nearly 2:1. Keep its EXACT aspect; no invented masonry.
+ // Put the painted stone foundation on the real south-facing wall base,
+ // while its taller tiled crown rises just above existing roof coping.
+ const worldWidth=(gate.width+(north?6:10));
+ const worldHeight=worldWidth*ASSET.height/ASSET.width;
+ const wallBottom=y+(north?10:14);
  return Object.freeze({
-  center:[x,y],radius,width:gate.width,axis:horizontal?'horizontal':'vertical',
-  top:faceY-(north?8:11),bottom:faceY+facadeDepth,
-  left:x-radius,right:x+radius,north,
-  // No point of this curve participates in wall geometry or solid masks.
-  decorativeOnly:true,collisionFree:true
+  gateId:gate.id,axis:horizontal?'horizontal':'vertical',
+  center:Object.freeze([x,y]),north,
+  x:x-worldWidth/2,y:wallBottom-worldHeight,
+  width:worldWidth,height:worldHeight,
+  imageAspectRatio:ASSET.width/ASSET.height,
+  source:ASSET.id,visualOnly:true,collisionFree:true,
+  physicalOpeningWidth:gate.width,clearWidth:gate.walkThroughWidth
  });
 }
-function draw(ctx,compiled,tile,{hall=null,showDetail=true}={}){
- if(!showDetail||!compiled?.gates?.length)return 0;
+function draw(ctx,compiled,tile,{hall=null,image=null,showDetail=true}={}){
+ if(!showDetail||!image||!compiled?.gates?.length)return 0;
+ const w=image.naturalWidth||image.width,h=image.naturalHeight||image.height;
+ if(w!==ASSET.width||h!==ASSET.height)throw Error('Moon Gate 01 source dimensions mismatch');
  const ox=tile.x*220,oy=tile.y*220;
- ctx.save();let count=0;
+ let painted=0;
+ ctx.save();
  for(const gate of compiled.gates){
-  const f=frame(gate,hall);
-  // North-south apertures remain true openings but should not receive a
-  // south-facing circular arc that would appear rotated in the ground plane.
-  if(f.axis!=='horizontal')continue;
-  const x=ox+f.center[0],y=oy+f.center[1];
-  const left=ox+f.left,right=ox+f.right;
-  // Thin painterly circular edging: the upper arc is suggested by a curve
-  // above the real opening, with a small highlight just within the edge.
-  // Never fill the gate or connect its bottom threshold with solid masonry.
-  const top=oy+f.top,bottom=oy+f.bottom;
-  const cx=x,cy=oy+f.top+f.radius;
-  ctx.lineCap='round';ctx.lineJoin='round';
-  ctx.strokeStyle=RIM.shadow;ctx.lineWidth=2.1;
-  ctx.beginPath();ctx.arc(cx,cy,f.radius,Math.PI,0,false);ctx.stroke();
-  ctx.strokeStyle=RIM.stone;ctx.lineWidth=1.45;
-  ctx.beginPath();ctx.arc(cx,cy,f.radius-1,Math.PI,0,false);ctx.stroke();
-  ctx.strokeStyle=RIM.light;ctx.lineWidth=.5;
-  ctx.beginPath();ctx.arc(cx,cy,f.radius-2.2,Math.PI,0,false);ctx.stroke();
-  // Stone reveal directly on the existing cut ends of the wall facade.
-  // Restrict jamb strokes to their own sides, with nothing across the void.
-  ctx.strokeStyle=RIM.ink;ctx.lineWidth=.9;
-  for(const end of [left,right]){
-   ctx.beginPath();ctx.moveTo(end,y+3.3);ctx.lineTo(end,bottom);ctx.stroke();
-  }
-  // Two small worn threshold stones. Deliberate centre gap persists.
-  ctx.strokeStyle=RIM.threshold;ctx.lineWidth=1.15;
-  ctx.beginPath();ctx.moveTo(left+1,bottom+.5);ctx.lineTo(left+4,bottom+.5);
-  ctx.moveTo(right-4,bottom+.5);ctx.lineTo(right-1,bottom+.5);ctx.stroke();
-  count++;
+  const placement=frame(gate,hall);
+  // Keep the compass-upright artwork. N-S walls require a separately
+  // authored rotated-elevation gate and must not get a stretched/turned copy.
+  if(placement.axis!=='horizontal')continue;
+  ctx.drawImage(image,ox+placement.x,oy+placement.y,
+   placement.width,placement.height);
+  painted++;
  }
  ctx.restore();
- return count;
+ return painted;
 }
-return Object.freeze({RIM,frame,draw});
+function digest(buffer){
+ return Array.from(new Uint8Array(buffer),v=>v.toString(16).padStart(2,'0')).join('');
+}
+async function verifyFile(blob){
+ if(blob.size!==ASSET.bytes)throw Error('Moon Gate 01: wrong original artwork size');
+ if(typeof crypto==='undefined'||!crypto.subtle)
+  throw Error('Moon Gate 01 requires HTTPS/localhost for SHA-256 verification');
+ if(digest(await crypto.subtle.digest('SHA-256',await blob.arrayBuffer()))!==ASSET.sha256)
+  throw Error('Moon Gate 01 SHA-256 mismatch; refusing substituted artwork');
+ let image;
+ if(typeof createImageBitmap==='function')image=await createImageBitmap(blob);
+ else image=await new Promise((resolve,reject)=>{
+  const url=URL.createObjectURL(blob),img=new Image();
+  img.onload=()=>{URL.revokeObjectURL(url);resolve(img)};
+  img.onerror=()=>{URL.revokeObjectURL(url);reject(Error('Gate image decode failed'))};
+  img.src=url;
+ });
+ if((image.naturalWidth||image.width)!==ASSET.width||
+    (image.naturalHeight||image.height)!==ASSET.height)
+  throw Error('Moon Gate 01 dimensions do not match original painting');
+ return image;
+}
+async function loadFromGitHub(timeoutMs=24000){
+ const controller=typeof AbortController!=='undefined'?new AbortController():null;
+ let timer;
+ try{
+  const response=await Promise.race([
+   fetch(ASSET.path,{cache:'no-store',...(controller?{signal:controller.signal}:{})}),
+   new Promise((_,reject)=>{
+    timer=setTimeout(()=>{
+     controller?.abort();reject(Error('Moon gate artwork request timed out'));
+    },timeoutMs);
+   })
+  ]);
+  if(!response.ok)throw Error('HTTP '+response.status+' loading Moon Gate 01');
+  return await verifyFile(await response.blob());
+ }finally{clearTimeout(timer);}
+}
+return Object.freeze({ASSET,frame,draw,verifyFile,loadFromGitHub});
 });
