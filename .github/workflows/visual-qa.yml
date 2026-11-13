@@ -29,6 +29,7 @@ jobs:
           node tests/v3-junction-visual.cjs
           node tests/v3-layer2-visual.cjs
           node tests/v3-courtyard-enclosure-visual.cjs
+          node tests/v3-moon-gate-visual.cjs
           node tests/v3-wall-geometry-visual.cjs
           node tests/v3-wall-roof-texture-visual.cjs
           node tests/v3-wall-profile-visual.cjs
