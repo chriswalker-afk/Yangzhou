@@ -19,6 +19,7 @@ const PALETTE=Object.freeze({
  shadow:'rgba(50,63,57,.13)',eave:'rgba(47,58,53,.55)'
 });
 function orientation(a,b,hall={x:110,y:110}){
+ hall=hall||{x:110,y:110};
  const dx=b[0]-a[0],dy=b[1]-a[1];
  if(Math.abs(dx)<EPS&&Math.abs(dy)<EPS)throw Error('Zero-length wall face');
  const horizontal=Math.abs(dy)<EPS;
