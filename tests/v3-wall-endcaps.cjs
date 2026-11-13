@@ -1,7 +1,8 @@
 'use strict';
-// Regression for the exact missing texture at the OUTER ends of the southern
-// courtyard wall (as seen in the rev41 user screenshot). Gate ends were
-// already intact; rev42 must not accidentally crop them or close the gate.
+// Regression for the persistent grass strip beneath the vertical roof at
+// the OUTER ends of the southern courtyard wall (rev42 screenshot).
+// The plaster/stone must reach x=38 / x=182 (not x=42 / x=178).
+// Gate ends remain at x=95 / x=125 and must not be extended.
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const wall=require('../assets/v3/wall-geometry.js');
@@ -37,9 +38,18 @@ assert(!equal(northFace.a,northFace.sourceA)&&
 const cornerPoints=[[42,178],[178,178]];
 const gatePoints=[[95,178],[125,178]];
 for(const face of south){
- assert.equal(face.cornerReveal,0,'Bottom facade must have zero corner trim');
- assert(equal(face.a,face.sourceA)&&equal(face.b,face.sourceB),
-  'Both the plaster and stone material quads must reach the original end');
+ assert.equal(face.cornerReveal,-profile.COPING_HALF,
+  'Bottom facade must extend by the roof half-width at true corner joins');
+ const delta=Math.sign(face.sourceB[0]-face.sourceA[0]);
+ assert.notEqual(face.cornerStart,face.cornerEnd,
+  'Each south-wall run has one actual L corner and one open moon-gate end');
+ if(face.cornerStart){
+  assert(Math.abs(face.a[0]-(face.sourceA[0]-4*delta))<EPS);
+  assert(equal(face.b,face.sourceB),'Moon-gate jamb remains unextended');
+ }else{
+  assert(equal(face.a,face.sourceA),'Moon-gate jamb remains unextended');
+  assert(Math.abs(face.b[0]-(face.sourceB[0]+4*delta))<EPS);
+ }
  const x0=Math.min(face.a[0],face.b[0]),x1=Math.max(face.a[0],face.b[0]);
  assert.equal(face.a[1],178);
  assert.equal(face.b[1],178);
@@ -47,14 +57,16 @@ for(const face of south){
  assert(inside(face.base,[(x0+x1)/2,191]));
 }
 for(const corner of cornerPoints){
- assert(south.some(f=>equal(f.a,corner)||equal(f.b,corner)),
-  'South plaster and stone must reach the true roof-owned corner '+corner);
+ const outward=corner[0]<110?-profile.COPING_HALF:profile.COPING_HALF;
+ const outer=[corner[0]+outward,corner[1]];
+ assert(south.some(f=>equal(f.a,outer)||equal(f.b,outer)),
+  'South plaster and stone must meet the outer vertical roof edge '+outer);
  const dx=corner[0]<110?.8:-.8;
- const plaster=[corner[0]+dx,186],stone=[corner[0]+dx,191];
+ const plaster=[outer[0]+dx,186],stone=[outer[0]+dx,191];
  assert(south.some(f=>inside(f.face,plaster)),
-  'Ivory plaster must reach within 0.8 units of the outside '+corner);
+  'Original ivory plaster must continue into the formerly open 4-unit roof-half strip '+outer);
  assert(south.some(f=>inside(f.base,stone)),
-  'Stone base must reach within 0.8 units of the outside '+corner);
+  'Original stone foundation must continue into the formerly open roof-half strip '+outer);
 }
 for(const cap of gatePoints){
  assert(south.some(f=>equal(f.a,cap)||equal(f.b,cap)),
@@ -69,7 +81,7 @@ for(const pt of [[110,178],[110,186],[110,191],[110,194]]){
  assert(!south.some(f=>inside(f.face,pt)||inside(f.base,pt)),
   'Real moon-gate aperture remains an empty gap: '+pt);
 }
-for(const pt of [[41,186],[179,186],[41,191],[179,191]]){
+for(const pt of [[37,186],[183,186],[37,191],[183,191]]){
  assert(!south.some(f=>inside(f.face,pt)||inside(f.base,pt)),
   'Do not add oversized white blocks beyond the actual courtyard corner '+pt);
 }
@@ -77,7 +89,7 @@ assert.equal(compiled.gates.length,1);
 assert.equal(compiled.gates[0].width,30);
 assert.equal(compiled.gates[0].walkThroughWidth,14);
 assert.equal(profile.cornerFills(compiled,rectangle.hall).length,4);
-assert(form.cornerJoins.every(j=>j.artificialPier===false&&j.southFacadeReveal===0));
+assert(form.cornerJoins.every(j=>j.artificialPier===false&&j.southFacadeReveal===-profile.COPING_HALF));
 assert(form.faces.filter(f=>f.axis==='vertical').every(f=>!f.hasFacade&&!f.face&&!f.base),
  'Vertical sides must remain roof and narrow eave only');
 for(const m of Object.values(wall.templates)){
@@ -98,10 +110,10 @@ assert.equal(manifest.prepared.sha256,roof.ASSET.sha256);
 assert.equal(manifest.faceMaterials.plaster.prepared.sha256,materials.ASSETS.plaster.sha256);
 assert.equal(manifest.faceMaterials.stone.prepared.sha256,materials.ASSETS.stone.sha256);
 const html=fs.readFileSync('wall-geometry-lab-v3.html','utf8');
-assert(html.includes('Wall Geometry &amp; Texture Lab (rev 42)'));
-assert(html.includes('assets/v3/wall-profile.js?rev=42'));
+assert(html.includes('Wall Geometry &amp; Texture Lab (rev 43)'));
+assert(html.includes('assets/v3/wall-profile.js?rev=43'));
 for(const key of ['showPlasterTexture','showStoneTexture','showPerspective','cornerNW','cornerNE','cornerSW','cornerSE'])
  assert(html.includes('id="'+key+'"'));
 assert(!fs.readFileSync('layer2-lab-v3.html','utf8').includes('wall-profile.js'));
 assert(!fs.readFileSync('courtyard-enclosure-lab-v3.html','utf8').includes('wall-profile.js'));
-console.log('V3 rev42 end-cap QA passed: full SW/SE plaster and stone to outer corners, untrimmed 95/125 moon-gate jambs, north reveal preserved, roof/hashes unchanged and protected Layer 1 routes.');
+console.log('V3 rev43 end-cap QA passed: SW+SE plaster/stone now reach x=38/x=182 outer eaves, untouched moon-gate jambs x=95/125, north reveal and roof/hashes unchanged.');
