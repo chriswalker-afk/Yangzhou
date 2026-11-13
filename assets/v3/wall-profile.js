@@ -117,11 +117,24 @@ function draw(ctx,compiled,tile,options={}){
  // of centreline winding. A south boundary exposes more plaster than north.
  for(const f of form.faces)fillQuad(ctx,f.face,ox,oy,gradient(ctx,f,ox,oy,ink));
  for(const f of form.cornerFills)fillQuad(ctx,f.face,ox,oy,ink.plasterBottom);
+ const plasterPainted=!!(options.materialPainter&&options.plasterImage);
+ const stonePainted=!!(options.materialPainter&&options.stoneImage);
+ if(plasterPainted){
+  options.materialPainter.drawPlaster(ctx,form,tile,options.plasterImage,{
+   FACE_START,BASE_HEIGHT,quad
+  });
+ }
  // Stone base is at the LOWEST visible edge, not a symmetric halo on grass.
  for(const f of form.faces)fillQuad(ctx,f.base,ox,oy,ink.foundation);
  for(const f of form.cornerFills)fillQuad(ctx,f.base,ox,oy,ink.foundation);
+ if(stonePainted){
+  options.materialPainter.drawStone(ctx,form,tile,options.stoneImage,{
+   FACE_START,BASE_HEIGHT,quad
+  });
+ }
  ctx.restore();
  return Object.freeze({projected:true,faces:form.faces.length,
+  plasterTextureUsed:plasterPainted,stoneTextureUsed:stonePainted,
   north:form.faces.filter(f=>f.location==='north').length,
   south:form.faces.filter(f=>f.location==='south').length,
   west:form.faces.filter(f=>f.location==='west').length,
