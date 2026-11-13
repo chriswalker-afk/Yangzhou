@@ -424,9 +424,33 @@ function attachLocalTexture(inputId,kind){
 }
 attachLocalTexture('plasterFile','plaster');
 attachLocalTexture('stoneFile','stone');
+const pavingStatus=document.getElementById('pavingStatus');
+function acceptPaving(image,source){
+ pavingImage=image;pavingSource=source;
+ pavingStatus.textContent='Courtyard Paving Texture 01 verified (1254×1254; SHA-256 matches). '+
+  'Layer 1B available beneath the hall and walls; source: '+source+
+  '. The original image is still a candidate awaiting repeat-seam visual review.';
+ render();
+}
+async function loadPaving(){
+ pavingStatus.textContent='Verifying the committed Courtyard Paving Texture 01 from GitHub…';
+ try{acceptPaving(await courtyardPaving.load(),'GitHub verified WebP');}
+ catch(error){
+  pavingStatus.textContent='Courtyard paving unavailable: '+String(error.message||error)+
+   '. Existing grass remains visible; no fake paving is substituted.';
+  render();
+ }
+}
+document.getElementById('pavingFile').addEventListener('change',async event=>{
+ const file=event.target.files?.[0];if(!file)return;
+ pavingStatus.textContent='Verifying selected original Courtyard Paving 01 WebP…';
+ try{acceptPaving(await courtyardPaving.verify(file),'local verified WebP');}
+ catch(error){pavingStatus.textContent='Paving artwork rejected: '+String(error.message||error);}
+});
 selectStudy('garden'); // Geometry is independent of optional art requests.
 loadRoofFromGitHub();
 startFaceMaterials();
+loadPaving();
 const artFiles=[
  {id:'hall',file:'courtyard-hall.webp'},
  {id:'grass',file:'grass.webp'},
