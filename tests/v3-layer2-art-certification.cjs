@@ -22,6 +22,9 @@ assert.equal(large.components.length,8);
 assert(large.components.every(x=>x.artworkCertifiedForV3&&x.humanVisualReviewComplete));
 assert(large.components.every(x=>x.historicAccuracyReviewed===false&&x.repetitionReviewed===false));
 assert(large.components.every(x=>x.productionApproved===false));
+assert(large.components.filter(x=>x.placement&&'candidateOnly' in x.placement)
+ .every(x=>x.placement.candidateOnly===true),
+ 'Artwork certification must not accidentally allow candidate placements in production');
 assert.equal(large.status,'v3-artwork-certified-production-gated');
 assert.equal(candidate.items.length,5);
 assert.equal(candidate.integration.shorelineReviewOutstanding,false);
