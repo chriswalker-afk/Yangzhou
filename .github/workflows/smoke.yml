@@ -32,6 +32,9 @@ jobs:
           node --check tests/v3-verge-art.cjs
           node --check tests/v3-junction-visual.cjs
           node --check assets/v3/layer2-placements.js
+          node --check assets/v3/layer2-integrated.js
+          node --check tests/v3-layer2-integrated.cjs
+          node --check tests/v3-layer2-integrated-visual.cjs
           node --check tests/v3-layer2.cjs
           node --check tests/v3-layer2-new-asset-intake.cjs
           node --check tests/v3-layer2-visual.cjs
@@ -75,6 +78,7 @@ jobs:
           node tests/v3-bank-art.cjs
           node tests/v3-verge-art.cjs
           node tests/v3-layer2.cjs
+          node tests/v3-layer2-integrated.cjs
           node tests/v3-layer2-new-asset-intake.cjs
           node tests/v3-courtyard-enclosure.cjs
           node tests/v3-moon-gate.cjs
