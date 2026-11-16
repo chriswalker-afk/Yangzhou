@@ -205,7 +205,7 @@
         "clearOfGateOpenings": true,
         "clearOfInternalWalkway": true,
         "roadCanalPortsUnchanged": true,
-        "candidateOnly": false
+        "candidateOnly": true
       },
       "productionApproved": false,
       "humanVisualReviewComplete": true,
@@ -262,7 +262,7 @@
         "clearOfGateOpenings": true,
         "clearOfInternalWalkway": true,
         "roadCanalPortsUnchanged": true,
-        "candidateOnly": false
+        "candidateOnly": true
       },
       "productionApproved": false,
       "humanVisualReviewComplete": true,
@@ -319,7 +319,7 @@
         "clearOfGateOpenings": true,
         "clearOfInternalWalkway": true,
         "roadCanalPortsUnchanged": true,
-        "candidateOnly": false
+        "candidateOnly": true
       },
       "productionApproved": false,
       "humanVisualReviewComplete": true,
@@ -376,7 +376,7 @@
         "clearOfGateOpenings": true,
         "clearOfInternalWalkway": true,
         "roadCanalPortsUnchanged": true,
-        "candidateOnly": false,
+        "candidateOnly": true,
         "requiresExpandedCourtyard": true
       },
       "productionApproved": false,
@@ -434,7 +434,7 @@
         "clearOfGateOpenings": true,
         "clearOfInternalWalkway": true,
         "roadCanalPortsUnchanged": true,
-        "candidateOnly": false,
+        "candidateOnly": true,
         "requiredEdgeSignature": "LWLW",
         "center": [
           110,
