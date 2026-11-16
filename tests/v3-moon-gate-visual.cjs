@@ -19,6 +19,9 @@ async function run(){
   await page.goto(URL,{waitUntil:'domcontentloaded'});
   // The new independent walkway has its own pixel QA; preserve older baselines.
   await page.locator('#showWalkway').uncheck();
+  // This older art-isolation test compares the original transparent hole;
+  // the new ground-projection has dedicated pixel tests with the toggle on.
+  await page.locator('#showGateGround').uncheck();
   await page.waitForFunction(()=>document.querySelector('#moonGateStatus')?.textContent.includes(
    'Original Moon Gate 01 verified (1448×721'),{timeout:35000});
   await page.waitForFunction(()=>document.querySelector('#roofStatus')?.textContent.includes(
