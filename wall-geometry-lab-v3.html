@@ -65,6 +65,7 @@ a{color:#2f6457}
 <label><input type="checkbox" id="showHall" checked> Courtyard hall</label>
 <label><input type="checkbox" id="showTextures"> Use existing painted Layer 1A materials</label>
 <label><input type="checkbox" id="showPaving" checked> Show Layer 1B courtyard paving</label>
+<label><input type="checkbox" id="showWalkway" checked> Show Layer 1B painted stone walkway</label>
 <label><input type="checkbox" id="showRoofTexture" checked> Show painted roof-tile coping</label>
 <label><input type="checkbox" id="showPerspective" checked> South-facing wall projection (new)</label>
 <label><input type="checkbox" id="showPlasterTexture" checked> Painted ivory plaster</label>
@@ -106,6 +107,17 @@ a{color:#2f6457}
 <h2>Moon Gate 01 — actual painted junction close-up</h2>
 <p class="muted">Shows the original transparent tiled-roof moon gate rendered over the genuine cut wall opening, not a new vector semicircle. The visible aperture remains clear; the image and physical collision geometry are separate. Review the stone base, roof joins, threshold and perspective at normal size and at 3×.</p>
 <div class="preview"><canvas id="moonGateClose" width="324" height="240" style="width:324px;max-width:100%;height:auto" aria-label="Magnified crop from the actual courtyard tile showing the painted moon gate and adjoining white wall"></canvas></div>
+</section>
+<section aria-label="Standalone Yangzhou path artwork" id="walkwayInspection">
+<h2>Layer 1B — Courtyard Walkway Texture 01</h2>
+<p class="muted">This is a <strong>real reusable, independently stored transparent texture</strong>, not an edited scene screenshot. It reuses the untouched accepted Jiangnan courtyard paving pigments in a slimmer run of gently regular weathered slabs, with small handmade joints. Geometry positions it between the genuine moon gate and the hall without changing streets, canals, collision or surrounding stone.</p>
+<div class="paving-proof">
+<figure style="margin:0"><img id="walkwayArtwork" src="assets/v3/materials/courtyard-walkway-01.svg" alt="Original transparent repeating stone walkway artwork with five gently weathered flagstones" style="display:block;width:120px;height:200px;background:#d7dcc7;border:1px solid #c8bfaa;border-radius:4px"><figcaption style="font-size:.8rem;text-align:center">Standalone SVG texture</figcaption></figure>
+<figure style="margin:0"><canvas id="walkwayRepeat" width="240" height="400" style="width:180px;height:300px;background:#d7dcc7;border:1px solid #c8bfaa" aria-label="Vertical repeat proof of actual path texture"></canvas><figcaption style="font-size:.8rem;text-align:center">Repeated vertical path</figcaption></figure>
+<p class="muted">In the six-tile scene above, switch <strong>Show Layer 1B painted stone walkway</strong> on/off to compare; inspect at 1× and 3×. Rectangular enclosures use the southern gate. Three-sided gardens use the northern gate. L and T templates have no invented path. The path is Layer 1B artwork over existing ground, below the hall and walls.</p>
+</div>
+<div class="status" id="walkwayStatus" role="status" aria-live="polite">Verifying Courtyard Walkway Texture 01 on GitHub…</div>
+<div class="toolbar"><label for="walkwayFile">Compare the exact standalone artwork locally:</label><input id="walkwayFile" type="file" accept=".svg,image/svg+xml"><a href="https://github.com/chriswalker-afk/Yangzhou/blob/feat/v3-courtyard-walkway-texture-01/assets/v3/materials/courtyard-walkway-01.svg">Open walkway texture in GitHub</a></div>
 </section>
 <section aria-label="Four corner joint inspections" id="cornerInspection">
 <h2>Corner joins — close inspection</h2>
@@ -154,6 +166,7 @@ a{color:#2f6457}
 <script src="assets/v3/wall-roof-texture.js?rev=44"></script>
 <script src="assets/v3/moon-gate-frame.js?rev=45"></script>
 <script src="assets/v3/courtyard-paving.js?rev=44"></script>
+<script src="assets/v3/courtyard-walkway.js?rev=46"></script>
 <script>
 (()=>{'use strict';
 const topology=window.YangzhouTileTopology,geometry=window.YangzhouV3Geometry,
@@ -162,7 +175,8 @@ const topology=window.YangzhouTileTopology,geometry=window.YangzhouV3Geometry,
  wallProfile=window.YangzhouV3WallProfile,
  moonGate=window.YangzhouV3MoonGate,
  wallFaceMaterials=window.YangzhouV3WallFaceMaterials,
- courtyardPaving=window.YangzhouV3CourtyardPaving;
+ courtyardPaving=window.YangzhouV3CourtyardPaving,
+ courtyardWalkway=window.YangzhouV3CourtyardWalkway;
 const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d');
 const CODES=Object.freeze({
  garden:['LLLL','LLLL','LLLL','LLLL','LLLL','LLLL'],
@@ -180,7 +194,8 @@ const edgePalette=Object.freeze({
 let tiles=[],selected=0,gridOn=true,zoomOn=false,study='garden',
   choices=[...starting],gallery={},imageErrors=[],roofImage=null,roofSource='none',
  faceImages={},faceErrors=[],faceSource={},pavingImage=null,pavingSource='none',
- moonGateImage=null,moonGateSource='none';
+ moonGateImage=null,moonGateSource='none',
+ walkwayImage=null,walkwaySource='none';
 const visible=id=>document.getElementById(id).checked;
 const tileModel=i=>choices[i]==='none'?null:walls.templates[choices[i]];
 function tileList(name){
@@ -224,6 +239,13 @@ function renderMoonGateInspection(){
  out.imageSmoothingEnabled=true;out.imageSmoothingQuality='high';
  out.drawImage(canvas,x,y,54*3,40*3,0,0,close.width,close.height);
 }
+function renderWalkwayRepeat(){
+ const proof=document.getElementById('walkwayRepeat');
+ if(!proof)return;
+ const painter=proof.getContext('2d');
+ painter.clearRect(0,0,proof.width,proof.height);
+ if(walkwayImage)courtyardWalkway.repeatProof(painter,walkwayImage,{width:proof.width,height:proof.height});
+}
 function renderPavingRepeat(){
  const c=document.getElementById('pavingRepeat');
  if(!c)return;
@@ -257,6 +279,11 @@ function render(){
     // Only route-safe, genuinely enclosed rectangles get a surface.
     if(visible('showPaving')&&pavingImage)
      courtyardPaving.paint(ctx,tile,model,pavingImage,{valid:true});
+    // Texture is separately clipped to the gate-to-hall ground corridor.
+    // It never modifies the existing Layer 1A road/canal masks.
+    if(visible('showWalkway')&&walkwayImage)
+     courtyardWalkway.paint(ctx,tile,model,walls.compile(model),
+      walkwayImage,{valid:true});
     if(visible('showHall')&&gallery.hall){
      const h=model.hall;
      ctx.drawImage(gallery.hall,ox+h.x-48,oy+h.y-23.5,96,47);
@@ -316,7 +343,8 @@ function render(){
   'Plaster: '+(visible('showPerspective')&&visible('showPlasterTexture')&&faceImages.plaster?'painted (candidate)':'flat diagnostic')+'. '+
   'Stone: '+(visible('showPerspective')&&visible('showStoneTexture')&&faceImages.stone?'painted (candidate)':'flat diagnostic')+'. '+
   'Courtyard paving: '+(visible('showPaving')&&pavingImage?'genuine Layer 1B candidate (enclosed rectangles only)':'off/unavailable')+'. '+
-  'Moon gate: '+(visible('showMoonGate')&&moonGateImage?'original painted Moon Gate 01':'off / original artwork unavailable')+'.';
+  'Moon gate: '+(visible('showMoonGate')&&moonGateImage?'original painted Moon Gate 01':'off / original artwork unavailable')+'. '+ 
+  'Walkway: '+(visible('showWalkway')&&walkwayImage?'real stone-slab artwork (Layer 1B)':'off/unavailable')+'.';
  document.getElementById('wallInfo').textContent=
   'Tile ('+current.x+','+current.y+') • edges '+current.edges.join('')+
   ' • '+(model?model.name:'No wall layout')+
@@ -333,6 +361,14 @@ function render(){
    painted:!!(moonGateImage&&visible('showMoonGate')),imageVerified:!!moonGateImage,
    source:moonGateSource,visualOnly:true,solidMaskUnchanged:true,
    status:'original-painting-reused-awaiting-visual-review'},
+  courtyardWalkway:model?{
+   id:courtyardWalkway.ASSET.id,enabled:visible('showWalkway'),
+   imageVerified:!!walkwayImage,source:walkwaySource,
+   route:courtyardWalkway.routeFor(model,selectedDetail),
+   painted:!!(report?.valid&&visible('showWalkway')&&walkwayImage&&courtyardWalkway.routeFor(model,selectedDetail)),
+   layer:'1B',status:'independent-texture-candidate-awaiting-visual-review',
+   changesLayer1A:false,changesWallGeometry:false
+  }:null,
   courtyardPaving:model?{
    layer:'1B',region:courtyardPaving.regionFor(model),enabled:visible('showPaving'),
    painted:!!(report?.valid&&visible('showPaving')&&pavingImage&&courtyardPaving.regionFor(model)),
@@ -357,6 +393,7 @@ function render(){
  },null,2);
  renderCornerInspection();
  renderMoonGateInspection();
+ renderWalkwayRepeat();
  renderPavingRepeat();
 }
 function refresh(){
@@ -382,7 +419,7 @@ document.getElementById('plan').addEventListener('change',e=>{
  choices[selected]=e.target.value;refresh();
 });
 for(const id of ['showWall','showGate','showJoints','showHall','showTextures',
- 'showRoofTexture','showPerspective','showPlasterTexture','showStoneTexture','showPaving','showMoonGate'])
+ 'showRoofTexture','showPerspective','showPlasterTexture','showStoneTexture','showPaving','showMoonGate','showWalkway'])
  document.getElementById(id).addEventListener('change',render);
 button('zoom',()=>{
  zoomOn=!zoomOn;canvas.style.width=zoomOn?'1980px':'660px';
@@ -517,6 +554,30 @@ loadRoofFromGitHub();
 startFaceMaterials();
 loadPaving();
 loadMoonGate();
+const walkwayStatus=document.getElementById('walkwayStatus');
+function acceptWalkway(image,source){
+ walkwayImage=image;walkwaySource=source;
+ walkwayStatus.textContent='Courtyard Walkway 01 verified (480×800; exact SHA-256). '+
+  'Self-contained transparent SVG derived from the unchanged original paving painting. '+
+  'Review as a repeatable Layer 1B material. Source: '+source+'.';
+ render();
+}
+async function loadWalkway(){
+ walkwayStatus.textContent='Checking the standalone stone walkway artwork and SHA-256…';
+ try{acceptWalkway(await courtyardWalkway.load(),'GitHub branch SVG')}
+ catch(error){
+  walkwayStatus.textContent='Walkway not available: '+String(error.message||error)+
+   '. The original courtyard paving remains unchanged and no fake path is drawn.';
+  render();
+ }
+}
+document.getElementById('walkwayFile').addEventListener('change',async event=>{
+ const file=event.target.files?.[0];if(!file)return;
+ walkwayStatus.textContent='Verifying selected stone walkway SVG…';
+ try{acceptWalkway(await courtyardWalkway.verifyFile(file),'local exact SVG')}
+ catch(error){walkwayStatus.textContent='Walkway artwork rejected: '+String(error.message||error)}
+});
+loadWalkway();
 const artFiles=[
  {id:'hall',file:'courtyard-hall.webp'},
  {id:'grass',file:'grass.webp'},
