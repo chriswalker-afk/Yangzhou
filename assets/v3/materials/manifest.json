@@ -81,5 +81,31 @@
     "repeatSeamApproved": false,
     "reviewStatus": "committed-visual-review-candidate",
     "seamNote": "Candidate image is repeated unchanged in a separate 2×2 proof; visual seam QA is required before final approval, no implicit claim of seamlessness."
+  },
+  "layer1BWalkway": {
+    "id": "courtyard-walkway-01",
+    "name": "Weathered Jiangnan Courtyard Walkway Texture 01",
+    "layer": "1B",
+    "path": "assets/v3/materials/courtyard-walkway-01.svg",
+    "mimeType": "image/svg+xml",
+    "width": 480,
+    "height": 800,
+    "bytes": 918754,
+    "sha256": "3c04af446d89159b09940a73d40e2490fcd5a99dfe5b270eacad75f0b98f4c10",
+    "gitBlobSha1": "b78ac7574bc42b062a664cbcef01cd701a853645",
+    "artworkType": "standalone-self-contained-transparent-repeating-stone-walkway",
+    "pigmentSource": "assets/v3/materials/courtyard-paving-01.webp",
+    "pigmentSourceSha256": "fc7f03b7f047295ac0e1de8d7872d5f143874bc506c4b9d9bbd39a324da4a083",
+    "embeddedPigmentUnmodified": true,
+    "derivedStoneRows": 5,
+    "worldWidth": 12,
+    "worldRepeat": 20,
+    "placement": "ground-only geometry-aligned gate-to-hall approach; rectangle south gate and partial north gate, never across invalid route corridors",
+    "layer1AUnchanged": true,
+    "physicalGateUnchanged": true,
+    "productionApproved": false,
+    "reviewStatus": "independent-painterly-asset-candidate-awaiting-visual-review",
+    "repeatSeamApproved": false,
+    "note": "Artwork is an independent self-contained SVG with authentic original courtyard paving pigment embedded, clipped into 5 gently regular weathered slab shapes. Not an edited scene screenshot. No external assets requested by the SVG."
   }
 }

@@ -11,6 +11,8 @@ async function main(){
   const page=await browser.newPage({viewport:{width:1450,height:1000},deviceScaleFactor:1});
   page.on('pageerror',e=>errors.push('desktop: '+e.message));
   await page.goto(URL,{waitUntil:'domcontentloaded'});
+  // The new independent walkway has its own pixel QA; preserve older baselines.
+  await page.locator('#showWalkway').uncheck();
   await page.waitForFunction(()=>document.querySelector('#pavingStatus')?.textContent.includes('verified (1254×1254'),{timeout:25000});
   await page.waitForFunction(()=>document.querySelector('#roofStatus')?.textContent.includes('verified'),{timeout:30000});
   await page.waitForFunction(()=>document.querySelector('#faceStatus')?.textContent.includes('2/2 authentic'),{timeout:30000});
