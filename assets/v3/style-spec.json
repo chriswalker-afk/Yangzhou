@@ -150,6 +150,87 @@
         "scale and colour balance",
         "repetition"
       ]
+    },
+    {
+      "id": "garden-pavilion-01",
+      "name": "Yangzhou Garden Pavilion 01",
+      "type": "garden architecture",
+      "image": "assets/v3/large/garden-pavilion-01.webp",
+      "manifest": "assets/v3/large/manifest.json",
+      "placement": "tile-local-compositor-geometry-guarded",
+      "compassUpright": true,
+      "status": "integrated-candidate-pending-visual-review",
+      "productionApproved": false,
+      "requiresHumanReview": [
+        "artwork scale at 1x/3x",
+        "wall and paving occlusion",
+        "no blocked route"
+      ]
+    },
+    {
+      "id": "bamboo-grove-01",
+      "name": "Yangzhou Bamboo Grove 01",
+      "type": "vegetation",
+      "image": "assets/v3/large/bamboo-grove-01.webp",
+      "manifest": "assets/v3/large/manifest.json",
+      "placement": "tile-local-compositor-geometry-guarded",
+      "compassUpright": true,
+      "status": "integrated-candidate-pending-visual-review",
+      "productionApproved": false,
+      "requiresHumanReview": [
+        "artwork scale at 1x/3x",
+        "wall and paving occlusion",
+        "no blocked route"
+      ]
+    },
+    {
+      "id": "garden-rockery-02",
+      "name": "Yangzhou Garden Rockery 02",
+      "type": "garden rockery",
+      "image": "assets/v3/large/garden-rockery-02.webp",
+      "manifest": "assets/v3/large/manifest.json",
+      "placement": "tile-local-compositor-geometry-guarded",
+      "compassUpright": true,
+      "status": "integrated-candidate-pending-visual-review",
+      "productionApproved": false,
+      "requiresHumanReview": [
+        "artwork scale at 1x/3x",
+        "wall and paving occlusion",
+        "no blocked route"
+      ]
+    },
+    {
+      "id": "courtyard-wing-01",
+      "name": "Yangzhou Courtyard Wing 01",
+      "type": "architecture",
+      "image": "assets/v3/large/courtyard-wing-01.webp",
+      "manifest": "assets/v3/large/manifest.json",
+      "placement": "tile-local-compositor-geometry-guarded",
+      "compassUpright": true,
+      "status": "integrated-candidate-pending-visual-review",
+      "productionApproved": false,
+      "requiresHumanReview": [
+        "artwork scale at 1x/3x",
+        "wall and paving occlusion",
+        "no blocked route"
+      ]
+    },
+    {
+      "id": "waterside-landing-01",
+      "name": "Yangzhou Waterside Landing 01",
+      "type": "waterfront architecture",
+      "image": "assets/v3/large/waterside-landing-01.webp",
+      "manifest": "assets/v3/large/manifest.json",
+      "placement": "tile-local-compositor-geometry-guarded",
+      "compassUpright": true,
+      "status": "integrated-candidate-pending-visual-review",
+      "productionApproved": false,
+      "requiresHumanReview": [
+        "artwork scale at 1x/3x",
+        "wall and paving occlusion",
+        "no blocked route",
+        "alpha edge vs painted bank/water texture"
+      ]
     }
   ],
   "animationLibrary": [],
