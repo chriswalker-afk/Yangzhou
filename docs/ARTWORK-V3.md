@@ -49,6 +49,10 @@ Use the relevant axis: horizontal position on north/south edges; vertical positi
 
 The first, deliberately plain geometry study is in [base-geometry.js](../assets/v3/base-geometry.js). It is **not** intended to be a finished visual material or a revival of V2's low-quality vector artwork.
 
+## Canonical asset-generation brief
+
+For new architecture, vegetation, rockery, portal and waterfront Layer 2 artwork, use [the reference-locked V3 master asset prompt](V3-CANONICAL-ASSET-GENERATION-PROMPT.md) with the original Courtyard Hall 01 and relevant certified sprites attached. An image-generation prompt must request **one independent transparent sprite**, not a complete scene or tile; geometry and existing grass/water/stone materials are added by the renderer. The prompt requires shallow south-facing near-overhead camera, unmodified compass orientation, consistent pigment/line weight, no built-in ground plane, and 1×/3× validation.
+
 ## One consistent visual language
 
 The initial palette and material slots are specified in [style-spec.json](../assets/v3/style-spec.json). Its colours are provisional seed values derived from the project's existing art direction, **not** automatically approved.
