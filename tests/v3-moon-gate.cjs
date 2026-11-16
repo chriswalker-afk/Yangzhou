@@ -48,7 +48,7 @@ assert.equal(gatePainter.draw(ctx,rectangle,tile,{}),0,
  'No fake vector art when authentic moon gate is unavailable');
 const html=fs.readFileSync('wall-geometry-lab-v3.html','utf8');
 for(const expected of ['id="showMoonGate" checked',
- 'assets/v3/moon-gate-frame.js?rev=45',
+ 'assets/v3/moon-gate-frame.js?rev=47',
  'moonGatePainter:visible(\'showMoonGate\')?moonGate:null',
  'moonGateImage,','id="moonGateClose"','id="moonGateStatus"',
  'loadMoonGate();'])assert(html.includes(expected),expected);
