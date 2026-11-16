@@ -36,6 +36,40 @@
       width:52,height:37,shadow:0,collision:'solid',compassUpright:true,
       status:'candidate-awaiting-visual-and-historical-review',
       productionApproved:false
+    }),
+    // Rev 49: new original transparent painted Layer 2 candidates.
+    // Do not insert these into legacy default seed plans; the unified
+    // composer makes occupancy decisions against wall/gate/ground masks.
+    'garden-pavilion-01':Object.freeze({
+      id:'garden-pavilion-01',name:'Yangzhou Garden Pavilion 01',
+      image:'assets/v3/large/garden-pavilion-01.webp',width:52,height:52,
+      shadow:0,collision:'solid',compassUpright:true,
+      status:'integrated-candidate-pending-visual-review',productionApproved:false
+    }),
+    'bamboo-grove-01':Object.freeze({
+      id:'bamboo-grove-01',name:'Yangzhou Bamboo Grove 01',
+      image:'assets/v3/large/bamboo-grove-01.webp',width:62,height:45,
+      shadow:0,collision:'solid',compassUpright:true,
+      status:'integrated-candidate-pending-visual-review',productionApproved:false
+    }),
+    'garden-rockery-02':Object.freeze({
+      id:'garden-rockery-02',name:'Yangzhou Garden Rockery 02',
+      image:'assets/v3/large/garden-rockery-02.webp',width:60,height:41,
+      shadow:0,collision:'solid',compassUpright:true,
+      status:'integrated-candidate-pending-visual-review',productionApproved:false
+    }),
+    'courtyard-wing-01':Object.freeze({
+      id:'courtyard-wing-01',name:'Yangzhou Courtyard Wing 01',
+      image:'assets/v3/large/courtyard-wing-01.webp',width:33,height:87,
+      shadow:0,collision:'solid',compassUpright:true,
+      status:'integrated-candidate-pending-visual-review',productionApproved:false
+    }),
+    'waterside-landing-01':Object.freeze({
+      id:'waterside-landing-01',name:'Yangzhou Waterside Landing 01',
+      image:'assets/v3/large/waterside-landing-01.webp',width:95,height:47,
+      shadow:0,collision:'shoreline',compassUpright:true,
+      status:'integrated-candidate-shoreline-alpha-review-required',
+      productionApproved:false
     })
   });
   // Fixed candidate anchors are deliberately interior. NEVER rotate or mirror
@@ -92,6 +126,15 @@
         return false;
     }
     const g=geometry.compile(tile.edges);
+    // A waterside landing is the sole intentional exception to land-only
+    // footprints. It occupies the NORTH shore of one straight east-west
+    // canal, with its steps overlapping only the upper 10 world units of
+    // water. No arbitrary inland or junction placement is valid.
+    if(c.collision==='shoreline')
+      return tile.edges.join('')==='LWLW'&&
+        Math.abs(detail.x-110)<1e-7&&Math.abs(detail.y-53)<1e-7&&
+        g.paths.length===1&&g.paths[0].type==='W'&&
+        g.paths[0].kind==='line'&&g.paths[0].width===88;
     const routePoints=c.collision==='trunk'?[[detail.x,detail.y]]:points;
     for(const path of g.paths){
       // Only the willow's trunk is solid; willow canopy may drape over a route.
@@ -176,9 +219,17 @@
     for(const t of tiles)plan(t); // Reject invalid placements rather than silently move them.
     return tiles;
   }
-  function loadImages(){
+  const LEGACY_IMAGE_IDS=Object.freeze([
+    'courtyard-hall-01','willow-tree-01','garden-rockery-01'
+  ]);
+  function loadImages(ids=LEGACY_IMAGE_IDS){
     if(typeof Image==='undefined')return Promise.reject(Error('Browser images required'));
-    return Promise.all(Object.values(COMPONENTS).map(c=>new Promise((resolve,reject)=>{
+    if(!Array.isArray(ids)||ids.some(id=>!COMPONENTS[id]))
+      return Promise.reject(Error('Unknown Layer 2 image preload id'));
+    // Historical V3 labs only need the original three images. Avoid
+    // downloading all five additional multi-megabyte candidates in each
+    // previous lab; rev49 loads those separately with SHA-256 verification.
+    return Promise.all(ids.map(id=>COMPONENTS[id]).map(c=>new Promise((resolve,reject)=>{
       const image=new Image();image.onload=()=>resolve([c.id,image]);
       image.onerror=()=>reject(Error('Missing V3 artwork candidate: '+c.image));image.src=c.image;
     }))).then(entries=>Object.fromEntries(entries));

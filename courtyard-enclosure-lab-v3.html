@@ -288,7 +288,11 @@ const graphicSpecs=[
   apply:img=>{bankImage=img;}},
  {name:'path verge',url:vergeArt.path,preview:'path-verge-edge.webp',
   apply:img=>{vergeImage=img;}},
- ...Object.values(layer2.COMPONENTS).map(c=>({
+ // This rev35 historic laboratory has EXACTLY three compact Layer 2
+ // previews in its rev35 manifest. New rev49 sprites belong to the
+ // independent geometry-guarded lab, not its 8/8 baseline.
+ ...['courtyard-hall-01','willow-tree-01','garden-rockery-01']
+    .map(id=>layer2.COMPONENTS[id]).map(c=>({
   name:c.name,url:c.image,preview:{
    'courtyard-hall-01':'courtyard-hall.webp',
    'willow-tree-01':'willow-tree.webp',
