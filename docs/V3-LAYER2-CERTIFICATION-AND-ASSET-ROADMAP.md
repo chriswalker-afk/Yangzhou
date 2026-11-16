@@ -76,6 +76,10 @@ A historical **White Pagoda**, **Five-Pavilion Bridge**, larger **stone boat** o
 
 Acceptance for any new asset: preserve PNG master if available; produce independent transparency-backed lossless WebP with documented SHA-256, world footprint and orientation; render genuine artwork at 1× and 3× next to existing buildings/walls/water; test all allowed edge signatures, collisions, normal/magnified/mobile and repeated layouts; certify visual artwork separately from historical and production milestones.
 
+## Canonical prompt for every new sprite
+
+All newly commissioned Layer 2 artwork should start with [the reusable V3 asset prompt](V3-CANONICAL-ASSET-GENERATION-PROMPT.md). The fixed camera/material/transparency paragraphs remain unchanged; fill only the object, compass orientation, world footprint and allowed geometric placement. Attach **real certified source artwork** with each request. This prevents perspective/style drift and forbids painting full scene backgrounds into independent sprites.
+
 ## 4. Rules to retain
 
 - Original **220×220** tile coordinates; connect only with exact **44-unit street** or **88-unit canal** mouths.
