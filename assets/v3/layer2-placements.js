@@ -20,21 +20,21 @@
       id:'courtyard-hall-01',name:'Yangzhou Courtyard Hall 01',
       image:'assets/v3/large/courtyard-hall-01.webp',
       width:96,height:47,shadow:0,collision:'solid',compassUpright:true,
-      status:'candidate-awaiting-visual-and-historical-review',
+      status:'v3-artwork-certified-production-gated',artworkCertifiedForV3:true,
       productionApproved:false
     }),
     'willow-tree-01':Object.freeze({
       id:'willow-tree-01',name:'Yangzhou Willow Tree 01',
       image:'assets/v3/large/willow-tree-01.webp',
       width:48,height:58,shadow:0,collision:'trunk',trunkRadius:7,compassUpright:true,
-      status:'candidate-awaiting-visual-and-historical-review',
+      status:'v3-artwork-certified-production-gated',artworkCertifiedForV3:true,
       productionApproved:false
     }),
     'garden-rockery-01':Object.freeze({
       id:'garden-rockery-01',name:'Yangzhou Garden Rockery 01',
       image:'assets/v3/large/garden-rockery-01.webp',
       width:52,height:37,shadow:0,collision:'solid',compassUpright:true,
-      status:'candidate-awaiting-visual-and-historical-review',
+      status:'v3-artwork-certified-production-gated',artworkCertifiedForV3:true,
       productionApproved:false
     }),
     // Rev 49: new original transparent painted Layer 2 candidates.
@@ -44,32 +44,32 @@
       id:'garden-pavilion-01',name:'Yangzhou Garden Pavilion 01',
       image:'assets/v3/large/garden-pavilion-01.webp',width:52,height:52,
       shadow:0,collision:'solid',compassUpright:true,
-      status:'integrated-candidate-pending-visual-review',productionApproved:false
+      status:'v3-artwork-certified-production-gated',artworkCertifiedForV3:true,productionApproved:false
     }),
     'bamboo-grove-01':Object.freeze({
       id:'bamboo-grove-01',name:'Yangzhou Bamboo Grove 01',
       image:'assets/v3/large/bamboo-grove-01.webp',width:62,height:45,
       shadow:0,collision:'solid',compassUpright:true,
-      status:'integrated-candidate-pending-visual-review',productionApproved:false
+      status:'v3-artwork-certified-production-gated',artworkCertifiedForV3:true,productionApproved:false
     }),
     'garden-rockery-02':Object.freeze({
       id:'garden-rockery-02',name:'Yangzhou Garden Rockery 02',
       image:'assets/v3/large/garden-rockery-02.webp',width:60,height:41,
       shadow:0,collision:'solid',compassUpright:true,
-      status:'integrated-candidate-pending-visual-review',productionApproved:false
+      status:'v3-artwork-certified-production-gated',artworkCertifiedForV3:true,productionApproved:false
     }),
     'courtyard-wing-01':Object.freeze({
       id:'courtyard-wing-01',name:'Yangzhou Courtyard Wing 01',
       image:'assets/v3/large/courtyard-wing-01.webp',width:33,height:87,
       shadow:0,collision:'solid',compassUpright:true,
-      status:'integrated-candidate-pending-visual-review',productionApproved:false
+      status:'v3-artwork-certified-production-gated',artworkCertifiedForV3:true,productionApproved:false
     }),
     'waterside-landing-01':Object.freeze({
       id:'waterside-landing-01',name:'Yangzhou Waterside Landing 01',
       image:'assets/v3/large/waterside-landing-01.webp',width:95,height:47,
       shadow:0,collision:'shoreline',compassUpright:true,
-      status:'integrated-candidate-shoreline-alpha-review-required',
-      productionApproved:false
+      status:'v3-artwork-certified-north-bank-only',
+      artworkCertifiedForV3:true,productionApproved:false
     })
   });
   // Fixed candidate anchors are deliberately interior. NEVER rotate or mirror
