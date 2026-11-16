@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "layer": 2,
-  "status": "source-art-prepared-binaries-not-yet-imported",
+  "status": "binary-source-and-lossless-webp-committed-awaiting-visual-review",
   "gameplayApproved": false,
-  "note": "Five genuine previously generated drawings prepared as transparent lossless WebPs in accompanying art ZIP. This review branch contains the source intake contract and an interactive browser-local file preview only. Full-size binary artwork is NOT yet in GitHub; do not pretend otherwise.",
+  "note": "All five original PNGs and prepared lossless WebPs are committed. Existing Layer 2 geometry, walls, base materials and V2 game untouched. Preview autoloads these exact SHA-256 verified files; artistic composition and landing shore edges require visual approval.",
   "items": [
     {
       "id": "garden-pavilion-01",
@@ -14,7 +14,17 @@
       "worldHeight": 52,
       "role": "garden architecture",
       "orientation": "upright roof, south-facing facade",
-      "review": "check roof scale versus Courtyard Hall 01"
+      "review": "check roof scale versus Courtyard Hall 01",
+      "width": 897,
+      "height": 890,
+      "bytes": 767926,
+      "sha256": "1cd0e16415598a6342f792f60997cd565cf4f9e16c5500ce1d14279c1da3d57b",
+      "sourceSha256": "52384cd5bdbb44c52c9b825c211bdafa5c5def4f16e70233a9c26586ab5e7098",
+      "image": "assets/v3/large/garden-pavilion-01.webp",
+      "sourcePath": "assets/v3/large/sources/garden-pavilion-01-original.png",
+      "binaryCommitted": true,
+      "productionApproved": false,
+      "reviewStatus": "candidate-committed-pending-artwork-approval"
     },
     {
       "id": "bamboo-grove-01",
@@ -25,7 +35,17 @@
       "worldHeight": 45,
       "role": "garden vegetation",
       "orientation": "compass upright",
-      "review": "check soft foliage outline and rock detail"
+      "review": "check soft foliage outline and rock detail",
+      "width": 1235,
+      "height": 904,
+      "bytes": 1438686,
+      "sha256": "5e23db734113f7d55472e079a15d5c84f270c693028c6afc1a35324fa92ff52e",
+      "sourceSha256": "7d069456583d392fd8dc5df0565dfa5b3a50dbacd47ba738026e3a37b0b1b73c",
+      "image": "assets/v3/large/bamboo-grove-01.webp",
+      "sourcePath": "assets/v3/large/sources/bamboo-grove-01-original.png",
+      "binaryCommitted": true,
+      "productionApproved": false,
+      "reviewStatus": "candidate-committed-pending-artwork-approval"
     },
     {
       "id": "garden-rockery-02",
@@ -36,7 +56,17 @@
       "worldHeight": 42,
       "role": "garden feature",
       "orientation": "compass upright",
-      "review": "check flowering-tree scale"
+      "review": "check flowering-tree scale",
+      "width": 1307,
+      "height": 895,
+      "bytes": 1633144,
+      "sha256": "d186614ecdd64654a3c9c52d33c7d2ab83aaea0875a42c09d65e64ccbd886998",
+      "sourceSha256": "e66efcbd2327a325265af53f71a1dfe2382d3973e247a1dab17623c5c179882f",
+      "image": "assets/v3/large/garden-rockery-02.webp",
+      "sourcePath": "assets/v3/large/sources/garden-rockery-02-original.png",
+      "binaryCommitted": true,
+      "productionApproved": false,
+      "reviewStatus": "candidate-committed-pending-artwork-approval"
     },
     {
       "id": "courtyard-wing-01",
@@ -47,7 +77,17 @@
       "worldHeight": 87,
       "role": "north-south courtyard building",
       "orientation": "roof ridge north-south; do not rotate bitmaps",
-      "review": "check painted angle against Courtyard Hall 01"
+      "review": "check painted angle against Courtyard Hall 01",
+      "width": 546,
+      "height": 1450,
+      "bytes": 1024848,
+      "sha256": "c2ccf8349d7941c056182411fd721ad311cc3f03aae29c61304572b844b91a55",
+      "sourceSha256": "c97aa915f702c4655f093b35498764c834d55807d2818626cfbe6b9c7730b754",
+      "image": "assets/v3/large/courtyard-wing-01.webp",
+      "sourcePath": "assets/v3/large/sources/courtyard-wing-01-original.png",
+      "binaryCommitted": true,
+      "productionApproved": false,
+      "reviewStatus": "candidate-committed-pending-artwork-approval"
     },
     {
       "id": "waterside-landing-01",
@@ -58,7 +98,18 @@
       "worldHeight": 55,
       "role": "canal bank entrance",
       "orientation": "south-facing roof; stone stairs meet water",
-      "review": "MASKED DERIVATIVE; check cutout edges and avoid embedded water overlap. Do not place at gameplay shore without geometry-specific clipping."
+      "review": "MASKED DERIVATIVE; check cutout edges and avoid embedded water overlap. Do not place at gameplay shore without geometry-specific clipping.",
+      "width": 1691,
+      "height": 844,
+      "bytes": 1769156,
+      "sha256": "ffb2576ebb2df91346fab6cb8878696f92b38fca8f14758dec18445194b04335",
+      "sourceSha256": "1571f9966dc5d7d2645674491d21e4e095033a49501234d2241cd3081c7a7879",
+      "image": "assets/v3/large/waterside-landing-01.webp",
+      "sourcePath": "assets/v3/large/sources/waterside-landing-01-original.png",
+      "binaryCommitted": true,
+      "productionApproved": false,
+      "reviewStatus": "candidate-committed-pending-artwork-approval",
+      "notes": "Masked transparent derivative from original opaque scene. Hand inspection of shore, embedded water, and the original land/water interface is still required; keep visual candidate only."
     }
   ]
 }
