@@ -68,7 +68,7 @@ pre{background:#faf8f2;border:1px solid #d0c6b3;padding:12px;white-space:pre-wra
  <li>Are the bank edge and water continuous at both tile seams?</li>
  <li>Does the pavilion roof keep the same camera angle and scale as the courtyard hall?</li>
  </ul>
- <p class="muted">The masked shoreline of Waterside Landing 01 still needs human artwork approval. This preview is a comparison only and does not alter the production water mask or the playable V2 game.</p>
+ <p class="muted">The original north-bank landing and its masked shoreline have now been visually accepted for this exact connected-canal configuration. This remains a prototype comparison: other bank orientations, historical details and final V2 integration are not covered.</p>
  </section>
 </div>
 <h2>Verified geometry and artwork report</h2>
@@ -120,7 +120,7 @@ function render(){
  closeCtx.drawImage(canvas,243*3,16*3,174*3,128*3,
   0,0,close.width,close.height);
  document.getElementById('report').textContent=JSON.stringify({
-  revision:50,review:'candidate-needs-shoreline-art-approval',
+  revision:50,review:'v3-artwork-certified-north-bank-only',
   tiles:proof.TILES.map(x=>({grid:[x.x,x.y],edges:x.edges})),
   canal:{...proof.WATER,seams:[220,440],source:'authored Layer 1A 88-unit water corridor',
    unchanged:true,paintedSource:!!(materials.water&&checkbox('showTextures')),
@@ -137,7 +137,7 @@ async function verifyLanding(){
   if(!metaResp.ok)throw Error('Asset manifest HTTP '+metaResp.status);
   const spec=(await metaResp.json()).items.find(a=>a.id==='waterside-landing-01');
   if(!spec||!spec.binaryCommitted||spec.productionApproved!==false)
-   throw Error('Landing is not an explicitly recorded review candidate');
+   throw Error('Landing is not recorded as the expected V3 prototype artwork');
   const response=await fetch(spec.image,{cache:'no-store'});
   if(!response.ok)throw Error('Original masked artwork HTTP '+response.status);
   const blob=await response.blob();
@@ -151,7 +151,7 @@ async function verifyLanding(){
   sprites['waterside-landing-01']=bitmap;
   spriteVerified=true;sourceReport=hash;
   STATUS.textContent='Original Waterside Landing 01 verified: '+spec.width+'×'+spec.height+
-   ' lossless WebP; SHA-256 matches the committed artwork. Still awaiting visual approval at water edge.';
+   ' lossless WebP; SHA-256 matches the committed artwork. Visual artwork accepted for the existing north-bank canal; historical and production checks remain.';
   render();
  }catch(error){
   STATUS.textContent='Landing image NOT verified: '+String(error.message||error)+
