@@ -93,8 +93,13 @@ function drawGroundInAperture(ctx,gate,compiled,tile,placement,ground){
   // projected threshold. Crucially these copies are CLIPPED TO THE CIRCLE,
   // not drawn on the outside Layer 1A grass or across any gameplay port.
   const first=base+Math.floor((cy-aperture.ry-base)/period)*period;
+  // The projected circular view is fractionally wider than the horizontal
+  // 12-unit path on a near/south wall. Widen *only the image seen through the
+  // aperture*, never the actual ground corridor or its physical clearance.
+  const visibleWidth=Math.max(route.width,aperture.rx*2+.4);
+  const visibleX=ox+gate.center[0]-visibleWidth/2;
   for(let y=first;y<cy+aperture.ry-EPS;y+=period)
-   ctx.drawImage(ground.walkwayImage,ox+route.x,y,route.width,period);
+   ctx.drawImage(ground.walkwayImage,visibleX,y,visibleWidth,period);
  }else if(selection.region){
   const period=ground.pavingPainter.ASSET.worldPeriod;
   const left=cx-aperture.rx,right=cx+aperture.rx;
