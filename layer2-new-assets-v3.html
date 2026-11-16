@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yangzhou V3 — Five New Layer 2 Candidates</title>
+<style>
+:root{color-scheme:light}*{box-sizing:border-box}
+body{margin:0;background:#eee3cd;color:#36463e;font:15px/1.5 system-ui,sans-serif}
+main{max-width:1110px;margin:20px auto 64px;padding:0 17px}
+h1,h2{font-family:Georgia,serif;line-height:1.2}
+h1{font-size:1.9rem;margin:0 0 12px}h2{font-size:1.2rem}
+.note,.status{background:#fff9e9;padding:12px 15px;border:1px solid #c9bfa9;border-radius:6px;margin:12px 0}
+.warn{border-left:4px solid #ae8355}
+.toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:12px 0}
+button,input,select{font:inherit}
+button,select{padding:8px 11px;border:1px solid #819286;border-radius:6px;background:#fffaf0;color:#334a3d}
+button{cursor:pointer}
+button[aria-pressed="true"]{background:#355b4c;color:#fff}
+input[type=file]{width:100%;max-width:340px}
+.preview{border:1px solid #c7bea8;border-radius:8px;background:#f8f4eb;padding:14px;overflow:auto}
+canvas{display:block;width:660px;max-width:none;height:auto;cursor:crosshair}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.tile{border:1px solid #c8bfa9;background:#fffaf0;padding:12px;border-radius:7px}
+.tile small{display:block;color:#627164;margin-bottom:7px}
+.thumb{display:flex;align-items:center;justify-content:center;background:#d6ddc8;height:170px;overflow:hidden}
+.thumb img{max-width:100%;max-height:100%;object-fit:contain}
+.thumb .missing{font-size:.84rem;color:#536357;text-align:center;padding:15px}
+strong{color:#293f35}
+p{margin-top:8px}
+a{color:#355d4d}
+#tileInfo{margin:10px 0}
+@media(max-width:650px){main{padding:0 10px}h1{font-size:1.6rem}}
+</style></head><body><main>
+<h1>Yangzhou V3 — Layer 2 Artwork Intake (rev 48)</h1>
+<div class="note warn"><strong>Candidate-only comparison, not the playable game.</strong>
+Five new original drawings have been prepared as independent lossless WebP assets. This branch contains a preview and intake manifest; GitHub's current upload channel has <strong>not yet received the five full-resolution binary files</strong>. To review the exact art, unzip the accompanying asset pack and select its five <code>.webp</code> files below. No substitute art or altered Courtyard Hall 01 is used.</div>
+<div class="toolbar">
+<label for="assetFiles"><strong>Load the five prepared WebPs:</strong>
+<input id="assetFiles" type="file" accept="image/webp,.webp,image/png,.png" multiple></label>
+<button id="zoom" type="button" aria-pressed="false">Inspect at 3×</button>
+<button id="showGrid" type="button" aria-pressed="true">Hide tile grid</button>
+<label for="layout">Geography <select id="layout"><option value="garden">All-land garden and courtyard</option><option value="water">Canal neighbourhood</option></select></label>
+</div>
+<div id="status" class="status" role="status" aria-live="polite">Awaiting the five original artwork files. Base geography and existing accepted materials load independently.</div>
+<h2>Six-tile scene — five new candidates and existing hall reference</h2>
+<div class="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Six tile local 220 by 220 composition proof containing five new art candidates and original hall for size comparison"></canvas></div>
+<div id="tileInfo" class="status" aria-live="polite">Click a tile to inspect its artwork source and footprint.</div>
+<h2>Individual artwork inspection</h2>
+<p>These thumbnails show the exact files selected above. All five are separate Layer 2 sprites; the canal landing's cut-out should receive additional manual shore-edge QA before becoming a production object.</p>
+<div class="grid" id="cards"></div>
+<p><a href="wall-geometry-lab-v3.html?rev=47">Existing courtyard walls, paving and moon gate</a> · <a href="layer2-lab-v3.html?rev=29">Original Layer 2 art comparison</a> · <a href="assets/v3/large/new-candidates-manifest.json">Asset intake manifest</a> · <a href="index.html">Playable V2 (unchanged)</a></p>
+</main>
+<script src="tile-topology.js"></script>
+<script src="assets/v3/base-geometry.js"></script>
+<script src="assets/v3/material-runtime.js"></script>
+<script src="assets/v3/edge-system.js"></script>
+<script src="assets/v3/canal-bank-art.js"></script>
+<script src="assets/v3/path-verge-art.js"></script>
+<script>
+(()=>{'use strict';
+const SPECS=[
+{id:'garden-pavilion-01',title:'Garden Pavilion 01',w:52,h:52,x:110,y:110,note:'Open garden pavilion; check existing hall roof scale and perspective.'},
+{id:'bamboo-grove-01',title:'Bamboo Grove 01',w:62,h:45,x:110,y:110,note:'Garden planting; foliage may overhang safely, roots remain on land.'},
+{id:'garden-rockery-02',title:'Garden Rockery 02',w:60,h:42,x:110,y:110,note:'Flowering rock garden; keep rock footprints outside route and pier.'},
+{id:'courtyard-wing-01',title:'Courtyard Wing 01',w:37,h:87,x:110,y:110,note:'North–south roof ridge; image must not be rotated to follow a tile rotation.'},
+{id:'waterside-landing-01',title:'Waterside Landing 01',w:95,h:55,x:110,y:110,note:'Separate shore-aligned assembly still needed. Mask cutout requires visual review.'},
+{id:'courtyard-hall-01',title:'Existing Courtyard Hall 01',w:96,h:47,x:110,y:110,note:'Existing Yangzhou V3 approved-for-comparison original, not replaced.'}
+];
+const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d'),status=document.getElementById('status');
+const imgs={},urls={},base={},fallback={grass:'#d5d5b7',stone:'#dfd1b5',water:'#7ea9a5'};
+const gallery=document.getElementById('cards');
+let zoom=false,grid=true,layout='garden',bank=null,verge=null;
+function renderCards(){
+ gallery.replaceChildren();
+ for(const sp of SPECS){
+  const card=document.createElement('article');card.className='tile';
+  const title=document.createElement('strong');title.textContent=sp.title;
+  const meta=document.createElement('small');meta.textContent=sp.w+' × '+sp.h+' world units'+(sp.id==='courtyard-hall-01'?' — existing reference':' — prepared candidate');
+  const thumb=document.createElement('div');thumb.className='thumb';
+  if(urls[sp.id]){const i=document.createElement('img');i.src=urls[sp.id];i.alt=sp.title;thumb.append(i);}
+  else {const t=document.createElement('span');t.className='missing';t.textContent='Load the original artwork file to inspect';thumb.append(t);}
+  const note=document.createElement('p');note.textContent=sp.note;
+  card.append(title,meta,thumb,note);gallery.append(card);
+ }
+}
+function coords(i){return {x:i%3,y:Math.floor(i/3)}}
+function tileEdges(i){
+ if(layout==='garden')return 'LLLL'.split('');
+ const water=['LSLS','LSLS','LSLS','LWLW','LWLW','LWLW'];
+ return water[i].split('');
+}
+function basePattern(id){
+ if(!base[id])return fallback[id];
+ try{return window.YangzhouV3Materials.makePattern(ctx,base[id],window.YangzhouV3Materials.periodById[id]);}
+ catch{return fallback[id];}
+}
+function render(){
+ ctx.setTransform(3,0,0,3,0,0);ctx.clearRect(0,0,660,440);
+ ctx.fillStyle=basePattern('grass');ctx.fillRect(0,0,660,440);
+ const edges=window.YangzhouV3Edges,geo=window.YangzhouV3Geometry;
+ const palette={stone:basePattern('stone'),water:basePattern('water'),
+ pathVerge:'#b5a68c',pathContact:'#839078',canalBank:'#baa789',
+ canalContact:'#567b70',bridgeEdge:'#b3a994',bridgeContact:'#707a73'};
+ for(let i=0;i<6;i++){
+  const tile=coords(i),ox=tile.x*220,oy=tile.y*220,sp=SPECS[i],bitmap=imgs[sp.id];
+  ctx.save();ctx.beginPath();ctx.rect(ox,oy,220,220);ctx.clip();
+  const edgesIn=tileEdges(i);
+  const geom=edges.compile(geo.compile(edgesIn));
+  edges.draw(ctx,geom,palette,{x:ox,y:oy,edges:true,
+   paintedBankOverlay:bank?(c,g,p)=>window.YangzhouV3CanalBankArt.draw(c,g,bank,p):null,
+   paintedVergeOverlay:verge?(c,g,p)=>window.YangzhouV3PathVergeArt.draw(c,g,verge,p):null
+  });
+  if(bitmap)ctx.drawImage(bitmap,ox+sp.x-sp.w/2,oy+sp.y-sp.h/2,sp.w,sp.h);
+  ctx.restore();
+  if(grid){ctx.strokeStyle='rgba(44,66,56,.40)';ctx.lineWidth=.75;ctx.strokeRect(ox+.25,oy+.25,219.5,219.5);}
+  ctx.fillStyle='rgba(249,246,236,.92)';ctx.fillRect(ox+6,oy+6,209,26);
+  ctx.fillStyle='#334d40';ctx.font='9px system-ui';ctx.fillText(sp.title,ox+11,oy+17);
+  ctx.font='8px system-ui';ctx.fillText(edgesIn.join('/')+' • '+sp.w+'×'+sp.h+' world units',ox+11,oy+27);
+ }
+}
+function statusUpdate(){
+ const count=SPECS.slice(0,5).filter(x=>imgs[x.id]).length;
+ status.textContent=count+' of 5 new artwork candidates loaded; existing hall '+(imgs['courtyard-hall-01']?'loaded':'not loaded')+
+ '. The source images are shown without rotation or rescaling beyond their game-world footprint. Full-size GitHub binary intake remains pending.';
+ renderCards();render();
+}
+function decode(f,id){
+ return new Promise((resolve,reject)=>{
+  const u=URL.createObjectURL(f);const im=new Image();
+  im.onload=()=>{if(urls[id])URL.revokeObjectURL(urls[id]);urls[id]=u;imgs[id]=im;resolve();};
+  im.onerror=()=>{URL.revokeObjectURL(u);reject(Error('Cannot decode '+f.name))};im.src=u;
+ });
+}
+document.getElementById('assetFiles').addEventListener('change',async ev=>{
+ const files=Array.from(ev.target.files||[]);let failed=[];
+ for(const file of files){
+  const id=SPECS.find(x=>file.name===x.id+'.webp'||file.name===x.id+'.png')?.id;
+  if(!id){failed.push(file.name+' (unrecognised name)');continue;}
+  try{await decode(file,id)}catch(e){failed.push(e.message)}
+ }
+ statusUpdate();if(failed.length)status.textContent+=' Skipped: '+failed.join('; ');
+});
+canvas.addEventListener('click',event=>{
+ const rect=canvas.getBoundingClientRect();
+ const x=(event.clientX-rect.left)/rect.width*660,y=(event.clientY-rect.top)/rect.height*440;
+ const i=Math.floor(y/220)*3+Math.floor(x/220);
+ if(i<0||i>5)return;
+ const sp=SPECS[i];document.getElementById('tileInfo').textContent=
+ sp.title+': footprint '+sp.w+' × '+sp.h+' world units. '+sp.note;
+});
+document.getElementById('layout').addEventListener('change',e=>{layout=e.target.value;render()});
+document.getElementById('zoom').addEventListener('click',e=>{
+ zoom=!zoom;canvas.style.width=zoom?'1980px':'660px';e.currentTarget.setAttribute('aria-pressed',String(zoom));render();
+});
+document.getElementById('showGrid').addEventListener('click',e=>{
+ grid=!grid;e.currentTarget.setAttribute('aria-pressed',String(grid));e.currentTarget.textContent=grid?'Hide tile grid':'Show tile grid';render();
+});
+renderCards();render();
+Promise.allSettled([window.YangzhouV3Materials.loadAll(),window.YangzhouV3CanalBankArt.load(),window.YangzhouV3PathVergeArt.load(),fetch('assets/v3/large/courtyard-hall-01.webp').then(r=>{if(!r.ok)throw Error('hall fetch');return r.blob()}).then(blob=>decode(blob,'courtyard-hall-01'))])
+.then(results=>{
+ if(results[0].status==='fulfilled')Object.assign(base,results[0].value.images);
+ if(results[1].status==='fulfilled')bank=results[1].value;
+ if(results[2].status==='fulfilled')verge=results[2].value;
+ statusUpdate();
+});
+})();
+</script></body></html>
