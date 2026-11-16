@@ -28,6 +28,9 @@ for(const item of spec.items){
   item.id+' must match original generative painting');
  assert.equal(item.binaryCommitted,true);
  assert.equal(item.productionApproved,false);
+ assert.equal(item.aspectRatioWorldMatch,true,'Do not stretch painterly assets in game geometry');
+ assert(Math.abs(item.worldWidth/item.worldHeight-item.width/item.height)/(item.width/item.height)<.035);
+
 
 }
 assert(html.includes('DecompressionStream(\'deflate-raw\')'));
