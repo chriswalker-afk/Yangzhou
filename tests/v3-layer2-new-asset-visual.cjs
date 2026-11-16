@@ -16,15 +16,18 @@ async function main(){
   const page=await browser.newPage({viewport:{width:1440,height:900}});
   page.on('pageerror',e=>errors.push(e.message));
   await page.goto(url,{waitUntil:'load'});
-  await page.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('existing hall loaded'),{timeout:30000});
+  await page.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('5 of 5 verified GitHub WebP candidates loaded')&&document.querySelector('#status')?.textContent.includes('existing hall loaded'),null,{timeout:40000});
   assert.match(await page.locator('h1').textContent(),/rev 48/);
   assert.equal(await page.locator('#cards article').count(),6);
   const initial=await sample(page);
+  assert.equal(await page.locator('#cards img').count(),6,
+   'Five original candidates and original hall should all be visible');
+  await page.screenshot({path:'artifacts/v3/new-layer2-all-committed-candidates-1x.png',fullPage:true});
   const original=fs.readFileSync('assets/v3/large/courtyard-hall-01.webp');
-  // Proxy upload checks the browser's decoded source-image path, not artistic
-  // approval. No new binaries are pretended to exist in the GitHub checkout.
+  // The optional local replacement must not overwrite the committed binary.
+  // Verify canvas changes only within this local comparison preview.
   await page.locator('#assetFiles').setInputFiles([{name:'garden-pavilion-01.webp',mimeType:'image/webp',buffer:original}]);
-  await page.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('1 of 5'),{timeout:5000});
+  await page.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('5 of 5 verified GitHub WebP candidates loaded'),null,{timeout:5000});
   assert.notDeepEqual(await sample(page),initial,'Selected real WebP must affect game canvas');
   await page.screenshot({path:'artifacts/v3/new-layer2-file-import-1x.png',fullPage:true});
   await page.locator('#zoom').click();
@@ -36,10 +39,10 @@ async function main(){
   const mobile=await browser.newPage({viewport:{width:390,height:820},isMobile:true,hasTouch:true});
   mobile.on('pageerror',e=>errors.push(e.message));
   await mobile.goto(url,{waitUntil:'load'});
-  await mobile.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('existing hall loaded'),{timeout:30000});
-  await mobile.screenshot({path:'artifacts/v3/new-layer2-mobile-before-import.png',fullPage:true});
+  await mobile.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('5 of 5 verified GitHub WebP candidates loaded')&&document.querySelector('#status')?.textContent.includes('existing hall loaded'),null,{timeout:40000});
+  await mobile.screenshot({path:'artifacts/v3/new-layer2-all-committed-mobile.png',fullPage:true});
   assert.deepEqual(errors,[],'No browser errors in upload preview');
-  console.log('V3 rev48 review intake supports real WebP input, drawing, garden/canal layouts, 3x zoom and mobile without affecting original V2.');
+  console.log('V3 rev48 verified five committed lossless WebPs and original hall auto-load, compare-toggle, garden/canal, desktop, 3x and mobile, without affecting original V2.');
  }finally{await browser.close()}
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});
