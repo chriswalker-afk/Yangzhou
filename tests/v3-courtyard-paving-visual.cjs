@@ -11,6 +11,9 @@ async function main(){
   const page=await browser.newPage({viewport:{width:1450,height:1000},deviceScaleFactor:1});
   page.on('pageerror',e=>errors.push('desktop: '+e.message));
   await page.goto(URL,{waitUntil:'domcontentloaded'});
+  // Keep the original empty-gate paving baseline; separate portal QA tests
+  // the authentic stone-surface projection through the transparent ring.
+  await page.locator('#showGateGround').uncheck();
   // The new independent walkway has its own pixel QA; preserve older baselines.
   await page.locator('#showWalkway').uncheck();
   await page.waitForFunction(()=>document.querySelector('#pavingStatus')?.textContent.includes('verified (1254×1254'),{timeout:25000});
