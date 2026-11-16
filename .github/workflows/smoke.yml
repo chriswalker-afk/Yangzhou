@@ -39,6 +39,8 @@ jobs:
           node --check tests/v3-courtyard-enclosure-visual.cjs
           node --check assets/v3/moon-gate-frame.js
           node --check tests/v3-moon-gate.cjs
+          node --check tests/v3-moon-gate-ground.cjs
+          node --check tests/v3-moon-gate-ground-visual.cjs
           node --check tests/v3-moon-gate-visual.cjs
           node --check assets/v3/wall-geometry.js
           node --check tests/v3-wall-geometry.cjs
@@ -74,6 +76,7 @@ jobs:
           node tests/v3-layer2.cjs
           node tests/v3-courtyard-enclosure.cjs
           node tests/v3-moon-gate.cjs
+          node tests/v3-moon-gate-ground.cjs
           node tests/v3-wall-geometry.cjs
           node tests/v3-wall-roof-texture.cjs
           node tests/v3-wall-profile.cjs
