@@ -25,7 +25,8 @@
       "binaryCommitted": true,
       "productionApproved": false,
       "reviewStatus": "candidate-committed-pending-artwork-approval",
-      "aspectRatioWorldMatch": true
+      "aspectRatioWorldMatch": true,
+      "integrationStatus": "sprite-registered-and-preview-placed"
     },
     {
       "id": "bamboo-grove-01",
@@ -47,7 +48,8 @@
       "binaryCommitted": true,
       "productionApproved": false,
       "reviewStatus": "candidate-committed-pending-artwork-approval",
-      "aspectRatioWorldMatch": true
+      "aspectRatioWorldMatch": true,
+      "integrationStatus": "sprite-registered-and-preview-placed"
     },
     {
       "id": "garden-rockery-02",
@@ -69,7 +71,8 @@
       "binaryCommitted": true,
       "productionApproved": false,
       "reviewStatus": "candidate-committed-pending-artwork-approval",
-      "aspectRatioWorldMatch": true
+      "aspectRatioWorldMatch": true,
+      "integrationStatus": "sprite-registered-and-preview-placed"
     },
     {
       "id": "courtyard-wing-01",
@@ -91,7 +94,8 @@
       "binaryCommitted": true,
       "productionApproved": false,
       "reviewStatus": "candidate-committed-pending-artwork-approval",
-      "aspectRatioWorldMatch": true
+      "aspectRatioWorldMatch": true,
+      "integrationStatus": "sprite-registered-and-preview-placed"
     },
     {
       "id": "waterside-landing-01",
@@ -114,7 +118,17 @@
       "productionApproved": false,
       "reviewStatus": "candidate-committed-pending-artwork-approval",
       "notes": "Masked transparent derivative from original opaque scene. Hand inspection of shore, embedded water, and the original land/water interface is still required; keep visual candidate only.",
-      "aspectRatioWorldMatch": true
+      "aspectRatioWorldMatch": true,
+      "integrationStatus": "shoreline-geometry-guarded-alpha-needs-review"
     }
-  ]
+  ],
+  "integration": {
+    "module": "assets/v3/layer2-integrated.js",
+    "preview": "layer2-integrated-v3.html",
+    "status": "geometry-guarded-review-candidate",
+    "changesV2": false,
+    "preservedOriginalPngAndWebp": true,
+    "requiresVisualReview": true,
+    "shorelineReviewOutstanding": true
+  }
 }
