@@ -55,6 +55,8 @@ async function run(){
   await page.locator('#zoom').click();
   assert.equal(await page.locator('#scene').evaluate(e=>e.style.width),'1980px');
   await page.screenshot({path:'artifacts/v3/walkway-real-tile-3x.png',fullPage:true});
+  // Restore 1x canvas CSS size before click coordinates expressed in 660x440 space.
+  await page.locator('#zoom').click();
   await page.locator('#study').selectOption('canal');
   // The top row is intentionally land; choose a lower ROW canal tile for the rejection check.
   await page.locator('#scene').click({position:{x:110,y:330}});
