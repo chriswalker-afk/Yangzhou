@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yangzhou V3 | Unified Layer 2 Composition</title>
+<style>
+:root{color-scheme:light}*{box-sizing:border-box}
+body{margin:0;background:#eee3cd;color:#35433b;font:15px/1.5 system-ui,sans-serif}
+main{max-width:1110px;margin:22px auto 50px;padding:0 18px}
+h1,h2{font-family:Georgia,serif;line-height:1.22}h1{font-size:2rem}h2{font-size:1.2rem}
+.lead{background:#fff9ed;border-left:4px solid #798a72;padding:13px 17px;border-radius:6px}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:14px 0}
+button,select{font:inherit;border:1px solid #718276;color:#30433a;background:#fffdf6;border-radius:7px;padding:7px 11px}
+button{cursor:pointer}button[aria-pressed="true"]{background:#33594e;color:#fff}
+label{display:inline-flex;align-items:center;gap:5px;white-space:normal}
+label input{accent-color:#386854}
+.preview{overflow:auto;background:#f9f6ed;border:1px solid #cec3aa;border-radius:9px;padding:14px;max-width:100%}
+canvas{display:block;max-width:none;cursor:crosshair}
+.status{border:1px solid #d3c6a7;border-radius:6px;background:#faf0de;padding:10px;margin:10px 0}
+.muted,small{color:#57665a}
+.flex{display:flex;gap:16px;flex-wrap:wrap}
+.corner-gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.corner-gallery figure{margin:0;border:1px solid #c8bfaa;background:#f9f6ef;padding:7px;border-radius:7px}
+.corner-gallery canvas{display:block;width:100%;height:auto;image-rendering:auto;border:1px solid #d4cbb8}
+.corner-gallery figcaption{font-size:.78rem;text-align:center;margin-top:5px;color:#57695a}
+@media(max-width:650px){.corner-gallery{grid-template-columns:repeat(2,minmax(0,1fr));}}
+.card{border:1px solid #c9c1af;border-radius:8px;background:#fff9ed;padding:12px;flex:1;min-width:250px}
+.card h2{margin-top:0}
+.paving-proof{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin:12px 0 20px}
+.paving-proof canvas{width:360px;max-width:100%;height:auto;border:1px solid #c8bfaa;border-radius:7px;background:#d7dcc7}
+.paving-proof p{flex:1;min-width:200px}
+table{border-collapse:collapse;width:100%;font-size:.91rem}
+td,th{text-align:left;border-bottom:1px solid #d7cfbd;padding:7px}
+.swatch{display:inline-block;width:18px;height:11px;border:1px solid #888;vertical-align:middle}
+pre{background:#faf6ee;border:1px solid #cfc5b4;border-radius:6px;padding:12px;font-size:.77rem;max-height:240px;overflow:auto}
+a{color:#2f6457}
+#wallInfo{min-height:62px}
+@media(max-width:650px){h1{font-size:1.55rem}main{padding:0 10px}}
+</style></head><body><main>
+<h1>Yangzhou V3 — Unified Layer 2 Composition (rev 49)</h1>
+<p class="lead"><strong>Isolated Layer 2 proof, not the playable game.</strong> These are continuous, tile-owned wall <em>centrelines</em> with exact mitered corners and T-connections. The moon gate is a genuine opening cut out of all four wall bands, not a painting laid over a solid wall. <strong>New perspective-aware wall profile:</strong> the same painted roof coping now sits over a visible ivory plaster face, with a subtle stone footing. Far (top) walls have a shallow façade; near (bottom) walls show more wall height. Side walls rotate the roof tiles 90° but have only a thin shaded coping/eave edge, with <strong>no exposed side-wall plaster or stone</strong>. No plaster is drawn above or behind the coping. <strong>Revision 43: bottom-wall ivory plaster and stone continue four world units beyond the wall centreline to the outside edge of the perpendicular roof. This closes the remaining green strip visible below the lower corners. Top-wall faces stay tucked; moon-gate gaps and roof tiles are unchanged.</strong> Ivory plaster and stone foundations now use our two authentic watercolour texture candidates. They repeat along horizontal south-facing wall façades only, while remaining available as flat diagnostics for comparison. All three paintings are review candidates.</p>
+<p>Test a complete courtyard, a three-sided garden, an L-corner and a T-junction around our existing courtyard hall. <strong>New Layer 1B:</strong> the genuine Jiangnan courtyard paving painting is clipped to the enclosed rectangle beneath the hall and walls, leaving all original grass, street and canal geometry untouched. Toggle each painted material independently, or switch off the perspective profile to compare against the old symmetric diagnostic bands. Toggle the road/canal layouts: invalid courtyards are rejected instead of crossing an 88-unit water channel or 44-unit street. The older wall-sprite lab remains available for comparison.</p>
+<div class="toolbar">
+<label for="study">Six-tile neighbourhood
+<select id="study">
+<option value="mixed">Connected gardens, residences and canal</option>
+<option value="garden">All-land courtyard workshop</option>
+<option value="street">Connected 44-unit streets</option>
+<option value="canal">Connected 88-unit canals</option>
+<option value="junction">Three-way canal junction</option>
+</select></label>
+<label for="plan">Selected tile
+<select id="plan">
+<option value="wide">Wider residence — hall + vertical wing</option>
+<option value="pavilion">Garden pavilion and bamboo</option>
+<option value="rockery">Rockery 02 and bamboo garden</option>
+<option value="bamboo">Bamboo and rockery</option>
+<option value="landing">North-bank waterside landing</option>
+<option value="rectangle">Original enclosed rectangle + moon gate</option>
+<option value="partial">Partial enclosure + moon gate</option>
+<option value="elbow">L-shaped wall</option>
+<option value="tee">T-junction wall + opening</option>
+<option value="none">No walls</option>
+</select></label>
+<button id="zoom" aria-pressed="false" type="button">Inspect at 3×</button>
+<button id="showGrid" aria-pressed="true" type="button">Hide tile grid</button>
+</div>
+<div class="toolbar">
+<label><input type="checkbox" id="showWall" checked> Show continuous walls</label>
+<label><input type="checkbox" id="showGate"> Show passable gate guides (diagnostic)</label>
+<label><input type="checkbox" id="showMoonGate" checked> Show original painted Moon Gate 01</label>
+<label><input type="checkbox" id="showGateGround" checked> Show courtyard floor through the moon gate</label>
+<label><input type="checkbox" id="showJoints"> Show diagnostic L/T joint markers</label>
+<label><input type="checkbox" id="showHall" checked> Courtyard hall</label>
+<label><input type="checkbox" id="showNewAssets" checked> Five new painted assets</label>
+<label><input type="checkbox" id="showLanding" checked> Landing (shoreline art review)</label>
+<label><input type="checkbox" id="showTextures"> Use existing painted Layer 1A materials</label>
+<label><input type="checkbox" id="showPaving" checked> Show Layer 1B courtyard paving</label>
+<label><input type="checkbox" id="showWalkway" checked> Show Layer 1B painted stone walkway</label>
+<label><input type="checkbox" id="showRoofTexture" checked> Show painted roof-tile coping</label>
+<label><input type="checkbox" id="showPerspective" checked> South-facing wall projection (new)</label>
+<label><input type="checkbox" id="showPlasterTexture" checked> Painted ivory plaster</label>
+<label><input type="checkbox" id="showStoneTexture" checked> Painted stone foundation</label>
+</div>
+<div class="status" id="roofStatus" role="status" aria-live="polite">Loading the exact committed Wall Roof-Tile Texture 01 candidate. Flat diagnostic coping remains available if the network request fails.</div>
+<div class="toolbar">
+<label for="roofFile">Preview accepted WebP locally:</label>
+<input id="roofFile" type="file" accept=".webp,image/webp">
+<a id="roofUpload" href="https://github.com/chriswalker-afk/Yangzhou/blob/main/assets/v3/wall-materials/wall-roof-tiles-01.webp">View the committed roof-tile artwork on GitHub</a>
+</div>
+<div class="status" id="faceStatus" role="status" aria-live="polite">Checking the two new watercolour materials on GitHub…</div>
+<div class="toolbar">
+<label>Inspect original candidate locally:
+  <input id="plasterFile" type="file" accept=".webp,image/webp" aria-label="Load plaster material WebP locally">
+</label>
+<label>Stone base:
+  <input id="stoneFile" type="file" accept=".webp,image/webp" aria-label="Load stone base material WebP locally">
+</label>
+</div>
+<div class="status" id="pavingStatus" role="status" aria-live="polite">Checking authentic courtyard paving artwork and its checksum…</div>
+<div class="toolbar"><label for="pavingFile">Compare exact paving WebP locally:</label>
+<input id="pavingFile" type="file" accept=".webp,image/webp">
+<a href="https://github.com/chriswalker-afk/Yangzhou/blob/main/assets/v3/materials/courtyard-paving-01.webp">Paving artwork on GitHub</a></div>
+<div class="status" id="moonGateStatus" role="status" aria-live="polite">Checking the original painted Moon Gate 01 (SHA-256 verified)…</div>
+<div class="toolbar"><label for="moonGateFile">Compare exact original WebP locally:</label>
+<input id="moonGateFile" type="file" accept=".webp,image/webp">
+<a href="https://github.com/chriswalker-afk/Yangzhou/blob/main/assets/v3/enclosures/moon-gate-01.webp">Moon Gate 01 original artwork on GitHub</a></div>
+<div class="status" id="layer2Status" role="status" aria-live="polite">Verifying the five original painted WebPs on GitHub…</div>
+<div class="status" id="readyStatus" role="status" aria-live="polite">Geometry ready. Optional existing artwork is loading independently; flat-colour proof is available now.</div>
+<div class="preview"><canvas id="scene" width="1980" height="1320" style="width:660px" aria-label="Six Yangzhou V3 tiles showing rectangle, partial enclosure, L and T wall centreline examples over road and canal geometry"></canvas></div>
+<section aria-label="Layer 2 unified placement audit">
+<h2>Integrated art and geometry (rev 49)</h2><p class="muted">The first tile has a deliberately wider courtyard accommodating the original hall and north–south wing. Garden tiles show the pavilion, bamboo and rockery; the waterside landing is limited to the north bank of a straight canal. All new sprites remain human-review candidates, especially the landing's masked water edge. Exact Layer 1 roads, canal topology, moon gates and accepted wall/courtyard texture artwork are unchanged.</p>
+<div id="integratedInfo" class="status" role="status">Artwork integrity and placement audit loading…</div>
+<p><a href="layer2-new-assets-v3.html?rev=48">New artwork gallery</a> · <a href="wall-geometry-lab-v3.html?rev=47">Original courtyard wall lab</a></p>
+</section><section aria-label="Layer 1B courtyard paving repeat inspection" id="pavingInspection">
+<h2>Layer 1B — Courtyard Paving Texture 01</h2>
+<p class="muted">The original painting repeats beneath the enclosed courtyard, under the hall and walls. Grass stays outside the compound. This separate <strong>2×2 material proof</strong> shows image seams in both directions; true seamlessness is still awaiting visual approval.</p>
+<div class="paving-proof">
+<canvas id="pavingRepeat" width="360" height="360" aria-label="2 by 2 repeated courtyard paving artwork for seam inspection"></canvas>
+<p class="muted">Inspect the centre horizontal and vertical joins. We keep this candidate and its checksum unchanged; any future repeat-edge improvement should be a separate artwork revision.</p>
+</div></section>
+<section aria-label="Architectural moon-gate close-up from the actual painted tile" id="moonGateInspection">
+<h2>Moon Gate 01 — actual painted junction close-up</h2>
+<p class="muted">Two close-ups are cut directly from the live six-tile canvas, not edited screenshots. The stone walkway (or actual courtyard paving if the path is hidden) is projected only through the <strong>genuine transparent circular opening</strong>. Roof, plaster, stone ring, threshold, exterior grass and gameplay collision stay unchanged. Use <strong>Show courtyard floor through the moon gate</strong> to compare the old flat-grass background with the corrected view.</p>
+<div class="flex">
+<figure style="margin:0;max-width:324px"><div class="preview"><canvas id="moonGateClose" width="324" height="240" style="width:324px;max-width:100%;height:auto" aria-label="South-facing moon gate with stone walkway visible inside original ring"></canvas></div><figcaption class="muted">Enclosed courtyard: southern entrance</figcaption></figure>
+<figure style="margin:0;max-width:324px"><div class="preview"><canvas id="moonGateNorthClose" width="324" height="240" style="width:324px;max-width:100%;height:auto" aria-label="North-facing moon gate with stone walkway visible inside original ring"></canvas></div><figcaption class="muted">Three-sided garden: northern entrance</figcaption></figure>
+</div>
+</section>
+<section aria-label="Standalone Yangzhou path artwork" id="walkwayInspection">
+<h2>Layer 1B — Courtyard Walkway Texture 01</h2>
+<p class="muted">This is a <strong>real reusable, independently stored transparent texture</strong>, not an edited scene screenshot. It reuses the untouched accepted Jiangnan courtyard paving pigments in a slimmer run of gently regular weathered slabs, with small handmade joints. Geometry positions it between the genuine moon gate and the hall without changing streets, canals, collision or surrounding stone.</p>
+<div class="paving-proof">
+<figure style="margin:0"><img id="walkwayArtwork" src="assets/v3/materials/courtyard-walkway-01.svg" alt="Original transparent repeating stone walkway artwork with five gently weathered flagstones" style="display:block;width:120px;height:200px;background:#d7dcc7;border:1px solid #c8bfaa;border-radius:4px"><figcaption style="font-size:.8rem;text-align:center">Standalone SVG texture</figcaption></figure>
+<figure style="margin:0"><canvas id="walkwayRepeat" width="240" height="400" style="width:180px;height:300px;background:#d7dcc7;border:1px solid #c8bfaa" aria-label="Vertical repeat proof of actual path texture"></canvas><figcaption style="font-size:.8rem;text-align:center">Repeated vertical path</figcaption></figure>
+<p class="muted">In the six-tile scene above, switch <strong>Show Layer 1B painted stone walkway</strong> on/off to compare; inspect at 1× and 3×. Rectangular enclosures use the southern gate. Three-sided gardens use the northern gate. L and T templates have no invented path. The path is Layer 1B artwork over existing ground, below the hall and walls.</p>
+</div>
+<div class="status" id="walkwayStatus" role="status" aria-live="polite">Verifying Courtyard Walkway Texture 01 on GitHub…</div>
+<div class="toolbar"><label for="walkwayFile">Compare the exact standalone artwork locally:</label><input id="walkwayFile" type="file" accept=".svg,image/svg+xml"><a href="https://github.com/chriswalker-afk/Yangzhou/blob/feat/v3-courtyard-walkway-texture-01/assets/v3/materials/courtyard-walkway-01.svg">Open walkway texture in GitHub</a></div>
+</section>
+<section aria-label="Four corner joint inspections" id="cornerInspection">
+<h2>Corner joins — close inspection</h2>
+<p class="muted">Live crops from the real painted courtyard. Check the southwest and southeast corners: the bottom plaster and stone must continue beneath the perpendicular roof all the way to its outside edge, not stop at the centreline. The far wall stays tucked, and the moon gate stays open. Turn on <strong>Show diagnostic L/T joint markers</strong> only when you want the geometry anchors highlighted.</p>
+<div class="corner-gallery">
+<figure><canvas id="cornerNW" width="180" height="180" aria-label="North-west corner close-up"></canvas><figcaption>North-west</figcaption></figure>
+<figure><canvas id="cornerNE" width="180" height="180" aria-label="North-east corner close-up"></canvas><figcaption>North-east</figcaption></figure>
+<figure><canvas id="cornerSW" width="180" height="180" aria-label="South-west corner close-up"></canvas><figcaption>South-west</figcaption></figure>
+<figure><canvas id="cornerSE" width="180" height="180" aria-label="South-east corner close-up"></canvas><figcaption>South-east</figcaption></figure>
+</div>
+</section>
+<div class="toolbar">
+<button id="reset" type="button">Reset wall plans</button>
+<button id="copy" type="button">Copy selected tile geometry JSON</button>
+</div>
+<div id="wallInfo" class="status" role="status" aria-live="polite">Select a tile to inspect its walls, entrances and safety report.</div>
+<div class="flex">
+<section class="card">
+<h2>Three painted wall materials</h2>
+<table><thead><tr><th>Material slot</th><th>Width</th><th>Watercolour material</th></tr></thead><tbody>
+<tr><td>Visible stone base</td><td>1.7 units at lower/right edge</td><td><span class="swatch" style="background:#999a90"></span> Stone Base 01</td></tr>
+<tr><td>Visible plaster face</td><td>Top (north): 6 · Bottom (south): 10 · Side: no plaster</td><td><span class="swatch" style="background:#e9e4d4"></span> Ivory Plaster 01</td></tr>
+<tr><td>Grey tile coping</td><td>8 units</td><td><span class="swatch" style="background:#636d69"></span></td></tr>
+<tr><td>Roof ridge</td><td>2 units</td><td><span class="swatch" style="background:#a8afa5"></span></td></tr>
+</tbody></table>
+<small>Roof coping retains its 32×8 world-unit repeat. Plaster and single-course stone follow only the horizontal south-facing wall elevations. Vertical walls reuse the same roof rotated −90°, with a narrow shaded edge, not painted plaster or foundation. Each horizontal façade ends under the shared mitered roof overhang. Missing textures fall back to diagnostic colours; real moon-gate openings remain clear.</small>
+</section>
+<section class="card">
+<h2>Geometry acceptance checks</h2>
+<div id="summary" role="status" aria-live="polite">Compiling all six tile layouts.</div>
+<p class="muted">The physical aperture is wider than the solid wall thickness, leaving a real walk-through corridor. Solid geometry is not drawn inside the opening. Exact junction and route exclusions are checked by automated tests.</p>
+</section>
+</div>
+<h2>Selected tile's Layer 1B surface and Layer 2 structure</h2>
+<pre id="export" aria-label="Selected tile wall and gate geometry"></pre>
+<p><a href="courtyard-enclosure-lab-v3.html?rev=35">Old wall-sprite assembly lab</a> · <a href="layer2-lab-v3.html?rev=29">Existing Layer 2 artwork lab</a> · <a href="layer-lab-v3.html?rev=25">Layer 1 geometry and edging</a> · <a href="index.html">Playable V2 game (unchanged)</a> · <a href="docs/V3-WALL-GEOMETRY.md">Design and future texture requirements</a></p>
+</main>
+<script src="tile-topology.js"></script>
+<script src="assets/v3/base-geometry.js"></script>
+<script src="assets/v3/edge-system.js"></script>
+<script src="assets/v3/material-runtime.js"></script>
+<script src="assets/v3/layer2-placements.js"></script>
+<script src="assets/v3/wall-geometry.js?rev=47"></script>
+<script src="assets/v3/wall-profile.js?rev=44"></script>
+<script src="assets/v3/wall-face-materials.js?rev=44"></script>
+<script src="assets/v3/wall-roof-texture.js?rev=44"></script>
+<script src="assets/v3/moon-gate-frame.js?rev=47"></script>
+<script src="assets/v3/courtyard-paving.js?rev=44"></script>
+<script src="assets/v3/courtyard-walkway.js?rev=46"></script>
+<script src="assets/v3/layer2-integrated.js?rev=49"></script>
+<script>
+(()=>{'use strict';
+const topology=window.YangzhouTileTopology,geometry=window.YangzhouV3Geometry,
+ edgeSystem=window.YangzhouV3Edges,materials=window.YangzhouV3Materials,
+ walls=window.YangzhouV3WallGeometry,roofPainter=window.YangzhouV3WallRoofTexture,
+ wallProfile=window.YangzhouV3WallProfile,
+ moonGate=window.YangzhouV3MoonGate,
+ wallFaceMaterials=window.YangzhouV3WallFaceMaterials,
+ courtyardPaving=window.YangzhouV3CourtyardPaving,
+ courtyardWalkway=window.YangzhouV3CourtyardWalkway,
+ composer=window.YangzhouV3Layer2Integrated;
+const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d');
+const CODES=Object.freeze({
+ mixed:['LLLL','LLLL','LLLL','LWLW','LWLW','LWLW'],
+ garden:['LLLL','LLLL','LLLL','LLLL','LLLL','LLLL'],
+ street:['LLLL','LLLL','LLLL','LSLS','LSLS','LSLS'],
+ canal:['LLLL','LLLL','LLLL','LWLW','LWLW','LWLW'],
+ junction:['LWLW','LWWW','LWLW','LLLL','WLLL','LLLL']
+});
+const starting=['wide','pavilion','rockery','landing','none','none'];
+const fallback=Object.freeze({grass:'#d7dcc7',stone:'#d7cdb7',water:'#8caea7'});
+const edgePalette=Object.freeze({
+ pathVerge:'#b8a88d',pathContact:'#889a82',
+ canalBank:'#baa88b',canalContact:'#5f847a',
+ bridgeEdge:'#9ba397',bridgeContact:'#677c75'
+});
+let tiles=[],selected=0,gridOn=true,zoomOn=false,study='garden',
+  choices=[...starting],gallery={},imageErrors=[],roofImage=null,roofSource='none',
+ faceImages={},faceErrors=[],faceSource={},pavingImage=null,pavingSource='none',
+ moonGateImage=null,moonGateSource='none',
+ walkwayImage=null,walkwaySource='none',spriteImages={},spriteErrors=[],spriteVerified=0;
+const visible=id=>document.getElementById(id).checked;
+const gateGround=model=>({
+ model,walkwayPainter:courtyardWalkway,
+ walkwayImage:visible('showWalkway')?walkwayImage:null,
+ pavingPainter:courtyardPaving,
+ pavingImage:visible('showPaving')?pavingImage:null
+});
+const tileModel=i=>composer.modelFor(choices[i]);
+const assetVisibility=()=>Object.fromEntries([...composer.NEW_IDS,'courtyard-hall-01'].map(id=>[
+ id,id==='courtyard-hall-01'?visible('showHall'):
+ visible('showNewAssets')&&(id!=='waterside-landing-01'||visible('showLanding'))
+]));
+function tileList(name){
+ return CODES[name].map((code,i)=>({x:i%3,y:Math.floor(i/3),edges:code.split(''),seed:i+1}));
+}
+function pattern(id){
+ if(!visible('showTextures')||!gallery[id])return fallback[id];
+ try{return materials.makePattern(ctx,gallery[id],materials.periodById[id]);}
+ catch(_){return fallback[id];}
+}
+function renderCornerInspection(){
+ // Derive all four details from the actual tile canvas. No mock drawings or
+ // alternate corner sprites: these crops show exactly what the game would get.
+ const points={NW:[42,47],NE:[178,47],SW:[42,178],SE:[178,178]};
+ for(const [key,point] of Object.entries(points)){
+  const close=document.getElementById('corner'+key);
+  if(!close)continue;
+  const c=close.getContext('2d');
+  c.clearRect(0,0,close.width,close.height);
+  c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';
+  const radius=18,size=2*radius;
+  c.drawImage(canvas,(point[0]-radius)*3,(point[1]-radius)*3,
+   size*3,size*3,0,0,close.width,close.height);
+ }
+}
+function renderMoonGateInspection(){
+ // Only real crops from the current scene. Use the same source for 1x and 3x;
+ // do not fabricate or recolour a standalone 'door' preview.
+ for(const [id,modelId] of [['moonGateClose','rectangle'],['moonGateNorthClose','partial']]){
+  const close=document.getElementById(id);if(!close)continue;
+  const out=close.getContext('2d');
+  out.clearRect(0,0,close.width,close.height);
+  const index=tiles.findIndex((tile,i)=>{
+   const model=tileModel(i);
+   if(!model||model.id!==modelId)return false;
+   return walls.audit(model,tile,{
+    profilePainter:visible('showPerspective')?wallProfile:null
+   }).valid&&walls.compile(model).gates.length>0;
+  });
+  if(index<0)continue;
+  const gate=walls.compile(tileModel(index)).gates[0],tile=tiles[index];
+  const x=(tile.x*220+gate.center[0]-27)*3;
+  const y=(tile.y*220+gate.center[1]-20)*3;
+  out.imageSmoothingEnabled=true;out.imageSmoothingQuality='high';
+  out.drawImage(canvas,x,y,54*3,40*3,0,0,close.width,close.height);
+ }
+}
+function renderWalkwayRepeat(){
+ const proof=document.getElementById('walkwayRepeat');
+ if(!proof)return;
+ const painter=proof.getContext('2d');
+ painter.clearRect(0,0,proof.width,proof.height);
+ if(walkwayImage)courtyardWalkway.repeatProof(painter,walkwayImage,{width:proof.width,height:proof.height});
+}
+function renderPavingRepeat(){
+ const c=document.getElementById('pavingRepeat');
+ if(!c)return;
+ const pctx=c.getContext('2d');
+ if(pavingImage)courtyardPaving.repeatProof(pctx,pavingImage,c.width);
+ else{
+  pctx.clearRect(0,0,c.width,c.height);
+  pctx.fillStyle='#d7dcc7';pctx.fillRect(0,0,c.width,c.height);
+ }
+}
+function render(){
+ ctx.setTransform(3,0,0,3,0,0);ctx.clearRect(0,0,660,440);
+ ctx.fillStyle=pattern('grass');ctx.fillRect(0,0,660,440);
+ const styles={...edgePalette,stone:pattern('stone'),water:pattern('water')};
+ let accepted=0,rejected=0,openings=0,ls=0,ts=0;
+ const info=[];
+ for(let i=0;i<tiles.length;i++){
+  const tile=tiles[i],model=tileModel(i),ox=tile.x*220,oy=tile.y*220;
+  const geometryTile=geometry.compile(tile.edges),compiledEdge=edgeSystem.compile(geometryTile);
+  ctx.save();ctx.beginPath();ctx.rect(ox,oy,220,220);ctx.clip();
+  edgeSystem.draw(ctx,compiledEdge,styles,{x:ox,y:oy,edges:true});
+  let report=null;
+  const composed=composer.plan(tile,choices[i]);
+  if(model){
+   report=walls.audit(model,tile,{
+    profilePainter:visible('showPerspective')?wallProfile:null
+   });
+   if(report.valid){
+    accepted++;openings+=report.passableOpenings.filter(p=>p.open).length;
+    ls+=report.lCorners;ts+=report.tJunctions;
+    // Layer 1B is drawn after Layer 1A geography but before Layer 2 art.
+    // Only route-safe, genuinely enclosed rectangles get a surface.
+    if(visible('showPaving')&&pavingImage)
+     courtyardPaving.paint(ctx,tile,model,pavingImage,{valid:true});
+    // Texture is separately clipped to the gate-to-hall ground corridor.
+    // It never modifies the existing Layer 1A road/canal masks.
+    if(visible('showWalkway')&&walkwayImage)
+     courtyardWalkway.paint(ctx,tile,model,walls.compile(model),
+      walkwayImage,{valid:true});
+    composer.draw(ctx,tile,composed,spriteImages,{visible:assetVisibility()});
+    if(visible('showWall'))walls.draw(ctx,model,tile,{
+     showGates:visible('showGate'),showJoints:visible('showJoints'),
+     moonGatePainter:visible('showMoonGate')?moonGate:null,
+     moonGateImage,
+     moonGateGround:gateGround(model),
+     showMoonGateGround:visible('showGateGround'),
+     roofImage:visible('showRoofTexture')?roofImage:null,roofPainter,
+     profilePainter:visible('showPerspective')?wallProfile:null,
+     materialPainter:wallFaceMaterials,
+     plasterImage:visible('showPlasterTexture')?faceImages.plaster:null,
+     stoneImage:visible('showStoneTexture')?faceImages.stone:null
+    });
+   }else{
+    rejected++;
+    ctx.save();ctx.fillStyle='rgba(244,233,222,.92)';
+    ctx.fillRect(ox+18,oy+84,184,34);ctx.fillStyle='#945d47';
+    ctx.font='8px system-ui';ctx.fillText('WALL REJECTED: ROUTE / CLEARANCE',ox+21,oy+99);
+    ctx.restore();
+   }
+  }
+  if(!model)composer.draw(ctx,tile,composed,spriteImages,{visible:assetVisibility()});
+  ctx.save();ctx.fillStyle='rgba(248,245,235,.85)';ctx.fillRect(ox+9,oy+9,170,23);
+  ctx.fillStyle='#334c42';ctx.font='9px system-ui';
+  ctx.fillText(model?model.name:choices[i]+' garden',ox+12,oy+19,164);
+  ctx.font='8px system-ui';ctx.fillText(tile.edges.join(' / '),ox+12,oy+28);ctx.restore();
+  ctx.restore();
+  if(gridOn){
+   ctx.save();ctx.strokeStyle='rgba(41,63,51,.42)';ctx.lineWidth=.65;
+   ctx.strokeRect(ox+.3,oy+.3,219.4,219.4);ctx.restore();
+  }
+  info.push({tileIndex:i,grid:[tile.x,tile.y],edges:tile.edges,model:choices[i],audit:report});
+ }
+ const current=tiles[selected];
+ if(current){
+  ctx.save();ctx.setLineDash([5,4]);ctx.strokeStyle='#4e594d';ctx.lineWidth=1.2;
+  ctx.strokeRect(current.x*220+1,current.y*220+1,218,218);
+  ctx.restore();
+ }
+ const model=tileModel(selected),report=model?walls.audit(model,current,{
+  profilePainter:visible('showPerspective')?wallProfile:null
+ }):null;
+ const selectedDetail=model?walls.compile(model):null;
+ document.getElementById('summary').textContent=
+  accepted+' valid walled tiles; '+rejected+' deliberately rejected against routes; '+
+  ls+' exact L corners; '+ts+' exact T joins; '+openings+' passable moon gates. '+
+  'Protected V3 ports: 44-unit street, 88-unit canal. '+
+  'New Layer 2 '+spriteVerified+'/5 original assets verified. '+
+  'Roof material: '+(visible('showRoofTexture')&&roofImage?'painted (candidate)':'flat diagnostic')+'. '+
+  'Wall face: '+(visible('showPerspective')?'south-facing ivory plaster / stone; side roofing only':'old symmetric diagnostic bands')+'. '+
+  'Plaster: '+(visible('showPerspective')&&visible('showPlasterTexture')&&faceImages.plaster?'painted (candidate)':'flat diagnostic')+'. '+
+  'Stone: '+(visible('showPerspective')&&visible('showStoneTexture')&&faceImages.stone?'painted (candidate)':'flat diagnostic')+'. '+
+  'Courtyard paving: '+(visible('showPaving')&&pavingImage?'genuine Layer 1B candidate (enclosed rectangles only)':'off/unavailable')+'. '+
+  'Moon gate: '+(visible('showMoonGate')&&moonGateImage?'original painted Moon Gate 01':'off / original artwork unavailable')+'. '+ 
+  'Walkway: '+(visible('showWalkway')&&walkwayImage?'real stone-slab artwork (Layer 1B)':'off/unavailable')+'. '+
+  'Through gate: '+(visible('showMoonGate')&&visible('showGateGround')&&moonGateImage?
+   'real ground painting, clipped to circular opening':'existing background / off')+'.';
+ const selectedComposition=composer.plan(current,choices[selected]);
+ document.getElementById('integratedInfo').textContent=
+  'Tile '+current.x+','+current.y+' • '+choices[selected]+
+  ' • '+(selectedComposition.accepted?'safe':'rejected by road/water/wall rules')+
+  ' • placements '+(selectedComposition.placements.map(p=>p.id+' ('+p.x+','+p.y+')').join('; ')||'none')+
+  ' • '+spriteVerified+'/5 painted sprites SHA verified.';
+ document.getElementById('wallInfo').textContent=
+  'Tile ('+current.x+','+current.y+') • edges '+current.edges.join('')+
+  ' • '+(model?model.name:'No wall layout')+
+  (report?' • '+(report.valid?'VALID':'REJECTED: '+report.issues.join('; '))+
+   ' • '+report.passableOpenings.length+' openings':'');
+ document.getElementById('export').textContent=JSON.stringify({
+  version:'V3-wall-geometry-study-01',tileSize:220,
+  tile:{...current,wallModel:choices[selected]},
+  model:model?{paths:model.paths,openings:model.openings,hall:model.hall}:null,
+  compiled:model?{gates:selectedDetail.gates,junctions:selectedDetail.junctions,
+   wallSegments:selectedDetail.ribbons.length}:null,
+  audit:report,
+  composition:{kind:choices[selected],accepted:selectedComposition.accepted,
+   placements:selectedComposition.placements,reason:selectedComposition.reason,
+   verifiedAssets:composer.NEW_IDS.filter(id=>!!spriteImages[id]),
+   productionApproved:false,layer1TopologyUnchanged:true,wallMasksUnchanged:true},
+  moonGateGround:{
+   enabled:visible('showGateGround'),
+   painted:!!(report?.valid&&moonGateImage&&visible('showMoonGate')&&visible('showGateGround')&&
+    selectedDetail?.gates?.length&&moonGate.groundFor(selectedDetail.gates[0],selectedDetail,gateGround(model)).source!=='existing-ground'),
+   source:report?.valid&&selectedDetail?.gates?.length&&visible('showGateGround')?
+    moonGate.groundFor(selectedDetail.gates[0],selectedDetail,gateGround(model)).source:'existing-ground',
+   apertureMask:moonGate.INNER_APERTURE.source,
+   originalPaintingUnchanged:true,layer:'1B-visible-through-Layer2',
+   affectsExternalGround:false,affectsRoadCanalGeometry:false,affectsCollision:false
+  },
+  moonGateFrame:{id:moonGate.ASSET.id,enabled:visible('showMoonGate'),
+   painted:!!(moonGateImage&&visible('showMoonGate')),imageVerified:!!moonGateImage,
+   source:moonGateSource,visualOnly:true,solidMaskUnchanged:true,
+   status:'original-painting-reused-awaiting-visual-review'},
+  courtyardWalkway:model?{
+   id:courtyardWalkway.ASSET.id,enabled:visible('showWalkway'),
+   imageVerified:!!walkwayImage,source:walkwaySource,
+   route:courtyardWalkway.routeFor(model,selectedDetail),
+   painted:!!(report?.valid&&visible('showWalkway')&&walkwayImage&&courtyardWalkway.routeFor(model,selectedDetail)),
+   layer:'1B',status:'independent-texture-candidate-awaiting-visual-review',
+   changesLayer1A:false,changesWallGeometry:false
+  }:null,
+  courtyardPaving:model?{
+   layer:'1B',region:courtyardPaving.regionFor(model),enabled:visible('showPaving'),
+   painted:!!(report?.valid&&visible('showPaving')&&pavingImage&&courtyardPaving.regionFor(model)),
+   imageVerified:!!pavingImage,textureId:courtyardPaving.ASSET.id,
+   worldPeriod:courtyardPaving.ASSET.worldPeriod,source:pavingSource,
+   status:'candidate-for-visual-review'
+  }:null,
+  perspectiveWallProfile:visible('showPerspective')
+   ?{cameraFacing:['south'],faceDepth:wallProfile.DEPTH,
+     verticalWalls:'roof plus narrow shaded eave only',plasterAboveCoping:false,
+     cornerMethod:'shared roof vertices; north face tucked; south face reaches perpendicular roof outer eave, gate ends unextended',
+     sideRoofRotationDegrees:-90,status:'candidate-for-review'}:null,
+  faceTextures:{
+   plaster:faceImages.plaster?{id:wallFaceMaterials.ASSETS.plaster.id,
+    source:faceSource.plaster||'GitHub',status:'candidate-for-review'}:null,
+   stone:faceImages.stone?{id:wallFaceMaterials.ASSETS.stone.id,
+    source:faceSource.stone||'GitHub',status:'candidate-for-review'}:null
+  },
+  roofTexture:roofImage?
+   {id:roofPainter.ASSET.id,source:roofSource,period:roofPainter.ASSET.period,
+    bandWidth:roofPainter.ASSET.bandWidth,status:'candidate-for-review'}:null
+ },null,2);
+ renderCornerInspection();
+ renderMoonGateInspection();
+ renderWalkwayRepeat();
+ renderPavingRepeat();
+}
+function refresh(){
+ document.getElementById('plan').value=choices[selected];render();
+}
+function selectStudy(name){
+ const list=tileList(name),issues=topology.validateBoard(list);
+ if(issues.length)throw Error('Invalid six-tile topology: '+issues.join('; '));
+ study=name;tiles=list;selected=0;choices=[...starting];
+ document.getElementById('study').value=name;refresh();
+}
+function button(id,fn){document.getElementById(id).addEventListener('click',fn);}
+canvas.addEventListener('click',event=>{
+ const rect=canvas.getBoundingClientRect(),
+  x=(event.clientX-rect.left)/rect.width*660,
+  y=(event.clientY-rect.top)/rect.height*440;
+ const ix=Math.floor(x/220),iy=Math.floor(y/220);
+ if(ix<0||ix>2||iy<0||iy>1)return;
+ selected=3*iy+ix;refresh();
+});
+document.getElementById('study').addEventListener('change',e=>selectStudy(e.target.value));
+document.getElementById('plan').addEventListener('change',e=>{
+ choices[selected]=e.target.value;refresh();
+});
+for(const id of ['showWall','showGate','showJoints','showHall','showTextures',
+ 'showRoofTexture','showPerspective','showPlasterTexture','showStoneTexture','showPaving','showMoonGate','showWalkway','showGateGround','showNewAssets','showLanding'])
+ document.getElementById(id).addEventListener('change',render);
+button('zoom',()=>{
+ zoomOn=!zoomOn;canvas.style.width=zoomOn?'1980px':'660px';
+ const b=document.getElementById('zoom');b.setAttribute('aria-pressed',String(zoomOn));
+ render();
+});
+button('showGrid',()=>{
+ gridOn=!gridOn;const b=document.getElementById('showGrid');
+ b.setAttribute('aria-pressed',String(gridOn));b.textContent=gridOn?'Hide tile grid':'Show tile grid';render();
+});
+button('reset',()=>selectStudy(study));
+button('copy',()=>{
+ const content=document.getElementById('export').textContent;
+ if(navigator.clipboard?.writeText)navigator.clipboard.writeText(content)
+  .then(()=>document.getElementById('wallInfo').textContent='Selected tile JSON copied to clipboard.')
+  .catch(()=>{document.getElementById('wallInfo').textContent='Clipboard unavailable; select the JSON below.';});
+ else document.getElementById('wallInfo').textContent='Clipboard unavailable; select the JSON below.';
+});
+// Verify the exact accepted painting. Never replace a missing WebP with a
+// generated/fake texture: only use the preview file or the GitHub original.
+const roofStatus=document.getElementById('roofStatus');
+function acceptRoof(img,source){
+ roofImage=img;roofSource=source;
+ roofStatus.textContent='Wall Roof-Tile Texture 01 verified ('+roofPainter.ASSET.width+
+  ' × '+roofPainter.ASSET.height+'). Ready for 1× / 3× corner, T-junction and gate review. '+
+  'Candidate only; source: '+source+'.';
+ render();
+}
+async function loadRoofFromGitHub(){
+ roofStatus.textContent='Checking the exact painted roof texture on GitHub…';
+ try{acceptRoof(await roofPainter.loadFromGitHub(), 'GitHub candidate WebP');}
+ catch(e){
+  roofStatus.textContent='Could not load the committed candidate from GitHub: '+
+   String(e.message||e)+'. Use the local file selector as a fallback. Flat grey coping remains visible until verification succeeds.';
+ }
+}
+document.getElementById('roofFile').addEventListener('change',async event=>{
+ const file=event.target.files?.[0];if(!file)return;
+ roofStatus.textContent='Verifying the selected original painted roof texture…';
+ try{acceptRoof(await roofPainter.verifyFile(file),'local review file');}
+ catch(e){roofStatus.textContent='Artwork rejected: '+String(e.message||e);}
+});
+// Independently verify the original two painted wall materials and update
+// the current canvas as each verified candidate arrives.
+const faceStatus=document.getElementById('faceStatus');
+function updateFaceStatus(){
+ const count=['plaster','stone'].filter(k=>!!faceImages[k]).length;
+ faceStatus.textContent=count+'/2 authentic wall-face materials verified. '+
+  (faceImages.plaster?'Ivory plaster ready. ':'Ivory plaster not yet available. ')+
+  (faceImages.stone?'Stone foundation ready. ':'Stone foundation not yet available. ')+
+  (faceErrors.length?'Problems: '+faceErrors.join(' | ')+'. ':'')+
+  'Unavailable files use flat diagnostic colours. Original watercolour artwork remains unchanged.';
+ render();
+}
+async function startFaceMaterials(){
+ faceStatus.textContent='Checking painted ivory plaster and stone against SHA-256 hashes…';
+ const result=await wallFaceMaterials.loadAll({timeoutMs:20000,onProgress:state=>{
+  faceImages={...faceImages,...state.images};
+  faceErrors=state.errors;
+  for(const kind of Object.keys(state.images))faceSource[kind]='GitHub candidate';
+  updateFaceStatus();
+ }});
+ faceImages={...faceImages,...result.images};
+ faceErrors=result.errors;
+ updateFaceStatus();
+}
+function attachLocalTexture(inputId,kind){
+ document.getElementById(inputId).addEventListener('change',async e=>{
+  const file=e.target.files?.[0];if(!file)return;
+  faceStatus.textContent='Verifying selected '+kind+' WebP…';
+  try{
+   faceImages[kind]=await wallFaceMaterials.verify(kind,file);
+   faceSource[kind]='local review file';updateFaceStatus();
+  }catch(error){
+   faceErrors.push(kind+': '+String(error.message||error));updateFaceStatus();
+  }
+ });
+}
+attachLocalTexture('plasterFile','plaster');
+attachLocalTexture('stoneFile','stone');
+const pavingStatus=document.getElementById('pavingStatus');
+function acceptPaving(image,source){
+ pavingImage=image;pavingSource=source;
+ pavingStatus.textContent='Courtyard Paving Texture 01 verified (1254×1254; SHA-256 matches). '+
+  'Layer 1B available beneath the hall and walls; source: '+source+
+  '. The original image is still a candidate awaiting repeat-seam visual review.';
+ render();
+}
+async function loadPaving(){
+ pavingStatus.textContent='Verifying the committed Courtyard Paving Texture 01 from GitHub…';
+ try{acceptPaving(await courtyardPaving.load(),'GitHub verified WebP');}
+ catch(error){
+  pavingStatus.textContent='Courtyard paving unavailable: '+String(error.message||error)+
+   '. Existing grass remains visible; no fake paving is substituted.';
+  render();
+ }
+}
+document.getElementById('pavingFile').addEventListener('change',async event=>{
+ const file=event.target.files?.[0];if(!file)return;
+ pavingStatus.textContent='Verifying selected original Courtyard Paving 01 WebP…';
+ try{acceptPaving(await courtyardPaving.verify(file),'local verified WebP');}
+ catch(error){pavingStatus.textContent='Paving artwork rejected: '+String(error.message||error);}
+});
+// Reuse the proven historical Moon Gate 01 painting instead of drawing an
+// unconvincing circular line. A failed integrity check leaves the real gap.
+const moonGateStatus=document.getElementById('moonGateStatus');
+function acceptMoonGate(img,source){
+ moonGateImage=img;moonGateSource=source;
+ moonGateStatus.textContent='Original Moon Gate 01 verified ('+
+  moonGate.ASSET.width+'×'+moonGate.ASSET.height+
+  '; exact WebP SHA-256 matches). Its roof, stone ring, plaster and threshold are preserved. '+
+  'Source: '+source+'. Awaiting 1×/3× visual review of adjoining wall materials.';
+ render();
+}
+async function loadMoonGate(){
+ moonGateStatus.textContent='Checking the original painted Moon Gate 01 on GitHub…';
+ try{acceptMoonGate(await moonGate.loadFromGitHub(),'GitHub original WebP')}
+ catch(error){
+  moonGateStatus.textContent='Original moon gate unavailable: '+String(error.message||error)+
+   '. Real wall aperture remains open; no synthetic arc will be drawn.';
+  render();
+ }
+}
+document.getElementById('moonGateFile').addEventListener('change',async event=>{
+ const file=event.target.files?.[0];if(!file)return;
+ moonGateStatus.textContent='Verifying original Moon Gate 01 local comparison…';
+ try{acceptMoonGate(await moonGate.verifyFile(file),'local original WebP')}
+ catch(error){moonGateStatus.textContent='Moon gate artwork rejected: '+String(error.message||error)}
+});
+selectStudy('mixed'); // Retain connected V3 road/canal geometry.
+loadRoofFromGitHub();
+startFaceMaterials();
+loadPaving();
+loadMoonGate();
+const walkwayStatus=document.getElementById('walkwayStatus');
+function acceptWalkway(image,source){
+ walkwayImage=image;walkwaySource=source;
+ walkwayStatus.textContent='Courtyard Walkway 01 verified (480×800; exact SHA-256). '+
+  'Self-contained transparent SVG derived from the unchanged original paving painting. '+
+  'Review as a repeatable Layer 1B material. Source: '+source+'.';
+ render();
+}
+async function loadWalkway(){
+ walkwayStatus.textContent='Checking the standalone stone walkway artwork and SHA-256…';
+ try{acceptWalkway(await courtyardWalkway.load(),'GitHub branch SVG')}
+ catch(error){
+  walkwayStatus.textContent='Walkway not available: '+String(error.message||error)+
+   '. The original courtyard paving remains unchanged and no fake path is drawn.';
+  render();
+ }
+}
+document.getElementById('walkwayFile').addEventListener('change',async event=>{
+ const file=event.target.files?.[0];if(!file)return;
+ walkwayStatus.textContent='Verifying selected stone walkway SVG…';
+ try{acceptWalkway(await courtyardWalkway.verifyFile(file),'local exact SVG')}
+ catch(error){walkwayStatus.textContent='Walkway artwork rejected: '+String(error.message||error)}
+});
+loadWalkway();
+const layer2Status=document.getElementById('layer2Status');
+composer.loadVerified({onProgress:state=>{
+ spriteImages={...spriteImages,...state.images};spriteErrors=[...state.errors];
+ spriteVerified=composer.NEW_IDS.filter(id=>!!spriteImages[id]).length;
+ layer2Status.textContent='Original Layer 2 artwork verified: '+spriteVerified+'/5. '+
+  (spriteErrors.length?'Problems: '+spriteErrors.join(' | '):'Authentic artwork candidate.');
+ render();
+}}).then(result=>{
+ spriteImages={...spriteImages,...result.images};spriteErrors=result.errors;
+ spriteVerified=result.verifiedCount;
+ layer2Status.textContent='Layer 2 original paintings verified: '+spriteVerified+'/5. '+
+  (spriteErrors.length?spriteErrors.join(' | '):'Existing hall also loaded. Review 1×/3× and shoreline mask.');
+ render();
+}).catch(error=>{
+ layer2Status.textContent='Layer 2 verification failed: '+String(error.message||error);
+ render();
+});
+const artFiles=[
+ {id:'hall',file:'courtyard-hall.webp'},
+ {id:'grass',file:'grass.webp'},
+ {id:'stone',file:'stone.webp'},
+ {id:'water',file:'water.webp'}
+];
+let loaded=0,finished=0;
+function updateStatus(){
+ const count=artFiles.length;
+ document.getElementById('readyStatus').textContent=
+  'Continuous walls READY (no artwork required). Optional existing art: '+
+  loaded+'/'+count+' loaded; '+finished+'/'+count+' checked.'+
+  (imageErrors.length?' Unavailable: '+imageErrors.join('; '):'')+
+  ' Wall artwork paints independently; geometry never waits for optional image downloads.';
+}
+function loadImage(file,deadline=18000){
+ return new Promise((resolve,reject)=>{
+  const img=new Image();let done=false;
+  const timer=setTimeout(()=>{
+   if(done)return;done=true;img.onload=img.onerror=null;img.src='';
+   reject(Error('Timed out: '+file));
+  },deadline);
+  img.onload=()=>{if(done)return;done=true;clearTimeout(timer);resolve(img);};
+  img.onerror=()=>{if(done)return;done=true;clearTimeout(timer);reject(Error('Unavailable: '+file));};
+  img.src='assets/v3/previews/'+file;
+ });
+}
+updateStatus();
+(async()=>{
+ for(const item of artFiles){
+  try{gallery[item.id]=await loadImage(item.file);loaded++;}
+  catch(err){imageErrors.push(item.id+': '+String(err.message||err));}
+  finally{finished++;updateStatus();render();}
+ }
+})();
+})();
+</script></body></html>
