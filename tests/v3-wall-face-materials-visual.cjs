@@ -11,6 +11,8 @@ async function run(){
   const page=await browser.newPage({viewport:{width:1480,height:940},deviceScaleFactor:1});
   page.on('pageerror',e=>errs.push('desktop '+e.message));
   await page.goto(URL,{waitUntil:'domcontentloaded'});
+  // The new independent walkway has its own pixel QA; preserve older baselines.
+  await page.locator('#showWalkway').uncheck();
   // Preserve the pre-Layer 1B grass baseline for wall and gate pixel regression.
   // Preserve the legacy unadorned-gap pixel baseline. Moon Gate 01 has
   // its own painted-asset regression, including transparency and joins.
