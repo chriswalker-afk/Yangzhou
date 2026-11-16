@@ -24,6 +24,16 @@ The new review-only **wider walled residence** uses an alternative, correctly co
 
 The **original rectangle, partial, L and T** models remain unchanged. This is an optional new composition in `MODEL_KINDS.wide`, not a quiet alteration to prior accepted wall plans.
 
+## Rev 50 — waterside landing in a continuous canal (review-only)
+
+A single cropped `L/W/L/W` landing square made the water look like a broad isolated lake or flat strip, so it was difficult to judge the artwork's actual relationship with a navigable canal. This is a **preview-composition problem**, not a request to repaint the original sprite or change Layer 1 geometry.
+
+The new dedicated **[three-tile waterside landing review](../waterside-landing-review-v3.html?rev=50)** renders three connected `L/W/L/W` tiles side by side using **the actual V3 Layer 1 geometry**, the original painted grass, jade canal water, existing painted canal-bank edges, and **the SHA-256-verified original Waterside Landing 01** on the *north bank of the middle tile*. Both tile seams at world x=220 and x=440, and both north/south banks, are visible at once. The whole channel stays 88 units wide at y=66..154 across the full 660-unit run. The sprite stays at its previous local anchor (110,53), world footprint 95×47, with no change to the real water mask or the bank edges.
+
+The preview adds an independent show/hide switch for landing artwork and painted bank edges, enables original painted ground/water textures by default, and offers a live close-up made by cropping the **same rendered canvas** at the stone-step/water join. A 3× zoom and mobile view are available; no screenshot is being used as an input material. The earlier [full Layer 2 six-tile lab](../layer2-integrated-v3.html?rev=49) now links prominently to the canal proof and shows original Layer 1A texture by default.
+
+`assets/v3/waterside-landing-canal-proof.js` owns the three-tile review geometry, while `tests/v3-waterside-landing-preview.cjs` protects exact topology and original artwork. `tests/v3-waterside-landing-preview-visual.cjs` verifies the real WebP SHA in the browser and proves canal-water pixels persist when the sprite or bank overlay is toggled, at normal and 3× zoom, including mobile. **All production review flags stay unchanged**, especially the need for human approval of the landing's alpha mask and embedded shoreline painting. This proof is neither gameplay integration nor a claim the shoreline art is approved.
+
 ## Waterside Landing 01 contract
 
 The landing is a special shoreline candidate, not a free-placeable solid inland sprite. It is permitted only when the tile ports are exactly `['L','W','L','W']`, the 88-unit water corridor is one straight horizontal canal, and the landscape is unwalled. The south-facing steps at (110,53), within the original artwork, reach approximately 10.5 units into the north bank of that water corridor. No water width, canal mouth, bank geometry, or boat route is modified, and no landing is placed on a canal junction, curved canal, street crossing or land-only tile. The original alpha-masked art still needs **human review of embedded painted water, hard mask edges and perceived scale** before it could be gameplay-ready.

@@ -55,23 +55,25 @@ async function main(){
   chosen=JSON.parse(await page.locator('#export').textContent());
   assert.equal(chosen.tile.wallModel,'rockery');
   assert(chosen.composition.placements.some(p=>p.id==='garden-rockery-02'));
-  await page.locator('#scene').click({position:{x:110,y:330}});
+  await page.locator('#scene').click({position:{x:330,y:330}});
   chosen=JSON.parse(await page.locator('#export').textContent());
   assert.equal(chosen.tile.wallModel,'landing');
+  assert.deepEqual([chosen.tile.x,chosen.tile.y],[1,1],
+   'Landing must be visually flanked by connected canal tiles on both sides');
   assert.deepEqual(chosen.tile.edges,['L','W','L','W']);
   assert.equal(chosen.composition.placements[0].id,'waterside-landing-01');
-  const waterWith=await paintSum(page,74,251,72,50);
+  const waterWith=await paintSum(page,294,251,72,50);
   await page.locator('#showLanding').uncheck();
-  assert.notEqual(waterWith,await paintSum(page,74,251,72,50),
+  assert.notEqual(waterWith,await paintSum(page,294,251,72,50),
    'Landing must be independently removable, leaving existing genuine water beneath');
   await page.locator('#showLanding').check();
-  assert.equal(waterWith,await paintSum(page,74,251,72,50));
+  assert.equal(waterWith,await paintSum(page,294,251,72,50));
   await page.screenshot({path:'artifacts/v3/layer2-landing-north-bank-1x.png',fullPage:true});
   // Attempt an invalid layout: no invented landing allowed on open land.
   await page.locator('#study').selectOption('garden');
   chosen=JSON.parse(await page.locator('#export').textContent());
   assert.equal(chosen.tile.wallModel,'wide');
-  await page.locator('#scene').click({position:{x:110,y:330}});
+  await page.locator('#scene').click({position:{x:330,y:330}});
   chosen=JSON.parse(await page.locator('#export').textContent());
   assert.equal(chosen.composition.placements.length,0);
   await page.locator('#study').selectOption('mixed');
