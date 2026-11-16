@@ -31,10 +31,10 @@ a{color:#355d4d}
 </style></head><body><main>
 <h1>Yangzhou V3 — Layer 2 Artwork Intake (rev 48)</h1>
 <div class="note warn"><strong>Candidate-only comparison, not the playable game.</strong>
-Five new original drawings have been prepared as independent lossless WebP assets. This branch contains a preview and intake manifest; GitHub's current upload channel has <strong>not yet received the five full-resolution binary files</strong>. To review the exact art, unzip the accompanying asset pack and select its five <code>.webp</code> files below. No substitute art or altered Courtyard Hall 01 is used.</div>
+Five new original drawings have been prepared as independent lossless WebP assets. This branch contains a preview and intake manifest; GitHub's current upload channel has <strong>not yet received the five full-resolution binary files</strong>. To review the exact art, select the accompanying <strong>ZIP pack directly</strong>, or unzip it and select its five <code>.webp</code> files below. No substitute art or altered Courtyard Hall 01 is used.</div>
 <div class="toolbar">
-<label for="assetFiles"><strong>Load the five prepared WebPs:</strong>
-<input id="assetFiles" type="file" accept="image/webp,.webp,image/png,.png" multiple></label>
+<label for="assetFiles"><strong>Load the ZIP pack or five prepared WebPs:</strong>
+<input id="assetFiles" type="file" accept=".zip,application/zip,image/webp,.webp,image/png,.png" multiple></label>
 <button id="zoom" type="button" aria-pressed="false">Inspect at 3×</button>
 <button id="showGrid" type="button" aria-pressed="true">Hide tile grid</button>
 <label for="layout">Geography <select id="layout"><option value="garden">All-land garden and courtyard</option><option value="water">Canal neighbourhood</option></select></label>
@@ -122,6 +122,35 @@ function statusUpdate(){
  '. The source images are shown without rotation or rescaling beyond their game-world footprint. Full-size GitHub binary intake remains pending.';
  renderCards();render();
 }
+async function unpackZip(file){
+ const bytes=await file.arrayBuffer(),a=new Uint8Array(bytes),dv=new DataView(bytes);
+ const u16=n=>dv.getUint16(n,true),u32=n=>dv.getUint32(n,true);
+ let end=-1;
+ for(let p=bytes.byteLength-22;p>=Math.max(0,bytes.byteLength-65557);p--){
+  if(u32(p)===0x06054b50){end=p;break;}
+ }
+ if(end<0)throw Error('ZIP directory not found');
+ const count=u16(end+10);let pos=u32(end+16),found=0;
+ for(let k=0;k<count;k++){
+  if(u32(pos)!==0x02014b50)throw Error('Invalid ZIP directory');
+  const method=u16(pos+10),size=u32(pos+20),namesize=u16(pos+28),
+   extra=u16(pos+30),comment=u16(pos+32),local=u32(pos+42);
+  const name=new TextDecoder().decode(a.subarray(pos+46,pos+46+namesize));
+  pos+=46+namesize+extra+comment;
+  const id=SPECS.find(sp=>name.endsWith('/'+sp.id+'.webp'))?.id;
+  if(!id)continue;
+  if(u32(local)!==0x04034b50)throw Error('Invalid ZIP file entry '+name);
+  const offset=local+30+u16(local+26)+u16(local+28);
+  let blob=new Blob([a.slice(offset,offset+size)],{type:'image/webp'});
+  if(method===8){
+   if(typeof DecompressionStream==='undefined')throw Error('ZIP decode unavailable; unzip locally and select the WebP images instead');
+   blob=await new Response(blob.stream().pipeThrough(new DecompressionStream('deflate-raw'))).blob();
+  }else if(method!==0)throw Error('Unsupported ZIP compression '+method);
+  await decode(blob,id);found++;
+ }
+ if(found<5)throw Error('ZIP contained only '+found+'/5 game assets');
+ return found;
+}
 function decode(f,id){
  return new Promise((resolve,reject)=>{
   const u=URL.createObjectURL(f);const im=new Image();
@@ -132,6 +161,10 @@ function decode(f,id){
 document.getElementById('assetFiles').addEventListener('change',async ev=>{
  const files=Array.from(ev.target.files||[]);let failed=[];
  for(const file of files){
+  if(file.name.toLowerCase().endsWith('.zip')){
+   try{await unpackZip(file)}catch(e){failed.push(e.message)}
+   continue;
+  }
   const id=SPECS.find(x=>file.name===x.id+'.webp'||file.name===x.id+'.png')?.id;
   if(!id){failed.push(file.name+' (unrecognised name)');continue;}
   try{await decode(file,id)}catch(e){failed.push(e.message)}
