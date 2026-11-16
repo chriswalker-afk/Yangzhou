@@ -219,9 +219,17 @@
     for(const t of tiles)plan(t); // Reject invalid placements rather than silently move them.
     return tiles;
   }
-  function loadImages(){
+  const LEGACY_IMAGE_IDS=Object.freeze([
+    'courtyard-hall-01','willow-tree-01','garden-rockery-01'
+  ]);
+  function loadImages(ids=LEGACY_IMAGE_IDS){
     if(typeof Image==='undefined')return Promise.reject(Error('Browser images required'));
-    return Promise.all(Object.values(COMPONENTS).map(c=>new Promise((resolve,reject)=>{
+    if(!Array.isArray(ids)||ids.some(id=>!COMPONENTS[id]))
+      return Promise.reject(Error('Unknown Layer 2 image preload id'));
+    // Historical V3 labs only need the original three images. Avoid
+    // downloading all five additional multi-megabyte candidates in each
+    // previous lab; rev49 loads those separately with SHA-256 verification.
+    return Promise.all(ids.map(id=>COMPONENTS[id]).map(c=>new Promise((resolve,reject)=>{
       const image=new Image();image.onload=()=>resolve([c.id,image]);
       image.onerror=()=>reject(Error('Missing V3 artwork candidate: '+c.image));image.src=c.image;
     }))).then(entries=>Object.fromEntries(entries));
