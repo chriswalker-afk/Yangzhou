@@ -1,0 +1,345 @@
+{
+  "schemaVersion": 1,
+  "id": "yangzhou-v3-layer2-artwork-certificate-01",
+  "version": "2026-11-16",
+  "status": "artwork-certified-for-v3-only",
+  "reviewedWithUser": true,
+  "certificationScope": [
+    "eight large static sprites, in the currently authored orientation and world footprints",
+    "one original painted moon-gate portal over a genuine physical opening",
+    "three real continuous-wall paints, with south-facing projection",
+    "authentic committed binary hashes, local safe placement and 1x/3x browser preview"
+  ],
+  "explicitlyNotCertified": [
+    "independent verification of architectural details and exact mid-18th-century dating",
+    "large random board repetition and variable-density compositions",
+    "additional cardinal directions or geometry for the landing and roofs",
+    "deprecated assembled-wall sprites in the old courtyard-enclosure lab",
+    "V2 production-game integration or blanket approval of all Layer 1 materials"
+  ],
+  "originalMediaPreserved": true,
+  "liveGameUnchanged": true,
+  "productionReleaseApproved": false,
+  "evidencePreviewUrls": [
+    "layer2-lab-v3.html",
+    "layer2-integrated-v3.html",
+    "wall-geometry-lab-v3.html",
+    "waterside-landing-review-v3.html"
+  ],
+  "assets": [
+    {
+      "id": "courtyard-hall-01",
+      "family": "large-sprite",
+      "image": "assets/v3/large/courtyard-hall-01.webp",
+      "sha256": "3f28402dd8ba4b6cffb1fac693da4306a94631f8359f850d1ee97af8b372bc31",
+      "bytes": 1321474,
+      "pixelDimensions": [
+        1445,
+        707
+      ],
+      "worldFootprint": [
+        96,
+        47
+      ],
+      "evidence": [
+        "tests/v3-layer2.cjs",
+        "tests/v3-layer2-integrated.cjs",
+        "tests/v3-layer2-integrated-visual.cjs"
+      ],
+      "certifiedUse": "previously validated tile-local positions in original compass orientation",
+      "sourceMasterInRepo": true,
+      "artworkCertifiedForV3": true,
+      "productionApproved": false,
+      "historicalAccuracyVerified": false,
+      "largeLayoutRepetitionVerified": false
+    },
+    {
+      "id": "willow-tree-01",
+      "family": "large-sprite",
+      "image": "assets/v3/large/willow-tree-01.webp",
+      "sha256": "8e41982dd8d59a5476d5430cb865d9f86578bb69e9bc69c94c30373d5392fc9e",
+      "bytes": 2044912,
+      "pixelDimensions": [
+        1214,
+        1229
+      ],
+      "worldFootprint": [
+        48,
+        58
+      ],
+      "evidence": [
+        "tests/v3-layer2.cjs",
+        "tests/v3-layer2-integrated.cjs",
+        "tests/v3-layer2-integrated-visual.cjs"
+      ],
+      "certifiedUse": "previously validated tile-local positions in original compass orientation",
+      "sourceMasterInRepo": false,
+      "artworkCertifiedForV3": true,
+      "productionApproved": false,
+      "historicalAccuracyVerified": false,
+      "largeLayoutRepetitionVerified": false
+    },
+    {
+      "id": "garden-rockery-01",
+      "family": "large-sprite",
+      "image": "assets/v3/large/garden-rockery-01.webp",
+      "sha256": "3a22cb438726d4a88cd9d24d6cf9be47faabd7ecff3aa604a9d3b5d131580e89",
+      "bytes": 1223626,
+      "pixelDimensions": [
+        1238,
+        815
+      ],
+      "worldFootprint": [
+        52,
+        37
+      ],
+      "evidence": [
+        "tests/v3-layer2.cjs",
+        "tests/v3-layer2-integrated.cjs",
+        "tests/v3-layer2-integrated-visual.cjs"
+      ],
+      "certifiedUse": "previously validated tile-local positions in original compass orientation",
+      "sourceMasterInRepo": false,
+      "artworkCertifiedForV3": true,
+      "productionApproved": false,
+      "historicalAccuracyVerified": false,
+      "largeLayoutRepetitionVerified": false
+    },
+    {
+      "id": "garden-pavilion-01",
+      "family": "large-sprite",
+      "image": "assets/v3/large/garden-pavilion-01.webp",
+      "sha256": "1cd0e16415598a6342f792f60997cd565cf4f9e16c5500ce1d14279c1da3d57b",
+      "bytes": 767926,
+      "pixelDimensions": [
+        897,
+        890
+      ],
+      "worldFootprint": [
+        52,
+        52
+      ],
+      "evidence": [
+        "tests/v3-layer2.cjs",
+        "tests/v3-layer2-integrated.cjs",
+        "tests/v3-layer2-integrated-visual.cjs"
+      ],
+      "certifiedUse": "previously validated tile-local positions in original compass orientation",
+      "sourceMasterInRepo": true,
+      "artworkCertifiedForV3": true,
+      "productionApproved": false,
+      "historicalAccuracyVerified": false,
+      "largeLayoutRepetitionVerified": false
+    },
+    {
+      "id": "bamboo-grove-01",
+      "family": "large-sprite",
+      "image": "assets/v3/large/bamboo-grove-01.webp",
+      "sha256": "5e23db734113f7d55472e079a15d5c84f270c693028c6afc1a35324fa92ff52e",
+      "bytes": 1438686,
+      "pixelDimensions": [
+        1235,
+        904
+      ],
+      "worldFootprint": [
+        62,
+        45
+      ],
+      "evidence": [
+        "tests/v3-layer2.cjs",
+        "tests/v3-layer2-integrated.cjs",
+        "tests/v3-layer2-integrated-visual.cjs"
+      ],
+      "certifiedUse": "previously validated tile-local positions in original compass orientation",
+      "sourceMasterInRepo": true,
+      "artworkCertifiedForV3": true,
+      "productionApproved": false,
+      "historicalAccuracyVerified": false,
+      "largeLayoutRepetitionVerified": false
+    },
+    {
+      "id": "garden-rockery-02",
+      "family": "large-sprite",
+      "image": "assets/v3/large/garden-rockery-02.webp",
+      "sha256": "d186614ecdd64654a3c9c52d33c7d2ab83aaea0875a42c09d65e64ccbd886998",
+      "bytes": 1633144,
+      "pixelDimensions": [
+        1307,
+        895
+      ],
+      "worldFootprint": [
+        60,
+        41
+      ],
+      "evidence": [
+        "tests/v3-layer2.cjs",
+        "tests/v3-layer2-integrated.cjs",
+        "tests/v3-layer2-integrated-visual.cjs"
+      ],
+      "certifiedUse": "previously validated tile-local positions in original compass orientation",
+      "sourceMasterInRepo": true,
+      "artworkCertifiedForV3": true,
+      "productionApproved": false,
+      "historicalAccuracyVerified": false,
+      "largeLayoutRepetitionVerified": false
+    },
+    {
+      "id": "courtyard-wing-01",
+      "family": "large-sprite",
+      "image": "assets/v3/large/courtyard-wing-01.webp",
+      "sha256": "c2ccf8349d7941c056182411fd721ad311cc3f03aae29c61304572b844b91a55",
+      "bytes": 1024848,
+      "pixelDimensions": [
+        546,
+        1450
+      ],
+      "worldFootprint": [
+        33,
+        87
+      ],
+      "evidence": [
+        "tests/v3-layer2.cjs",
+        "tests/v3-layer2-integrated.cjs",
+        "tests/v3-layer2-integrated-visual.cjs"
+      ],
+      "certifiedUse": "north-south wing in expanded courtyard only",
+      "sourceMasterInRepo": true,
+      "artworkCertifiedForV3": true,
+      "productionApproved": false,
+      "historicalAccuracyVerified": false,
+      "largeLayoutRepetitionVerified": false
+    },
+    {
+      "id": "waterside-landing-01",
+      "family": "large-sprite",
+      "image": "assets/v3/large/waterside-landing-01.webp",
+      "sha256": "ffb2576ebb2df91346fab6cb8878696f92b38fca8f14758dec18445194b04335",
+      "bytes": 1769156,
+      "pixelDimensions": [
+        1691,
+        844
+      ],
+      "worldFootprint": [
+        95,
+        47
+      ],
+      "evidence": [
+        "tests/v3-layer2-integrated.cjs",
+        "tests/v3-waterside-landing-preview.cjs",
+        "tests/v3-waterside-landing-preview-visual.cjs",
+        "waterside-landing-review-v3.html?rev=50"
+      ],
+      "certifiedUse": "straight east-west canal north bank only",
+      "sourceMasterInRepo": true,
+      "artworkCertifiedForV3": true,
+      "productionApproved": false,
+      "historicalAccuracyVerified": false,
+      "largeLayoutRepetitionVerified": false
+    },
+    {
+      "id": "moon-gate-01",
+      "family": "active-architectural-opening",
+      "image": "assets/v3/enclosures/moon-gate-01.webp",
+      "sha256": "e06e5a87395563c605b86f4777ebfa02a183ba40f09eca3fac70d755f5370853",
+      "bytes": 1246684,
+      "pixelDimensions": [
+        1448,
+        721
+      ],
+      "worldFootprint": [
+        null,
+        null
+      ],
+      "evidence": [
+        "tests/v3-moon-gate.cjs",
+        "tests/v3-moon-gate-ground.cjs",
+        "tests/v3-moon-gate-ground-visual.cjs"
+      ],
+      "certifiedUse": "architectural portal on real 30-unit wall aperture, floor visible through original circle",
+      "sourceMasterInRepo": false,
+      "artworkCertifiedForV3": true,
+      "productionApproved": false,
+      "historicalAccuracyVerified": false,
+      "largeLayoutRepetitionVerified": false
+    },
+    {
+      "id": "wall-roof-tiles-01",
+      "family": "wall material",
+      "image": "assets/v3/wall-materials/wall-roof-tiles-01.webp",
+      "sha256": "8a3a7abeb08c4e34bb0134c9a39ba301000435bed5d3c63ccad3bd7a949e578a",
+      "bytes": 174360,
+      "pixelDimensions": [
+        1256,
+        314
+      ],
+      "worldFootprint": [
+        null,
+        null
+      ],
+      "evidence": [
+        "tests/v3-wall-roof-texture.cjs",
+        "tests/v3-wall-face-materials.cjs",
+        "tests/v3-wall-corners.cjs"
+      ],
+      "certifiedUse": "continuous wall roof coping",
+      "sourceMasterInRepo": false,
+      "artworkCertifiedForV3": true,
+      "productionApproved": false,
+      "historicalAccuracyVerified": false,
+      "largeLayoutRepetitionVerified": false
+    },
+    {
+      "id": "wall-plaster-ivory-01",
+      "family": "wall material",
+      "image": "assets/v3/wall-materials/wall-plaster-ivory-01.webp",
+      "sha256": "f421d5853d2d85e1c71d42a14425f4d68ac611a15e2f1f5a68e5e43686a8d552",
+      "bytes": 56950,
+      "pixelDimensions": [
+        1256,
+        314
+      ],
+      "worldFootprint": [
+        null,
+        null
+      ],
+      "evidence": [
+        "tests/v3-wall-roof-texture.cjs",
+        "tests/v3-wall-face-materials.cjs",
+        "tests/v3-wall-corners.cjs"
+      ],
+      "certifiedUse": "visible south-facing ivory plaster",
+      "sourceMasterInRepo": false,
+      "artworkCertifiedForV3": true,
+      "productionApproved": false,
+      "historicalAccuracyVerified": false,
+      "largeLayoutRepetitionVerified": false
+    },
+    {
+      "id": "wall-stone-base-01",
+      "family": "wall material",
+      "image": "assets/v3/wall-materials/wall-stone-base-01.webp",
+      "sha256": "67cc0b16d2a6985737b7ed2decab5c1504f0763dd40e44dc779e1fcdf6e7918b",
+      "bytes": 69958,
+      "pixelDimensions": [
+        1256,
+        157
+      ],
+      "worldFootprint": [
+        null,
+        null
+      ],
+      "evidence": [
+        "tests/v3-wall-roof-texture.cjs",
+        "tests/v3-wall-face-materials.cjs",
+        "tests/v3-wall-corners.cjs"
+      ],
+      "certifiedUse": "visible single weathered stone foundation course",
+      "sourceMasterInRepo": false,
+      "artworkCertifiedForV3": true,
+      "productionApproved": false,
+      "historicalAccuracyVerified": false,
+      "largeLayoutRepetitionVerified": false
+    }
+  ],
+  "nextGate": "scene grammar across 12-25 connected tiles with variation, historical and orientation reviews before production migration"
+}
