@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yangzhou V3 | Waterside Landing beside a Connected Canal</title>
+<style>
+:root{color-scheme:light}*{box-sizing:border-box}
+body{margin:0;background:#eee3cd;color:#35463d;font:15px/1.5 system-ui,sans-serif}
+main{max-width:1120px;margin:22px auto 60px;padding:0 16px}
+h1,h2{font-family:Georgia,serif;line-height:1.2}
+h1{font-size:1.9rem;margin:0 0 11px}h2{font-size:1.22rem}
+.lead{background:#fff9ed;border-left:4px solid #7f9483;padding:14px 17px;border-radius:6px}
+.muted{color:#59695d}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin:14px 0}
+button{font:inherit;border:1px solid #798c80;border-radius:6px;color:#305044;background:#fffdf6;padding:7px 12px;cursor:pointer}
+button[aria-pressed=true]{background:#385b4e;color:#fff}
+label{display:inline-flex;align-items:center;gap:5px}
+input{accent-color:#426b58}
+.preview{max-width:100%;overflow:auto;border:1px solid #cfc4ad;border-radius:8px;background:#f9f6ed;padding:10px}
+canvas{display:block;max-width:none;image-rendering:auto}
+.labels{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;max-width:990px;font-size:.84rem;margin:6px 0;color:#475f51}
+.labels span{text-align:center;padding:5px 3px;border-bottom:1px solid #b9c0ae}
+.status{background:#faf1df;border:1px solid #d4c8ae;padding:9px 12px;border-radius:6px;margin:11px 0}
+.grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(230px,1fr);gap:15px}
+figure{margin:0}
+figcaption{font-size:.85rem;color:#596b60;margin-top:5px}
+#closeUp{width:100%;height:auto;border:1px solid #c7bfaf;border-radius:6px}
+ul{margin:4px 0;padding-left:19px}
+a{color:#306653}
+pre{background:#faf8f2;border:1px solid #d0c6b3;padding:12px;white-space:pre-wrap;font-size:.82rem;max-height:220px;overflow:auto}
+@media(max-width:690px){main{padding:0 10px}.grid{grid-template-columns:1fr}h1{font-size:1.54rem}}
+</style></head><body><main>
+<h1>Waterside Landing 01 — Connected Canal Proof (rev 50)</h1>
+<p class="lead"><strong>Three adjoining, genuine V3 canal tiles rather than one isolated water strip.</strong> The original painted landing sits on the <strong>north bank of the middle tile</strong>, with continuous 88-unit canal water and painted banks running in from the west and out to the east. This makes it possible to judge whether the landing's steps and transparent edge meet the real canal artwork. No scene image has been changed or flattened into a new texture.</p>
+<div class="controls">
+<label><input id="showLanding" type="checkbox" checked> Show original landing artwork</label>
+<label><input id="showBank" type="checkbox" checked> Show painted canal-bank edging</label>
+<label><input id="showTextures" type="checkbox" checked> Use original painted grass/water</label>
+<label><input id="showSeams" type="checkbox"> Mark tile seams</label>
+<button id="zoom" type="button" aria-pressed="false">Inspect at 3×</button>
+</div>
+<div id="landingStatus" class="status" role="status" aria-live="polite">Verifying original lossless landing WebP against GitHub SHA-256…</div>
+<div id="materialStatus" class="status" role="status" aria-live="polite">Loading the original painted grass, canal-water and bank textures…</div>
+<h2>Complete east–west canal neighbourhood</h2>
+<div class="labels" aria-hidden="true">
+<span>Canal continuing from west</span>
+<span>Landing on the north bank</span>
+<span>Canal continuing east</span>
+</div>
+<div class="preview">
+<canvas id="scene" width="1980" height="660" style="width:990px" aria-label="Three connected square V3 tiles, each with a true continuous horizontal 88-world-unit canal; original waterside landing on the centre tile's north bank"></canvas>
+</div>
+<div class="labels" aria-hidden="true">
+<span>North and south canal banks</span>
+<span>88-unit navigable channel</span>
+<span>No changes to water exits</span>
+</div>
+<div class="grid">
+ <figure>
+ <h2>Actual painted landing-to-water join</h2>
+ <canvas id="closeUp" width="900" height="530" aria-label="Magnified real canvas crop showing the landing steps, north canal bank and water texture"></canvas>
+ <figcaption>Live crop from the three-tile canvas. Switch the landing and bank art on/off above to compare the original shoreline without any edited images.</figcaption>
+ </figure>
+ <section>
+ <h2>What to check</h2>
+ <ul>
+ <li>Are the landing's lowest stone steps visibly meeting the water, rather than ending on an isolated green band?</li>
+ <li>Does its transparency blend into the painted jade canal and original banks?</li>
+ <li>Are the bank edge and water continuous at both tile seams?</li>
+ <li>Does the pavilion roof keep the same camera angle and scale as the courtyard hall?</li>
+ </ul>
+ <p class="muted">The masked shoreline of Waterside Landing 01 still needs human artwork approval. This preview is a comparison only and does not alter the production water mask or the playable V2 game.</p>
+ </section>
+</div>
+<h2>Verified geometry and artwork report</h2>
+<pre id="report" aria-label="Machine-readable geometric placement audit"></pre>
+<p><a href="layer2-integrated-v3.html?rev=49">Back to full Layer 2 preview</a> · <a href="docs/V3-LAYER2-INTEGRATED-PLACEMENT.md">Layer 2 placement rules</a> · <a href="assets/v3/large/waterside-landing-01.webp">Original masked WebP</a> · <a href="index.html">Playable V2 (unchanged)</a></p>
+</main>
+<script src="tile-topology.js"></script>
+<script src="assets/v3/base-geometry.js"></script>
+<script src="assets/v3/edge-system.js"></script>
+<script src="assets/v3/material-runtime.js"></script>
+<script src="assets/v3/canal-bank-art.js"></script>
+<script src="assets/v3/layer2-placements.js"></script>
+<script src="assets/v3/wall-geometry.js"></script>
+<script src="assets/v3/courtyard-walkway.js"></script>
+<script src="assets/v3/layer2-integrated.js?rev=49"></script>
+<script src="assets/v3/waterside-landing-canal-proof.js?rev=50"></script>
+<script>
+(()=>{'use strict';
+const proof=window.YangzhouV3LandingCanalProof,
+ material=window.YangzhouV3Materials,bankArt=window.YangzhouV3CanalBankArt;
+const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d'),
+ close=document.getElementById('closeUp'),closeCtx=close.getContext('2d');
+const checkbox=id=>document.getElementById(id).checked;
+const STATUS=document.getElementById('landingStatus'),
+ MSTATUS=document.getElementById('materialStatus');
+let sprites={},materials={},bankImage=null,zoom=false,
+ spriteVerified=false,sourceReport=null;
+const hex=b=>Array.from(new Uint8Array(b),v=>v.toString(16).padStart(2,'0')).join('');
+function fill(id){
+ if(!checkbox('showTextures')||!materials[id])return proof.BASE[id];
+ try{return material.makePattern(ctx,materials[id],material.periodById[id])}
+ catch(error){MSTATUS.textContent='Texture repeat unavailable: '+String(error);return proof.BASE[id]}
+}
+function render(){
+ ctx.setTransform(3,0,0,3,0,0);
+ ctx.clearRect(0,0,660,220);
+ const info=proof.draw(ctx,{
+  style:{grass:fill('grass'),water:fill('water'),stone:fill('stone')},
+  bankImage:bankImage,images:sprites,
+  showLanding:checkbox('showLanding'),
+  showPaintedBank:checkbox('showBank'),
+  showGuides:checkbox('showSeams')
+ });
+ // Crop the same real canvas at full pixel resolution, covering the landing
+ // facade, its edge and water beneath. No redraw or altered artwork.
+ closeCtx.setTransform(1,0,0,1,0,0);
+ closeCtx.clearRect(0,0,close.width,close.height);
+ closeCtx.imageSmoothingEnabled=true;closeCtx.imageSmoothingQuality='high';
+ closeCtx.drawImage(canvas,243*3,16*3,174*3,128*3,
+  0,0,close.width,close.height);
+ document.getElementById('report').textContent=JSON.stringify({
+  revision:50,review:'candidate-needs-shoreline-art-approval',
+  tiles:proof.TILES.map(x=>({grid:[x.x,x.y],edges:x.edges})),
+  canal:{...proof.WATER,seams:[220,440],source:'authored Layer 1A 88-unit water corridor',
+   unchanged:true,paintedSource:!!(materials.water&&checkbox('showTextures')),
+   bankSource:!!(bankImage&&checkbox('showBank'))},
+  landing:{id:'waterside-landing-01',
+   tile:[1,0],center:[110,53],worldFootprint:[95,47],
+   sha256Verified:spriteVerified,visible:info.usedSprite,
+   productionApproved:false}
+ },null,2);
+}
+async function verifyLanding(){
+ try{
+  const metaResp=await fetch('assets/v3/large/new-candidates-manifest.json',{cache:'no-store'});
+  if(!metaResp.ok)throw Error('Asset manifest HTTP '+metaResp.status);
+  const spec=(await metaResp.json()).items.find(a=>a.id==='waterside-landing-01');
+  if(!spec||!spec.binaryCommitted||spec.productionApproved!==false)
+   throw Error('Landing is not an explicitly recorded review candidate');
+  const response=await fetch(spec.image,{cache:'no-store'});
+  if(!response.ok)throw Error('Original masked artwork HTTP '+response.status);
+  const blob=await response.blob();
+  if(blob.size!==spec.bytes)throw Error('Original landing byte-size mismatch');
+  if(!crypto.subtle)throw Error('Secure-origin SHA-256 verification required');
+  const hash=hex(await crypto.subtle.digest('SHA-256',await blob.arrayBuffer()));
+  if(hash!==spec.sha256)throw Error('Original artwork checksum mismatch');
+  const bitmap=await createImageBitmap(blob);
+  if(bitmap.width!==spec.width||bitmap.height!==spec.height)
+   throw Error('Original source image dimensions mismatch');
+  sprites['waterside-landing-01']=bitmap;
+  spriteVerified=true;sourceReport=hash;
+  STATUS.textContent='Original Waterside Landing 01 verified: '+spec.width+'×'+spec.height+
+   ' lossless WebP; SHA-256 matches the committed artwork. Still awaiting visual approval at water edge.';
+  render();
+ }catch(error){
+  STATUS.textContent='Landing image NOT verified: '+String(error.message||error)+
+   '. No substitute object is drawn.';render();
+ }
+}
+async function loadGround(){
+ const [m,b]=await Promise.allSettled([material.loadAll(),bankArt.load()]);
+ if(m.status==='fulfilled')materials=m.value.images;
+ if(b.status==='fulfilled')bankImage=b.value;
+ const missing=[];
+ for(const id of ['grass','stone','water'])if(!materials[id])missing.push(id);
+ if(!bankImage)missing.push('bank-edge');
+ MSTATUS.textContent='V3 Layer 1 materials: '+
+  (missing.length?'Missing '+missing.join(', '):'original painted grass, stone, canal water and bank edge loaded')+
+  '. Geometry stays valid even when artwork is unavailable.';
+ render();
+}
+for(const id of ['showLanding','showBank','showTextures','showSeams'])
+ document.getElementById(id).addEventListener('change',render);
+document.getElementById('zoom').addEventListener('click',e=>{
+ zoom=!zoom;canvas.style.width=zoom?'1980px':'990px';
+ e.currentTarget.setAttribute('aria-pressed',String(zoom));
+ e.currentTarget.textContent=zoom?'Return to overview':'Inspect at 3×';
+ render();
+});
+render();
+verifyLanding();
+loadGround();
+})();
+</script></body></html>
