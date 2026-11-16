@@ -18,6 +18,9 @@ async function run(){
   page.on('pageerror',e=>errors.push('desktop '+e.message));
   await page.goto(PORT,{waitUntil:'domcontentloaded'});
   // Keep legacy wall-material pixel baselines on the original grass surface.
+  // Preserve the legacy unadorned-gap pixel baseline. Moon Gate 01 has
+  // its own painted-asset regression, including transparency and joins.
+  await page.locator('#showMoonGate').uncheck();
   await page.locator('#showPaving').uncheck();
   await page.waitForFunction(()=>document.querySelector('#summary')?.textContent.includes('Protected V3 ports'),{timeout:9000});
   assert.match(await page.locator('h1').textContent(),/rev 44/);

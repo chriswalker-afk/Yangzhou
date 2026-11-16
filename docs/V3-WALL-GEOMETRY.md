@@ -4,11 +4,19 @@
 
 [Open the six-tile Wall Geometry & Texture Lab](../wall-geometry-lab-v3.html?rev=44) (once deployed).
 
+## Original painted Moon Gate 01 — rev 45
+
+The first rev 45 experiment drew a shallow synthetic arc on top of the 30-unit gap. It was visually unacceptable. The improved candidate reuses the repository's existing high-quality moon-gate artwork `assets/v3/enclosures/moon-gate-01.webp` unchanged: **1448×721**, 1,246,684 bytes, exact SHA-256 `e06e5a87395563c605b86f4777ebfa02a183ba40f09eca3fac70d755f5370853`. The illustration has actual curved grey roof tiles, ivory plaster wings, a complete circular stone surround and stone threshold; the interior of the circle is transparent.
+
+The rendering contract is a **separate decoration over a genuine break in continuous geometry**. The original south-wall gate has x=95..125 as its 30-unit structural gap centred at (110,178); the painted portal overlays the wall ends at width 40 and its *unchanged 1448:721 aspect ratio*, placing its lower stone course at the existing south façade bottom (y=192). The circular view remains transparent to the underlying Layer 1B/Layer 1A ground; **no new solid wall rectangles or collision masks** are drawn inside the gap. For north/far-wall gates, use the same compass-upright painting at a slightly smaller projected size. Do not rotate it onto a north–south wall.
+
+The V3 lab verifies the exact original WebP hash before showing the image, provides an independent **Show original painted Moon Gate 01** toggle and a real-canvas magnified close-up. If the original art cannot load, retain the actual empty opening; never synthesize a thin semicircle fallback. Existing wall-art pixel tests disable this *new* visual candidate to preserve their empty-opening baseline; a separate gate visual test checks the painting, threshold, real transparent circular centre and mobile/zoom presentation. **The user must approve the roof joins and scale at 1×/3× before merge**. The prior V3 labs and playable V2 remain unchanged.
+
 ## Why switch
 
 Full wall sprites consistently produced exposed grass at joins, doubled roof caps, inconsistent wall heights and unrealistic sprite rotations. This proof uses **continuous wall centrelines**. The roof, plaster and foundation follow shared mathematical geometry, just as V3 grass, stone paving and canal water already follow separate material masks.
 
-No old wall-sprite WebPs are deleted. They remain a visual comparison in the previous courtyard assembly lab; they are **not used to render these new walls**.
+No old wall-sprite WebPs are deleted. The straight and corner wall paintings remain a comparison in the old assembly lab and **are not used to construct the new walls**. The single exception is the independently authored **Moon Gate 01**, now reused as the actual painted architectural portal on the continuous-wall geometry (rev 45), rather than rebuilding its detailed stone ring and roof with synthetic arcs.
 
 ## One geometry model
 
@@ -17,7 +25,7 @@ A tile is 220 x 220 local world units. A compound is a named set of centreline p
 - Draw an outer stone foundation stroke, then plaster, grey tile coping and ridge strokes, **per material across every path**, so intersections share a continuous substrate.
 - Use miter joins with a common wall thickness at turns. A right-angle **L** is one polyline vertex, not a corner sprite. A **T** is a perpendicular path ending *exactly* on a continuous crossing centreline.
 - A rectangular perimeter is kept as **one continuous polyline**, including all four corners. The gate is the **only break** in the painted/solid path. A closed loop does not restart at a separate wall sprite.
-- For each moon gate, locate its centre exactly on a straight wall segment, derive the start/end from the gate width, and remove **the interval from all four solid material bands**. The top-down entry is genuinely passable. Thin dotted marks are optional *diagnostic ground guides* and have no collision. Decorative circular moon-gate surrounds are a **future painting task**; this proof does not disguise a line as a finished architectural arch.
+- For each moon gate, locate its centre exactly on a straight wall segment, derive the start/end from the gate width, and remove **the interval from all four solid material bands**. The top-down entry is genuinely passable. Thin dotted marks are optional *diagnostic ground guides* and have no collision. The rev 45 portal surround reuses the earlier **original painted Moon Gate 01** (not a new line or fabricated substitute) over this void. The painting does not modify the collision map.
 - Define wall geometry inside the tile with an inset of at least 10 units and route clearance beyond the fixed 44-unit road and 88-unit water ports. The wall material foundation is counted at full half-width, so walls do not sit in water, paved streets, their edge treatment or within the safe gap.
 - Validate the **underlying original uncut centreline** against routes as well as the solid fragments. A moon-gate opening may not be used to disguise an illegal street/canal intersection.
 - Put a real painted Courtyard Hall 01 inside eligible compounds. Its existing 96 x 47 footprint and 6-unit clearance are checked against the walls. On tiles with incompatible road/canal paths, reject the wall compound **as a whole** and retain the same Layer 1 geography.
