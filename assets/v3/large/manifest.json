@@ -170,14 +170,23 @@
         "tileEdgeInset": 10,
         "requiresLand": true,
         "compassUpright": true,
-        "mayCrossTileBoundary": false
+        "mayCrossTileBoundary": false,
+        "coordinateSpace": "tile-local-world-units",
+        "composer": "assets/v3/layer2-integrated.js",
+        "collisionGroup": "solid",
+        "clearOfWallFoundation": true,
+        "clearOfGateOpenings": true,
+        "clearOfInternalWalkway": true,
+        "roadCanalPortsUnchanged": true,
+        "candidateOnly": true
       },
       "productionApproved": false,
       "humanVisualReviewComplete": false,
       "historicAccuracyReviewed": false,
       "orthographicViewReviewed": false,
       "repetitionReviewed": false,
-      "notes": "check roof scale versus Courtyard Hall 01"
+      "notes": "check roof scale versus Courtyard Hall 01",
+      "integrationStatus": "geometry-guarded-preview-candidate"
     },
     {
       "assetId": "bamboo-grove-01",
@@ -209,14 +218,23 @@
         "tileEdgeInset": 10,
         "requiresLand": true,
         "compassUpright": true,
-        "mayCrossTileBoundary": false
+        "mayCrossTileBoundary": false,
+        "coordinateSpace": "tile-local-world-units",
+        "composer": "assets/v3/layer2-integrated.js",
+        "collisionGroup": "solid",
+        "clearOfWallFoundation": true,
+        "clearOfGateOpenings": true,
+        "clearOfInternalWalkway": true,
+        "roadCanalPortsUnchanged": true,
+        "candidateOnly": true
       },
       "productionApproved": false,
       "humanVisualReviewComplete": false,
       "historicAccuracyReviewed": false,
       "orthographicViewReviewed": false,
       "repetitionReviewed": false,
-      "notes": "check soft foliage outline and rock detail"
+      "notes": "check soft foliage outline and rock detail",
+      "integrationStatus": "geometry-guarded-preview-candidate"
     },
     {
       "assetId": "garden-rockery-02",
@@ -248,14 +266,23 @@
         "tileEdgeInset": 10,
         "requiresLand": true,
         "compassUpright": true,
-        "mayCrossTileBoundary": false
+        "mayCrossTileBoundary": false,
+        "coordinateSpace": "tile-local-world-units",
+        "composer": "assets/v3/layer2-integrated.js",
+        "collisionGroup": "solid",
+        "clearOfWallFoundation": true,
+        "clearOfGateOpenings": true,
+        "clearOfInternalWalkway": true,
+        "roadCanalPortsUnchanged": true,
+        "candidateOnly": true
       },
       "productionApproved": false,
       "humanVisualReviewComplete": false,
       "historicAccuracyReviewed": false,
       "orthographicViewReviewed": false,
       "repetitionReviewed": false,
-      "notes": "check flowering-tree scale"
+      "notes": "check flowering-tree scale",
+      "integrationStatus": "geometry-guarded-preview-candidate"
     },
     {
       "assetId": "courtyard-wing-01",
@@ -287,14 +314,24 @@
         "tileEdgeInset": 10,
         "requiresLand": true,
         "compassUpright": true,
-        "mayCrossTileBoundary": false
+        "mayCrossTileBoundary": false,
+        "coordinateSpace": "tile-local-world-units",
+        "composer": "assets/v3/layer2-integrated.js",
+        "collisionGroup": "solid",
+        "clearOfWallFoundation": true,
+        "clearOfGateOpenings": true,
+        "clearOfInternalWalkway": true,
+        "roadCanalPortsUnchanged": true,
+        "candidateOnly": true,
+        "requiresExpandedCourtyard": true
       },
       "productionApproved": false,
       "humanVisualReviewComplete": false,
       "historicAccuracyReviewed": false,
       "orthographicViewReviewed": false,
       "repetitionReviewed": false,
-      "notes": "check painted angle against Courtyard Hall 01"
+      "notes": "check painted angle against Courtyard Hall 01",
+      "integrationStatus": "geometry-guarded-preview-candidate"
     },
     {
       "assetId": "waterside-landing-01",
@@ -324,16 +361,32 @@
       },
       "placement": {
         "tileEdgeInset": 10,
-        "requiresLand": "waterfront-geometry-intake-pending",
+        "requiresLand": "north-bank-straight-canal-specific",
         "compassUpright": true,
-        "mayCrossTileBoundary": false
+        "mayCrossTileBoundary": false,
+        "coordinateSpace": "tile-local-world-units",
+        "composer": "assets/v3/layer2-integrated.js",
+        "collisionGroup": "shoreline-north-straight-canal",
+        "clearOfWallFoundation": true,
+        "clearOfGateOpenings": true,
+        "clearOfInternalWalkway": true,
+        "roadCanalPortsUnchanged": true,
+        "candidateOnly": true,
+        "requiredEdgeSignature": "LWLW",
+        "center": [
+          110,
+          53
+        ],
+        "stepsMayEnterWaterWorldUnits": 10.5,
+        "requiresShorelineArtReview": true
       },
       "productionApproved": false,
       "humanVisualReviewComplete": false,
       "historicAccuracyReviewed": false,
       "orthographicViewReviewed": false,
       "repetitionReviewed": false,
-      "notes": "MASKED DERIVATIVE; check cutout edges and avoid embedded water overlap. Do not place at gameplay shore without geometry-specific clipping."
+      "notes": "Masked water/edge candidate; only north bank L/W/L/W at (110,53) is permitted. Gameplay placement not approved.",
+      "integrationStatus": "geometry-guarded-preview-candidate"
     }
   ]
 }
