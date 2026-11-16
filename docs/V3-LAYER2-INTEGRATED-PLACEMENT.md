@@ -1,5 +1,7 @@
 # Yangzhou V3 — Unified Layer 2 candidate placement (rev 49)
 
+> **Artwork certification update (16 November 2026):** Eight large sprites plus the original painted moon gate and three active wall materials are now art-certified for V3. See [certification and next-asset roadmap](V3-LAYER2-CERTIFICATION-AND-ASSET-ROADMAP.md). The connected north-bank landing artwork is visually accepted in rev50; the original `productionApproved:false` remains for final-game and historical review.
+
 **Status:** GitHub PR review candidate; **not** deployed into the playable V2 game. The five original PNG paintings and their original lossless WebPs remain byte-identical to their accepted intake. Artwork is still `productionApproved:false`.
 
 ## Scope
@@ -36,7 +38,7 @@ The preview adds an independent show/hide switch for landing artwork and painted
 
 ## Waterside Landing 01 contract
 
-The landing is a special shoreline candidate, not a free-placeable solid inland sprite. It is permitted only when the tile ports are exactly `['L','W','L','W']`, the 88-unit water corridor is one straight horizontal canal, and the landscape is unwalled. The south-facing steps at (110,53), within the original artwork, reach approximately 10.5 units into the north bank of that water corridor. No water width, canal mouth, bank geometry, or boat route is modified, and no landing is placed on a canal junction, curved canal, street crossing or land-only tile. The original alpha-masked art still needs **human review of embedded painted water, hard mask edges and perceived scale** before it could be gameplay-ready.
+The landing is a special shoreline candidate, not a free-placeable solid inland sprite. It is permitted only when the tile ports are exactly `['L','W','L','W']`, the 88-unit water corridor is one straight horizontal canal, and the landscape is unwalled. The south-facing steps at (110,53), within the original artwork, reach approximately 10.5 units into the north bank of that water corridor. No water width, canal mouth, bank geometry, or boat route is modified, and no landing is placed on a canal junction, curved canal, street crossing or land-only tile. The existing alpha-masked north-bank art has now been visually approved against three connected canal tiles (rev50). That approval is specific to this orientation; historical and gameplay production checks remain outstanding.
 
 ## Preview, tests and acceptance
 

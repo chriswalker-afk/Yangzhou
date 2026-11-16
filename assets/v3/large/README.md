@@ -1,4 +1,6 @@
-# Yangzhou V3 Layer 2 — Large Detail Artwork Candidates
+# Yangzhou V3 Layer 2 — Large Detail Artwork
+
+> **Update 16 November 2026:** All eight original large-detail paintings are now visually certified for the current V3 camera and tested placement rules, including Waterside Landing 01 on its approved north-bank canal. See [the certification registry](../layer2-art-certification.json) and [next-asset plan](../../../docs/V3-LAYER2-CERTIFICATION-AND-ASSET-ROADMAP.md). The following original three-asset catalogue is retained as provenance; original WebP hashes are unchanged. Historical, repetition and final-game sign-offs are separate.
 
 Three authentic transparent painterly sprites are now committed to the **isolated V3** component library. The live playable V2 game remains unchanged.
 
@@ -8,7 +10,7 @@ Three authentic transparent painterly sprites are now committed to the **isolate
 | Willow Tree 01 | `willow-tree-01.webp` (1214×1229; 2,044,912 bytes) | `8e41982dd8d59a5476d5430cb865d9f86578bb69e9bc69c94c30373d5392fc9e` | 48×58 |
 | Garden Rockery 01 | `garden-rockery-01.webp` (1238×815; 1,223,626 bytes) | `3a22cb438726d4a88cd9d24d6cf9be47faabd7ecff3aa604a9d3b5d131580e89` | 52×37 |
 
-All three are lossless VP8L RGBA; all are artwork **candidates pending visual and historical approval**.
+All three are lossless VP8L RGBA; these original art assets are now **visually certified for V3**. Independent historical accuracy and large-board repetition remain unverified.
 
 ## Source provenance
 

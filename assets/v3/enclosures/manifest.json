@@ -110,7 +110,8 @@
         ]
       },
       "walkThroughAxis": "north-south",
-      "paintedJoinInset": 2
+      "paintedJoinInset": 2,
+      "artworkCertifiedForV3": true
     }
   ],
   "geometryGates": {
@@ -153,5 +154,19 @@
     "binaryVerifiedBy": "exact Git blob SHA-1 and local original SHA-256",
     "historicalVisualReviewComplete": false,
     "sourceCropPolicy": "non-destructive at draw time; never re-encode original"
+  },
+  "activeContinuousWallCertification": {
+    "scope": "V3 geometry-driven wall/painted moon-gate composition",
+    "approved": "2026-11-16",
+    "artworkCertifiedForV3": true,
+    "activeMoonGateId": "moon-gate-01",
+    "sourceOriginalUnchanged": true,
+    "review": "genuine open aperture with real Layer 1B ground visible through original painted circle",
+    "evidence": [
+      "wall-geometry-lab-v3.html?rev=47",
+      "layer2-integrated-v3.html?rev=49"
+    ],
+    "separatedFromArchivedWallSprites": true,
+    "productionApproved": false
   }
 }
