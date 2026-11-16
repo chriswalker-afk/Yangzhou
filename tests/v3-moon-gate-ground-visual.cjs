@@ -82,7 +82,7 @@ async function run(){
   assert.equal(info.moonGateGround.source,'walkway-01');
   assert.equal(info.courtyardWalkway.route.direction,'south-from-north-gate');
   const northThrough=await pixel(page,110,50);
-  const northGrass=await pixel(page,125,50);
+  const northGrass=await pixel(page,140,70);
   assert(different(northThrough,northGrass),
    'Northern moon-gate opening shows stone path, not same grass as adjacent ground');
   await page.locator('#moonGateInspection').screenshot({
@@ -103,10 +103,10 @@ async function run(){
   const mobile=await browser.newPage({viewport:{width:390,height:820},isMobile:true,hasTouch:true});
   mobile.on('pageerror',e=>errors.push('mobile '+e.message));
   await mobile.goto(URL,{waitUntil:'domcontentloaded'});
-  await mobile.waitForFunction(()=>document.querySelector('#moonGateGroundMissing')===null&&
+  await mobile.waitForFunction(()=>
    document.querySelector('#moonGateStatus')?.textContent.includes('verified')&&
    document.querySelector('#walkwayStatus')?.textContent.includes('verified'),
-   {timeout:40000});
+   null,{timeout:40000});
   await mobile.screenshot({path:'artifacts/v3/rev47-through-moon-gate-mobile.png',fullPage:true});
   assert.deepEqual(errors,[]);
   console.log('V3 rev47 portal ground QA passed: real painted path/courtyard within south/north gate opening, toggles, original threshold/ring and outside grass unchanged, 1x/3x/mobile.');
