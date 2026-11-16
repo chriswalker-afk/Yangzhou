@@ -17,6 +17,8 @@ async function run(){
   const page=await browser.newPage({viewport:{width:1440,height:920},deviceScaleFactor:1});
   page.on('pageerror',e=>errors.push('desktop '+e.message));
   await page.goto(URL,{waitUntil:'domcontentloaded'});
+  // The new independent walkway has its own pixel QA; preserve older baselines.
+  await page.locator('#showWalkway').uncheck();
   await page.waitForFunction(()=>document.querySelector('#moonGateStatus')?.textContent.includes(
    'Original Moon Gate 01 verified (1448×721'),{timeout:35000});
   await page.waitForFunction(()=>document.querySelector('#roofStatus')?.textContent.includes(
