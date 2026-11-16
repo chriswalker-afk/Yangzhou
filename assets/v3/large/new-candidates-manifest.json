@@ -24,7 +24,8 @@
       "sourcePath": "assets/v3/large/sources/garden-pavilion-01-original.png",
       "binaryCommitted": true,
       "productionApproved": false,
-      "reviewStatus": "candidate-committed-pending-artwork-approval"
+      "reviewStatus": "candidate-committed-pending-artwork-approval",
+      "aspectRatioWorldMatch": true
     },
     {
       "id": "bamboo-grove-01",
@@ -45,7 +46,8 @@
       "sourcePath": "assets/v3/large/sources/bamboo-grove-01-original.png",
       "binaryCommitted": true,
       "productionApproved": false,
-      "reviewStatus": "candidate-committed-pending-artwork-approval"
+      "reviewStatus": "candidate-committed-pending-artwork-approval",
+      "aspectRatioWorldMatch": true
     },
     {
       "id": "garden-rockery-02",
@@ -53,7 +55,7 @@
       "source": "a_highly_detailed_hand_painted_watercolor_ink_sty.png",
       "previewFile": "garden-rockery-02.webp",
       "worldWidth": 60,
-      "worldHeight": 42,
+      "worldHeight": 41,
       "role": "garden feature",
       "orientation": "compass upright",
       "review": "check flowering-tree scale",
@@ -66,14 +68,15 @@
       "sourcePath": "assets/v3/large/sources/garden-rockery-02-original.png",
       "binaryCommitted": true,
       "productionApproved": false,
-      "reviewStatus": "candidate-committed-pending-artwork-approval"
+      "reviewStatus": "candidate-committed-pending-artwork-approval",
+      "aspectRatioWorldMatch": true
     },
     {
       "id": "courtyard-wing-01",
       "label": "Courtyard Wing 01",
       "source": "a_clean_png_style_game_asset_on_a_transparent_ch.png",
       "previewFile": "courtyard-wing-01.webp",
-      "worldWidth": 37,
+      "worldWidth": 33,
       "worldHeight": 87,
       "role": "north-south courtyard building",
       "orientation": "roof ridge north-south; do not rotate bitmaps",
@@ -87,7 +90,8 @@
       "sourcePath": "assets/v3/large/sources/courtyard-wing-01-original.png",
       "binaryCommitted": true,
       "productionApproved": false,
-      "reviewStatus": "candidate-committed-pending-artwork-approval"
+      "reviewStatus": "candidate-committed-pending-artwork-approval",
+      "aspectRatioWorldMatch": true
     },
     {
       "id": "waterside-landing-01",
@@ -95,7 +99,7 @@
       "source": "a_high_detail_hand_painted_top_down_slightly_e.png",
       "previewFile": "waterside-landing-01.webp",
       "worldWidth": 95,
-      "worldHeight": 55,
+      "worldHeight": 47,
       "role": "canal bank entrance",
       "orientation": "south-facing roof; stone stairs meet water",
       "review": "MASKED DERIVATIVE; check cutout edges and avoid embedded water overlap. Do not place at gameplay shore without geometry-specific clipping.",
@@ -109,7 +113,8 @@
       "binaryCommitted": true,
       "productionApproved": false,
       "reviewStatus": "candidate-committed-pending-artwork-approval",
-      "notes": "Masked transparent derivative from original opaque scene. Hand inspection of shore, embedded water, and the original land/water interface is still required; keep visual candidate only."
+      "notes": "Masked transparent derivative from original opaque scene. Hand inspection of shore, embedded water, and the original land/water interface is still required; keep visual candidate only.",
+      "aspectRatioWorldMatch": true
     }
   ]
 }
