@@ -61,6 +61,7 @@ a{color:#2f6457}
 <label><input type="checkbox" id="showWall" checked> Show continuous walls</label>
 <label><input type="checkbox" id="showGate"> Show passable gate guides (diagnostic)</label>
 <label><input type="checkbox" id="showMoonGate" checked> Show original painted Moon Gate 01</label>
+<label><input type="checkbox" id="showGateGround" checked> Show courtyard floor through the moon gate</label>
 <label><input type="checkbox" id="showJoints"> Show diagnostic L/T joint markers</label>
 <label><input type="checkbox" id="showHall" checked> Courtyard hall</label>
 <label><input type="checkbox" id="showTextures"> Use existing painted Layer 1A materials</label>
@@ -105,8 +106,11 @@ a{color:#2f6457}
 </div></section>
 <section aria-label="Architectural moon-gate close-up from the actual painted tile" id="moonGateInspection">
 <h2>Moon Gate 01 — actual painted junction close-up</h2>
-<p class="muted">Shows the original transparent tiled-roof moon gate rendered over the genuine cut wall opening, not a new vector semicircle. The visible aperture remains clear; the image and physical collision geometry are separate. Review the stone base, roof joins, threshold and perspective at normal size and at 3×.</p>
-<div class="preview"><canvas id="moonGateClose" width="324" height="240" style="width:324px;max-width:100%;height:auto" aria-label="Magnified crop from the actual courtyard tile showing the painted moon gate and adjoining white wall"></canvas></div>
+<p class="muted">Two close-ups are cut directly from the live six-tile canvas, not edited screenshots. The stone walkway (or actual courtyard paving if the path is hidden) is projected only through the <strong>genuine transparent circular opening</strong>. Roof, plaster, stone ring, threshold, exterior grass and gameplay collision stay unchanged. Use <strong>Show courtyard floor through the moon gate</strong> to compare the old flat-grass background with the corrected view.</p>
+<div class="flex">
+<figure style="margin:0;max-width:324px"><div class="preview"><canvas id="moonGateClose" width="324" height="240" style="width:324px;max-width:100%;height:auto" aria-label="South-facing moon gate with stone walkway visible inside original ring"></canvas></div><figcaption class="muted">Enclosed courtyard: southern entrance</figcaption></figure>
+<figure style="margin:0;max-width:324px"><div class="preview"><canvas id="moonGateNorthClose" width="324" height="240" style="width:324px;max-width:100%;height:auto" aria-label="North-facing moon gate with stone walkway visible inside original ring"></canvas></div><figcaption class="muted">Three-sided garden: northern entrance</figcaption></figure>
+</div>
 </section>
 <section aria-label="Standalone Yangzhou path artwork" id="walkwayInspection">
 <h2>Layer 1B — Courtyard Walkway Texture 01</h2>
@@ -160,11 +164,11 @@ a{color:#2f6457}
 <script src="assets/v3/edge-system.js"></script>
 <script src="assets/v3/material-runtime.js"></script>
 <script src="assets/v3/layer2-placements.js"></script>
-<script src="assets/v3/wall-geometry.js?rev=44"></script>
+<script src="assets/v3/wall-geometry.js?rev=47"></script>
 <script src="assets/v3/wall-profile.js?rev=44"></script>
 <script src="assets/v3/wall-face-materials.js?rev=44"></script>
 <script src="assets/v3/wall-roof-texture.js?rev=44"></script>
-<script src="assets/v3/moon-gate-frame.js?rev=45"></script>
+<script src="assets/v3/moon-gate-frame.js?rev=47"></script>
 <script src="assets/v3/courtyard-paving.js?rev=44"></script>
 <script src="assets/v3/courtyard-walkway.js?rev=46"></script>
 <script>
@@ -197,6 +201,12 @@ let tiles=[],selected=0,gridOn=true,zoomOn=false,study='garden',
  moonGateImage=null,moonGateSource='none',
  walkwayImage=null,walkwaySource='none';
 const visible=id=>document.getElementById(id).checked;
+const gateGround=model=>({
+ model,walkwayPainter:courtyardWalkway,
+ walkwayImage:visible('showWalkway')?walkwayImage:null,
+ pavingPainter:courtyardPaving,
+ pavingImage:visible('showPaving')?pavingImage:null
+});
 const tileModel=i=>choices[i]==='none'?null:walls.templates[choices[i]];
 function tileList(name){
  return CODES[name].map((code,i)=>({x:i%3,y:Math.floor(i/3),edges:code.split(''),seed:i+1}));
@@ -222,22 +232,26 @@ function renderCornerInspection(){
  }
 }
 function renderMoonGateInspection(){
- const close=document.getElementById('moonGateClose');
- if(!close)return;
- const out=close.getContext('2d');
- out.clearRect(0,0,close.width,close.height);
- const index=tiles.findIndex((tile,i)=>{
-  const model=tileModel(i);
-  if(!model)return false;
-  const audit=walls.audit(model,tile,{profilePainter:visible('showPerspective')?wallProfile:null});
-  return audit.valid&&walls.compile(model).gates.length>0;
- });
- if(index<0)return;
- const gate=walls.compile(tileModel(index)).gates[0],tile=tiles[index];
- const x=(tile.x*220+gate.center[0]-27)*3;
- const y=(tile.y*220+gate.center[1]-20)*3;
- out.imageSmoothingEnabled=true;out.imageSmoothingQuality='high';
- out.drawImage(canvas,x,y,54*3,40*3,0,0,close.width,close.height);
+ // Only real crops from the current scene. Use the same source for 1x and 3x;
+ // do not fabricate or recolour a standalone 'door' preview.
+ for(const [id,modelId] of [['moonGateClose','rectangle'],['moonGateNorthClose','partial']]){
+  const close=document.getElementById(id);if(!close)continue;
+  const out=close.getContext('2d');
+  out.clearRect(0,0,close.width,close.height);
+  const index=tiles.findIndex((tile,i)=>{
+   const model=tileModel(i);
+   if(!model||model.id!==modelId)return false;
+   return walls.audit(model,tile,{
+    profilePainter:visible('showPerspective')?wallProfile:null
+   }).valid&&walls.compile(model).gates.length>0;
+  });
+  if(index<0)continue;
+  const gate=walls.compile(tileModel(index)).gates[0],tile=tiles[index];
+  const x=(tile.x*220+gate.center[0]-27)*3;
+  const y=(tile.y*220+gate.center[1]-20)*3;
+  out.imageSmoothingEnabled=true;out.imageSmoothingQuality='high';
+  out.drawImage(canvas,x,y,54*3,40*3,0,0,close.width,close.height);
+ }
 }
 function renderWalkwayRepeat(){
  const proof=document.getElementById('walkwayRepeat');
@@ -299,6 +313,8 @@ function render(){
      showGates:visible('showGate'),showJoints:visible('showJoints'),
      moonGatePainter:visible('showMoonGate')?moonGate:null,
      moonGateImage,
+     moonGateGround:gateGround(model),
+     showMoonGateGround:visible('showGateGround'),
      roofImage:visible('showRoofTexture')?roofImage:null,roofPainter,
      profilePainter:visible('showPerspective')?wallProfile:null,
      materialPainter:wallFaceMaterials,
@@ -344,7 +360,9 @@ function render(){
   'Stone: '+(visible('showPerspective')&&visible('showStoneTexture')&&faceImages.stone?'painted (candidate)':'flat diagnostic')+'. '+
   'Courtyard paving: '+(visible('showPaving')&&pavingImage?'genuine Layer 1B candidate (enclosed rectangles only)':'off/unavailable')+'. '+
   'Moon gate: '+(visible('showMoonGate')&&moonGateImage?'original painted Moon Gate 01':'off / original artwork unavailable')+'. '+ 
-  'Walkway: '+(visible('showWalkway')&&walkwayImage?'real stone-slab artwork (Layer 1B)':'off/unavailable')+'.';
+  'Walkway: '+(visible('showWalkway')&&walkwayImage?'real stone-slab artwork (Layer 1B)':'off/unavailable')+'. '+
+  'Through gate: '+(visible('showMoonGate')&&visible('showGateGround')&&moonGateImage?
+   'real ground painting, clipped to circular opening':'existing background / off')+'.';
  document.getElementById('wallInfo').textContent=
   'Tile ('+current.x+','+current.y+') • edges '+current.edges.join('')+
   ' • '+(model?model.name:'No wall layout')+
@@ -357,6 +375,16 @@ function render(){
   compiled:model?{gates:selectedDetail.gates,junctions:selectedDetail.junctions,
    wallSegments:selectedDetail.ribbons.length}:null,
   audit:report,
+  moonGateGround:{
+   enabled:visible('showGateGround'),
+   painted:!!(report?.valid&&moonGateImage&&visible('showMoonGate')&&visible('showGateGround')&&
+    selectedDetail?.gates?.length&&moonGate.groundFor(selectedDetail.gates[0],selectedDetail,gateGround(model)).source!=='existing-ground'),
+   source:report?.valid&&selectedDetail?.gates?.length&&visible('showGateGround')?
+    moonGate.groundFor(selectedDetail.gates[0],selectedDetail,gateGround(model)).source:'existing-ground',
+   apertureMask:moonGate.INNER_APERTURE.source,
+   originalPaintingUnchanged:true,layer:'1B-visible-through-Layer2',
+   affectsExternalGround:false,affectsRoadCanalGeometry:false,affectsCollision:false
+  },
   moonGateFrame:{id:moonGate.ASSET.id,enabled:visible('showMoonGate'),
    painted:!!(moonGateImage&&visible('showMoonGate')),imageVerified:!!moonGateImage,
    source:moonGateSource,visualOnly:true,solidMaskUnchanged:true,
@@ -419,7 +447,7 @@ document.getElementById('plan').addEventListener('change',e=>{
  choices[selected]=e.target.value;refresh();
 });
 for(const id of ['showWall','showGate','showJoints','showHall','showTextures',
- 'showRoofTexture','showPerspective','showPlasterTexture','showStoneTexture','showPaving','showMoonGate','showWalkway'])
+ 'showRoofTexture','showPerspective','showPlasterTexture','showStoneTexture','showPaving','showMoonGate','showWalkway','showGateGround'])
  document.getElementById(id).addEventListener('change',render);
 button('zoom',()=>{
  zoomOn=!zoomOn;canvas.style.width=zoomOn?'1980px':'660px';

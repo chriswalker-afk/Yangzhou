@@ -12,6 +12,20 @@ The rendering contract is a **separate decoration over a genuine break in contin
 
 The V3 lab verifies the exact original WebP hash before showing the image, provides an independent **Show original painted Moon Gate 01** toggle and a real-canvas magnified close-up. If the original art cannot load, retain the actual empty opening; never synthesize a thin semicircle fallback. Existing wall-art pixel tests disable this *new* visual candidate to preserve their empty-opening baseline; a separate gate visual test checks the painting, threshold, real transparent circular centre and mobile/zoom presentation. **The user must approve the roof joins and scale at 1×/3× before merge**. The prior V3 labs and playable V2 remain unchanged.
 
+## Rev 47 — show actual ground materials through the moon-gate aperture
+
+**User finding:** the southern gate (x=110,y=178) showed plain green exterior grass through its circular opening even though a real stone path led to the threshold. This happened because the **original painted architectural elevation** projects the visible aperture **south of** the structural wall centreline, while the Layer 1B paving and walkway were correctly clipped at that line. The northern gate appeared better because its projection mostly overlapped the internal path by accident.
+
+**Correction:** `moon-gate-frame.js` now projects only a small, measured **interior-ground view** inside the source artwork's **actual transparent circular opening**. The projection uses the same verified materials already present in the scene, rather than a filled circle, flat colour or edited background screenshot:
+
+1. If the geometry-authorised `courtyard-walkway-01.svg` is enabled and verified for the given gate, it is repeated with **the exact existing 20-world-unit vertical phase**, to show real weathered stones through the arch. The near-wall camera can widen this *view* by less than 2 world units to cover the visible stone ring; the real 12-unit walkway remains unchanged.
+2. Otherwise, if `courtyard-paving-01.webp` is enabled/verified and the wall model has an authentic enclosed rectangular courtyard, show its **96-world-unit global-repeat image phase**, matching the actual courtyard floor.
+3. Otherwise, do not draw a replacement at all: **real Layer 1A grass remains visible** where appropriate (for example an open northern garden without a path).
+
+The view is clipped to a small ellipse measured inside the transparent opening of original `moon-gate-01.webp`. It is rendered immediately beneath that untouched original painting, allowing the genuine painted tiled roof, plaster cheeks, stone rim and threshold to completely occlude it. The alpha aperture is a **camera projection for visibility only**: it is **never a gameplay road**, never changes the floor polygon, does not paint outside the arch, does not alter the physical 30/24-unit gate opening, and does not modify Layer 1A grass, road or canal. All original artwork WebPs and SVG hashes are unchanged.
+
+The V3 wall lab adds **Show courtyard floor through the moon gate** (default on) to compare old green-background behaviour and new texture-backed aperture. Two additional live-canvas crops inspect the southern enclosed gate and northern garden gate, together with 1×/3×/mobile screenshots. Existing wall/material tests can disable the *projection* to preserve old baselines; dedicated Node and Playwright tests verify authentic textures, no paint on exterior grass/masonry, geometric passability, stone threshold preservation, valid colour transition, and fallback when material toggles are off. This remains a **review PR**, not a visual approval or a replacement of the playable V2 game.
+
 ## Layer 1B authentic-material courtyard walkway candidate — rev 46
 
 **Purpose:** Create a real reusable **texture file** for the path from a moon gate to the courtyard hall, not a modified screenshot and not a fabricated road connection. Keep the original independent Layer 1A grass/stone/water images, Layer 1B Courtyard Paving 01, the hall, the original Moon Gate 01 and the exact wall/profile geometry untouched.
