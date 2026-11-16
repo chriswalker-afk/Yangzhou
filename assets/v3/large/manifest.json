@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "layer": 2,
-  "status": "candidate-committed-awaiting-visual-review",
+  "status": "v3-artwork-certified-production-gated",
   "tileWorldSize": 220,
   "components": [
     {
@@ -42,11 +42,20 @@
         "mayCrossTileBoundary": false
       },
       "productionApproved": false,
-      "humanVisualReviewComplete": false,
+      "humanVisualReviewComplete": true,
       "historicAccuracyReviewed": false,
       "orthographicViewReviewed": false,
       "repetitionReviewed": false,
-      "notes": "First original painted hall asset for tile-ownership proof. Perspective, facade, scale and stylistic compatibility must be reviewed before adding variations. Do not confuse the large-details proof with a full playable V3 release."
+      "notes": "First original painted hall asset for tile-ownership proof. Perspective, facade, scale and stylistic compatibility must be reviewed before adding variations. Do not confuse the large-details proof with a full playable V3 release.",
+      "artworkCertifiedForV3": true,
+      "visualReviewBasis": "user approved painted Layer 2 assets and integrated preview; Waterside Landing 01 approved in connected-canal rev50",
+      "artworkStatus": "v3-artwork-certified",
+      "certifiedScope": "V3 static artwork and currently tested compass-upright placement contract",
+      "outstanding": [
+        "historical dating where asset depends on a named site",
+        "large connected-layout repetition and variation",
+        "final gameplay integration QA"
+      ]
     },
     {
       "assetId": "willow-tree-01",
@@ -89,11 +98,20 @@
         "mayCrossTileBoundary": false
       },
       "productionApproved": false,
-      "humanVisualReviewComplete": false,
+      "humanVisualReviewComplete": true,
       "historicAccuracyReviewed": false,
       "orthographicViewReviewed": false,
       "repetitionReviewed": false,
-      "notes": "Trunk must remain on land; canopy may drape over path or water, within the owning tile. Source master is retained outside the repository, prepared candidate binary committed and hash verified."
+      "notes": "Trunk must remain on land; canopy may drape over path or water, within the owning tile. Source master is retained outside the repository, prepared candidate binary committed and hash verified.",
+      "artworkCertifiedForV3": true,
+      "visualReviewBasis": "user approved painted Layer 2 assets and integrated preview; Waterside Landing 01 approved in connected-canal rev50",
+      "artworkStatus": "v3-artwork-certified",
+      "certifiedScope": "V3 static artwork and currently tested compass-upright placement contract",
+      "outstanding": [
+        "historical dating where asset depends on a named site",
+        "large connected-layout repetition and variation",
+        "final gameplay integration QA"
+      ]
     },
     {
       "assetId": "garden-rockery-01",
@@ -134,11 +152,20 @@
         "mayCrossTileBoundary": false
       },
       "productionApproved": false,
-      "humanVisualReviewComplete": false,
+      "humanVisualReviewComplete": true,
       "historicAccuracyReviewed": false,
       "orthographicViewReviewed": false,
       "repetitionReviewed": false,
-      "notes": "A solid decorative rockery: entire rectangular visual footprint stays clear of protected street and water zones. Historic style, brushwork and palette need review."
+      "notes": "A solid decorative rockery: entire rectangular visual footprint stays clear of protected street and water zones. Historic style, brushwork and palette need review.",
+      "artworkCertifiedForV3": true,
+      "visualReviewBasis": "user approved painted Layer 2 assets and integrated preview; Waterside Landing 01 approved in connected-canal rev50",
+      "artworkStatus": "v3-artwork-certified",
+      "certifiedScope": "V3 static artwork and currently tested compass-upright placement contract",
+      "outstanding": [
+        "historical dating where asset depends on a named site",
+        "large connected-layout repetition and variation",
+        "final gameplay integration QA"
+      ]
     },
     {
       "assetId": "garden-pavilion-01",
@@ -178,15 +205,24 @@
         "clearOfGateOpenings": true,
         "clearOfInternalWalkway": true,
         "roadCanalPortsUnchanged": true,
-        "candidateOnly": true
+        "candidateOnly": false
       },
       "productionApproved": false,
-      "humanVisualReviewComplete": false,
+      "humanVisualReviewComplete": true,
       "historicAccuracyReviewed": false,
       "orthographicViewReviewed": false,
       "repetitionReviewed": false,
       "notes": "check roof scale versus Courtyard Hall 01",
-      "integrationStatus": "geometry-guarded-preview-candidate"
+      "integrationStatus": "v3-artwork-certified-geometry-guarded",
+      "artworkCertifiedForV3": true,
+      "visualReviewBasis": "user approved painted Layer 2 assets and integrated preview; Waterside Landing 01 approved in connected-canal rev50",
+      "artworkStatus": "v3-artwork-certified",
+      "certifiedScope": "V3 static artwork and currently tested compass-upright placement contract",
+      "outstanding": [
+        "historical dating where asset depends on a named site",
+        "large connected-layout repetition and variation",
+        "final gameplay integration QA"
+      ]
     },
     {
       "assetId": "bamboo-grove-01",
@@ -226,15 +262,24 @@
         "clearOfGateOpenings": true,
         "clearOfInternalWalkway": true,
         "roadCanalPortsUnchanged": true,
-        "candidateOnly": true
+        "candidateOnly": false
       },
       "productionApproved": false,
-      "humanVisualReviewComplete": false,
+      "humanVisualReviewComplete": true,
       "historicAccuracyReviewed": false,
       "orthographicViewReviewed": false,
       "repetitionReviewed": false,
       "notes": "check soft foliage outline and rock detail",
-      "integrationStatus": "geometry-guarded-preview-candidate"
+      "integrationStatus": "v3-artwork-certified-geometry-guarded",
+      "artworkCertifiedForV3": true,
+      "visualReviewBasis": "user approved painted Layer 2 assets and integrated preview; Waterside Landing 01 approved in connected-canal rev50",
+      "artworkStatus": "v3-artwork-certified",
+      "certifiedScope": "V3 static artwork and currently tested compass-upright placement contract",
+      "outstanding": [
+        "historical dating where asset depends on a named site",
+        "large connected-layout repetition and variation",
+        "final gameplay integration QA"
+      ]
     },
     {
       "assetId": "garden-rockery-02",
@@ -274,15 +319,24 @@
         "clearOfGateOpenings": true,
         "clearOfInternalWalkway": true,
         "roadCanalPortsUnchanged": true,
-        "candidateOnly": true
+        "candidateOnly": false
       },
       "productionApproved": false,
-      "humanVisualReviewComplete": false,
+      "humanVisualReviewComplete": true,
       "historicAccuracyReviewed": false,
       "orthographicViewReviewed": false,
       "repetitionReviewed": false,
       "notes": "check flowering-tree scale",
-      "integrationStatus": "geometry-guarded-preview-candidate"
+      "integrationStatus": "v3-artwork-certified-geometry-guarded",
+      "artworkCertifiedForV3": true,
+      "visualReviewBasis": "user approved painted Layer 2 assets and integrated preview; Waterside Landing 01 approved in connected-canal rev50",
+      "artworkStatus": "v3-artwork-certified",
+      "certifiedScope": "V3 static artwork and currently tested compass-upright placement contract",
+      "outstanding": [
+        "historical dating where asset depends on a named site",
+        "large connected-layout repetition and variation",
+        "final gameplay integration QA"
+      ]
     },
     {
       "assetId": "courtyard-wing-01",
@@ -322,16 +376,25 @@
         "clearOfGateOpenings": true,
         "clearOfInternalWalkway": true,
         "roadCanalPortsUnchanged": true,
-        "candidateOnly": true,
+        "candidateOnly": false,
         "requiresExpandedCourtyard": true
       },
       "productionApproved": false,
-      "humanVisualReviewComplete": false,
+      "humanVisualReviewComplete": true,
       "historicAccuracyReviewed": false,
       "orthographicViewReviewed": false,
       "repetitionReviewed": false,
       "notes": "check painted angle against Courtyard Hall 01",
-      "integrationStatus": "geometry-guarded-preview-candidate"
+      "integrationStatus": "v3-artwork-certified-geometry-guarded",
+      "artworkCertifiedForV3": true,
+      "visualReviewBasis": "user approved painted Layer 2 assets and integrated preview; Waterside Landing 01 approved in connected-canal rev50",
+      "artworkStatus": "v3-artwork-certified",
+      "certifiedScope": "V3 static artwork and currently tested compass-upright placement contract",
+      "outstanding": [
+        "historical dating where asset depends on a named site",
+        "large connected-layout repetition and variation",
+        "final gameplay integration QA"
+      ]
     },
     {
       "assetId": "waterside-landing-01",
@@ -371,22 +434,59 @@
         "clearOfGateOpenings": true,
         "clearOfInternalWalkway": true,
         "roadCanalPortsUnchanged": true,
-        "candidateOnly": true,
+        "candidateOnly": false,
         "requiredEdgeSignature": "LWLW",
         "center": [
           110,
           53
         ],
         "stepsMayEnterWaterWorldUnits": 10.5,
-        "requiresShorelineArtReview": true
+        "requiresShorelineArtReview": false
       },
       "productionApproved": false,
-      "humanVisualReviewComplete": false,
+      "humanVisualReviewComplete": true,
       "historicAccuracyReviewed": false,
       "orthographicViewReviewed": false,
       "repetitionReviewed": false,
       "notes": "Masked water/edge candidate; only north bank L/W/L/W at (110,53) is permitted. Gameplay placement not approved.",
-      "integrationStatus": "geometry-guarded-preview-candidate"
+      "integrationStatus": "v3-artwork-certified-geometry-guarded",
+      "artworkCertifiedForV3": true,
+      "visualReviewBasis": "user approved painted Layer 2 assets and integrated preview; Waterside Landing 01 approved in connected-canal rev50",
+      "artworkStatus": "v3-artwork-certified",
+      "certifiedScope": "V3 static artwork and currently tested compass-upright placement contract",
+      "outstanding": [
+        "historical dating where asset depends on a named site",
+        "large connected-layout repetition and variation",
+        "final gameplay integration QA",
+        "new shore-facing orientations require separately authored sprite and review"
+      ],
+      "shorelineReview": {
+        "status": "accepted-for-existing-north-bank-LWLW-configuration",
+        "evidence": "waterside-landing-review-v3.html?rev=50",
+        "checks": [
+          "original painted canal and bank visible in three connected tiles",
+          "real sprite independent of water geometry",
+          "normal and 3x desktop/mobile browser QA"
+        ],
+        "qualification": "specific north-bank orientation only, not all canal configurations"
+      }
     }
-  ]
+  ],
+  "artworkCertification": {
+    "version": 1,
+    "scope": "v3-sprite-appearance-integrity-and-safe-preview-placement",
+    "signedOffBy": "user-in-conversation",
+    "date": "2026-11-16",
+    "count": 8,
+    "reviewedIn": [
+      "layer2-lab-v3.html",
+      "layer2-integrated-v3.html",
+      "waterside-landing-review-v3.html"
+    ],
+    "excludes": [
+      "independent-historical-fact-check",
+      "full-scene-repetition-analysis",
+      "V2-gameplay-deployment"
+    ]
+  }
 }
