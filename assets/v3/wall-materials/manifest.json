@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "layer": 2,
   "materialId": "wall-roof-tiles-01",
-  "status": "candidate-committed-awaiting-visual-review",
+  "status": "v3-wall-material-artwork-certified-production-gated",
   "productionApproved": false,
   "renderingScope": "V3 Wall Geometry & Texture Lab only",
   "source": {
@@ -42,11 +42,11 @@
     }
   },
   "reviews": {
-    "normalZoom": false,
-    "threeTimesZoom": false,
-    "roofColourMatch": false,
-    "physicalSeam": false,
-    "intersectionSeam": false,
+    "normalZoom": true,
+    "threeTimesZoom": true,
+    "roofColourMatch": true,
+    "physicalSeam": true,
+    "intersectionSeam": true,
     "historicalAccuracy": false
   },
   "wallProfile": {
@@ -75,7 +75,8 @@
     "moonGateFaceEndTrimWorld": 0,
     "southWallExteriorExtensionBeyondCentrelineWorld": 4,
     "southWallExteriorEdgeWestWorld": 38,
-    "southWallExteriorEdgeEastWorld": 182
+    "southWallExteriorEdgeEastWorld": 182,
+    "artworkCertifiedForV3": true
   },
   "faceMaterials": {
     "plaster": {
@@ -110,7 +111,8 @@
         "visibleFaceHeight": "wallProfile.outer - BASE_HEIGHT - FACE_START",
         "uPeriod": "(1256/314) * visibleFaceHeight",
         "sideRotationDegrees": null
-      }
+      },
+      "artworkCertifiedForV3": true
     },
     "stone": {
       "id": "wall-stone-base-01",
@@ -150,8 +152,21 @@
         "uPeriod": 13.6,
         "sideRotationDegrees": null,
         "placement": "south-facing horizontal lowest stone course only; no stone panels to right of vertical walls"
-      }
+      },
+      "artworkCertifiedForV3": true
     }
   },
-  "faceMaterialsStatus": "three-authentic-wall-material-candidates-awaiting-visual-review"
+  "faceMaterialsStatus": "three-matching-v3-wall-materials-artwork-certified",
+  "artworkCertifiedForV3": true,
+  "artworkCertification": {
+    "scope": "V3 continuous-wall presentation only",
+    "date": "2026-11-16",
+    "evidence": "wall-geometry-lab-v3.html?rev=47",
+    "notCertified": "archived detached wall sprites and historically specific restorations",
+    "stillPending": [
+      "overall scene repetition",
+      "historical material verification",
+      "final gameplay integration"
+    ]
+  }
 }
