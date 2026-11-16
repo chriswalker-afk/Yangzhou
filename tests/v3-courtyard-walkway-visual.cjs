@@ -56,6 +56,9 @@ async function run(){
   assert.equal(await page.locator('#scene').evaluate(e=>e.style.width),'1980px');
   await page.screenshot({path:'artifacts/v3/walkway-real-tile-3x.png',fullPage:true});
   await page.locator('#study').selectOption('canal');
+  // The top row is intentionally land; choose a lower ROW canal tile for the rejection check.
+  await page.locator('#scene').click({position:{x:110,y:330}});
+  await page.locator('#plan').selectOption('rectangle');
   const all=JSON.parse(await page.locator('#export').textContent());
   assert.equal(all.audit.valid,false);
   assert.equal(all.courtyardWalkway.painted,false);
