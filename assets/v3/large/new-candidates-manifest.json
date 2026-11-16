@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "layer": 2,
-  "status": "binary-source-and-lossless-webp-committed-awaiting-visual-review",
+  "status": "five-v3-artworks-certified-production-gated",
   "gameplayApproved": false,
-  "note": "All five original PNGs and prepared lossless WebPs are committed. Existing Layer 2 geometry, walls, base materials and V2 game untouched. Preview autoloads these exact SHA-256 verified files; artistic composition and landing shore edges require visual approval.",
+  "note": "All five original PNGs and lossless WebPs are committed and unchanged. Their V3 visual/artwork status is user-certified (including the connected canal landing). Separate historical, repetition, and final-game reviews remain outstanding; V2 unchanged.",
   "items": [
     {
       "id": "garden-pavilion-01",
@@ -14,7 +14,7 @@
       "worldHeight": 52,
       "role": "garden architecture",
       "orientation": "upright roof, south-facing facade",
-      "review": "check roof scale versus Courtyard Hall 01",
+      "review": "V3 original painting visually accepted; keep original camera/orientation, world footprint and collision rules",
       "width": 897,
       "height": 890,
       "bytes": 767926,
@@ -24,9 +24,10 @@
       "sourcePath": "assets/v3/large/sources/garden-pavilion-01-original.png",
       "binaryCommitted": true,
       "productionApproved": false,
-      "reviewStatus": "candidate-committed-pending-artwork-approval",
+      "reviewStatus": "v3-artwork-certified",
       "aspectRatioWorldMatch": true,
-      "integrationStatus": "sprite-registered-and-preview-placed"
+      "integrationStatus": "v3-artwork-certified-in-geometry-guarded-compositions",
+      "artworkCertifiedForV3": true
     },
     {
       "id": "bamboo-grove-01",
@@ -37,7 +38,7 @@
       "worldHeight": 45,
       "role": "garden vegetation",
       "orientation": "compass upright",
-      "review": "check soft foliage outline and rock detail",
+      "review": "V3 original painting visually accepted; keep original camera/orientation, world footprint and collision rules",
       "width": 1235,
       "height": 904,
       "bytes": 1438686,
@@ -47,9 +48,10 @@
       "sourcePath": "assets/v3/large/sources/bamboo-grove-01-original.png",
       "binaryCommitted": true,
       "productionApproved": false,
-      "reviewStatus": "candidate-committed-pending-artwork-approval",
+      "reviewStatus": "v3-artwork-certified",
       "aspectRatioWorldMatch": true,
-      "integrationStatus": "sprite-registered-and-preview-placed"
+      "integrationStatus": "v3-artwork-certified-in-geometry-guarded-compositions",
+      "artworkCertifiedForV3": true
     },
     {
       "id": "garden-rockery-02",
@@ -60,7 +62,7 @@
       "worldHeight": 41,
       "role": "garden feature",
       "orientation": "compass upright",
-      "review": "check flowering-tree scale",
+      "review": "V3 original painting visually accepted; keep original camera/orientation, world footprint and collision rules",
       "width": 1307,
       "height": 895,
       "bytes": 1633144,
@@ -70,9 +72,10 @@
       "sourcePath": "assets/v3/large/sources/garden-rockery-02-original.png",
       "binaryCommitted": true,
       "productionApproved": false,
-      "reviewStatus": "candidate-committed-pending-artwork-approval",
+      "reviewStatus": "v3-artwork-certified",
       "aspectRatioWorldMatch": true,
-      "integrationStatus": "sprite-registered-and-preview-placed"
+      "integrationStatus": "v3-artwork-certified-in-geometry-guarded-compositions",
+      "artworkCertifiedForV3": true
     },
     {
       "id": "courtyard-wing-01",
@@ -83,7 +86,7 @@
       "worldHeight": 87,
       "role": "north-south courtyard building",
       "orientation": "roof ridge north-south; do not rotate bitmaps",
-      "review": "check painted angle against Courtyard Hall 01",
+      "review": "V3 original painting visually accepted; keep original camera/orientation, world footprint and collision rules",
       "width": 546,
       "height": 1450,
       "bytes": 1024848,
@@ -93,9 +96,10 @@
       "sourcePath": "assets/v3/large/sources/courtyard-wing-01-original.png",
       "binaryCommitted": true,
       "productionApproved": false,
-      "reviewStatus": "candidate-committed-pending-artwork-approval",
+      "reviewStatus": "v3-artwork-certified",
       "aspectRatioWorldMatch": true,
-      "integrationStatus": "sprite-registered-and-preview-placed"
+      "integrationStatus": "v3-artwork-certified-in-geometry-guarded-compositions",
+      "artworkCertifiedForV3": true
     },
     {
       "id": "waterside-landing-01",
@@ -106,7 +110,7 @@
       "worldHeight": 47,
       "role": "canal bank entrance",
       "orientation": "south-facing roof; stone stairs meet water",
-      "review": "MASKED DERIVATIVE; check cutout edges and avoid embedded water overlap. Do not place at gameplay shore without geometry-specific clipping.",
+      "review": "North-bank canal landing and its masked shoreline accepted in real three-tile 88-unit canal preview rev50; other shoreline orientations not covered",
       "width": 1691,
       "height": 844,
       "bytes": 1769156,
@@ -116,19 +120,44 @@
       "sourcePath": "assets/v3/large/sources/waterside-landing-01-original.png",
       "binaryCommitted": true,
       "productionApproved": false,
-      "reviewStatus": "candidate-committed-pending-artwork-approval",
-      "notes": "Masked transparent derivative from original opaque scene. Hand inspection of shore, embedded water, and the original land/water interface is still required; keep visual candidate only.",
+      "reviewStatus": "v3-artwork-certified",
+      "notes": "Original masked alpha artwork retained byte-for-byte; accepted visually beside the existing north bank and actual canal-water/bank textures only. Different orientations still require artwork review.",
       "aspectRatioWorldMatch": true,
-      "integrationStatus": "shoreline-geometry-guarded-alpha-needs-review"
+      "integrationStatus": "v3-artwork-certified-in-geometry-guarded-compositions",
+      "artworkCertifiedForV3": true,
+      "shorelineReview": {
+        "status": "accepted-north-bank-straight-canal-only",
+        "preview": "waterside-landing-review-v3.html?rev=50",
+        "accepted": "2026-11-16",
+        "waterMaskUnchanged": true
+      }
     }
   ],
   "integration": {
     "module": "assets/v3/layer2-integrated.js",
     "preview": "layer2-integrated-v3.html",
-    "status": "geometry-guarded-review-candidate",
+    "status": "v3-artwork-certified-requires-production-qa",
     "changesV2": false,
     "preservedOriginalPngAndWebp": true,
-    "requiresVisualReview": true,
-    "shorelineReviewOutstanding": true
+    "requiresVisualReview": false,
+    "shorelineReviewOutstanding": false,
+    "currentVisualReviewAccepted": true,
+    "pending": [
+      "historic period review",
+      "composition variety/repetition review",
+      "new waterfront orientations",
+      "V2 gameplay migration"
+    ]
+  },
+  "visualArtworkCertification": {
+    "approved": true,
+    "scope": "V3 painted sprites at their currently authored camera and placements",
+    "approvedInConversation": "2026-11-16",
+    "count": 5,
+    "excludes": [
+      "historical verification",
+      "repetition at large map scale",
+      "playable V2 migration"
+    ]
   }
 }
