@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "layer": 2,
+  "status": "source-art-prepared-binaries-not-yet-imported",
+  "gameplayApproved": false,
+  "note": "Five genuine previously generated drawings prepared as transparent lossless WebPs in accompanying art ZIP. This review branch contains the source intake contract and an interactive browser-local file preview only. Full-size binary artwork is NOT yet in GitHub; do not pretend otherwise.",
+  "items": [
+    {
+      "id": "garden-pavilion-01",
+      "label": "Garden Pavilion 01",
+      "source": "jiangnan_garden_pavilion_sprite.png",
+      "previewFile": "garden-pavilion-01.webp",
+      "worldWidth": 52,
+      "worldHeight": 52,
+      "role": "garden architecture",
+      "orientation": "upright roof, south-facing facade",
+      "review": "check roof scale versus Courtyard Hall 01"
+    },
+    {
+      "id": "bamboo-grove-01",
+      "label": "Bamboo Grove 01",
+      "source": "a_highly_detailed_painted_isometric_oblique_top.png",
+      "previewFile": "bamboo-grove-01.webp",
+      "worldWidth": 62,
+      "worldHeight": 45,
+      "role": "garden vegetation",
+      "orientation": "compass upright",
+      "review": "check soft foliage outline and rock detail"
+    },
+    {
+      "id": "garden-rockery-02",
+      "label": "Garden Rockery 02",
+      "source": "a_highly_detailed_hand_painted_watercolor_ink_sty.png",
+      "previewFile": "garden-rockery-02.webp",
+      "worldWidth": 60,
+      "worldHeight": 42,
+      "role": "garden feature",
+      "orientation": "compass upright",
+      "review": "check flowering-tree scale"
+    },
+    {
+      "id": "courtyard-wing-01",
+      "label": "Courtyard Wing 01",
+      "source": "a_clean_png_style_game_asset_on_a_transparent_ch.png",
+      "previewFile": "courtyard-wing-01.webp",
+      "worldWidth": 37,
+      "worldHeight": 87,
+      "role": "north-south courtyard building",
+      "orientation": "roof ridge north-south; do not rotate bitmaps",
+      "review": "check painted angle against Courtyard Hall 01"
+    },
+    {
+      "id": "waterside-landing-01",
+      "label": "Waterside Landing 01",
+      "source": "a_high_detail_hand_painted_top_down_slightly_e.png",
+      "previewFile": "waterside-landing-01.webp",
+      "worldWidth": 95,
+      "worldHeight": 55,
+      "role": "canal bank entrance",
+      "orientation": "south-facing roof; stone stairs meet water",
+      "review": "MASKED DERIVATIVE; check cutout edges and avoid embedded water overlap. Do not place at gameplay shore without geometry-specific clipping."
+    }
+  ]
+}
