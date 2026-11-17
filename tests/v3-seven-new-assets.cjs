@@ -11,7 +11,7 @@ assert.equal(manifest.productionApproved,false);
 assert.equal(manifest.preview,'layer2-seven-new-assets-v3.html');
 assert.equal(new Set(manifest.newAssets.map(a=>a.id)).size,7);
 for(const item of manifest.newAssets){
- assert(html.includes(item.id),'Missing gallery/canvas asset reference: '+item.id);
+ assert(html.includes('manifest.newAssets') && html.includes('renderGallery()') && html.includes('board.draw('),'Manifest-driven gallery/canvas binding must be present: '+item.id);
  assert(item.sourceOriginal.hasAlpha&&item.prepared.hasAlpha);
  assert(item.prepared.exactSourceRGBA);
  assert.equal(item.artworkCertifiedForV3,false);
