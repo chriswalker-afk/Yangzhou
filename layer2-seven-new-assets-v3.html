@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#eee7d6">
-<title>Yangzhou V3 | Exact 88 by 44 bridge proof | 4 by 4 connected review</title>
+<title>Yangzhou V3 | Bridge over water, no road underlay | connected preview</title>
 <style>
 :root{color-scheme:light;--ink:#334b42;--muted:#5c6d63;--paper:#f9f5e9;--border:#c9c2ac}
 *{box-sizing:border-box}
@@ -70,10 +70,10 @@ a{color:#2f6758}footer{padding:22px 0;border-top:1px solid var(--border);margin-
 </div>
 <div id="tileInfo" class="status" role="status" aria-live="polite">Select one of the sixteen tiles to inspect the composition.</div>
 <h2 id="bridge-proof">Stone bridge — measured 88 × 44 crossing</h2>
-<p class="intro">This is an enlarged crop of the <strong>actual connected V3 renderer</strong>, not a separate mock-up. The normal road now stops at the canal banks. The bridge runs 88 world units from west bank to east bank and is exactly 44 world units wide, matching the road on both sides.</p>
+<p class="intro">This is an enlarged crop of the <strong>actual connected V3 renderer</strong>, not a separate mock-up. The stone road stops at both canal banks. There is <strong>no paving texture beneath the transparent bridge painting</strong>: the original canal water remains visible through every gap. The artwork spans 88 world units and fits the 44-unit-wide road.</p>
 <div class="toolbar"><label><input id="showBridgeGuides" type="checkbox" checked> Show 88 × 44 footprint guides</label></div>
 <div class="pan"><canvas id="bridgeCloseup" width="704" height="512" aria-label="Enlarged connected Yangzhou tile with bridge length 88 and width 44 and selectable measurement lines"></canvas></div>
-<div class="note"><strong>Candidate for review.</strong> Check the road connection at each bank and the canal edges. The painting is original and losslessly converted; decorative rail height is a visual detail inside the fixed crossing footprint.</div>
+<div class="note"><strong>Candidate for review.</strong> Untick <em>New artwork</em> above to see the water-only bridge gap and uninterrupted canal; tick it again to see the painted stone bridge above that water. Both 44-unit road approaches remain on their banks, with no road texture beneath the painted bridge.</div>
 <h2>Inspect each transparent sprite</h2>
 <p class="intro">These are the exact lossless WebP artwork files, not regenerated drawings or whole-tile screenshots. Each appears at its natural aspect ratio here and at its actual world dimensions on the board.</p>
 <div id="gallery" class="grid" aria-live="polite"></div>
@@ -141,7 +141,7 @@ function render(){
   if(entry.model && pavingImage && entry.audit && entry.audit.valid && entry.model.id==='rectangle')
     paving.paint(ctx,tile,entry.model,pavingImage,{valid:true});
   if(showOld) for(const p of entry.originals)drawOld(ctx,tile,p);
-  if(showNew)board.draw(ctx,entry,images,{bridgeDeckPattern:colors.stone});
+  if(showNew)board.draw(ctx,entry,images);
   if(showWalls && entry.model){
     const result=walls.draw(ctx,entry.model,tile,{
       showGates:false,showJoints:false,

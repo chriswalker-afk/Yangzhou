@@ -16,6 +16,27 @@ async function inspect(page,filename){
  const closeup=await page.locator('#bridgeCloseup').evaluate(c=>({width:c.width,height:c.height,alpha:c.getContext('2d').getImageData(352,256,1,1).data[3]}));
  assert.deepEqual([closeup.width,closeup.height],[704,512]);
  assert(closeup.alpha>0,'Bridge close-up must contain real connected V3 pixels');
+ // Pixel regression: the painted bridge has transparent upper/lower
+ // margins within the exactly 88x44 footprint. Those must show the same
+ // canal pixels with bridge artwork toggled on or off: NO stone underlay.
+ const waterProof=await page.evaluate(()=>{
+  const art=document.querySelector('#showNew');
+  const c=document.querySelector('#scene').getContext('2d');
+  const px=(x,y)=>[...c.getImageData(Math.round(x*2),Math.round(y*2),1,1).data];
+  const samples=[[534,309],[550,309],[566,309],[534,350],[550,350],[566,350]];
+  const painted=samples.map(([x,y])=>px(x,y));
+  const deck=px(550,330);
+  art.click();
+  const water=samples.map(([x,y])=>px(x,y));
+  const exposedCanal=px(550,330);
+  art.click();
+  return {painted,water,deck,exposedCanal,artRestored:art.checked};
+ });
+ assert.equal(waterProof.artRestored,true,'Bridge artwork display restored after water-only comparison');
+ assert.deepEqual(waterProof.painted,waterProof.water,
+  'All transparent bridge-margin pixels MUST show unchanged canal water, never stone road texture');
+ assert.notDeepEqual(waterProof.deck,waterProof.exposedCanal,
+  'Bridge image must still paint a visible deck above the canal water');
  const snap=await page.evaluate(()=>{
   const canvas=document.querySelector('canvas'),p=window.YangzhouV3SevenCandidates.plan({gateWidth:30});
   return {width:canvas.width,height:canvas.height,tiles:p.tiles.length,art:p.allNewAssetsIncluded,
