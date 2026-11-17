@@ -15,7 +15,7 @@
  if(!topology||!geometry||!layer2||!walls)throw Error('Original Yangzhou V3 topology/wall modules must load first');
  const SIZE=220,GRID=4;
  const ASSETS=Object.freeze({
-  'stone-bridge-parapets-01':Object.freeze({width:176,height:39,mode:'bridge',signature:'WSWS'}),
+  'stone-bridge-parapets-01':Object.freeze({width:88,height:44,mode:'bridge',signature:'WSWS',crop:Object.freeze({x:250,y:151,width:1272,height:528})}),
   'street-shopfront-01':Object.freeze({width:72,height:43,mode:'road-north',signature:'LSLS'}),
   'covered-garden-corridor-01':Object.freeze({width:88,height:30,mode:'land',signature:'LLLL'}),
   'waterside-pavilion-01':Object.freeze({width:72,height:48,mode:'canal-north',signature:'LWLW'}),
@@ -88,7 +88,9 @@
   if(s.mode==='bridge'){
    // Exact east-west 44-unit road deck over north-south 88-unit canal.
    const g=geometry.compile(tile.edges);
-   return p.x===110&&p.y===110&&g.bridge&&g.paths.some(q=>q.type==='S'&&q.width===44&&q.kind==='line')&&
+   return p.x===110&&p.y===110&&s.width===SPECIFICS.bridgeWaterWidth&&
+    s.height===SPECIFICS.bridgeRoadWidth&&a.left===66&&a.right===154&&a.top===88&&a.bottom===132&&
+    g.bridge&&g.paths.some(q=>q.type==='S'&&q.width===44&&q.kind==='line')&&
     g.paths.some(q=>q.type==='W'&&q.width===88&&q.kind==='line');
   }
   if(s.mode==='canal-north'){
@@ -166,13 +168,26 @@
   }));
   return Object.freeze({images,errors,verifiedCount:ID_LIST.filter(id=>!!images[id]).length});
  }
- function draw(ctx,entry,images,{visible=true}={}){
+ function draw(ctx,entry,images,{visible=true,bridgeDeckPattern='#d5c7aa'}={}){
   if(!visible)return 0;
   const {tile,art}=entry,ox=tile.x*SIZE,oy=tile.y*SIZE;
   let drawn=0;
   for(const p of art){
    const image=images?.[p.id],spec=ASSETS[p.id];if(!image)continue;
-   ctx.drawImage(image,ox+p.x-spec.width/2,oy+p.y-spec.height/2,spec.width,spec.height);
+   const x=ox+p.x-spec.width/2,y=oy+p.y-spec.height/2;
+   if(spec.mode==='bridge'){
+    // Ground pass masks the road across water. Opaque stone fills the full
+    // 88x44 crossing; artwork then sits above it, within that exact mask.
+    ctx.save();ctx.beginPath();ctx.rect(x,y,spec.width,spec.height);ctx.clip();
+    ctx.fillStyle=bridgeDeckPattern;ctx.fillRect(x,y,spec.width,spec.height);
+    // Trim only transparent padding; keep natural painting aspect ratio.
+    // Deck is the full 88x44; decorative parapets are inset 3.74 units
+    // from each road edge, as a real edge guard would be.
+    const crop=spec.crop,artHeight=spec.width*crop.height/crop.width;
+    ctx.drawImage(image,crop.x,crop.y,crop.width,crop.height,
+     x,y+(spec.height-artHeight)/2,spec.width,artHeight);
+    ctx.restore();
+   }else ctx.drawImage(image,x,y,spec.width,spec.height);
    drawn++;
   }
   return drawn;
