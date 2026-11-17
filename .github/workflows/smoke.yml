@@ -86,6 +86,7 @@ jobs:
           node tests/v3-layer2-art-certification.cjs
           node tests/v3-waterside-landing-preview.cjs
           node tests/v3-layer2-new-asset-intake.cjs
+          node tests/v3-seven-new-assets.cjs
           node tests/v3-courtyard-enclosure.cjs
           node tests/v3-moon-gate.cjs
           node tests/v3-moon-gate-ground.cjs

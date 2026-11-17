@@ -31,6 +31,7 @@ jobs:
           node tests/v3-layer2-integrated-visual.cjs
           node tests/v3-waterside-landing-preview-visual.cjs
           node tests/v3-layer2-new-asset-visual.cjs
+          node tests/v3-seven-new-assets-visual.cjs
           node tests/v3-courtyard-enclosure-visual.cjs
           node tests/v3-moon-gate-visual.cjs
           node tests/v3-moon-gate-ground-visual.cjs

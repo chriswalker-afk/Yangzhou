@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#eee7d6">
+<title>Yangzhou V3 | Seven new painted assets | 4 x 4 connected review</title>
+<style>
+:root{color-scheme:light;--ink:#334b42;--muted:#5c6d63;--paper:#f9f5e9;--border:#c9c2ac}
+*{box-sizing:border-box}
+body{margin:0;background:#ece4d1;color:var(--ink);font:15px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1240px;margin:26px auto 75px;padding:0 20px}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.22}
+h1{font-size:clamp(1.65rem,3vw,2.35rem);margin-bottom:8px}h2{font-size:1.45rem;margin:30px 0 10px}
+p{margin:7px 0 14px}.intro{max-width:980px;color:#4d6053}
+.note,.status{border:1px solid #d7c9a6;border-radius:9px;background:#fbf7eb;padding:12px 16px;margin:14px 0}
+.note{border-left:5px solid #9c8061}
+.warning{border-left:5px solid #a66b52}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0}
+.toolbar label{display:inline-flex;gap:5px;align-items:center}
+button,select{font:inherit;border:1px solid #9ba796;border-radius:7px;padding:7px 11px;color:var(--ink);background:#fffdf8}
+button{cursor:pointer}button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #557d63;outline-offset:3px}
+button[aria-pressed=true]{background:#375c50;color:white}
+button:disabled{opacity:.5;cursor:not-allowed}
+input[type=checkbox]{accent-color:#375c50;width:16px;height:16px}
+.pan{max-width:100%;overflow:auto;background:#e2decd;border:1px solid #c3bea9;border-radius:10px;padding:13px;overscroll-behavior:contain}
+canvas{display:block;width:880px;max-width:none;height:auto;cursor:crosshair;background:#d3d7c3;image-rendering:auto}
+#scene{border:1px solid #c9c4b6}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin:8px 0;font-size:.86rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.dot{width:12px;height:12px;display:inline-block;border-radius:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(244px,1fr));gap:13px}
+.item{border:1px solid var(--border);border-radius:10px;background:#fcf8ed;padding:13px;min-width:0}
+.item h3{font-size:1.1rem;margin:0 0 3px}.item small{color:var(--muted)}
+.thumb{height:200px;border:1px solid #d2c9b5;border-radius:7px;margin:10px 0;display:flex;justify-content:center;align-items:center;overflow:hidden;background-color:#eeebdd;background-image:linear-gradient(45deg,#e3e0d6 25%,transparent 25%),linear-gradient(-45deg,#e3e0d6 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e3e0d6 75%),linear-gradient(-45deg,transparent 75%,#e3e0d6 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0}
+.thumb img{display:block;max-width:94%;max-height:94%;object-fit:contain}
+.thumb .missing{font-size:.85rem;color:#8b4f39;padding:16px;text-align:center}
+.item p{margin:6px 0;font-size:.86rem}.item a{font-size:.85rem}
+strong.ok{color:#37644f}.error{color:#963f32;font-weight:650}
+.mono{font-family:ui-monospace,Consolas,monospace}
+a{color:#2f6758}footer{padding:22px 0;border-top:1px solid var(--border);margin-top:34px;color:var(--muted);font-size:.9rem}
+@media(max-width:620px){main{padding:0 11px;margin-top:14px}.toolbar{gap:6px}.toolbar button,.toolbar select{padding:7px}.pan{padding:6px}h2{font-size:1.25rem}}
+</style>
+</head>
+<body><main>
+<p><a href="layer2-integrated-v3.html">Existing six-tile Layer 2 proof</a> · <a href="wall-geometry-lab-v3.html">Continuous courtyard wall laboratory</a> · <a href="index.html">Playable V2 (unchanged)</a></p>
+<h1>Yangzhou V3 · Seven original painted assets</h1>
+<p class="intro">A <strong>4 × 4 connected-tile composition</strong> for reviewing all seven newly commissioned transparent paintings alongside the existing Jiangnan material, wall and architectural library. Every object stays compass-upright at its declared world-unit footprint. Streets remain 44 units wide and canals 88 units wide; the artwork never changes those Layer 1 masks.</p>
+<div class="note"><strong>Visual review only.</strong> The seven original PNG masters and lossless WebP counterparts are committed on this branch, but the new assets are <strong>not yet visually or production certified</strong>. No changes to V2 gameplay, existing accepted artwork or the main game board are made by this page.</div>
+<div class="toolbar" aria-label="Review controls">
+  <button id="zoomOut" type="button">− Zoom</button>
+  <button id="zoomIn" type="button">+ Zoom</button>
+  <button id="fit" type="button">Fit 1×</button>
+  <span id="zoomLabel" class="mono" aria-live="polite">1×</span>
+  <label><input id="showGrid" type="checkbox" checked> Tile boundaries</label>
+  <label><input id="showExisting" type="checkbox" checked> Existing artwork</label>
+  <label><input id="showNew" type="checkbox" checked> New artwork</label>
+  <label><input id="showWalls" type="checkbox" checked> Continuous walls</label>
+  <label><input id="showGuides" type="checkbox"> Gate clearance guides</label>
+</div>
+<div class="toolbar">
+  <label for="gateWidth">Side-wall opening comparison:
+    <select id="gateWidth">
+      <option value="30">30-unit authored opening</option>
+      <option value="40">40-unit diagnostic alternative</option>
+    </select>
+  </label>
+  <span id="gateStatus" aria-live="polite"></span>
+</div>
+<div id="loadStatus" class="status" role="status" aria-live="polite">Checking seven committed WebP originals against manifest SHA-256 and loading existing painted textures…</div>
+<div id="gateWarning" class="note warning" role="status">The original 30-unit gate opening is still subject to collision clearance verification.</div>
+<h2>Connected neighbourhood</h2>
+<p class="intro">Click any tile to inspect its role. The bridge crosses a real canal and street, the shopfronts face the street, the pavilion sits on land beside a continuous canal, and the side moon gate is displayed in a real west boundary wall.</p>
+<div class="pan"><canvas id="scene" width="1760" height="1760" aria-label="Sixteen connected 220 by 220 world-unit Yangzhou V3 tiles with seven original artwork candidates"></canvas></div>
+<div class="legend">
+  <span><span class="dot" style="background:#d6d1b7"></span>Courtyards and gardens</span>
+  <span><span class="dot" style="background:#b5aa90"></span>44-unit paved streets</span>
+  <span><span class="dot" style="background:#80aaa4"></span>88-unit canals</span>
+  <span><span class="dot" style="background:#b16d4e"></span>Review-only diagnostics</span>
+</div>
+<div id="tileInfo" class="status" role="status" aria-live="polite">Select one of the sixteen tiles to inspect the composition.</div>
+<h2>Inspect each transparent sprite</h2>
+<p class="intro">These are the exact lossless WebP artwork files, not regenerated drawings or whole-tile screenshots. Each appears at its natural aspect ratio here and at its actual world dimensions on the board.</p>
+<div id="gallery" class="grid" aria-live="polite"></div>
+<footer>Yangzhou V3 candidate intake. SHA-256 and image-dimension verification are done in your browser over HTTPS; geometry and artwork acceptance remain separate. <a href="assets/v3/large/seven-candidates-manifest.json">View full source manifest</a>. The baseline V2 tile game is untouched.</footer>
+</main>
+<script src="tile-topology.js"></script>
+<script src="assets/v3/base-geometry.js"></script>
+<script src="assets/v3/material-runtime.js"></script>
+<script src="assets/v3/edge-system.js"></script>
+<script src="assets/v3/layer2-placements.js"></script>
+<script src="assets/v3/wall-geometry.js"></script>
+<script src="assets/v3/wall-profile.js"></script>
+<script src="assets/v3/wall-roof-texture.js"></script>
+<script src="assets/v3/wall-face-materials.js"></script>
+<script src="assets/v3/courtyard-paving.js"></script>
+<script src="assets/v3/seven-candidates.js"></script>
+<script>
+(function(){
+'use strict';
+const board=window.YangzhouV3SevenCandidates;
+const geo=window.YangzhouV3Geometry,edges=window.YangzhouV3Edges,mats=window.YangzhouV3Materials;
+const walls=window.YangzhouV3WallGeometry,profile=window.YangzhouV3WallProfile;
+const roofPainter=window.YangzhouV3WallRoofTexture,faces=window.YangzhouV3WallFaceMaterials;
+const paving=window.YangzhouV3CourtyardPaving;
+const cv=document.getElementById('scene'),ctx=cv.getContext('2d',{willReadFrequently:true});
+const $=id=>document.getElementById(id);
+const palette={pathVerge:'#b7a58b',pathContact:'#84947c',canalBank:'#b5a38a',canalContact:'#5e8075',bridgeEdge:'#b4a990',bridgeContact:'#6e8176'};
+const flat={grass:'#d6d8bc',stone:'#d4c8ac',water:'#8dad9e'};
+const ids=board.ID_LIST,images={},old={},materials={},facesLoaded={},errors=[];
+let manifest=null,verified=0,zoom=1,grid=true,showOld=true,showNew=true,showWalls=true,showGuides=false,gateWidth=30;
+let roofImage=null,pavingImage=null,lastPlan=null;
+const names={hall:'Courtyard Hall', 'side-gate':'West-facing moon gate','corridor':'Garden corridor',
+ 'vertical-canal':'Continuous canal',shopfront:'Street shopfront','tea-house':'Tea house',
+ bridge:'Stone bridge','street-garden':'Street-side garden','small-residence':'Small residence',
+ 'rock-garden':'Rock garden','pavilion-garden':'Garden pavilion','waterside-pavilion':'Waterside pavilion',
+ landing:'Waterside landing','canal-junction':'Canal junction','canal-garden':'Canal garden'};
+function setZoom(n){zoom=Math.min(3,Math.max(1,n));cv.style.width=(880*zoom)+'px';$('zoomLabel').textContent=zoom+'×';$('zoomOut').disabled=zoom===1;$('zoomIn').disabled=zoom===3;}
+function tileName(role){return names[role]||role;}
+function pattern(id){try{
+ if(materials[id])return mats.makePattern(ctx,materials[id],mats.periodById[id]);
+}catch(e){errors.push('Pattern '+id+': '+e.message);}
+ return flat[id];
+}
+function drawOld(ctx,tile,p){
+ const img=old[p.id];if(!img)return;
+ const d={ 'courtyard-hall-01':[96,47], 'bamboo-grove-01':[62,45],
+  'garden-rockery-02':[60,41],'garden-rockery-01':[58,43],
+  'garden-pavilion-01':[52,52],'willow-tree-01':[72,67],
+  'waterside-landing-01':[95,47] }[p.id];
+ if(!d)return;
+ ctx.drawImage(img,tile.x*220+p.x-d[0]/2,tile.y*220+p.y-d[1]/2,d[0],d[1]);
+}
+function render(){
+ ctx.setTransform(2,0,0,2,0,0);
+ ctx.clearRect(0,0,880,880);
+ ctx.fillStyle=pattern('grass');ctx.fillRect(0,0,880,880);
+ let plan;
+ try {plan=board.plan({gateWidth});lastPlan=plan;}
+ catch(e){$('loadStatus').textContent='Composition failure: '+e.message;return;}
+ const colors={...palette,stone:pattern('stone'),water:pattern('water')};
+ for(const entry of plan.tiles){
+  const tile=entry.tile,ox=tile.x*220,oy=tile.y*220;
+  ctx.save();ctx.beginPath();ctx.rect(ox,oy,220,220);ctx.clip();
+  edges.draw(ctx,edges.compile(geo.compile(tile.edges)),colors,{x:ox,y:oy,edges:true});
+  if(entry.model && pavingImage && entry.audit && entry.audit.valid && entry.model.id==='rectangle')
+    paving.paint(ctx,tile,entry.model,pavingImage,{valid:true});
+  if(showOld) for(const p of entry.originals)drawOld(ctx,tile,p);
+  if(showNew && tile.role!=='side-gate')board.draw(ctx,entry,images);
+  if(showWalls && entry.model){
+    const result=walls.draw(ctx,entry.model,tile,{
+      showGates:showGuides,showJoints:false,
+      profilePainter:profile,roofPainter,roofImage,
+      materialPainter:faces,plasterImage:facesLoaded.plaster,stoneImage:facesLoaded.stone
+    });
+    if(!result.drawn)errors.push('Wall rejected '+tile.role+': '+result.issues.join(', '));
+  }
+  // The new side-facing bitmap must be in front of the V3 continuous
+  // vertical wall cut, never painted underneath an intact wall.
+  if(showNew && tile.role==='side-gate')board.draw(ctx,entry,images);
+  if(showGuides && tile.role==='side-gate'){
+   const g=entry.gates[0],clear=g.walkThroughWidth,x=ox+g.center[0],y=oy+g.center[1];
+   ctx.save();ctx.strokeStyle='#ba5d33';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);
+   ctx.strokeRect(x-14,y-clear/2,28,clear);
+   ctx.setLineDash([]);ctx.fillStyle='#703b2a';ctx.font='10px system-ui';
+   ctx.fillText(clear+' free',x+19,y-3);ctx.restore();
+  }
+  ctx.restore();
+  if(grid){ctx.strokeStyle='rgba(57,72,60,.34)';ctx.lineWidth=.7;ctx.strokeRect(ox+.4,oy+.4,219.2,219.2);}
+  ctx.save();ctx.fillStyle='rgba(251,249,238,.86)';ctx.fillRect(ox+6,oy+7,207,27);
+  ctx.fillStyle='#334c40';ctx.font='11px Georgia,serif';ctx.fillText(tileName(tile.role),ox+10,oy+18);
+  ctx.font='9px system-ui';ctx.fillText(tile.edges.join('')+' • '+(tile.x+1)+','+(tile.y+1),ox+10,oy+29);ctx.restore();
+ }
+ const clear=plan.sideGateClearWidth,pass=plan.sideGateClearanceApproved;
+ $('gateStatus').textContent='Modelled clear passage: '+clear+' / 24 units ('+(pass?'meets clearance':'too narrow')+')';
+ $('gateWarning').innerHTML=gateWidth===30?
+  '<strong>Gate geometry not approved:</strong> the requested 30-unit opening leaves only <strong>14 units actually walkable</strong> under the existing 16-unit foundation rule. The required minimum is 24. The genuine transparent moon-gate candidate remains unapproved until the geometry is resolved.':
+  '<strong>Diagnostic only:</strong> a 40-unit wall cut gives <strong>24 units walkable</strong>, but differs from the commissioned 30-unit opening. Compare the painting alignment; do not treat this as a corrected production asset.';
+}
+function cardHTML(item){
+ const id=item.id,im=images[id],spec=board.ASSETS[id];
+ const card=document.createElement('article');card.className='item';card.id='asset-'+id;
+ const heading=document.createElement('h3');heading.textContent=item.name;card.append(heading);
+ const meta=document.createElement('small');meta.textContent=spec.width+' × '+spec.height+' world units • '+item.family;card.append(meta);
+ const thumb=document.createElement('div');thumb.className='thumb';
+ if(im){const el=document.createElement('img');el.src=item.prepared.path;el.alt=item.name+' original transparent sprite';thumb.append(el);}
+ else {const miss=document.createElement('div');miss.className='missing';miss.textContent='Artwork not yet verified or unavailable';thumb.append(miss);}
+ card.append(thumb);
+ const state=document.createElement('p');state.className=im?'ok':'error';
+ state.textContent=im?'SHA-256, byte size and dimensions verified':'Not verified';card.append(state);
+ const detail=document.createElement('p');detail.textContent=item.placementRule+'. '+item.orientation+'.';card.append(detail);
+ const a=document.createElement('a');a.href=item.sourceOriginal.path;a.textContent='Inspect original PNG master';a.target='_blank';a.rel='noopener';card.append(a);
+ return card;
+}
+function renderGallery(){
+ if(!manifest)return;
+ const gallery=$('gallery');gallery.replaceChildren();
+ for(const item of manifest.newAssets)gallery.append(cardHTML(item));
+}
+function status(){
+ $('loadStatus').innerHTML='<strong>'+verified+' of 7</strong> exact painted sprites SHA-256 verified'+
+  (verified===7?' — all seven loaded successfully.':' — incomplete.')+
+  ' Materials: '+Object.keys(materials).length+'/3; wall textures: '+Object.keys(facesLoaded).length+'/2.'+
+  (errors.length?' <span class="error">Issues: '+errors.slice(-5).map(e=>String(e).replaceAll('<','&lt;')).join('; ')+'</span>':'');
+}
+async function optionalOld(id){
+ try{
+  const url='assets/v3/large/'+id+'.webp',r=await fetch(url);
+  if(!r.ok)throw Error('HTTP '+r.status);
+  old[id]=await createImageBitmap(await r.blob());render();
+ }catch(e){errors.push('Existing '+id+': '+e.message);status();}
+}
+async function loadExtras(){
+ const jobs=[
+ mats.loadAll().then(r=>{Object.assign(materials,r.images);render();}),
+ roofPainter.loadFromGitHub().then(img=>{roofImage=img;render();}),
+ faces.loadAll().then(r=>{Object.assign(facesLoaded,r.images);render();}),
+ paving.load().then(img=>{pavingImage=img;render();})
+ ];
+ await Promise.allSettled(jobs.map(p=>p.catch(e=>{errors.push('Existing texture: '+e.message);})));
+ status();
+}
+async function loadSeven(){
+ try{
+  const r=await fetch('assets/v3/large/seven-candidates-manifest.json',{cache:'no-store'});
+  if(!r.ok)throw Error('Manifest HTTP '+r.status);
+  manifest=await r.json();renderGallery();
+  const v=await board.loadVerified({onProgress:s=>{
+    Object.assign(images,s.images);verified=Object.keys(images).length;
+    for(const e of s.errors)if(!errors.includes(e))errors.push(e);
+    renderGallery();render();status();
+  }});
+  Object.assign(images,v.images);verified=v.verifiedCount;
+  for(const e of v.errors)if(!errors.includes(e))errors.push(e);
+  renderGallery();render();status();
+ }catch(e){errors.push('Seven-sprite manifest: '+e.message);status();}
+}
+for(const id of ['showGrid','showExisting','showNew','showWalls','showGuides']){
+ $(id).addEventListener('change',e=>{
+  if(id==='showGrid')grid=e.target.checked;
+  if(id==='showExisting')showOld=e.target.checked;
+  if(id==='showNew')showNew=e.target.checked;
+  if(id==='showWalls')showWalls=e.target.checked;
+  if(id==='showGuides')showGuides=e.target.checked;
+  render();
+ });
+}
+$('gateWidth').addEventListener('change',e=>{gateWidth=Number(e.target.value);render();});
+$('zoomIn').addEventListener('click',()=>setZoom(zoom+1));
+$('zoomOut').addEventListener('click',()=>setZoom(zoom-1));
+$('fit').addEventListener('click',()=>setZoom(1));
+cv.addEventListener('click',e=>{
+ const box=cv.getBoundingClientRect(),x=(e.clientX-box.left)*880/box.width,y=(e.clientY-box.top)*880/box.height;
+ const ix=Math.floor(x/220),iy=Math.floor(y/220),entry=lastPlan?.tiles.find(q=>q.tile.x===ix&&q.tile.y===iy);
+ if(!entry)return;
+ const newHere=entry.art.map(p=>p.id).join(', ')||'none';
+ const oldHere=entry.originals.map(p=>p.id).join(', ')||'none';
+ $('tileInfo').textContent='Tile '+(ix+1)+','+(iy+1)+' — '+tileName(entry.tile.role)+
+  '. Topology N/E/S/W: '+entry.tile.edges.join('')+
+  '. New sprite: '+newHere+'. Existing references: '+oldHere+
+  '. '+(entry.audit?'Wall geometry: '+(entry.audit.valid?'valid':'rejected')+'.':'');
+});
+setZoom(1);render();loadSeven();loadExtras();
+for(const id of ['courtyard-hall-01','bamboo-grove-01','garden-rockery-02','garden-rockery-01',
+ 'garden-pavilion-01','willow-tree-01','waterside-landing-01'])optionalOld(id);
+})();
+</script>
+</body></html>
