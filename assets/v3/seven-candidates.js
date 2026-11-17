@@ -168,7 +168,7 @@
   }));
   return Object.freeze({images,errors,verifiedCount:ID_LIST.filter(id=>!!images[id]).length});
  }
- function draw(ctx,entry,images,{visible=true,bridgeDeckPattern='#d5c7aa'}={}){
+ function draw(ctx,entry,images,{visible=true}={}){
   if(!visible)return 0;
   const {tile,art}=entry,ox=tile.x*SIZE,oy=tile.y*SIZE;
   let drawn=0;
@@ -176,13 +176,12 @@
    const image=images?.[p.id],spec=ASSETS[p.id];if(!image)continue;
    const x=ox+p.x-spec.width/2,y=oy+p.y-spec.height/2;
    if(spec.mode==='bridge'){
-    // Ground pass masks the road across water. Opaque stone fills the full
-    // 88x44 crossing; artwork then sits above it, within that exact mask.
+    // The road renderer clips its stone surface to the two dry banks.
+    // Keep the 88x44 crossing water-backed: never underpaint the transparent
+    // pixels of the bridge PNG with a stone/road rectangle. The bridge's own
+    // painted deck is the only paving between the two shores.
     ctx.save();ctx.beginPath();ctx.rect(x,y,spec.width,spec.height);ctx.clip();
-    ctx.fillStyle=bridgeDeckPattern;ctx.fillRect(x,y,spec.width,spec.height);
-    // Trim only transparent padding; keep natural painting aspect ratio.
-    // Deck is the full 88x44; decorative parapets are inset 3.74 units
-    // from each road edge, as a real edge guard would be.
+    // Crop the original's transparent margins without distorting its aspect.
     const crop=spec.crop,artHeight=spec.width*crop.height/crop.width;
     ctx.drawImage(image,crop.x,crop.y,crop.width,crop.height,
      x,y+(spec.height-artHeight)/2,spec.width,artHeight);
