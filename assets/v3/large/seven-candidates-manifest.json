@@ -35,10 +35,16 @@
       },
       "orientation": "compass-upright (never rotate)",
       "requiredSignature": "WSWS",
-      "placementRule": "Bridge spans only the 88-unit north-south canal, centred on an exact 44-unit east-west street, with the old over-water street suppressed",
+      "placementRule": "Full opaque bridge deck 88 canal units x 44 street units, with naturally proportioned painted parapets cropped from transparent source padding and inset within the road width.",
       "artworkCertifiedForV3": false,
       "productionApproved": false,
-      "visualReviewStatus": "exact-width-replacement-requires-connected-visual-signoff"
+      "visualReviewStatus": "exact-width-replacement-requires-connected-visual-signoff",
+      "visibleArtworkCropPx": {
+        "x": 250,
+        "y": 151,
+        "width": 1272,
+        "height": 528
+      }
     },
     {
       "id": "street-shopfront-01",
@@ -247,5 +253,5 @@
   ],
   "preview": "layer2-seven-new-assets-v3.html",
   "scope": "Review-only: pending perspective, alpha and actual geometry overlay approval. Do not modify existing V3 artwork certification or playable V2.",
-  "note": "2026-11-17 generated source is unchanged and converted losslessly. Exact 88x44 bridge deck masks and replaces the over-water road, while the previously approved V3 geography and playable V2 remain unchanged."
+  "note": "Original PNG remains unchanged and its WebP is lossless. Source artwork's transparent margins are trimmed at render-time only (crop 250,151,1272,528), preserving painting aspect and fitting the real 88x44 canal crossing. Street remains absent underneath the bridge. V2 unchanged."
 }
