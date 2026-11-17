@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "id": "yangzhou-v3-seven-new-sprites-review",
+  "layer": 2,
+  "status": "originals-committed-unreviewed",
+  "productionApproved": false,
+  "originalSourceAndLosslessWebpCommitted": true,
+  "newAssets": [
+    {
+      "id": "stone-bridge-parapets-01",
+      "name": "Stone Bridge Parapets 01",
+      "family": "bridge parapets",
+      "sourceOriginal": {
+        "path": "assets/v3/large/sources/stone-bridge-parapets-01-original.png",
+        "width": 1700,
+        "height": 925,
+        "bytes": 1656951,
+        "sha256": "d1aa3acdba271bfed7a9aad2452a8853abf890168fd758585e2f42d2a2f637d9",
+        "hasAlpha": true
+      },
+      "prepared": {
+        "path": "assets/v3/large/stone-bridge-parapets-01.webp",
+        "width": 1700,
+        "height": 925,
+        "bytes": 989606,
+        "sha256": "b333e61205e88f5fcce39998fb8a833c2c032a3f3ee4226e3947cdd9cb868c23",
+        "mimeType": "image/webp",
+        "compression": "VP8L-lossless",
+        "hasAlpha": true,
+        "exactSourceRGBA": true
+      },
+      "worldFootprint": {
+        "width": 108,
+        "height": 58
+      },
+      "orientation": "compass-upright (never rotate)",
+      "requiredSignature": "WSWS",
+      "placementRule": "east-west road crossing north-south canal",
+      "artworkCertifiedForV3": false,
+      "productionApproved": false,
+      "visualReviewStatus": "pending-side-by-side-and-connected-layout-review"
+    },
+    {
+      "id": "street-shopfront-01",
+      "name": "Street Shopfront 01",
+      "family": "commercial architecture",
+      "sourceOriginal": {
+        "path": "assets/v3/large/sources/street-shopfront-01-original.png",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 1572276,
+        "sha256": "4988688322ad25eb5d60d7638151815f161cc0690730904a1f5a5817f840449f",
+        "hasAlpha": true
+      },
+      "prepared": {
+        "path": "assets/v3/large/street-shopfront-01.webp",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 988050,
+        "sha256": "007528444b6cfa55515e0a0b236b0750a606d2eeeb5201d7506cf9cd16ff59d7",
+        "mimeType": "image/webp",
+        "compression": "VP8L-lossless",
+        "hasAlpha": true,
+        "exactSourceRGBA": true
+      },
+      "worldFootprint": {
+        "width": 72,
+        "height": 43
+      },
+      "orientation": "compass-upright (never rotate)",
+      "requiredSignature": "LSLS",
+      "placementRule": "south-facing frontage north of east-west street",
+      "artworkCertifiedForV3": false,
+      "productionApproved": false,
+      "visualReviewStatus": "pending-side-by-side-and-connected-layout-review"
+    },
+    {
+      "id": "covered-garden-corridor-01",
+      "name": "Covered Garden Corridor 01",
+      "family": "open architecture",
+      "sourceOriginal": {
+        "path": "assets/v3/large/sources/covered-garden-corridor-01-original.png",
+        "width": 2172,
+        "height": 724,
+        "bytes": 1697235,
+        "sha256": "e043124195baea58d7960f9acc25b8a4c418181ba948841370e67d5166e12e43",
+        "hasAlpha": true
+      },
+      "prepared": {
+        "path": "assets/v3/large/covered-garden-corridor-01.webp",
+        "width": 2172,
+        "height": 724,
+        "bytes": 1087774,
+        "sha256": "47b83586babe5b0dd4f4f748e264de6a3df0501af14f0b762479b2545155bbe8",
+        "mimeType": "image/webp",
+        "compression": "VP8L-lossless",
+        "hasAlpha": true,
+        "exactSourceRGBA": true
+      },
+      "worldFootprint": {
+        "width": 88,
+        "height": 30
+      },
+      "orientation": "compass-upright (never rotate)",
+      "requiredSignature": "LLLL",
+      "placementRule": "east-west corridor on land",
+      "artworkCertifiedForV3": false,
+      "productionApproved": false,
+      "visualReviewStatus": "pending-side-by-side-and-connected-layout-review"
+    },
+    {
+      "id": "waterside-pavilion-01",
+      "name": "Waterside Pavilion 01",
+      "family": "waterside architecture",
+      "sourceOriginal": {
+        "path": "assets/v3/large/sources/waterside-pavilion-01-original.png",
+        "width": 1672,
+        "height": 941,
+        "bytes": 2096080,
+        "sha256": "44939d1e207afee86b3002bac0da1808504412b2dbc64063ff073b1a7db6e899",
+        "hasAlpha": true
+      },
+      "prepared": {
+        "path": "assets/v3/large/waterside-pavilion-01.webp",
+        "width": 1672,
+        "height": 941,
+        "bytes": 1337950,
+        "sha256": "b90e3456b81166d515117aa636a1d3d0495025e1fdf5398ce9e91c1dceb88331",
+        "mimeType": "image/webp",
+        "compression": "VP8L-lossless",
+        "hasAlpha": true,
+        "exactSourceRGBA": true
+      },
+      "worldFootprint": {
+        "width": 72,
+        "height": 48
+      },
+      "orientation": "compass-upright (never rotate)",
+      "requiredSignature": "LWLW",
+      "placementRule": "south-facing pavilion north of east-west canal",
+      "artworkCertifiedForV3": false,
+      "productionApproved": false,
+      "visualReviewStatus": "pending-side-by-side-and-connected-layout-review"
+    },
+    {
+      "id": "small-residence-01",
+      "name": "Small Residence 01",
+      "family": "domestic architecture",
+      "sourceOriginal": {
+        "path": "assets/v3/large/sources/small-residence-01-original.png",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 1356369,
+        "sha256": "7a6ee817a1410aaf62253e8fc8dbdd558bc321ef7d169bc721ebb70d9115c3a9",
+        "hasAlpha": true
+      },
+      "prepared": {
+        "path": "assets/v3/large/small-residence-01.webp",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 845636,
+        "sha256": "bb3e9b46b2cb18df0ad0db645460814a421361295d33cdbdbd67a8f224f4d323",
+        "mimeType": "image/webp",
+        "compression": "VP8L-lossless",
+        "hasAlpha": true,
+        "exactSourceRGBA": true
+      },
+      "worldFootprint": {
+        "width": 60,
+        "height": 40
+      },
+      "orientation": "compass-upright (never rotate)",
+      "requiredSignature": "LLLL",
+      "placementRule": "south-facing smaller residence in walled courtyard",
+      "artworkCertifiedForV3": false,
+      "productionApproved": false,
+      "visualReviewStatus": "pending-side-by-side-and-connected-layout-review"
+    },
+    {
+      "id": "tea-house-01",
+      "name": "Tea House 01",
+      "family": "commercial architecture",
+      "sourceOriginal": {
+        "path": "assets/v3/large/sources/tea-house-01-original.png",
+        "width": 1695,
+        "height": 928,
+        "bytes": 2030438,
+        "sha256": "9f951ac9626a458902efa51b49712043a0b133b38e4fa4deb345761d089fb51b",
+        "hasAlpha": true
+      },
+      "prepared": {
+        "path": "assets/v3/large/tea-house-01.webp",
+        "width": 1695,
+        "height": 928,
+        "bytes": 1293936,
+        "sha256": "2f22c38ba4d54f47dbba52e3113f9a6932576b309a504750929ba49e03d62202",
+        "mimeType": "image/webp",
+        "compression": "VP8L-lossless",
+        "hasAlpha": true,
+        "exactSourceRGBA": true
+      },
+      "worldFootprint": {
+        "width": 84,
+        "height": 46
+      },
+      "orientation": "compass-upright (never rotate)",
+      "requiredSignature": "LSLS",
+      "placementRule": "south-facing teahouse north of east-west street",
+      "artworkCertifiedForV3": false,
+      "productionApproved": false,
+      "visualReviewStatus": "pending-side-by-side-and-connected-layout-review"
+    },
+    {
+      "id": "side-facing-moon-gate-01",
+      "name": "Side Facing Moon Gate 01",
+      "family": "wall overlay",
+      "sourceOriginal": {
+        "path": "assets/v3/large/sources/side-facing-moon-gate-01-original.png",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 1442409,
+        "sha256": "e7b7555135199c41c32e3cae7abe73d0e1b31dd5c672013995507a9a63a92fde",
+        "hasAlpha": true
+      },
+      "prepared": {
+        "path": "assets/v3/large/side-facing-moon-gate-01.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 872318,
+        "sha256": "c8426580ee3d0ac8cf14fc6837be754853007205f08c46b19f07f634e3fa72bb",
+        "mimeType": "image/webp",
+        "compression": "VP8L-lossless",
+        "hasAlpha": true,
+        "exactSourceRGBA": true
+      },
+      "worldFootprint": {
+        "width": 36,
+        "height": 54
+      },
+      "orientation": "compass-upright (never rotate)",
+      "requiredSignature": "LLLL",
+      "placementRule": "west-wall side-facing gate on north-south wall",
+      "artworkCertifiedForV3": false,
+      "productionApproved": false,
+      "visualReviewStatus": "pending-side-by-side-and-connected-layout-review"
+    }
+  ],
+  "preview": "layer2-seven-new-assets-v3.html",
+  "scope": "Review-only: pending perspective, alpha and actual geometry overlay approval. Do not modify existing V3 artwork certification or playable V2."
+}
