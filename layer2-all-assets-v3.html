@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#eee7d6">
+<title>Yangzhou V3 — All 18 Layer 2 assets | 25 connected tiles</title>
+<style>
+:root{color-scheme:light;--ink:#33483f;--muted:#627367;--cream:#fcf8ed;--line:#c6c1ac}
+*{box-sizing:border-box}
+body{margin:0;background:#ede5d1;color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1380px;padding:0 20px;margin:24px auto 64px}
+a{color:#2d6859}h1,h2,h3{font-family:Georgia,serif;line-height:1.22}h1{font-size:clamp(1.6rem,3vw,2.45rem);margin:10px 0}h2{font-size:1.45rem;margin:25px 0 8px}h3{font-size:1.1rem;margin:3px 0}
+p{margin:7px 0 12px}.intro{max-width:1080px;color:#4f6256}
+.note,.status{background:#faf6e9;border:1px solid #d3c8ad;border-radius:9px;padding:12px 14px;margin:13px 0}
+.note{border-left:4px solid #a08765}.status{font-size:.94rem}
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:13px 0}
+.toolbar label{display:inline-flex;gap:6px;align-items:center}
+button,select{background:#fffdf8;border:1px solid #9daa9d;border-radius:7px;padding:7px 10px;font:inherit;color:var(--ink)}
+button{cursor:pointer}button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #527c65;outline-offset:2px}
+button:disabled{opacity:.5}input[type=checkbox]{accent-color:#356450;width:16px;height:16px}
+.viewport{overflow:auto;max-width:100%;border:1px solid #c7c0ac;border-radius:10px;padding:11px;background:#e0ddcc;overscroll-behavior:contain}
+canvas{display:block;max-width:none;background:#d3d8c5}
+#scene{width:1100px;height:auto;border:1px solid #d0c7b2}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:13px}
+.detail-grid canvas{width:100%;height:auto}
+.card{border:1px solid var(--line);background:var(--cream);padding:13px;border-radius:10px;min-width:0}
+.card small{color:var(--muted)}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:13px}
+.preview{height:185px;display:flex;align-items:center;justify-content:center;border:1px solid #d5cebb;border-radius:7px;overflow:hidden;margin:10px 0;background-color:#ebe7dc;background-image:linear-gradient(45deg,#dedbd1 25%,transparent 25%),linear-gradient(-45deg,#dedbd1 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#dedbd1 75%),linear-gradient(-45deg,transparent 75%,#dedbd1 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0}
+.preview img{max-width:96%;max-height:96%;object-fit:contain}
+.card p{font-size:.88rem}.valid{color:#316449;font-weight:650}.error{color:#a04b39;font-weight:650}
+.legend{display:flex;gap:15px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);margin:7px 0}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{display:inline-block;width:12px;height:12px;border-radius:2px}
+code{font-size:.86em}footer{border-top:1px solid var(--line);padding:17px 0;margin-top:28px;color:var(--muted);font-size:.88rem}
+@media(max-width:650px){main{padding:0 11px;margin:12px auto 45px}.toolbar{gap:7px}.viewport{padding:5px}}
+</style>
+</head>
+<body><main>
+<p><a href="layer2-seven-new-assets-v3.html">Previous 4×4 candidate proof</a> · <a href="layer2-integrated-v3.html">Certified courtyard prototype</a> · <a href="index.html">Playable V2 (unchanged)</a></p>
+<h1>Yangzhou V3 · All Layer 2 sprites together</h1>
+<p class="intro">A genuine <strong>5 × 5 connected tile neighbourhood</strong> using all <strong>18 original large-detail sprites</strong> (eight previously certified, seven recent candidates, three latest candidates). A 44-unit street crosses an 88-unit canal at the authentic water-backed bridge. The south bank has its own correctly oriented landing; gardens contain the new plum blossom, and courtyard halls connect to shallow entrance steps.</p>
+<div class="note"><strong>Art review, not game deployment.</strong> All artwork is kept compass-upright and owned by its tile. Original approved paintings, wall textures and Layer 1 geometry are unchanged. The new Plum Blossom Tree, Courtyard Entrance Step and South-Bank Landing are candidates awaiting your visual review; the redundant side-wall moon-gate bitmap remains retired.</div>
+<div class="toolbar" aria-label="Layer 2 review controls">
+ <button type="button" id="zoomOut">− Zoom</button><button type="button" id="zoomIn">+ Zoom</button>
+ <button type="button" id="zoomReset">Fit 1×</button><strong id="zoomText">1×</strong>
+ <label><input type="checkbox" id="showGrid" checked> Tile boundaries</label>
+ <label><input type="checkbox" id="showCertified" checked> 8 certified assets</label>
+ <label><input type="checkbox" id="showSeven" checked> 7 recent candidates</label>
+ <label><input type="checkbox" id="showThree" checked> 3 latest candidates</label>
+ <label><input type="checkbox" id="showWalls" checked> Walls and moon gates</label>
+ <label for="focusAsset">Highlight <select id="focusAsset"><option value="">None</option></select></label>
+</div>
+<div id="loadStatus" class="status" role="status" aria-live="polite">Checking the 18 source-verified V3 sprites, original ground paints and wall materials…</div>
+<h2 id="neighbourhood">Connected 25-tile composition</h2>
+<p class="intro">Select a tile to inspect its road/canal ports and exact placed assets. You can zoom to 3×, disable any artwork group, or select one asset family to highlight every occurrence.</p>
+<div class="viewport"><canvas id="scene" width="2200" height="2200" aria-label="Twenty five connected Yangzhou V3 tiles with 18 distinct large-detail painted sprites, continuous roads and canals, courtyard walls and true moon gates"></canvas></div>
+<div class="legend">
+ <span><i class="dot" style="background:#d5d8bf"></i> Garden and courtyard</span>
+ <span><i class="dot" style="background:#c8b9a0"></i> 44-unit street</span>
+ <span><i class="dot" style="background:#83a9a3"></i> 88-unit canal</span>
+ <span><i class="dot" style="background:#b05b3e"></i> Highlight/geometry diagnostic</span>
+</div>
+<div id="tileInfo" class="status" role="status" aria-live="polite">Select one of the 25 tiles to view its topology and placement details.</div>
+<h2 id="closeups">Three new sprites in their actual surroundings</h2>
+<p class="intro">These enlarged views are copied from the same connected canvas, not independently composited photographs. Disable <em>3 latest candidates</em> to reveal the unchanged ground below. These details need visual acceptance before certification.</p>
+<div class="detail-grid">
+ <article class="card"><h3>Plum Blossom Tree 01</h3><small>Land-only trunk · open painted canopy · 48×58 authored footprint</small><div class="viewport"><canvas id="plumCloseup" width="600" height="400" aria-label="Actual connected-tile crop of the plum blossom garden"></canvas></div></article>
+ <article class="card"><h3>Courtyard Entrance Step 01</h3><small>Hall doorway · walkable stone threshold · 12-unit walkway unchanged</small><div class="viewport"><canvas id="stepCloseup" width="600" height="400" aria-label="Actual courtyard hall with small entrance step and connecting walkway"></canvas></div></article>
+ <article class="card"><h3>South-Bank Landing 01</h3><small>North-facing structure on y=160–207 land · water mask preserved</small><div class="viewport"><canvas id="southCloseup" width="600" height="400" aria-label="Actual connected canal with separate south-bank landing"></canvas></div></article>
+</div>
+<h2 id="bridge-proof">Bridge connection — 88 long × 44 wide</h2>
+<p class="intro">The bridge artwork sits over the existing canal water. The ordinary road ends at each bank, with <strong>no hidden road or stone paving painted beneath the bridge</strong>.</p>
+<div class="toolbar"><label><input type="checkbox" id="showBridgeGuides" checked> Show measured 88 × 44 footprint</label></div>
+<div class="viewport"><canvas id="bridgeCloseup" width="704" height="512" aria-label="Crop from connected bridge tile showing actual 88-unit canal span and 44-unit street width"></canvas></div>
+<h2 id="gallery">Inspect all 18 transparent sprites</h2>
+<p class="intro">The gallery verifies every original lossless WebP against its own committed SHA-256, file size and pixel dimensions. The PNG masters of the three new paintings are preserved. Artwork approval is separate from file integrity.</p>
+<div id="galleryCards" class="gallery"></div>
+<footer>Review documentation: <a href="assets/v3/layer2-art-certification.json">eight certified originals</a> · <a href="assets/v3/large/seven-candidates-manifest.json">seven recent candidates</a> · <a href="assets/v3/large/three-latest-candidates-manifest.json">three newest PNG/WebP pairs</a>. No changes to the playable V2 game.</footer>
+</main>
+<script src="tile-topology.js"></script>
+<script src="assets/v3/base-geometry.js"></script>
+<script src="assets/v3/material-runtime.js"></script>
+<script src="assets/v3/edge-system.js"></script>
+<script src="assets/v3/layer2-placements.js"></script>
+<script src="assets/v3/wall-geometry.js"></script>
+<script src="assets/v3/wall-profile.js"></script>
+<script src="assets/v3/wall-roof-texture.js"></script>
+<script src="assets/v3/wall-face-materials.js"></script>
+<script src="assets/v3/courtyard-paving.js"></script>
+<script src="assets/v3/courtyard-walkway.js"></script>
+<script src="assets/v3/moon-gate-frame.js"></script>
+<script src="assets/v3/seven-candidates.js"></script>
+<script src="assets/v3/all-layer2-review.js"></script>
+<script>
+(function(){
+'use strict';
+const board=window.YangzhouV3AllLayer2Review,geometry=window.YangzhouV3Geometry,
+ edges=window.YangzhouV3Edges,materialsLib=window.YangzhouV3Materials,
+ walls=window.YangzhouV3WallGeometry,profile=window.YangzhouV3WallProfile,
+ roof=window.YangzhouV3WallRoofTexture,faces=window.YangzhouV3WallFaceMaterials,
+ paving=window.YangzhouV3CourtyardPaving,walkway=window.YangzhouV3CourtyardWalkway,
+ moonGate=window.YangzhouV3MoonGate;
+const $=id=>document.getElementById(id),canvas=$('scene'),ctx=canvas.getContext('2d',{willReadFrequently:true});
+const palette={pathVerge:'#b7a58b',pathContact:'#84947c',canalBank:'#b5a38a',canalContact:'#5e8075',bridgeEdge:'#b4a990',bridgeContact:'#6e8176'};
+const fallback={grass:'#d6d8bc',stone:'#d4c8ac',water:'#8dad9e'};
+const images={},textures={},wallPaints={},errors=[];
+let catalog=[],verificationCount=0,roofImage=null,pavingImage=null,walkwayImage=null,gateImage=null,plan=null;
+let zoom=1,grid=true,showCertified=true,showSeven=true,showThree=true,showWalls=true,showBridgeGuides=true,highlight='';
+const titles={
+ 'hall-step':'Courtyard hall and steps','courtyard-wing':'Courtyard wing','vertical-canal':'Straight canal',
+ corridor:'Covered corridor','rockery-one':'Rock garden',shopfront:'Street shopfront',
+ 'tea-house':'Tea house',bridge:'Stone bridge','market-garden':'Streetfront garden',
+ 'street-rockery':'Street-side rocks','plum-garden':'Plum blossom garden',
+ 'small-residence':'Small residence','pavilion-garden':'Garden pavilion',
+ 'bamboo-garden':'Bamboo and rockery','landing-new':'Waterside landing 02',
+ 'landing-original':'Waterside landing 01','canal-junction':'Canal junction',
+ 'south-bank-landing':'South-bank landing','waterside-pavilion':'Waterside pavilion',
+ 'willow-garden':'Willow garden','rockery-two':'Second rockery','open-garden':'Open garden'
+};
+function pattern(id){
+ if(textures[id])try{return materialsLib.makePattern(ctx,textures[id],materialsLib.periodById[id]);}
+ catch(e){errors.push('Texture pattern '+id+': '+e.message);}
+ return fallback[id];
+}
+function updateStatus(){
+ const e=errors.length?' <span class="error">Issues: '+errors.slice(-4).map(x=>String(x).replaceAll('<','&lt;')).join(' · ')+'</span>':'';
+ $('loadStatus').innerHTML='<strong>'+verificationCount+' / 18</strong> exact WebPs verified'+
+  (verificationCount===18?' — all large sprites loaded.':' — loading original art.')+
+  ' | Grass/stone/water: '+Object.keys(textures).length+'/3'+
+  ' | Wall face paints: '+Object.keys(wallPaints).length+'/2'+e;
+}
+function setZoom(value){
+ zoom=Math.min(3,Math.max(1,value));canvas.style.width=(1100*zoom)+'px';
+ $('zoomText').textContent=zoom+'×';$('zoomOut').disabled=zoom===1;$('zoomIn').disabled=zoom===3;
+}
+function drawFocus(entry,ox,oy){
+ if(!highlight)return;
+ const p=entry.art.find(a=>a.id===highlight);
+ if(!p)return;
+ const b=board.bounds(p);
+ ctx.save();ctx.strokeStyle='#b05b3e';ctx.lineWidth=2.3;ctx.setLineDash([7,5]);
+ ctx.strokeRect(ox+b.left,oy+b.top,b.right-b.left,b.bottom-b.top);ctx.restore();
+}
+function render(){
+ ctx.setTransform(2,0,0,2,0,0);ctx.clearRect(0,0,1100,1100);
+ ctx.fillStyle=pattern('grass');ctx.fillRect(0,0,1100,1100);
+ try{plan=board.plan();}
+ catch(err){errors.push('5×5 composition: '+err.message);updateStatus();return;}
+ const paint={...palette,stone:pattern('stone'),water:pattern('water')};
+ for(const entry of plan.tiles){
+  const tile=entry.tile,ox=tile.x*220,oy=tile.y*220;
+  ctx.save();ctx.beginPath();ctx.rect(ox,oy,220,220);ctx.clip();
+  edges.draw(ctx,edges.compile(geometry.compile(tile.edges)),paint,
+    {x:ox,y:oy,edges:true,bridgeSpriteMode:tile.role==='bridge'});
+  if(entry.model&&entry.audit?.valid){
+   if(pavingImage&&entry.model.id==='rectangle')paving.paint(ctx,tile,entry.model,pavingImage,{valid:true});
+   if(walkwayImage)walkway.paint(ctx,tile,entry.model,walls.compile(entry.model),walkwayImage,{valid:true});
+  }
+  board.draw(ctx,entry,images,{showCertified,showSeven,showThree});
+  if(showWalls&&entry.model){
+   const result=walls.draw(ctx,entry.model,tile,{
+    showGates:false,showJoints:false,profilePainter:profile,roofPainter:roof,roofImage,
+    materialPainter:faces,plasterImage:wallPaints.plaster,stoneImage:wallPaints.stone,
+    moonGatePainter:moonGate,moonGateImage:gateImage,showMoonGateGround:true,
+    moonGateGround:{model:entry.model,walkwayPainter:walkway,walkwayImage,pavingPainter:paving,pavingImage}
+   });
+   if(!result.drawn&&errors.length<9)errors.push('Wall issue at '+tile.x+','+tile.y+': '+result.issues.join('; '));
+  }
+  drawFocus(entry,ox,oy);ctx.restore();
+  if(grid){ctx.save();ctx.lineWidth=.8;ctx.strokeStyle='rgba(54,74,58,.32)';
+   ctx.strokeRect(ox+.4,oy+.4,219.2,219.2);ctx.restore();}
+  ctx.save();ctx.fillStyle='rgba(252,250,240,.88)';ctx.fillRect(ox+6,oy+7,208,26);
+  ctx.fillStyle='#335044';ctx.font='11px Georgia,serif';
+  ctx.fillText(titles[tile.role]||tile.role,ox+10,oy+17);
+  ctx.font='9px system-ui';ctx.fillText(tile.edges.join('')+'  ·  '+(tile.x+1)+','+(tile.y+1),ox+10,oy+29);
+  ctx.restore();
+ }
+ drawDetail('plumCloseup','plum-garden','plum-blossom-tree-01');
+ drawDetail('stepCloseup','hall-step','courtyard-entrance-step-01');
+ drawDetail('southCloseup','south-bank-landing','south-bank-landing-01');
+ drawBridge();
+}
+function drawDetail(target,role,id){
+ const entry=plan.tiles.find(x=>x.tile.role===role),c=$(target);if(!entry||!c)return;
+ const p=entry.art.find(x=>x.id===id);if(!p)return;
+ const cx=entry.tile.x*220+p.x,cy=entry.tile.y*220+p.y,cropW=150,cropH=100;
+ const x=c.getContext('2d');x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,c.width,c.height);
+ x.drawImage(canvas,(cx-cropW/2)*2,(cy-cropH/2)*2,cropW*2,cropH*2,0,0,c.width,c.height);
+}
+function drawBridge(){
+ const entry=plan.tiles.find(x=>x.tile.role==='bridge');if(!entry)return;
+ const c=$('bridgeCloseup'),x=c.getContext('2d');
+ const cx=entry.tile.x*220+110,cy=entry.tile.y*220+110;
+ const cropW=176,cropH=128,left=cx-cropW/2,top=cy-cropH/2;
+ x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,c.width,c.height);
+ x.drawImage(canvas,left*2,top*2,cropW*2,cropH*2,0,0,c.width,c.height);
+ if(showBridgeGuides){
+  const bx=(cx-44-left)*4,by=(cy-22-top)*4,w=88*4,h=44*4;
+  x.save();x.strokeStyle='#b35b38';x.lineWidth=2;x.setLineDash([7,5]);x.strokeRect(bx,by,w,h);x.setLineDash([]);
+  x.fillStyle='rgba(253,250,240,.96)';x.fillRect(bx+73,by-32,190,27);
+  x.font='bold 16px system-ui';x.fillStyle='#783b2c';x.fillText('88 canal units',bx+89,by-13);
+  x.fillRect(bx+w+7,by+52,123,47);x.fillStyle='#783b2c';x.fillText('44 road',bx+w+15,by+70);
+  x.fillText('units',bx+w+15,by+91);x.restore();
+ }
+}
+function card(item){
+ const wrapper=document.createElement('article');wrapper.className='card';wrapper.id='asset-'+item.id;
+ const h=document.createElement('h3');h.textContent=item.name;wrapper.append(h);
+ const t=document.createElement('small'),def=board.definition(item.id);
+ t.textContent=def.width+' × '+def.height+' world units · '+(board.category(item.id)==='certified'?'Certified original':'Review candidate');wrapper.append(t);
+ const imgBox=document.createElement('div');imgBox.className='preview';
+ if(images[item.id]){const im=document.createElement('img');im.src=item.prepared.path;im.alt='Transparent '+item.name+' original painting';imgBox.append(im);}
+ else {const miss=document.createElement('small');miss.textContent='Awaiting image verification';imgBox.append(miss);}
+ wrapper.append(imgBox);
+ const status=document.createElement('p');status.className=images[item.id]?'valid':'';
+ status.textContent=images[item.id]?'Source SHA-256, file size and dimensions verified':'Not yet verified';wrapper.append(status);
+ const desc=document.createElement('p');desc.textContent=item.placementRule||'Existing validated V3 placement';wrapper.append(desc);
+ const link=document.createElement('a');link.href=item.sourceOriginal?.path||item.prepared.path;
+ link.target='_blank';link.rel='noopener';link.textContent=item.sourceOriginal?'Open preserved PNG master':'View original WebP';
+ wrapper.append(link);
+ return wrapper;
+}
+function gallery(){
+ const dest=$('galleryCards');dest.replaceChildren();
+ for(const item of catalog)dest.append(card(item));
+}
+async function loadSprites(){
+ try{
+  if(!crypto?.subtle)throw Error('Manifest verification requires HTTPS / localhost');
+  const paths=['assets/v3/layer2-art-certification.json','assets/v3/large/seven-candidates-manifest.json',
+   'assets/v3/large/three-latest-candidates-manifest.json'];
+  const json=await Promise.all(paths.map(async p=>{
+   const r=await fetch(p,{cache:'no-store'});if(!r.ok)throw Error('Manifest '+p+' HTTP '+r.status);
+   return await r.json();
+  }));
+  const old=json[0].assets.filter(a=>board.CERTIFIED_IDS.includes(a.id)).map(a=>({
+   id:a.id,name:a.id.split('-').map(x=>x[0].toUpperCase()+x.slice(1)).join(' '),
+   family:'V3 original',worldFootprint:{width:a.worldFootprint[0],height:a.worldFootprint[1]},
+   placementRule:a.certifiedUse,artworkCertifiedForV3:true,
+   prepared:{path:a.image,sha256:a.sha256,bytes:a.bytes,width:a.pixelDimensions[0],height:a.pixelDimensions[1]}
+  }));
+  catalog=[...old,...json[1].newAssets,...json[2].newAssets];
+  if(catalog.length!==18||new Set(catalog.map(x=>x.id)).size!==18||
+   !board.ALL_IDS.every(id=>catalog.some(x=>x.id===id)))
+   throw Error('All 18 large assets must appear exactly once in the three original manifests');
+  for(const entry of catalog){
+   const spec=board.definition(entry.id);
+   if(!spec||spec.width!==entry.worldFootprint.width||spec.height!==entry.worldFootprint.height)
+    throw Error('Footprint mismatch for '+entry.id);
+   if(board.category(entry.id)!=='certified'&&entry.artworkCertifiedForV3!==false)
+    throw Error('Unapproved candidate incorrectly marked certified: '+entry.id);
+   const opt=document.createElement('option');opt.value=entry.id;opt.textContent=entry.name;$('focusAsset').append(opt);
+  }
+  gallery();
+  await Promise.all(catalog.map(async item=>{
+   try{
+    const d=item.prepared,r=await fetch(d.path,{cache:'no-store'});
+    if(!r.ok)throw Error('HTTP '+r.status);
+    const blob=await r.blob();if(blob.size!==d.bytes)throw Error('Wrong original WebP byte size');
+    const sha=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',await blob.arrayBuffer())),
+     v=>v.toString(16).padStart(2,'0')).join('');
+    if(sha!==d.sha256)throw Error('SHA-256 mismatch');
+    const im=await createImageBitmap(blob);
+    if(im.width!==d.width||im.height!==d.height)throw Error('Incorrect original pixel dimensions');
+    images[item.id]=im;
+   }catch(e){errors.push(item.id+': '+String(e.message||e));}
+   verificationCount=Object.keys(images).length;gallery();render();updateStatus();
+  }));
+ }catch(e){errors.push('Sprite verification: '+String(e.message||e));updateStatus();}
+}
+async function loadMaterials(){
+ const jobs=[
+  materialsLib.loadAll().then(result=>{Object.assign(textures,result.images);render();}),
+  roof.loadFromGitHub().then(img=>{roofImage=img;render();}),
+  faces.loadAll().then(result=>{Object.assign(wallPaints,result.images);render();}),
+  paving.load().then(img=>{pavingImage=img;render();}),
+  walkway.load().then(img=>{walkwayImage=img;render();}),
+  moonGate.loadFromGitHub().then(img=>{gateImage=img;render();})
+ ];
+ await Promise.allSettled(jobs.map(p=>p.catch(err=>errors.push('Material: '+String(err.message||err)))));
+ updateStatus();
+}
+for(const id of ['showGrid','showCertified','showSeven','showThree','showWalls']){
+ $(id).addEventListener('change',e=>{
+  if(id==='showGrid')grid=e.target.checked;
+  if(id==='showCertified')showCertified=e.target.checked;
+  if(id==='showSeven')showSeven=e.target.checked;
+  if(id==='showThree')showThree=e.target.checked;
+  if(id==='showWalls')showWalls=e.target.checked;
+  render();
+ });
+}
+$('zoomIn').addEventListener('click',()=>setZoom(zoom+1));
+$('zoomOut').addEventListener('click',()=>setZoom(zoom-1));
+$('zoomReset').addEventListener('click',()=>setZoom(1));
+$('showBridgeGuides').addEventListener('change',e=>{showBridgeGuides=e.target.checked;render();});
+$('focusAsset').addEventListener('change',e=>{highlight=e.target.value;render();});
+canvas.addEventListener('click',e=>{
+ if(!plan)return;
+ const box=canvas.getBoundingClientRect();
+ const worldX=(e.clientX-box.left)*1100/box.width,worldY=(e.clientY-box.top)*1100/box.height;
+ const tx=Math.floor(worldX/220),ty=Math.floor(worldY/220);
+ const entry=plan.tiles.find(p=>p.tile.x===tx&&p.tile.y===ty);
+ if(!entry)return;
+ $('tileInfo').textContent='Tile '+(tx+1)+','+(ty+1)+' — '+(titles[entry.tile.role]||entry.tile.role)+
+  ' | N/E/S/W '+entry.tile.edges.join('')+' | '+(entry.art.map(a=>a.id).join(', ')||'deliberately empty')+
+  (entry.audit?' | Wall: '+(entry.audit.valid?'geometry safe':'issue'):'');
+});
+setZoom(1);render();loadSprites();loadMaterials();
+})();
+</script>
+</body>
+</html>
