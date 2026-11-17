@@ -34,15 +34,22 @@ const bridgeTile=normal.tiles.find(e=>e.tile.role==='bridge');
 assert(bridgeTile&&bridgeTile.art.length===1);
 assert.deepEqual(board.bounds(bridgeTile.art[0]),{left:66,right:154,top:88,bottom:132});
 assert.deepEqual([board.ASSETS['stone-bridge-parapets-01'].width,board.ASSETS['stone-bridge-parapets-01'].height],[88,44]);
+assert.deepEqual(board.ASSETS['stone-bridge-parapets-01'].crop,{x:250,y:151,width:1272,height:528});
 assert.deepEqual([board.SPECIFICS.bridgeWaterWidth,board.SPECIFICS.bridgeRoadWidth],[88,44]);
 assert(html.includes('bridgeSpriteMode:tile.role')); 
 assert(html.includes('id="bridgeCloseup"')&&html.includes('drawBridgeCloseup(plan)'));
 const calls=[];
 const spy={beginPath:()=>{},rect:(...a)=>calls.push(['rect',...a]),clip:(...a)=>calls.push(['clip',...a]),
- fillRect:(...a)=>calls.push(['fillRect',...a]),drawImage:()=>calls.push(['drawImage']),save:()=>{},restore:()=>{}};
+ fillRect:(...a)=>calls.push(['fillRect',...a]),drawImage:(...a)=>calls.push(['drawImage',...a]),save:()=>{},restore:()=>{}};
 assert.equal(board.draw(spy,bridgeTile,{'stone-bridge-parapets-01':{}},{bridgeDeckPattern:'#eee'}),1);
 assert(calls.some(c=>c[0]==='rect'&&c.slice(1).join(',')==='506,308,88,44'));
 assert(calls.some(c=>c[0]==='fillRect'&&c.slice(1).join(',')==='506,308,88,44'));
+const painted=calls.find(c=>c[0]==='drawImage');
+assert(painted&&painted[2]===250&&painted[3]===151&&painted[4]===1272&&painted[5]===528);
+assert.equal(painted[6],506);
+assert.equal(painted[8],88);
+assert(Math.abs(painted[9]-88*528/1272)<1e-8);
+assert(Math.abs(painted[7]-(308+(44-88*528/1272)/2))<1e-8);
 const edgeOps=[];
 const mock={beginPath:()=>{},moveTo:()=>{},lineTo:()=>{},closePath:()=>{},fill:()=>{},save:()=>{},restore:()=>{},
  rect:(...a)=>edgeOps.push(['rect',...a]),clip:(rule)=>edgeOps.push(['clip',rule])};
