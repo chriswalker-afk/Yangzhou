@@ -1,6 +1,6 @@
 # Yangzhou V3 — Canonical Layer 2 Asset Generation Prompt
 
-**Status:** proposed repeatable production brief, based on the artwork-certified V3 asset library. Use with the **actual source paintings attached** to the image-generation request. A text prompt without the reference paintings is insufficient for assured camera/style consistency.
+**Status:** canonical reference-locked generation brief for V3 Layer 2 candidate sprites, based on the artwork-certified V3 asset library. Artwork approval remains per-asset. Use with the **actual source paintings attached** to the image-generation request. A text prompt without the reference paintings is insufficient for assured camera/style consistency.
 
 ## 0. Mandatory references for every generation
 
@@ -134,7 +134,7 @@ Append exactly one of the following, tailored to the asset. The master prompt re
 
 **Waterside structure / landing:** "The specified shore orientation is fixed. Paint only the architecture, stone bank interfaces and own steps; the game already paints jade water and bank textures. Do not embed a turquoise pond or rectangular water patch. Avoid an opaque colour under transparent step edges."
 
-**Bridge parapet / railing:** "Paint precisely the named low bridge structure on a truly transparent background. The game separately supplies the road deck and the continuously connected canal beneath. Do not generate a whole bridge tile, road surface, new canal geometry, turquoise water, or a stone platform covering the navigation opening. Author each genuinely different bank-facing orientation separately."
+**Bridge parapet / railing:** "Paint precisely the named bridge's own stone structure and deck on a truly transparent background, in the exact authored crossing footprint. In the current 88-world-unit canal / 44-world-unit road proof, the ordinary road texture stops at both banks and the original canal-water material continues beneath the bridge sprite; the renderer does NOT add an opaque road or stone underlay. Do not bake approach roads, new canal geometry, turquoise water, or full-tile scenery into the sprite. Transparent gaps around railings must reveal water. Author each genuinely different bank-facing orientation separately."
 
 **Moon gate or portal:** "A circular aperture must be truly transparent and physically open, surrounded by textured masonry and roof detail consistent with the original approved Moon Gate 01. Do not use a thin vector semicircle, a solid medallion or an opaque fake opening."
 
