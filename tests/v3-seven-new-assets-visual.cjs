@@ -11,6 +11,11 @@ async function inspect(page,filename){
  await page.waitForFunction(()=>document.querySelector('#loadStatus')?.textContent.includes('7 of 7'),null,{timeout:60000});
  assert.equal(await page.locator('#gallery article').count(),7);
  assert.equal(await page.locator('#gallery img').count(),7);
+ assert.equal(await page.locator('#bridgeCloseup').count(),1);
+ assert.equal(await page.locator('#showBridgeGuides').isChecked(),true);
+ const closeup=await page.locator('#bridgeCloseup').evaluate(c=>({width:c.width,height:c.height,alpha:c.getContext('2d').getImageData(352,256,1,1).data[3]}));
+ assert.deepEqual([closeup.width,closeup.height],[704,512]);
+ assert(closeup.alpha>0,'Bridge close-up must contain real connected V3 pixels');
  const snap=await page.evaluate(()=>{
   const canvas=document.querySelector('canvas'),p=window.YangzhouV3SevenCandidates.plan({gateWidth:30});
   return {width:canvas.width,height:canvas.height,tiles:p.tiles.length,art:p.allNewAssetsIncluded,
@@ -31,6 +36,9 @@ async function main(){
   await desktop.locator('#zoomIn').click();
   assert.equal(await desktop.locator('#zoomLabel').textContent(),'3×');
   assert.equal(await desktop.locator('#gateWidth').count(),0);
+  await desktop.locator('#showBridgeGuides').uncheck();
+  await desktop.screenshot({path:'artifacts/v3/bridge-exact-span-88-by-44-no-guides.png',fullPage:true,animations:'disabled'});
+  await desktop.locator('#showBridgeGuides').check();
   await desktop.screenshot({path:'artifacts/v3/seven-new-assets-replacements-3x.png',fullPage:true,animations:'disabled'});
   const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1,isMobile:true,hasTouch:true});
   await inspect(mobile,'seven-new-assets-connected-4x4-mobile.png');
