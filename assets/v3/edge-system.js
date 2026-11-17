@@ -111,6 +111,18 @@
     const traces=compiled.traces;
     for(const type of ['W','S']){
       const group=traces.filter(r=>r.material===type);
+      // Candidate-only replacement: the road approaches must stop at the
+      // canal's two 88-unit bank boundaries. The bridge paints this span.
+      // Normal renderers remain unchanged when bridgeSpriteMode is omitted.
+      const bridgeSpriteClip=type==='S'&&compiled.geometry.bridge&&options.bridgeSpriteMode===true;
+      if(bridgeSpriteClip){
+        const water=traces.find(r=>r.material==='W'&&r.route.kind==='line');
+        if(!water||water.route.width!==88)throw Error('Expected a straight 88-unit V3 canal');
+        ctx.save();ctx.beginPath();
+        ctx.rect(ox,oy,compiled.geometry.size,compiled.geometry.size);
+        ctx.rect(ox+compiled.geometry.size/2-water.route.width/2,oy,water.route.width,compiled.geometry.size);
+        ctx.clip('evenodd');
+      }
       const maskedWater=type==='W'&&edgesOn&&group.length>0;
       if(maskedWater){
         ctx.save();
@@ -146,6 +158,7 @@
         // Re-cover any neighbouring arm crossed by a decorative grass tuft.
         for(const r of group)fillRibbon(ctx,r,'core',style.stone,ox,oy);
       }
+      if(bridgeSpriteClip)ctx.restore();
     }
   }
 
