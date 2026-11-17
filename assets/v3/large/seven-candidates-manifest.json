@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "yangzhou-v3-seven-new-sprites-review",
   "layer": 2,
-  "status": "originals-committed-unreviewed",
+  "status": "bridge-and-landing-replacements-side-gate-retired-preview-only",
   "productionApproved": false,
   "originalSourceAndLosslessWebpCommitted": true,
   "newAssets": [
@@ -12,33 +12,33 @@
       "family": "bridge parapets",
       "sourceOriginal": {
         "path": "assets/v3/large/sources/stone-bridge-parapets-01-original.png",
-        "width": 1700,
-        "height": 925,
-        "bytes": 1656951,
-        "sha256": "d1aa3acdba271bfed7a9aad2452a8853abf890168fd758585e2f42d2a2f637d9",
+        "width": 1247,
+        "height": 273,
+        "bytes": 585272,
+        "sha256": "372593aee835d4350d72535c3e24cd4a52648e839b067f3a09e46606e2e832b1",
         "hasAlpha": true
       },
       "prepared": {
         "path": "assets/v3/large/stone-bridge-parapets-01.webp",
-        "width": 1700,
-        "height": 925,
-        "bytes": 989606,
-        "sha256": "b333e61205e88f5fcce39998fb8a833c2c032a3f3ee4226e3947cdd9cb868c23",
+        "width": 1247,
+        "height": 273,
+        "bytes": 415664,
+        "sha256": "d38c1689020d5114b240785261cc7f2d1c2218873c0b26b933b7d5e49c1a1b9e",
         "mimeType": "image/webp",
         "compression": "VP8L-lossless",
         "hasAlpha": true,
         "exactSourceRGBA": true
       },
       "worldFootprint": {
-        "width": 108,
-        "height": 58
+        "width": 176,
+        "height": 39
       },
       "orientation": "compass-upright (never rotate)",
       "requiredSignature": "WSWS",
-      "placementRule": "east-west road crossing north-south canal",
+      "placementRule": "repainted east-west paved bridge across north-south canal, edge seams require human inspection",
       "artworkCertifiedForV3": false,
       "productionApproved": false,
-      "visualReviewStatus": "pending-side-by-side-and-connected-layout-review"
+      "visualReviewStatus": "replacement-awaiting-review"
     },
     {
       "id": "street-shopfront-01",
@@ -211,40 +211,41 @@
       "visualReviewStatus": "pending-side-by-side-and-connected-layout-review"
     },
     {
-      "id": "side-facing-moon-gate-01",
-      "name": "Side Facing Moon Gate 01",
-      "family": "wall overlay",
+      "id": "waterside-landing-02",
+      "name": "Waterside Landing 02",
+      "family": "simplified waterside shelter",
       "sourceOriginal": {
-        "path": "assets/v3/large/sources/side-facing-moon-gate-01-original.png",
-        "width": 1024,
-        "height": 1536,
-        "bytes": 1442409,
-        "sha256": "e7b7555135199c41c32e3cae7abe73d0e1b31dd5c672013995507a9a63a92fde",
+        "path": "assets/v3/large/sources/waterside-landing-02-original.png",
+        "width": 898,
+        "height": 489,
+        "bytes": 583885,
+        "sha256": "1c8a6d38c6c0d36bae174ad4d92b6e22b865eb22f2ab1d0e5b2ab5a47f270630",
         "hasAlpha": true
       },
       "prepared": {
-        "path": "assets/v3/large/side-facing-moon-gate-01.webp",
-        "width": 1024,
-        "height": 1536,
-        "bytes": 872318,
-        "sha256": "c8426580ee3d0ac8cf14fc6837be754853007205f08c46b19f07f634e3fa72bb",
+        "path": "assets/v3/large/waterside-landing-02.webp",
+        "width": 898,
+        "height": 489,
+        "bytes": 408896,
+        "sha256": "b104b6c3227b3093aed3881e07177999f7eac20818d7356fa28fcd09e974521c",
         "mimeType": "image/webp",
         "compression": "VP8L-lossless",
         "hasAlpha": true,
         "exactSourceRGBA": true
       },
       "worldFootprint": {
-        "width": 36,
-        "height": 54
+        "width": 95,
+        "height": 52
       },
-      "orientation": "compass-upright (never rotate)",
-      "requiredSignature": "LLLL",
-      "placementRule": "west-wall side-facing gate on north-south wall",
+      "orientation": "compass upright, south-facing roof",
+      "requiredSignature": "LWLW",
+      "placementRule": "open-sided timber landing on north bank land, outside immutable canal water mask",
       "artworkCertifiedForV3": false,
       "productionApproved": false,
-      "visualReviewStatus": "pending-side-by-side-and-connected-layout-review"
+      "visualReviewStatus": "new-replacement-awaiting-review"
     }
   ],
   "preview": "layer2-seven-new-assets-v3.html",
-  "scope": "Review-only: pending perspective, alpha and actual geometry overlay approval. Do not modify existing V3 artwork certification or playable V2."
+  "scope": "Review-only: pending perspective, alpha and actual geometry overlay approval. Do not modify existing V3 artwork certification or playable V2.",
+  "note": "Bridge repainted; simplified Landing 02 replaces Landing 01 only in new review scene. Previously certified Landing 01 preserved unchanged as reference. Side moon gate artwork archived and not instantiated."
 }

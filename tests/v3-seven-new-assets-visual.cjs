@@ -11,7 +11,6 @@ async function inspect(page,filename){
  await page.waitForFunction(()=>document.querySelector('#loadStatus')?.textContent.includes('7 of 7'),null,{timeout:60000});
  assert.equal(await page.locator('#gallery article').count(),7);
  assert.equal(await page.locator('#gallery img').count(),7);
- assert.match(await page.locator('#gateStatus').textContent(),/14 \/ 24/);
  const snap=await page.evaluate(()=>{
   const canvas=document.querySelector('canvas'),p=window.YangzhouV3SevenCandidates.plan({gateWidth:30});
   return {width:canvas.width,height:canvas.height,tiles:p.tiles.length,art:p.allNewAssetsIncluded,
@@ -31,13 +30,11 @@ async function main(){
   await desktop.locator('#zoomIn').click();
   await desktop.locator('#zoomIn').click();
   assert.equal(await desktop.locator('#zoomLabel').textContent(),'3×');
-  await desktop.locator('#gateWidth').selectOption('40');
-  await desktop.locator('#showGuides').check();
-  assert.match(await desktop.locator('#gateStatus').textContent(),/24 \/ 24/);
-  await desktop.screenshot({path:'artifacts/v3/seven-new-assets-gate-40-3x.png',fullPage:true,animations:'disabled'});
+  assert.equal(await desktop.locator('#gateWidth').count(),0);
+  await desktop.screenshot({path:'artifacts/v3/seven-new-assets-replacements-3x.png',fullPage:true,animations:'disabled'});
   const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1,isMobile:true,hasTouch:true});
   await inspect(mobile,'seven-new-assets-connected-4x4-mobile.png');
-  console.log('Seven original paintings loaded SHA-verified in 4x4 canvas, gallery and mobile/desktop, and clearance controls work.');
+  console.log('Seven original paintings loaded SHA-verified in 4x4 canvas, gallery and mobile/desktop, and replacement assets display without retired side gate.');
  }finally{await browser.close();}
 }
 main().catch(e=>{console.error(e);process.exitCode=1});

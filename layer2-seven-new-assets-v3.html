@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#eee7d6">
-<title>Yangzhou V3 | Seven new painted assets | 4 x 4 connected review</title>
+<title>Yangzhou V3 | Updated painted assets | 4 x 4 connected review</title>
 <style>
 :root{color-scheme:light;--ink:#334b42;--muted:#5c6d63;--paper:#f9f5e9;--border:#c9c2ac}
 *{box-sizing:border-box}
@@ -56,21 +56,11 @@ a{color:#2f6758}footer{padding:22px 0;border-top:1px solid var(--border);margin-
   <label><input id="showExisting" type="checkbox" checked> Existing artwork</label>
   <label><input id="showNew" type="checkbox" checked> New artwork</label>
   <label><input id="showWalls" type="checkbox" checked> Continuous walls</label>
-  <label><input id="showGuides" type="checkbox"> Gate clearance guides</label>
 </div>
-<div class="toolbar">
-  <label for="gateWidth">Side-wall opening comparison:
-    <select id="gateWidth">
-      <option value="30">30-unit authored opening</option>
-      <option value="40">40-unit diagnostic alternative</option>
-    </select>
-  </label>
-  <span id="gateStatus" aria-live="polite"></span>
-</div>
-<div id="loadStatus" class="status" role="status" aria-live="polite">Checking seven committed WebP originals against manifest SHA-256 and loading existing painted textures…</div>
-<div id="gateWarning" class="note warning" role="status">The original 30-unit gate opening is still subject to collision clearance verification.</div>
+<div class="status" id="loadStatus" role="status" aria-live="polite">Checking all seven current painting files against their manifest SHA-256 digests...</div>
+<div class="note"><strong>Revised paintings:</strong> the bridge has been repainted to include matching paved approach sides, and Waterside Landing 02 replaces the earlier visually busy landing in this scene. The west-facing moon gate is retired. Previously certified Landing 01 remains preserved outside this preview.</div>
 <h2>Connected neighbourhood</h2>
-<p class="intro">Click any tile to inspect its role. The bridge crosses a real canal and street, the shopfronts face the street, the pavilion sits on land beside a continuous canal, and the side moon gate is displayed in a real west boundary wall.</p>
+<p class="intro">Click any tile to inspect its role. The bridge crosses a real canal and street, the shopfronts face the street, the pavilion sits on land beside a continuous canal, and the side-facing moon-gate sprite is retired, while original courtyard gate openings remain geometry-driven.</p>
 <div class="pan"><canvas id="scene" width="1760" height="1760" aria-label="Sixteen connected 220 by 220 world-unit Yangzhou V3 tiles with seven original artwork candidates"></canvas></div>
 <div class="legend">
   <span><span class="dot" style="background:#d6d1b7"></span>Courtyards and gardens</span>
@@ -108,9 +98,9 @@ const $=id=>document.getElementById(id);
 const palette={pathVerge:'#b7a58b',pathContact:'#84947c',canalBank:'#b5a38a',canalContact:'#5e8075',bridgeEdge:'#b4a990',bridgeContact:'#6e8176'};
 const flat={grass:'#d6d8bc',stone:'#d4c8ac',water:'#8dad9e'};
 const ids=board.ID_LIST,images={},old={},materials={},facesLoaded={},errors=[];
-let manifest=null,verified=0,zoom=1,grid=true,showOld=true,showNew=true,showWalls=true,showGuides=false,gateWidth=30;
+let manifest=null,verified=0,zoom=1,grid=true,showOld=true,showNew=true,showWalls=true,gateWidth=30;
 let roofImage=null,pavingImage=null,lastPlan=null;
-const names={hall:'Courtyard Hall', 'side-gate':'West-facing moon gate','corridor':'Garden corridor',
+const names={hall:'Courtyard Hall', 'hall-garden':'Courtyard garden','corridor':'Garden corridor',
  'vertical-canal':'Continuous canal',shopfront:'Street shopfront','tea-house':'Tea house',
  bridge:'Stone bridge','street-garden':'Street-side garden','small-residence':'Small residence',
  'rock-garden':'Rock garden','pavilion-garden':'Garden pavilion','waterside-pavilion':'Waterside pavilion',
@@ -146,24 +136,14 @@ function render(){
   if(entry.model && pavingImage && entry.audit && entry.audit.valid && entry.model.id==='rectangle')
     paving.paint(ctx,tile,entry.model,pavingImage,{valid:true});
   if(showOld) for(const p of entry.originals)drawOld(ctx,tile,p);
-  if(showNew && tile.role!=='side-gate')board.draw(ctx,entry,images);
+  if(showNew)board.draw(ctx,entry,images);
   if(showWalls && entry.model){
     const result=walls.draw(ctx,entry.model,tile,{
-      showGates:showGuides,showJoints:false,
+      showGates:false,showJoints:false,
       profilePainter:profile,roofPainter,roofImage,
       materialPainter:faces,plasterImage:facesLoaded.plaster,stoneImage:facesLoaded.stone
     });
     if(!result.drawn)errors.push('Wall rejected '+tile.role+': '+result.issues.join(', '));
-  }
-  // The new side-facing bitmap must be in front of the V3 continuous
-  // vertical wall cut, never painted underneath an intact wall.
-  if(showNew && tile.role==='side-gate')board.draw(ctx,entry,images);
-  if(showGuides && tile.role==='side-gate'){
-   const g=entry.gates[0],clear=g.walkThroughWidth,x=ox+g.center[0],y=oy+g.center[1];
-   ctx.save();ctx.strokeStyle='#ba5d33';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);
-   ctx.strokeRect(x-14,y-clear/2,28,clear);
-   ctx.setLineDash([]);ctx.fillStyle='#703b2a';ctx.font='10px system-ui';
-   ctx.fillText(clear+' free',x+19,y-3);ctx.restore();
   }
   ctx.restore();
   if(grid){ctx.strokeStyle='rgba(57,72,60,.34)';ctx.lineWidth=.7;ctx.strokeRect(ox+.4,oy+.4,219.2,219.2);}
@@ -171,11 +151,7 @@ function render(){
   ctx.fillStyle='#334c40';ctx.font='11px Georgia,serif';ctx.fillText(tileName(tile.role),ox+10,oy+18);
   ctx.font='9px system-ui';ctx.fillText(tile.edges.join('')+' • '+(tile.x+1)+','+(tile.y+1),ox+10,oy+29);ctx.restore();
  }
- const clear=plan.sideGateClearWidth,pass=plan.sideGateClearanceApproved;
- $('gateStatus').textContent='Modelled clear passage: '+clear+' / 24 units ('+(pass?'meets clearance':'too narrow')+')';
- $('gateWarning').innerHTML=gateWidth===30?
-  '<strong>Gate geometry not approved:</strong> the requested 30-unit opening leaves only <strong>14 units actually walkable</strong> under the existing 16-unit foundation rule. The required minimum is 24. The genuine transparent moon-gate candidate remains unapproved until the geometry is resolved.':
-  '<strong>Diagnostic only:</strong> a 40-unit wall cut gives <strong>24 units walkable</strong>, but differs from the commissioned 30-unit opening. Compare the painting alignment; do not treat this as a corrected production asset.';
+
 }
 function cardHTML(item){
  const id=item.id,im=images[id],spec=board.ASSETS[id];
@@ -235,17 +211,15 @@ async function loadSeven(){
   renderGallery();render();status();
  }catch(e){errors.push('Seven-sprite manifest: '+e.message);status();}
 }
-for(const id of ['showGrid','showExisting','showNew','showWalls','showGuides']){
+for(const id of ['showGrid','showExisting','showNew','showWalls']){
  $(id).addEventListener('change',e=>{
   if(id==='showGrid')grid=e.target.checked;
   if(id==='showExisting')showOld=e.target.checked;
   if(id==='showNew')showNew=e.target.checked;
   if(id==='showWalls')showWalls=e.target.checked;
-  if(id==='showGuides')showGuides=e.target.checked;
   render();
  });
 }
-$('gateWidth').addEventListener('change',e=>{gateWidth=Number(e.target.value);render();});
 $('zoomIn').addEventListener('click',()=>setZoom(zoom+1));
 $('zoomOut').addEventListener('click',()=>setZoom(zoom-1));
 $('fit').addEventListener('click',()=>setZoom(1));
@@ -262,7 +236,7 @@ cv.addEventListener('click',e=>{
 });
 setZoom(1);render();loadSeven();loadExtras();
 for(const id of ['courtyard-hall-01','bamboo-grove-01','garden-rockery-02','garden-rockery-01',
- 'garden-pavilion-01','willow-tree-01','waterside-landing-01'])optionalOld(id);
+ 'garden-pavilion-01','willow-tree-01'])optionalOld(id);
 })();
 </script>
 </body></html>
