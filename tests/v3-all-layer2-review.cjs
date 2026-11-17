@@ -65,7 +65,7 @@ assert(!allPlaced.has('side-facing-moon-gate-01'),'Retired side-facing gate must
 const bridge=plan.tiles.find(e=>e.tile.role==='bridge');
 assert(bridge);assert.deepEqual(bridge.tile.edges,['W','S','W','S']);
 assert.deepEqual(board.bounds(bridge.art[0]),{left:66,right:154,top:88,bottom:132});
-assert.equal(geo.compile(bridge.tile.edges).bridge,true);
+assert(geo.compile(bridge.tile.edges).bridge,'Bridge topology must be registered');
 const south=plan.tiles.find(e=>e.tile.role==='south-bank-landing');
 assert(south);assert.equal(south.tile.edges.join(''),'LWLW');
 assert.deepEqual(board.bounds(south.art[0]),{left:62.5,right:157.5,top:160,bottom:207});
