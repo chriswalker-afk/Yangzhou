@@ -15,13 +15,13 @@
  if(!topology||!geometry||!layer2||!walls)throw Error('Original Yangzhou V3 topology/wall modules must load first');
  const SIZE=220,GRID=4;
  const ASSETS=Object.freeze({
-  'stone-bridge-parapets-01':Object.freeze({width:108,height:58,mode:'bridge',signature:'WSWS'}),
+  'stone-bridge-parapets-01':Object.freeze({width:176,height:39,mode:'bridge',signature:'WSWS'}),
   'street-shopfront-01':Object.freeze({width:72,height:43,mode:'road-north',signature:'LSLS'}),
   'covered-garden-corridor-01':Object.freeze({width:88,height:30,mode:'land',signature:'LLLL'}),
   'waterside-pavilion-01':Object.freeze({width:72,height:48,mode:'canal-north',signature:'LWLW'}),
   'small-residence-01':Object.freeze({width:60,height:40,mode:'courtyard',signature:'LLLL'}),
   'tea-house-01':Object.freeze({width:84,height:46,mode:'road-north',signature:'LSLS'}),
-  'side-facing-moon-gate-01':Object.freeze({width:36,height:54,mode:'side-gate',signature:'LLLL'})
+  'waterside-landing-02':Object.freeze({width:95,height:52,mode:'canal-north',signature:'LWLW'})
  });
  const ID_LIST=Object.freeze(Object.keys(ASSETS));
  const LAYOUT=Object.freeze([
@@ -31,13 +31,13 @@
   ['LWLW','LWLW','WWLW','LWLW']
  ].map(row=>Object.freeze([...row])));
  const ROLES=Object.freeze([
-  ['side-gate','corridor','vertical-canal','hall'],
+  ['hall-garden','corridor','vertical-canal','hall'],
   ['shopfront','tea-house','bridge','street-garden'],
   ['small-residence','rock-garden','vertical-canal','pavilion-garden'],
   ['waterside-pavilion','landing','canal-junction','canal-garden']
  ].map(row=>Object.freeze([...row])));
  const OBJECTS=Object.freeze({
-  'side-gate':Object.freeze([{id:'side-facing-moon-gate-01',x:52,y:110}]),
+  landing:Object.freeze([{id:'waterside-landing-02',x:110,y:35}]),
   'corridor':Object.freeze([{id:'covered-garden-corridor-01',x:103,y:111}]),
   'shopfront':Object.freeze([{id:'street-shopfront-01',x:110,y:52}]),
   'tea-house':Object.freeze([{id:'tea-house-01',x:110,y:52}]),
@@ -46,12 +46,11 @@
   'waterside-pavilion':Object.freeze([{id:'waterside-pavilion-01',x:110,y:35}])
  });
  const ORIGINALS=Object.freeze({
-  'side-gate':[{id:'courtyard-hall-01',x:136,y:111}],
+  'hall-garden':[{id:'courtyard-hall-01',x:110,y:109}],
   hall:[{id:'courtyard-hall-01',x:110,y:109}],
   'rock-garden':[{id:'bamboo-grove-01',x:66,y:93},{id:'garden-rockery-02',x:158,y:165}],
   'pavilion-garden':[{id:'garden-pavilion-01',x:110,y:103}],
   'street-garden':[{id:'willow-tree-01',x:173,y:44}],
-  landing:[{id:'waterside-landing-01',x:110,y:53}],
   'canal-garden':[{id:'garden-rockery-01',x:110,y:34}]
  });
  const SPECIFICS=Object.freeze({sideGateCenter:Object.freeze([52,110]),
@@ -59,12 +58,7 @@
   bridgeWaterWidth:88,bridgeRoadWidth:44});
  const rowcol=(x,y)=>LAYOUT[y]?.[x];
  function modelFor(role,{gateWidth=30}={}){
-  if(role==='side-gate')return {
-   id:'side-facing-gate-proof',name:'West wall / eastward entrance',
-   hall:{id:'courtyard-hall-01',x:136,y:111},
-   paths:[{id:'west-wall',points:[[52,29],[52,192]]}],
-   openings:[{id:'side-gate',pathId:'west-wall',center:[52,110],width:gateWidth}]
-  };
+  if(role==='hall-garden')return walls.templates.rectangle;
   if(role==='small-residence')return {
    ...walls.templates.rectangle,name:'Small residential enclosure',
    hall:{id:'small-residence-01',x:110,y:107}
@@ -96,11 +90,6 @@
    const g=geometry.compile(tile.edges);
    return p.x===110&&p.y===110&&g.bridge&&g.paths.some(q=>q.type==='S'&&q.width===44&&q.kind==='line')&&
     g.paths.some(q=>q.type==='W'&&q.width===88&&q.kind==='line');
-  }
-  if(s.mode==='side-gate'){
-   const gate=walls.compile(modelFor(tile.role,{gateWidth})).gates[0];
-   return gate&&Math.abs(gate.tangent[1])===1&&gate.center[0]===p.x&&gate.center[1]===p.y&&
-    gate.width===gateWidth&&walls.isSolid(walls.compile(modelFor(tile.role,{gateWidth})),gate.center)===false;
   }
   if(s.mode==='canal-north'){
    // Entire pavilion stays on northern LAND, short of the original bank
@@ -141,13 +130,8 @@
    out.push(Object.freeze({tile,model,audit,gates,art:Object.freeze(art),
     originals:Object.freeze(ORIGINALS[tile.role]||[])}));
   }
-  const side=out.find(x=>x.tile.role==='side-gate');
-  const physical=side.gates[0];
-  return Object.freeze({tiles:Object.freeze(out),gateWidth,
-   sideGateClearWidth:physical.walkThroughWidth,
-   sideGateClearanceApproved:physical.walkThroughWidth>=SPECIFICS.sideGateMinWalkThrough,
-   warning:physical.walkThroughWidth<SPECIFICS.sideGateMinWalkThrough?
-    'The 30-unit opening has only 14 units of clear passage under the existing 16-unit foundation rule. At least 40 units are needed for 24 clear. The moon-gate artwork is NOT certified.':null,
+  return Object.freeze({tiles:Object.freeze(out),gateWidth,sideGateClearWidth:null,
+   sideGateClearanceApproved:null,warning:null,
    allNewAssetsIncluded:ID_LIST.every(id=>out.some(t=>t.art.some(p=>p.id===id))) });
  }
  const digest=b=>Array.from(new Uint8Array(b),v=>v.toString(16).padStart(2,'0')).join('');
