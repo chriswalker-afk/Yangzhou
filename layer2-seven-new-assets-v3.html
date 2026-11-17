@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#eee7d6">
-<title>Yangzhou V3 | Updated painted assets | 4 x 4 connected review</title>
+<title>Yangzhou V3 | Exact 88 by 44 bridge proof | 4 by 4 connected review</title>
 <style>
 :root{color-scheme:light;--ink:#334b42;--muted:#5c6d63;--paper:#f9f5e9;--border:#c9c2ac}
 *{box-sizing:border-box}
@@ -43,7 +43,7 @@ a{color:#2f6758}footer{padding:22px 0;border-top:1px solid var(--border);margin-
 </style>
 </head>
 <body><main>
-<p><a href="layer2-integrated-v3.html">Existing six-tile Layer 2 proof</a> · <a href="wall-geometry-lab-v3.html">Continuous courtyard wall laboratory</a> · <a href="index.html">Playable V2 (unchanged)</a></p>
+<p><a href="#bridge-proof">Exact bridge close-up</a> · <a href="layer2-integrated-v3.html">Existing six-tile Layer 2 proof</a> · <a href="wall-geometry-lab-v3.html">Continuous courtyard wall laboratory</a> · <a href="index.html">Playable V2 (unchanged)</a></p>
 <h1>Yangzhou V3 · Seven original painted assets</h1>
 <p class="intro">A <strong>4 × 4 connected-tile composition</strong> for reviewing all seven newly commissioned transparent paintings alongside the existing Jiangnan material, wall and architectural library. Every object stays compass-upright at its declared world-unit footprint. Streets remain 44 units wide and canals 88 units wide; the artwork never changes those Layer 1 masks.</p>
 <div class="note"><strong>Visual review only.</strong> The seven original PNG masters and lossless WebP counterparts are committed on this branch, but the new assets are <strong>not yet visually or production certified</strong>. No changes to V2 gameplay, existing accepted artwork or the main game board are made by this page.</div>
@@ -60,7 +60,7 @@ a{color:#2f6758}footer{padding:22px 0;border-top:1px solid var(--border);margin-
 <div class="status" id="loadStatus" role="status" aria-live="polite">Checking all seven current painting files against their manifest SHA-256 digests...</div>
 <div class="note"><strong>Revised paintings:</strong> the bridge has been repainted to include matching paved approach sides, and Waterside Landing 02 replaces the earlier visually busy landing in this scene. The west-facing moon gate is retired. Previously certified Landing 01 remains preserved outside this preview.</div>
 <h2>Connected neighbourhood</h2>
-<p class="intro">Click any tile to inspect its role. The bridge crosses a real canal and street, the shopfronts face the street, the pavilion sits on land beside a continuous canal, and the side-facing moon-gate sprite is retired, while original courtyard gate openings remain geometry-driven.</p>
+<p class="intro">Click any tile to inspect its role. The revised bridge exactly spans the 88-unit canal and matches the 44-unit street, the shopfronts face the street, the pavilion sits on land beside a continuous canal, and the side-facing moon-gate sprite is retired, while original courtyard gate openings remain geometry-driven.</p>
 <div class="pan"><canvas id="scene" width="1760" height="1760" aria-label="Sixteen connected 220 by 220 world-unit Yangzhou V3 tiles with seven original artwork candidates"></canvas></div>
 <div class="legend">
   <span><span class="dot" style="background:#d6d1b7"></span>Courtyards and gardens</span>
@@ -69,6 +69,11 @@ a{color:#2f6758}footer{padding:22px 0;border-top:1px solid var(--border);margin-
   <span><span class="dot" style="background:#b16d4e"></span>Review-only diagnostics</span>
 </div>
 <div id="tileInfo" class="status" role="status" aria-live="polite">Select one of the sixteen tiles to inspect the composition.</div>
+<h2 id="bridge-proof">Stone bridge — measured 88 × 44 crossing</h2>
+<p class="intro">This is an enlarged crop of the <strong>actual connected V3 renderer</strong>, not a separate mock-up. The normal road now stops at the canal banks. The bridge runs 88 world units from west bank to east bank and is exactly 44 world units wide, matching the road on both sides.</p>
+<div class="toolbar"><label><input id="showBridgeGuides" type="checkbox" checked> Show 88 × 44 footprint guides</label></div>
+<div class="pan"><canvas id="bridgeCloseup" width="704" height="512" aria-label="Enlarged connected Yangzhou tile with bridge length 88 and width 44 and selectable measurement lines"></canvas></div>
+<div class="note"><strong>Candidate for review.</strong> Check the road connection at each bank and the canal edges. The painting is original and losslessly converted; decorative rail height is a visual detail inside the fixed crossing footprint.</div>
 <h2>Inspect each transparent sprite</h2>
 <p class="intro">These are the exact lossless WebP artwork files, not regenerated drawings or whole-tile screenshots. Each appears at its natural aspect ratio here and at its actual world dimensions on the board.</p>
 <div id="gallery" class="grid" aria-live="polite"></div>
@@ -98,7 +103,7 @@ const $=id=>document.getElementById(id);
 const palette={pathVerge:'#b7a58b',pathContact:'#84947c',canalBank:'#b5a38a',canalContact:'#5e8075',bridgeEdge:'#b4a990',bridgeContact:'#6e8176'};
 const flat={grass:'#d6d8bc',stone:'#d4c8ac',water:'#8dad9e'};
 const ids=board.ID_LIST,images={},old={},materials={},facesLoaded={},errors=[];
-let manifest=null,verified=0,zoom=1,grid=true,showOld=true,showNew=true,showWalls=true,gateWidth=30;
+let manifest=null,verified=0,zoom=1,grid=true,showOld=true,showNew=true,showWalls=true,showBridgeGuides=true,gateWidth=30;
 let roofImage=null,pavingImage=null,lastPlan=null;
 const names={hall:'Courtyard Hall', 'hall-garden':'Courtyard garden','corridor':'Garden corridor',
  'vertical-canal':'Continuous canal',shopfront:'Street shopfront','tea-house':'Tea house',
@@ -132,11 +137,11 @@ function render(){
  for(const entry of plan.tiles){
   const tile=entry.tile,ox=tile.x*220,oy=tile.y*220;
   ctx.save();ctx.beginPath();ctx.rect(ox,oy,220,220);ctx.clip();
-  edges.draw(ctx,edges.compile(geo.compile(tile.edges)),colors,{x:ox,y:oy,edges:true});
+  edges.draw(ctx,edges.compile(geo.compile(tile.edges)),colors,{x:ox,y:oy,edges:true,bridgeSpriteMode:tile.role==='bridge'});
   if(entry.model && pavingImage && entry.audit && entry.audit.valid && entry.model.id==='rectangle')
     paving.paint(ctx,tile,entry.model,pavingImage,{valid:true});
   if(showOld) for(const p of entry.originals)drawOld(ctx,tile,p);
-  if(showNew)board.draw(ctx,entry,images);
+  if(showNew)board.draw(ctx,entry,images,{bridgeDeckPattern:colors.stone});
   if(showWalls && entry.model){
     const result=walls.draw(ctx,entry.model,tile,{
       showGates:false,showJoints:false,
@@ -152,6 +157,25 @@ function render(){
   ctx.font='9px system-ui';ctx.fillText(tile.edges.join('')+' • '+(tile.x+1)+','+(tile.y+1),ox+10,oy+29);ctx.restore();
  }
 
+ drawBridgeCloseup(plan);
+}
+function drawBridgeCloseup(plan){
+ const view=$('bridgeCloseup');if(!view)return;
+ const entry=plan.tiles.find(e=>e.tile.role==='bridge');if(!entry)return;
+ const centerX=entry.tile.x*220+110,centerY=entry.tile.y*220+110;
+ const cropW=176,cropH=128,scale=4,left=centerX-cropW/2,top=centerY-cropH/2;
+ const c=view.getContext('2d');c.setTransform(1,0,0,1,0,0);
+ c.clearRect(0,0,view.width,view.height);
+ c.drawImage(cv,left*2,top*2,cropW*2,cropH*2,0,0,view.width,view.height);
+ if(showBridgeGuides){
+  const x=(centerX-44-left)*scale,y=(centerY-22-top)*scale,w=88*scale,h=44*scale;
+  c.save();c.strokeStyle='#ac6037';c.lineWidth=2;c.setLineDash([8,5]);c.strokeRect(x,y,w,h);c.setLineDash([]);
+  c.fillStyle='rgba(253,249,237,.96)';c.fillRect(x+82,y-30,180,25);
+  c.font='bold 17px system-ui';c.fillStyle='#71391f';c.fillText('88 canal units',x+92,y-12);
+  c.fillRect(x+w+6,y+50,119,49);c.fillStyle='#71391f';
+  c.fillText('44 road',x+w+14,y+70);c.fillText('units',x+w+14,y+92);
+  c.restore();
+ }
 }
 function cardHTML(item){
  const id=item.id,im=images[id],spec=board.ASSETS[id];
@@ -223,6 +247,7 @@ for(const id of ['showGrid','showExisting','showNew','showWalls']){
 $('zoomIn').addEventListener('click',()=>setZoom(zoom+1));
 $('zoomOut').addEventListener('click',()=>setZoom(zoom-1));
 $('fit').addEventListener('click',()=>setZoom(1));
+$('showBridgeGuides').addEventListener('change',e=>{showBridgeGuides=e.target.checked;render();});
 cv.addEventListener('click',e=>{
  const box=cv.getBoundingClientRect(),x=(e.clientX-box.left)*880/box.width,y=(e.clientY-box.top)*880/box.height;
  const ix=Math.floor(x/220),iy=Math.floor(y/220),entry=lastPlan?.tiles.find(q=>q.tile.x===ix&&q.tile.y===iy);
