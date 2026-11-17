@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "id": "yangzhou-v3-three-new-layer2-candidates-20261117",
+  "version": "2026-11-17",
+  "status": "source-and-lossless-intake-only",
+  "preview": "layer2-all-assets-v3.html",
+  "originalSourcePreserved": true,
+  "exactSourceRGBADecodingVerified": true,
+  "productionApproved": false,
+  "note": "PNG masters untouched, lossless WebP pixel-identical including fully transparent RGB; first 5x5 connected composition contains all eight previously certified originals, seven newest candidates and three new candidates. Side-facing moon gate retired. Existing active continuous walls and moon gate geometry remain preserved.",
+  "newAssets": [
+    {
+      "id": "plum-blossom-tree-01",
+      "name": "Plum Blossom Tree 01",
+      "family": "Garden vegetation",
+      "worldFootprint": {
+        "width": 48,
+        "height": 58
+      },
+      "renderedArtwork": {
+        "width": 48,
+        "height": 48,
+        "offsetY": 0
+      },
+      "trunkContact": {
+        "radius": 6,
+        "offsetY": 21
+      },
+      "orientation": "Compass-upright, north up and south down",
+      "placementRule": "Land-only trunk; natural transparent canopy may visually overhang protected paths; first proof all-land LLLL",
+      "allowedSignatures": [
+        "LLLL"
+      ],
+      "sourceOriginal": {
+        "path": "assets/v3/large/sources/plum-blossom-tree-01-original.png",
+        "width": 1254,
+        "height": 1254,
+        "bytes": 1274165,
+        "sha256": "32916b48b7104d98e39c4ada2779421897688182ff37811144366e7e5a92e3",
+        "hasAlpha": true
+      },
+      "prepared": {
+        "path": "assets/v3/large/plum-blossom-tree-01.webp",
+        "width": 1254,
+        "height": 1254,
+        "bytes": 827668,
+        "sha256": "7fc70e72dfc0533178012052798cdcec84a98b705be2cdab4309283a833acd91",
+        "hasAlpha": true,
+        "exactSourceRGBA": true
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false,
+      "visualReviewStatus": "original-painting-intake-pending-whole-board-visual-certification"
+    },
+    {
+      "id": "courtyard-entrance-step-01",
+      "name": "Courtyard Entrance Step 01",
+      "family": "Walkable architecture",
+      "worldFootprint": {
+        "width": 20,
+        "height": 10
+      },
+      "renderedArtwork": {
+        "width": 20,
+        "height": 6.666666666666667,
+        "offsetY": 0
+      },
+      "trunkContact": null,
+      "orientation": "East-west threshold approached from south",
+      "placementRule": "At Courtyard Hall 01 south doorway (x 110,y 137); traversable; no collision or blocked 12-unit walkway",
+      "allowedSignatures": [
+        "LLLL"
+      ],
+      "sourceOriginal": {
+        "path": "assets/v3/large/sources/courtyard-entrance-step-01-original.png",
+        "width": 2172,
+        "height": 724,
+        "bytes": 1474617,
+        "sha256": "3ddbc51e8a1ec1f4b3ec52abcf3f8fde2d08bab63892067137f88c22377f0cdd",
+        "hasAlpha": true
+      },
+      "prepared": {
+        "path": "assets/v3/large/courtyard-entrance-step-01.webp",
+        "width": 2172,
+        "height": 724,
+        "bytes": 877842,
+        "sha256": "cbc9b5fbd1c682d5616d07c82751dc5d257330f1d275e464d32afa580fb7c712",
+        "hasAlpha": true,
+        "exactSourceRGBA": true
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false,
+      "visualReviewStatus": "original-painting-intake-pending-whole-board-visual-certification"
+    },
+    {
+      "id": "south-bank-landing-01",
+      "name": "South-Bank Landing 01",
+      "family": "South-bank waterfront architecture",
+      "worldFootprint": {
+        "width": 95,
+        "height": 47
+      },
+      "renderedArtwork": {
+        "width": 95,
+        "height": 47.5,
+        "offsetY": 0
+      },
+      "trunkContact": null,
+      "orientation": "North-facing shore edge, south landward entrance, no sprite rotation",
+      "placementRule": "South land of a straight 88-unit east-west canal (LWLW); x=110,y=183.5 gives world y=160..207; no bank or canal water overpaint",
+      "allowedSignatures": [
+        "LWLW"
+      ],
+      "sourceOriginal": {
+        "path": "assets/v3/large/sources/south-bank-landing-01-original.png",
+        "width": 1774,
+        "height": 887,
+        "bytes": 1969440,
+        "sha256": "0134226efdb897ec09644a05dedb9986839c24f46f5603ca9d308cb13ba1bfdb",
+        "hasAlpha": true
+      },
+      "prepared": {
+        "path": "assets/v3/large/south-bank-landing-01.webp",
+        "width": 1774,
+        "height": 887,
+        "bytes": 1215682,
+        "sha256": "562ac7ec03d039f93e812355a16f75a3d8d3dddd4c4724e6a4f37f5b0dc6beed",
+        "hasAlpha": true,
+        "exactSourceRGBA": true
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false,
+      "visualReviewStatus": "original-painting-intake-pending-whole-board-visual-certification"
+    }
+  ]
+}
