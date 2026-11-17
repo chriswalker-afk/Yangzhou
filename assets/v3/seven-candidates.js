@@ -37,7 +37,7 @@
   ['waterside-pavilion','landing','canal-junction','canal-garden']
  ].map(row=>Object.freeze([...row])));
  const OBJECTS=Object.freeze({
-  landing:Object.freeze([{id:'waterside-landing-02',x:110,y:35}]),
+  landing:Object.freeze([{id:'waterside-landing-02',x:110,y:36}]),
   'corridor':Object.freeze([{id:'covered-garden-corridor-01',x:103,y:111}]),
   'shopfront':Object.freeze([{id:'street-shopfront-01',x:110,y:52}]),
   'tea-house':Object.freeze([{id:'tea-house-01',x:110,y:52}]),
