@@ -49,13 +49,13 @@ Historically grounded direction: Yangzhou's 18th-century salt-merchant gardens c
 
 | Order | New asset | Why it matters | Composition contract |
 |---:|---|---|---|
-| **1** | **Stone Bridge Parapets 01** | Currently roads crossing waterways have geometry but lack a visually distinctive bridge structure | Layer 2 rail/parapet on top of the existing Layer 1 bridge deck; keep **44-unit road** and **88-unit canal** mouths, no new core artwork |
+| **1** | **Stone Bridge Parapets 01** | Painted bridge candidate now committed; connected-edge appearance still needs visual approval | Exact **88-unit canal span × 44-unit road width**; ordinary street texture stops at the banks, canal water remains beneath the transparent bridge sprite; no extra stone or road underlay |
 | **2** | **Street Shopfront 01** | Without street-front architecture, connected road tiles look like empty garden land | One south-facing compact shop with eaves, timber shutters and walkway-facing entry; no building into road core |
 | **3** | **Covered Garden Corridor 01** | Adds intentional links between a hall, side wing and pavilion; breaks up single-building courtyards | Footprint follows planned walkable corridor, does not block gate or cross roof coping; geometry-owned connection endpoints |
 | **4** | **Waterside Pavilion 01** | Creates a true waterside scene without repeating the landing garden | Separate south-facing pavilion on the north bank, with shadow on land and no water-mask modification |
 | **5** | **Small Residence 01** | Fills medium/smaller courtyard layouts and reduces mandatory Hall 01 repetition | A distinct smaller roof and building, compass upright, west/east footprint options need authored positions |
 | **6** | **Tea House 01** | A more recognizable commercial destination for road/canal-adjacent tiles | Larger but still tile-owned, road-front orientation and optional canal view; not a landmark yet |
-| **7** | **Side-Facing Moon Gate 01** | Current painted portal is suitable for horizontal walls; side-wall apertures cannot use a naïvely rotated sprite | Commission a genuinely new camera-consistent gateway view for north–south walls, with separate exact opening mask |
+| **7** | **Side-Facing Moon Gate 01** | Retired from active V3 preview after perspective review | No separate side-facing bitmap required: keep side-wall roof-coping geometry and preserve genuine existing apertures |
 | **8** | **South-Bank Landing 01** | Current approved landing works only on the north side | A separate painted orientation, geometry `L/W/L/W`, southern bank; do not rotate the accepted 01 painting |
 | **9** | **Plum Blossom Tree 01** | Distinctive garden colour/seasonal silhouette without adding another large building | Land-only trunk, translucent canopy, ensure normal zoom legibility |
 | **10** | **Courtyard Entrance Step 01** | Makes the hall-to-path join believable and readable | Small architecture above Layer 1B paving; doorway collision and ground connection remain open |
@@ -72,7 +72,7 @@ A historical **White Pagoda**, **Five-Pavilion Bridge**, larger **stone boat** o
 
 **Pass C — Shopfront 01, then Covered Corridor 01:** These unlock visually different urban and garden areas. Each should have its own art preview and rules before mixing into multi-tile layouts.
 
-**Pass D — remaining assets by demonstrated need:** Waterside pavilion, smaller residence, side-moon-gate and opposite landing **only if the tile grammar actually uses them**; never add assets for which no valid placement exists.
+**Pass D — remaining assets by demonstrated need:** The pavilion and smaller residence are now painted candidates, not artwork-certified. Prioritise Plum Blossom Tree 01 and Courtyard Entrance Step 01; add the south-bank landing **only if the tile grammar actually uses it**. The side-facing moon-gate sprite is retired.
 
 Acceptance for any new asset: preserve PNG master if available; produce independent transparency-backed lossless WebP with documented SHA-256, world footprint and orientation; render genuine artwork at 1× and 3× next to existing buildings/walls/water; test all allowed edge signatures, collisions, normal/magnified/mobile and repeated layouts; certify visual artwork separately from historical and production milestones.
 
