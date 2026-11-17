@@ -15,7 +15,7 @@
  if(!topology||!geometry||!layer2||!walls)throw Error('Original Yangzhou V3 topology/wall modules must load first');
  const SIZE=220,GRID=4;
  const ASSETS=Object.freeze({
-  'stone-bridge-parapets-01':Object.freeze({width:88,height:44,mode:'bridge',signature:'WSWS'}),
+  'stone-bridge-parapets-01':Object.freeze({width:88,height:44,mode:'bridge',signature:'WSWS',crop:Object.freeze({x:250,y:151,width:1272,height:528})}),
   'street-shopfront-01':Object.freeze({width:72,height:43,mode:'road-north',signature:'LSLS'}),
   'covered-garden-corridor-01':Object.freeze({width:88,height:30,mode:'land',signature:'LLLL'}),
   'waterside-pavilion-01':Object.freeze({width:72,height:48,mode:'canal-north',signature:'LWLW'}),
@@ -180,7 +180,12 @@
     // 88x44 crossing; artwork then sits above it, within that exact mask.
     ctx.save();ctx.beginPath();ctx.rect(x,y,spec.width,spec.height);ctx.clip();
     ctx.fillStyle=bridgeDeckPattern;ctx.fillRect(x,y,spec.width,spec.height);
-    ctx.drawImage(image,x,y,spec.width,spec.height);
+    // Trim only transparent padding; keep natural painting aspect ratio.
+    // Deck is the full 88x44; decorative parapets are inset 3.74 units
+    // from each road edge, as a real edge guard would be.
+    const crop=spec.crop,artHeight=spec.width*crop.height/crop.width;
+    ctx.drawImage(image,crop.x,crop.y,crop.width,crop.height,
+     x,y+(spec.height-artHeight)/2,spec.width,artHeight);
     ctx.restore();
    }else ctx.drawImage(image,x,y,spec.width,spec.height);
    drawn++;
