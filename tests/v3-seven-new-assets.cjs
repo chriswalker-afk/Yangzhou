@@ -37,13 +37,17 @@ assert.deepEqual([board.ASSETS['stone-bridge-parapets-01'].width,board.ASSETS['s
 assert.deepEqual(board.ASSETS['stone-bridge-parapets-01'].crop,{x:250,y:151,width:1272,height:528});
 assert.deepEqual([board.SPECIFICS.bridgeWaterWidth,board.SPECIFICS.bridgeRoadWidth],[88,44]);
 assert(html.includes('bridgeSpriteMode:tile.role')); 
+assert(html.includes('if(showNew)board.draw(ctx,entry,images);'));
+assert(!html.includes('bridgeDeckPattern:colors.stone'),'Preview must not pass stone texture underneath the bridge');
+assert(!board.draw.toString().includes('bridgeDeckPattern'),'Bridge compositor must not paint a stone road underlay');
 assert(html.includes('id="bridgeCloseup"')&&html.includes('drawBridgeCloseup(plan)'));
 const calls=[];
 const spy={beginPath:()=>{},rect:(...a)=>calls.push(['rect',...a]),clip:(...a)=>calls.push(['clip',...a]),
  fillRect:(...a)=>calls.push(['fillRect',...a]),drawImage:(...a)=>calls.push(['drawImage',...a]),save:()=>{},restore:()=>{}};
-assert.equal(board.draw(spy,bridgeTile,{'stone-bridge-parapets-01':{}},{bridgeDeckPattern:'#eee'}),1);
+assert.equal(board.draw(spy,bridgeTile,{'stone-bridge-parapets-01':{}}),1);
 assert(calls.some(c=>c[0]==='rect'&&c.slice(1).join(',')==='506,308,88,44'));
-assert(calls.some(c=>c[0]==='fillRect'&&c.slice(1).join(',')==='506,308,88,44'));
+assert.equal(calls.some(c=>c[0]==='fillRect'),false,'Bridge painting MUST NOT cover water with paving/stone underlay');
+assert.equal(calls.filter(c=>c[0]==='drawImage').length,1,'Only the supplied bridge painting belongs over the canal');
 const painted=calls.find(c=>c[0]==='drawImage');
 assert(painted&&painted[2]===250&&painted[3]===151&&painted[4]===1272&&painted[5]===528);
 assert.equal(painted[6],506);
