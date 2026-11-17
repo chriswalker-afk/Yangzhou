@@ -213,7 +213,7 @@ async function optionalOld(id){
 async function loadExtras(){
  const jobs=[
  mats.loadAll().then(r=>{Object.assign(materials,r.images);render();}),
- roofPainter.load().then(img=>{roofImage=img;render();}),
+ roofPainter.loadFromGitHub().then(img=>{roofImage=img;render();}),
  faces.loadAll().then(r=>{Object.assign(facesLoaded,r.images);render();}),
  paving.load().then(img=>{pavingImage=img;render();})
  ];
