@@ -50,7 +50,29 @@ for(const candidate of manifest.materials){
   assert.equal(((packed>>>14)&0x3fff)+1,1254);
   assert.equal(crypto.createHash('sha256').update(b).digest('hex'),candidate.sha256,'Candidate not byte-identical to accepted source');
 }
-assert.equal(present.length,3,'All three original accepted WebP binaries are required for V3 material CI');
+assert.equal(present.length,3,'All three active lossless WebP candidates are required for V3 material CI');
+// Grass v2 provenance is exact: preserve both the original newly generated
+// painting and the previously accepted grass v1 for reversible comparisons.
+const active=manifest.materials.find(x=>x.id==='grass');
+assert.equal(active.file,'grass-02-lossless.webp');
+assert.equal(runtime.files.grass,active.file);
+assert.equal(active.worldPeriodUnits,440);
+assert.equal(active.losslessWebP,true);
+assert.equal(active.exactSourcePixels,false,'Feathered source edges are a disclosed derivative');
+assert.equal(active.repeatSeamApproved,false,'Pixel-matched edges do not imply artwork acceptance');
+assert.deepEqual(active.seamPreparation,{type:'symmetric-72-pixel-cosine-edge-feather',radiusPixels:72,pixelRepeatEdgesIdentical:true});
+const original=fs.readFileSync(path.join(root,active.sourcePngPath));
+assert.equal(original.length,2765277);
+assert.equal(original.readUInt32BE(16),1254);
+assert.equal(original.readUInt32BE(20),1254);
+assert.equal(crypto.createHash('sha256').update(original).digest('hex'),active.sourcePngSha256);
+assert.equal(active.sourcePngSha256,'8b4792d4982b865d85075ade31f451edb085768ac6dfccabff0fc8efaf9badc4');
+const legacy=active.previousVersion;
+assert.equal(legacy.file,'grass-01-lossless.webp');
+const legacyBytes=fs.readFileSync(path.join(root,'assets/v3/materials',legacy.file));
+assert.equal(legacyBytes.length,legacy.bytes);
+assert.equal(crypto.createHash('sha256').update(legacyBytes).digest('hex'),legacy.sha256);
+assert.equal(legacy.sha256,'6f2d66fe8de1091112609c65c6cb9a563dc0f8189d85b8e5a528c6b1273f5ebb');
 const page=fs.readFileSync(path.join(root,'layer-lab-v3.html'),'utf8');
 for(const marker of [
   'assets/v3/base-geometry.js',
@@ -84,5 +106,5 @@ try{
   if(previous===undefined)delete global.DOMMatrix;
   else global.DOMMatrix=previous;
 }
-console.log('V3 material contract passed: 3 accepted candidate records, exact provenance, world-space preview, local-source fallback.');
+console.log('V3 materials: fine grass v2 default + archived grass v1, SHA-proven original PNG, repeat-safe prep and unchanged stone/water materials.');
 console.log('All 3 committed lossless WebP candidates verified: exact SHA-256, bytes, VP8L format and 1254x1254 dimensions. Visual artwork approval remains pending.');

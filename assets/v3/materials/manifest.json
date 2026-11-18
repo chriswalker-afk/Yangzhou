@@ -5,20 +5,41 @@
   "imagePixels": 1254,
   "materialTexturePeriodWorldUnits": 440,
   "worldAligned": true,
-  "description": "Three unchanged, user-accepted lossless WebP artwork candidates, now committed as Git blobs and subject to exact SHA-256 and dimensions validation. Candidate acceptance is not finished-art or historical approval.",
+  "description": "V3 Layer 1A has user-selected fine-scale Jiangnan grass v2, prepared with a narrow repeat-edge feather and lossless WebP encoding. Original unmodified source PNG and earlier grass v1 WebP are preserved. Stone and water WebPs remain byte-identical and unchanged. Visual repeat approval remains pending.",
   "materials": [
     {
       "id": "grass",
-      "name": "Jiangnan garden grass",
-      "file": "grass-01-lossless.webp",
+      "name": "Fine-scale Jiangnan garden grass (v2)",
+      "file": "grass-02-lossless.webp",
       "mimeType": "image/webp",
       "width": 1254,
       "height": 1254,
-      "bytes": 2271520,
-      "sha256": "6f2d66fe8de1091112609c65c6cb9a563dc0f8189d85b8e5a528c6b1273f5ebb",
-      "sourcePngSha256": "d8e19d43b271a3bd507ac04c54e8c00adf01d8fd9ed781f58fca20c5aa16dd0c",
+      "bytes": 1881352,
+      "sha256": "76cca9295e1c0be1ea6b07b4e0c708da62db1985b53e5642ad2ecb494349ff68",
+      "sourcePngSha256": "8b4792d4982b865d85075ade31f451edb085768ac6dfccabff0fc8efaf9badc4",
       "reviewStatus": "candidate-accepted",
-      "productionApproved": false
+      "productionApproved": false,
+      "sourcePngPath": "assets/v3/materials/sources/grass-02-original.png",
+      "sourcePngBytes": 2765277,
+      "losslessWebP": true,
+      "exactSourcePixels": false,
+      "preparedBy": "scripts/prepare_v3_grass_02.py",
+      "seamPreparation": {
+        "type": "symmetric-72-pixel-cosine-edge-feather",
+        "radiusPixels": 72,
+        "pixelRepeatEdgesIdentical": true
+      },
+      "worldPeriodUnits": 440,
+      "repeatSeamApproved": false,
+      "visuallyCertifiedForProduction": false,
+      "previousVersion": {
+        "file": "grass-01-lossless.webp",
+        "bytes": 2271520,
+        "sha256": "6f2d66fe8de1091112609c65c6cb9a563dc0f8189d85b8e5a528c6b1273f5ebb",
+        "sourcePngSha256": "d8e19d43b271a3bd507ac04c54e8c00adf01d8fd9ed781f58fca20c5aa16dd0c",
+        "reviewStatus": "candidate-accepted",
+        "productionApproved": false
+      }
     },
     {
       "id": "stone",
@@ -52,14 +73,17 @@
     "RIFF/WebP signature",
     "VP8L size 1254x1254",
     "repeat edges",
-    "physical mouth widths and visual seams in six-tile lab"
+    "physical mouth widths and visual seams in six-tile lab",
+    "grass v2 original PNG exact SHA-256 and dimensions",
+    "repeat-border pixel equality",
+    "5x5 18-sprite relative scale at desktop and mobile"
   ],
   "periodWorldUnitsByMaterial": {
     "grass": 440,
     "stone": 220,
     "water": 440
   },
-  "binarySource": "original chat-generated lossless WebP assets, imported byte-for-byte",
+  "binarySource": "Grass v2 from original ChatGPT-generated PNG and reproducible seam-safe, lossless WebP; original grass v1 retained; stone/water original lossless WebPs unchanged.",
   "layer1BCourtyardPaving": {
     "id": "courtyard-paving-01",
     "name": "Jiangnan Courtyard Paving Texture 01",
