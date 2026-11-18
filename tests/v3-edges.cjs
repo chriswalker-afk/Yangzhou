@@ -10,7 +10,7 @@ const spec=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/v3/style-sp
 const near=(a,b,message)=>assert(Math.abs(a-b)<1e-8,message+' ('+a+' vs '+b+')');
 assert.equal(geometry.signatures.length,20);
 assert.deepEqual(Object.keys(edges.treatments),['S','W']);
-assert.deepEqual(edges.treatments.S,{id:'path-verge',outside:2.5,contact:0.8,core:44});
+assert.deepEqual(edges.treatments.S,{id:'path-verge',outside:2.5,contact:0.8,core:28});
 assert.deepEqual(edges.treatments.W,{id:'canal-bank',outside:4,contact:1.2,core:88});
 assert.equal(spec.edgeTreatments.length,3);
 assert(spec.edgeTreatments.every(e=>e.status==='temporary-geometry-only'&&e.asset===null&&e.productionApproved===false));
@@ -162,6 +162,14 @@ assert(rendered.events.indexOf('painted-bank-overlay')<rendered.events.indexOf('
 assert(rendered.events.indexOf('painted-bank-overlay')<rendered.events.indexOf('water-texture'),
   'Painterly bank must be under the union of all water cores, never on top');
 
+// The bridge image stays 88 x 44, but its walkable deck is visually
+// narrower. No artificial flare back to the 44-unit image envelope.
+rendered=fakeCanvas();
+edges.draw(rendered.ctx,bridge,styles,{edges:true,bridgeSpriteMode:true,x:440,y:220});
+assert.equal(rendered.clips.length,2,'Bridge street must be clipped out of the canal');
+assert.deepEqual(rendered.rects.find(r=>r.join(',')==='506,220,88,220'),[506,220,88,220]);
+assert.equal(rendered.calls.filter(c=>c==='stone-texture').length,1,
+ 'Only the narrow core gets painted; no extra flaring polygons');
 assert.throws(()=>edges.crossSection({type:'S',width:80},0));
 assert.throws(()=>edges.pointOnRoute({kind:'bogus'},0));
 assert.throws(()=>edges.compile(null));

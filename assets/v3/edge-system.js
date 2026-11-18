@@ -1,7 +1,7 @@
 /* Yangzhou V3 Layer 1B — geometry-following edge-treatment proof.
  * Geometry remains artwork-independent; candidate images are injected by callbacks.
  * No gameplay or V2 renderer is modified.
- * Surface masks retain the exact 44-unit street and 88-unit canal mouths.
+ * V3 streets are 28 units wide; the canal remains 88 units wide.
  */
 (function(root,factory){
   const api=factory();
@@ -13,7 +13,7 @@
   // These are temporary land-side widths in world units, NOT enlarged route mouths.
   // Each outer ribbon is drawn first; the exact-width material then masks its centre.
   const treatments=Object.freeze({
-    S:Object.freeze({id:'path-verge',outside:2.5,contact:0.8,core:44}),
+    S:Object.freeze({id:'path-verge',outside:2.5,contact:0.8,core:28}),
     W:Object.freeze({id:'canal-bank',outside:4,contact:1.2,core:88})
   });
   const samplesPerCurve=49; // <= 0.5 world-unit step error for these gentle quadratics
@@ -99,6 +99,10 @@
     }
     return group.length;
   }
+
+  // The full 44-unit bridge image envelope includes parapets and transparency.
+  // The narrower 28-unit paving is aligned to its visible pedestrian deck;
+  // never flare road paint to match the outer image bounds.
 
   // The ribbon vertices are offset into board space, never translated via ctx:
   // CanvasPattern coordinates therefore stay global across neighbouring tiles.

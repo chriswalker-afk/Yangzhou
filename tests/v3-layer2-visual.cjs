@@ -35,7 +35,7 @@ async function run(){
   const withoutArt=await measure();
   assert.notDeepEqual(withArt.building,withoutArt.building,'Authentic courtyard, willow and rockery must affect tile appearance');
   const compiledPorts=await page.evaluate(()=>window.YangzhouV3Geometry.compile(['L','S','L','S']).exits.map(x=>x.width));
-  assert.deepEqual(compiledPorts,[0,44,0,44],'Layer 2 must not modify exact 44-unit street ports');
+  assert.deepEqual(compiledPorts,[0,28,0,28],'Layer 2 must not modify exact 28-unit V3 street ports');
   const waterPorts=await page.evaluate(()=>window.YangzhouV3Geometry.compile(['L','W','L','W']).exits.map(x=>x.width));
   assert.deepEqual(waterPorts,[0,88,0,88],'Layer 2 must not modify exact 88-unit canal ports');
   await page.screenshot({path:'artifacts/v3/layer2-six-tile-no-large-details.png',fullPage:true});

@@ -40,8 +40,8 @@ code{font-size:.86em}footer{border-top:1px solid var(--line);padding:17px 0;marg
 <body><main>
 <p><a href="layer2-seven-new-assets-v3.html">Previous 4×4 candidate proof</a> · <a href="layer2-integrated-v3.html">Certified courtyard prototype</a> · <a href="index.html">Playable V2 (unchanged)</a></p>
 <h1>Yangzhou V3 · All Layer 2 sprites together</h1>
-<p class="intro">A genuine <strong>5 × 5 connected tile neighbourhood</strong> using all <strong>18 original large-detail sprites</strong> (eight previously certified, seven recent candidates, three latest candidates). A 44-unit street crosses an 88-unit canal at the authentic water-backed bridge. The south bank has its own correctly oriented landing; gardens contain the new plum blossom, and courtyard halls connect to shallow entrance steps.</p>
-<div class="note"><strong>Fine-scale Layer 1 grass trial.</strong> The new, much finer ground painting is the default across all 25 connected tiles. Use the <strong>Grass texture</strong> selector to compare it against the preserved original without moving or changing any Layer 2 sprites. Stone, water, road widths and walls are unchanged. This is an artwork review, not production certification.</div>
+<p class="intro">A genuine <strong>5 × 5 connected tile neighbourhood</strong> using all <strong>18 original large-detail sprites</strong> (eight previously certified, seven recent candidates, three latest candidates). A 28-unit street meets an 88-unit canal at the authentic water-backed bridge. The south bank has its own correctly oriented landing; gardens contain the new plum blossom, and courtyard halls connect to shallow entrance steps.</p>
+<div class="note"><strong>Fine-scale Layer 1 grass trial.</strong> The new, much finer ground painting is the default across all 25 connected tiles. Use the <strong>Grass texture</strong> selector to compare it against the preserved original without moving or changing any Layer 2 sprites. Stone and water textures, bridge artwork, and walls are unchanged; V3 road width is reduced from the original 44 to 28 world units to match the bridge's visible walkway. This is an artwork review, not production certification.</div>
 <div class="toolbar" aria-label="Layer 2 review controls">
  <button type="button" id="zoomOut">− Zoom</button><button type="button" id="zoomIn">+ Zoom</button>
  <button type="button" id="zoomReset">Fit 1×</button><strong id="zoomText">1×</strong>
@@ -62,7 +62,7 @@ code{font-size:.86em}footer{border-top:1px solid var(--line);padding:17px 0;marg
 <div class="viewport"><canvas id="scene" width="2200" height="2200" aria-label="Twenty five connected Yangzhou V3 tiles with 18 distinct large-detail painted sprites, continuous roads and canals, courtyard walls and true moon gates"></canvas></div>
 <div class="legend">
  <span><i class="dot" style="background:#d5d8bf"></i> Garden and courtyard</span>
- <span><i class="dot" style="background:#c8b9a0"></i> 44-unit street</span>
+ <span><i class="dot" style="background:#c8b9a0"></i> 28-unit street</span>
  <span><i class="dot" style="background:#83a9a3"></i> 88-unit canal</span>
  <span><i class="dot" style="background:#b05b3e"></i> Highlight/geometry diagnostic</span>
 </div>
@@ -74,10 +74,10 @@ code{font-size:.86em}footer{border-top:1px solid var(--line);padding:17px 0;marg
  <article class="card"><h3>Courtyard Entrance Step 01</h3><small>Hall doorway · walkable stone threshold · 12-unit walkway unchanged</small><div class="viewport"><canvas id="stepCloseup" width="600" height="400" aria-label="Actual courtyard hall with small entrance step and connecting walkway"></canvas></div></article>
  <article class="card"><h3>South-Bank Landing 01</h3><small>North-facing structure on y=160–207 land · water mask preserved</small><div class="viewport"><canvas id="southCloseup" width="600" height="400" aria-label="Actual connected canal with separate south-bank landing"></canvas></div></article>
 </div>
-<h2 id="bridge-proof">Bridge connection — 88 long × 44 wide</h2>
-<p class="intro">The bridge artwork sits over the existing canal water. The ordinary road ends at each bank, with <strong>no hidden road or stone paving painted beneath the bridge</strong>.</p>
+<h2 id="bridge-proof">Bridge connection — original 88 × 44 painted deck</h2>
+<p class="intro">The 44-unit artwork footprint includes the bridge parapets; the new 28-unit stone-paved street approaches its narrower visible walkway without widening to the full image envelope. The bridge sits over the existing canal water. The ordinary road ends at each bank, with <strong>no hidden road or stone paving painted beneath the bridge</strong>.</p>
 <div class="toolbar"><label><input type="checkbox" id="showBridgeGuides" checked> Show measured 88 × 44 footprint</label></div>
-<div class="viewport"><canvas id="bridgeCloseup" width="704" height="512" aria-label="Crop from connected bridge tile showing actual 88-unit canal span and 44-unit street width"></canvas></div>
+<div class="viewport"><canvas id="bridgeCloseup" width="704" height="512" aria-label="Crop from connected bridge tile showing actual 88-unit canal span and 44-unit bridge-artwork footprint"></canvas></div>
 <h2 id="gallery">Inspect all 18 transparent sprites</h2>
 <p class="intro">The gallery verifies every original lossless WebP against its own committed SHA-256, file size and pixel dimensions. The PNG masters of the three new paintings are preserved. Artwork approval is separate from file integrity.</p>
 <div id="galleryCards" class="gallery"></div>
@@ -206,7 +206,7 @@ function drawBridge(){
   x.save();x.strokeStyle='#b35b38';x.lineWidth=2;x.setLineDash([7,5]);x.strokeRect(bx,by,w,h);x.setLineDash([]);
   x.fillStyle='rgba(253,250,240,.96)';x.fillRect(bx+73,by-32,190,27);
   x.font='bold 16px system-ui';x.fillStyle='#783b2c';x.fillText('88 canal units',bx+89,by-13);
-  x.fillRect(bx+w+7,by+52,123,47);x.fillStyle='#783b2c';x.fillText('44 road',bx+w+15,by+70);
+  x.fillRect(bx+w+7,by+52,123,47);x.fillStyle='#783b2c';x.fillText('44 art',bx+w+15,by+70);
   x.fillText('units',bx+w+15,by+91);x.restore();
  }
 }

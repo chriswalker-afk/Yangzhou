@@ -55,7 +55,7 @@
  });
  const SPECIFICS=Object.freeze({sideGateCenter:Object.freeze([52,110]),
   sideGateWallX:52,sideGateMinWalkThrough:24,verticalWallFoundationWidth:walls.WIDTHS.foundation,
-  bridgeWaterWidth:88,bridgeRoadWidth:44});
+  bridgeWaterWidth:88,bridgeRoadWidth:44,bridgeApproachWidth:geometry.portWidths.S});
  const rowcol=(x,y)=>LAYOUT[y]?.[x];
  function modelFor(role,{gateWidth=30}={}){
   if(role==='hall-garden')return walls.templates.rectangle;
@@ -86,11 +86,11 @@
   const a=bounds(p);
   if(a.left<10||a.top<10||a.right>210||a.bottom>210)return false;
   if(s.mode==='bridge'){
-   // Exact east-west 44-unit road deck over north-south 88-unit canal.
+   // Original 44-unit bridge image over the 88-unit canal meets 28-unit walkable approaches.
    const g=geometry.compile(tile.edges);
    return p.x===110&&p.y===110&&s.width===SPECIFICS.bridgeWaterWidth&&
     s.height===SPECIFICS.bridgeRoadWidth&&a.left===66&&a.right===154&&a.top===88&&a.bottom===132&&
-    g.bridge&&g.paths.some(q=>q.type==='S'&&q.width===44&&q.kind==='line')&&
+    g.bridge&&g.paths.some(q=>q.type==='S'&&q.width===SPECIFICS.bridgeApproachWidth&&q.kind==='line')&&
     g.paths.some(q=>q.type==='W'&&q.width===88&&q.kind==='line');
   }
   if(s.mode==='canal-north'){

@@ -1,7 +1,7 @@
 /* Yangzhou V3 — painted Path Verge Edge 01, candidate-only.
  * Reuses Canal Bank Edge 01's affine strip mapping so art follows a V3 path,
  * but ONLY on the land side of actual non-bridge stone-paving routes.
- * The navigable/visible paving core remains exactly 44 world units wide.
+ * The navigable/visible paving core now measures 28 world units wide.
  * The V2 game never loads this module.
  */
 (function(root,factory){
@@ -38,7 +38,7 @@
   }
   function growLandward(section,spread){
     // Only expand the painted sprite's footprint into *grass*.
-    // The core edge stays at exactly 22 units either side of the street.
+    // The core edge stays at exactly 14 units either side of the street.
     const extended={};
     for(const side of ['left','right']){
       const core=section.core[side],outer=section.outer[side];

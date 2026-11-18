@@ -62,7 +62,7 @@ assert.deepEqual(tee.junctions.filter(j=>j.kind==='T').map(j=>j.point),[[110,48]
  'One exact T-branch endpoint lies on the crossbar centreline');
 assert(walls.isSolid(tee,[110,48]),'The T-junction must have no gap');
 assert.equal(tee.paths.length,3,'T has two gate-cut beam lengths and one solid branch');
-assert.deepEqual(base.compile(['L','S','L','S']).exits.map(e=>e.width),[0,44,0,44]);
+assert.deepEqual(base.compile(['L','S','L','S']).exits.map(e=>e.width),[0,28,0,28]);
 assert.deepEqual(base.compile(['L','W','L','W']).exits.map(e=>e.width),[0,88,0,88]);
 const road={...grass,edges:['L','S','L','S']},canal={...grass,edges:['L','W','L','W']};
 for(const model of [walls.templates.rectangle,walls.templates.partial,walls.templates.elbow]){

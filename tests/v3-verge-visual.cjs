@@ -29,7 +29,7 @@ async function run(){
       return [r,g,b];
     };
     return {
-      upper:region(20,83,180,6),lower:region(20,132,180,6),
+      upper:region(20,91,180,5),lower:region(20,125,180,5),
       stone:p(110,110),canal:p(110,330),land:p(110,30)
     };
   });

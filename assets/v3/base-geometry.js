@@ -7,23 +7,25 @@
   'use strict';
   if(!topology)throw Error('Load tile-topology.js first');
   const SIZE=topology.size, MID=topology.center;
+  // V3-only visual width: V2 topology/painted tile mouths remain 44 units.
+  const portWidths=Object.freeze({...topology.portWidth,S:28});
   const directions=Object.freeze([[MID,0],[SIZE,MID],[MID,SIZE],[0,MID]]);
   const edgesOK=edges=>topology.edgeOK(edges);
   const port=(side,type)=>{
     if(!Number.isInteger(side)||side<0||side>3||!['L','S','W'].includes(type))throw Error('Invalid port');
-    const width=topology.portWidth[type],centre=directions[side];
+    const width=portWidths[type],centre=directions[side];
     return Object.freeze({side,type,width,centre:Object.freeze([...centre]),
       start:MID-width/2,end:MID+width/2});
   };
   const route=(type,sides)=>{
     if(!sides.length)return [];
-    if(sides.length===1)return [{kind:'line',type,width:topology.portWidth[type],sides:[sides[0]],start:[...directions[sides[0]]],end:[MID,MID]}];
+    if(sides.length===1)return [{kind:'line',type,width:portWidths[type],sides:[sides[0]],start:[...directions[sides[0]]],end:[MID,MID]}];
     if(sides.length===2){
       const [a,b]=sides,opposite=(a+2)%4===b;
-      return [{kind:opposite?'line':'quadratic',type,width:topology.portWidth[type],sides:[a,b],
+      return [{kind:opposite?'line':'quadratic',type,width:portWidths[type],sides:[a,b],
         start:[...directions[a]],control:opposite?null:[MID,MID],end:[...directions[b]]}];
     }
-    return sides.map(side=>({kind:'line',type,width:topology.portWidth[type],sides:[side],start:[...directions[side]],end:[MID,MID]}));
+    return sides.map(side=>({kind:'line',type,width:portWidths[type],sides:[side],start:[...directions[side]],end:[MID,MID]}));
   };
   function compile(edges){
     if(!edgesOK(edges))throw Error('Invalid N/E/S/W edge signature');
@@ -58,5 +60,5 @@
     return g;
   }
   const signatures=Object.freeze([...new Set(topology.archetypes.flatMap(a=>Array.from({length:4},(_,r)=>topology.rotateEdges(a.edges,r).join(''))))].sort());
-  return Object.freeze({size:SIZE,port,compile,signatures,drawStudy});
+  return Object.freeze({size:SIZE,portWidths,port,compile,signatures,drawStudy});
 });
