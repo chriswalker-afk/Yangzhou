@@ -78,7 +78,7 @@ async function run(){
    return [c.compile(['L','S','L','S']).exits.map(e=>e.width),
            c.compile(['L','W','L','W']).exits.map(e=>e.width)];
   });
-  assert.deepEqual(portWidths,[[0,44,0,44],[0,88,0,88]]);
+  assert.deepEqual(portWidths,[[0,28,0,28],[0,88,0,88]],'V3 streets are 28 units; canal ports remain 88 units');
   await page.locator('#study').selectOption('junction');
   assert.match(await page.locator('#summary').textContent(),/rejected/);
   await page.screenshot({path:'artifacts/v3/wall-geometry-junction.png',fullPage:true});
