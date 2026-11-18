@@ -107,7 +107,7 @@ function plan(basePlan,geometry,board,walls){
    let x=p0.x,y=p0.y;
    // Centreline-safe, seed-stable 2-unit nudge; no per-frame randomness.
    const h=hash(entry.tile.seed,p0.id);
-   if(role==='vertical-canal'&&entry.tile.y%2===0)x=41; // alternate east/west bank
+   if(role==='vertical-canal')x=entry.tile.y===0?41:179; // authored west/east bank variation
    else {x+=(h%5)-2;y+=(Math.floor(h/7)%5)-2;}
    const p=Object.freeze({id:p0.id,x,y});
    if(!safe(entry,p,geometry,board,walls))
