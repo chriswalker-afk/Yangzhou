@@ -130,10 +130,20 @@ function waitForBase(){
 function drawCrop(id,role){
  const c=$(id),out=c.getContext('2d');
  out.clearRect(0,0,c.width,c.height);if(!basePlan)return;
- const entry=basePlan.tiles.find(a=>a.tile.role===role);if(!entry)return;
- const worldX=entry.tile.x*220+110,worldY=entry.tile.y*220+137;
- const w=120,h=87.5;
- out.drawImage(canvas,(worldX-w/2)*2,(worldY-h/2)*2,w*2,h*2,0,0,c.width,c.height);
+ const entry=basePlan.tiles.find(a=>a.tile.role===role&&(id!=='bankCrop'||a.tile.y===2));
+ if(!entry)return;
+ // Subject-aware crops must include the *whole* very small detail and some
+ // authentic surroundings, especially the right-bank reed and market basket.
+ const views={
+  plumCrop:{x:110,y:139,w:168,h:122.5},
+  willowCrop:{x:110,y:139,w:168,h:122.5},
+  courtCrop:{x:110,y:132,w:150,h:109.4},
+  marketCrop:{x:110,y:112,w:219,h:160},
+  bankCrop:{x:145,y:150,w:150,h:109.4}
+ };
+ const v=views[id];
+ const worldX=entry.tile.x*220+v.x,worldY=entry.tile.y*220+v.y;
+ out.drawImage(canvas,(worldX-v.w/2)*2,(worldY-v.h/2)*2,v.w*2,v.h*2,0,0,c.width,c.height);
 }
 function draw(){
  if(!baseReady||!layer3Plan)return;
