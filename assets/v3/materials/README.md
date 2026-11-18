@@ -1,18 +1,27 @@
 # Yangzhou V3 — Accepted candidate material pack
 
-The three user-accepted **candidate** textures are committed in this directory, byte-for-byte, as original lossless WebPs. They are **not** production-approved, visually seam-approved, or historically approved. The first three source PNG paintings are provenance references; the playable laboratory loads the committed WebPs directly.
+The user-selected **fine-scale grass v2** now replaces grass v1 as the default V3 Layer 1A background. Its source PNG is preserved unchanged at `sources/grass-02-original.png`; a narrow 72-pixel repeat-edge feather creates a tileable derivative encoded as **lossless WebP**. The previous `grass-01-lossless.webp` remains in GitHub for comparison and rollback. Stone and canal-water assets remain byte-for-byte unchanged. Material candidates are **not** production-certified, historically approved, or automatically seam-approved.
 
 ## Committed files and exact integrity contract
 
 | Material | Filename | Bytes | SHA-256 |
 | --- | --- | ---: | --- |
-| Jiangnan garden grass | `grass-01-lossless.webp` | 2,271,520 | `6f2d66fe8de1091112609c65c6cb9a563dc0f8189d85b8e5a528c6b1273f5ebb` |
+| Fine-scale Jiangnan garden grass v2 (default) | `grass-02-lossless.webp` | 1,881,352 | `76cca9295e1c0be1ea6b07b4e0c708da62db1985b53e5642ad2ecb494349ff68` |
 | Mossy stone paving | `stone-01-lossless.webp` | 2,113,914 | `ba36e366d7d2a2c712a66408ece8afcdcb02d814a8e39be37f5ca10348579f84` |
 | Muted jade canal water | `water-01-lossless.webp` | 1,610,606 | `abdf3356f5c47520c59a58e0a506d983c7de5e2f40e58bfbc4fe1aca70627ad9` |
 
-All three textures are **1254 × 1254 pixels**, RIFF/WebP VP8L (lossless) images. `manifest.json` is the machine-readable source of truth for their exact filenames, byte counts, image dimensions, SHA-256 checksums, material periods and candidate-only approval state.
+All three active textures are **1254 × 1254 pixels**, RIFF/WebP VP8L (lossless) images. The v2 WebP is lossless relative to the seam-prepared derivative, **not** byte-identical to its untouched PNG source. `manifest.json` is the machine-readable source of truth for their exact filenames, byte counts, image dimensions, SHA-256 checksums, material periods and candidate-only approval state.
 
 The `node tests/v3-materials.cjs` test **requires all three files**, verifies their exact bytes/checksums, lossless image signature and dimensions, and checks their runtime/manifest links. Missing or substituted files fail CI; there is no zero-file or partial-file success case. These automated checks establish integrity and geometry, **not** visual seamlessness or artistic acceptance.
+
+
+## Grass v2 source, repeat edges and rollback
+
+- Unmodified original painting: `assets/v3/materials/sources/grass-02-original.png` (2,765,277 bytes, SHA-256 `8b4792d4982b865d85075ade31f451edb085768ac6dfccabff0fc8efaf9badc4`).
+- Reproducible preparation: `scripts/prepare_v3_grass_02.py`. Symmetrically feather the outer 72 pixels to match opposing edge pixels (the central painting is untouched), then lossless-encode to `grass-02-lossless.webp`.
+- Original grass v1 remains `grass-01-lossless.webp` (2,271,520 bytes; SHA-256 `6f2d66fe8de1091112609c65c6cb9a563dc0f8189d85b8e5a528c6b1273f5ebb`). It is used only when explicitly selected for comparison in the new 5×5 review.
+- Material repeat remains **440 world units**, origin-aligned across all 220×220 tiles. No changes to 44-unit streets, 88-unit canals, actual bridge water underlay, paving, walls or Layer 2 art.
+- Review the [5×5, 18-asset preview](../../layer2-all-assets-v3.html) and choose **Fine grass v2** or **Original grass v1** to compare visual scale. Repeat-edge pixel equality is mechanical validation; human visual seam approval is still pending.
 
 ## Preview and next gate
 

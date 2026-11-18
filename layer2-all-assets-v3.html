@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#eee7d6">
-<title>Yangzhou V3 — All 18 Layer 2 assets | 25 connected tiles</title>
+<title>Yangzhou V3 — Fine-scale Layer 1 grass and all 18 Layer 2 assets | 25 tiles</title>
 <style>
 :root{color-scheme:light;--ink:#33483f;--muted:#627367;--cream:#fcf8ed;--line:#c6c1ac}
 *{box-sizing:border-box}
@@ -41,10 +41,14 @@ code{font-size:.86em}footer{border-top:1px solid var(--line);padding:17px 0;marg
 <p><a href="layer2-seven-new-assets-v3.html">Previous 4×4 candidate proof</a> · <a href="layer2-integrated-v3.html">Certified courtyard prototype</a> · <a href="index.html">Playable V2 (unchanged)</a></p>
 <h1>Yangzhou V3 · All Layer 2 sprites together</h1>
 <p class="intro">A genuine <strong>5 × 5 connected tile neighbourhood</strong> using all <strong>18 original large-detail sprites</strong> (eight previously certified, seven recent candidates, three latest candidates). A 44-unit street crosses an 88-unit canal at the authentic water-backed bridge. The south bank has its own correctly oriented landing; gardens contain the new plum blossom, and courtyard halls connect to shallow entrance steps.</p>
-<div class="note"><strong>Art review, not game deployment.</strong> All artwork is kept compass-upright and owned by its tile. Original approved paintings, wall textures and Layer 1 geometry are unchanged. The new Plum Blossom Tree, Courtyard Entrance Step and South-Bank Landing are candidates awaiting your visual review; the redundant side-wall moon-gate bitmap remains retired.</div>
+<div class="note"><strong>Fine-scale Layer 1 grass trial.</strong> The new, much finer ground painting is the default across all 25 connected tiles. Use the <strong>Grass texture</strong> selector to compare it against the preserved original without moving or changing any Layer 2 sprites. Stone, water, road widths and walls are unchanged. This is an artwork review, not production certification.</div>
 <div class="toolbar" aria-label="Layer 2 review controls">
  <button type="button" id="zoomOut">− Zoom</button><button type="button" id="zoomIn">+ Zoom</button>
  <button type="button" id="zoomReset">Fit 1×</button><strong id="zoomText">1×</strong>
+ <label for="grassVersion">Grass texture <select id="grassVersion" aria-label="Grass texture comparison">
+  <option value="fine">Fine grass v2 (new default)</option>
+  <option value="original">Original grass v1 (comparison)</option>
+ </select></label>
  <label><input type="checkbox" id="showGrid" checked> Tile boundaries</label>
  <label><input type="checkbox" id="showCertified" checked> 8 certified assets</label>
  <label><input type="checkbox" id="showSeven" checked> 7 recent candidates</label>
@@ -54,7 +58,7 @@ code{font-size:.86em}footer{border-top:1px solid var(--line);padding:17px 0;marg
 </div>
 <div id="loadStatus" class="status" role="status" aria-live="polite">Checking the 18 source-verified V3 sprites, original ground paints and wall materials…</div>
 <h2 id="neighbourhood">Connected 25-tile composition</h2>
-<p class="intro">Select a tile to inspect its road/canal ports and exact placed assets. You can zoom to 3×, disable any artwork group, or select one asset family to highlight every occurrence.</p>
+<p class="intro">Select a tile to inspect its road/canal ports and exact placed assets. Compare fine grass v2 with the original grass v1 using the selector above; zoom to 3× to examine ground-detail scale and repetition alongside the unchanged buildings, canal and road.</p>
 <div class="viewport"><canvas id="scene" width="2200" height="2200" aria-label="Twenty five connected Yangzhou V3 tiles with 18 distinct large-detail painted sprites, continuous roads and canals, courtyard walls and true moon gates"></canvas></div>
 <div class="legend">
  <span><i class="dot" style="background:#d5d8bf"></i> Garden and courtyard</span>
@@ -107,7 +111,7 @@ const palette={pathVerge:'#b7a58b',pathContact:'#84947c',canalBank:'#b5a38a',can
 const fallback={grass:'#d6d8bc',stone:'#d4c8ac',water:'#8dad9e'};
 const images={},textures={},wallPaints={},errors=[];
 let catalog=[],verificationCount=0,roofImage=null,pavingImage=null,walkwayImage=null,gateImage=null,plan=null;
-let zoom=1,grid=true,showCertified=true,showSeven=true,showThree=true,showWalls=true,showBridgeGuides=true,highlight='';
+let zoom=1,grid=true,showCertified=true,showSeven=true,showThree=true,showWalls=true,showBridgeGuides=true,highlight='',grassVersion='fine',previousGrass=null;
 const titles={
  'hall-step':'Courtyard hall and steps','courtyard-wing':'Courtyard wing','vertical-canal':'Straight canal',
  corridor:'Covered corridor','rockery-one':'Rock garden',shopfront:'Street shopfront',
@@ -120,7 +124,8 @@ const titles={
  'willow-garden':'Willow garden','rockery-two':'Second rockery','open-garden':'Open garden'
 };
 function pattern(id){
- if(textures[id])try{return materialsLib.makePattern(ctx,textures[id],materialsLib.periodById[id]);}
+ const activeImage=id==='grass'&&grassVersion==='original'&&previousGrass?previousGrass:textures[id];
+ if(activeImage)try{return materialsLib.makePattern(ctx,activeImage,materialsLib.periodById[id]);}
  catch(e){errors.push('Texture pattern '+id+': '+e.message);}
  return fallback[id];
 }
@@ -273,6 +278,12 @@ async function loadSprites(){
 async function loadMaterials(){
  const jobs=[
   materialsLib.loadAll().then(result=>{Object.assign(textures,result.images);render();}),
+  // Retain the verified v1 for intentional side-by-side scale comparison.
+  new Promise((resolve,reject)=>{
+   const old=new Image();old.onload=()=>{previousGrass=old;resolve(old);};
+   old.onerror=()=>reject(Error('Original v1 grass comparison unavailable'));
+   old.src='assets/v3/materials/grass-01-lossless.webp';
+  }).then(()=>{if(grassVersion==='original')render();}),
   roof.loadFromGitHub().then(img=>{roofImage=img;render();}),
   faces.loadAll().then(result=>{Object.assign(wallPaints,result.images);render();}),
   paving.load().then(img=>{pavingImage=img;render();}),
@@ -292,6 +303,7 @@ for(const id of ['showGrid','showCertified','showSeven','showThree','showWalls']
   render();
  });
 }
+$('grassVersion').addEventListener('change',e=>{grassVersion=e.target.value;render();});
 $('zoomIn').addEventListener('click',()=>setZoom(zoom+1));
 $('zoomOut').addEventListener('click',()=>setZoom(zoom-1));
 $('zoomReset').addEventListener('click',()=>setZoom(1));

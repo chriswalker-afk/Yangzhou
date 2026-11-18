@@ -67,6 +67,39 @@ async function main(){
  try{
   const desktop=await browser.newPage({viewport:{width:1480,height:920},deviceScaleFactor:1});
   await inspect(desktop,'desktop');
+  await desktop.waitForFunction(()=>document.querySelector('#loadStatus')?.textContent.includes('Grass/stone/water: 3/3'));
+  await desktop.waitForFunction(()=>document.getElementById('grassVersion').value==='fine');
+  const freshGrass=await desktop.locator('#scene').evaluate(c=>{
+   const ctx=c.getContext('2d');
+   return Array.from(ctx.getImageData(920*2,960*2,60*2,60*2).data).reduce((a,v,i)=>a+(i%4===3?0:v),0);
+  });
+  await desktop.locator('#grassVersion').selectOption('original');
+  await desktop.waitForFunction(()=>document.querySelector('#loadStatus')?.textContent.includes('Grass/stone/water: 3/3'));
+  await desktop.locator('#scene').screenshot({path:'artifacts/v3/all-layer2-grass-v1-comparison.png',animations:'disabled'});
+  const oldGrass=await desktop.locator('#scene').evaluate(c=>{
+   const ctx=c.getContext('2d');
+   return Array.from(ctx.getImageData(920*2,960*2,60*2,60*2).data).reduce((a,v,i)=>a+(i%4===3?0:v),0);
+  });
+  assert.notEqual(freshGrass,oldGrass,'Fine grass v2 and archived original v1 must visibly differ');
+  await desktop.locator('#grassVersion').selectOption('fine');
+  await desktop.locator('#scene').screenshot({path:'artifacts/v3/all-layer2-fine-grass-v2.png',animations:'disabled'});
+  // The seam-safe, lossless WebP must decode with exactly identical RGB
+  // along both repeating edges. Check full pixel rows/columns in Chromium.
+  const seams=await desktop.evaluate(async()=>{
+   const img=new Image();img.src='assets/v3/materials/grass-02-lossless.webp';await img.decode();
+   const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;
+   const cx=c.getContext('2d',{willReadFrequently:true});cx.drawImage(img,0,0);
+   const a=cx.getImageData(0,0,c.width,c.height).data,W=c.width,H=c.height;
+   let horizontal=0,vertical=0;for(let y=0;y<H;y++)for(let k=0;k<3;k++){
+     if(a[(y*W)*4+k]!==a[(y*W+W-1)*4+k])horizontal++;
+   }
+   for(let x=0;x<W;x++)for(let k=0;k<3;k++){
+     if(a[x*4+k]!==a[((H-1)*W+x)*4+k])vertical++;
+   }
+   return {horizontal,vertical,width:W,height:H};
+  });
+  assert.deepEqual(seams,{horizontal:0,vertical:0,width:1254,height:1254},
+   'Fine grass v2 must have pixel-matched top/bottom and left/right repeat edges');
   await desktop.locator('#zoomIn').click();await desktop.locator('#zoomIn').click();
   assert.equal(await desktop.locator('#zoomText').textContent(),'3×');
   await desktop.locator('#focusAsset').selectOption('south-bank-landing-01');

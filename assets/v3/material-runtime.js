@@ -9,7 +9,7 @@
   'use strict';
   const base='assets/v3/materials/';
   const files=Object.freeze({
-    grass:'grass-01-lossless.webp',
+    grass:'grass-02-lossless.webp',
     stone:'stone-01-lossless.webp',
     water:'water-01-lossless.webp'
   });

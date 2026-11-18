@@ -52,12 +52,14 @@
     {
       "id": "grass",
       "state": "candidate-accepted",
-      "image": "assets/v3/materials/grass-01-lossless.webp",
+      "image": "assets/v3/materials/grass-02-lossless.webp",
       "seamless": true,
       "worldAligned": true,
       "availability": "committed",
       "productionApproved": false,
-      "textureWorldPeriodUnits": 440
+      "textureWorldPeriodUnits": 440,
+      "sourcePng": "assets/v3/materials/sources/grass-02-original.png",
+      "artDirection": "fine-scale grass micro-detail for 18 Layer 2 game-art sprite proportions; previous v1 retained"
     },
     {
       "id": "stone",

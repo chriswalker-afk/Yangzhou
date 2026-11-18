@@ -18,7 +18,7 @@ from PIL import Image, features
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/"assets/v3/previews"
 SOURCE_FILES=[
- ("materials/grass-01-lossless.webp", "grass.webp", None),
+ ("materials/grass-02-lossless.webp", "grass.webp", None),
  ("materials/stone-01-lossless.webp", "stone.webp", None),
  ("materials/water-01-lossless.webp", "water.webp", None),
  ("edges/canal-bank-edge-01.webp", "canal-bank-edge.webp", 1024),

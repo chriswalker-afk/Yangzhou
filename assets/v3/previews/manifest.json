@@ -5,16 +5,16 @@
   "status": "preview-only-not-production-asset",
   "assets": {
     "grass.webp": {
-      "source": "assets/v3/materials/grass-01-lossless.webp",
-      "sourceSha256": "6f2d66fe8de1091112609c65c6cb9a563dc0f8189d85b8e5a528c6b1273f5ebb",
-      "sourceBytes": 2271520,
+      "source": "assets/v3/materials/grass-02-lossless.webp",
+      "sourceSha256": "76cca9295e1c0be1ea6b07b4e0c708da62db1985b53e5642ad2ecb494349ff68",
+      "sourceBytes": 1881352,
       "sourceDimensions": [
         1254,
         1254
       ],
       "preview": "assets/v3/previews/grass.webp",
-      "previewSha256": "b08faa6afcbe8aa39c19f48407c75d7599fee8deeed1cf5a3b839fde28109520",
-      "previewBytes": 540254,
+      "previewSha256": "ed1ac6d76d19540e9d939cb3cff394785187f1e5fcc68ec2bc38994bfbbe513a",
+      "previewBytes": 361204,
       "previewDimensions": [
         1254,
         1254
