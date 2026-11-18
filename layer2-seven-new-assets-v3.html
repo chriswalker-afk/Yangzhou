@@ -60,11 +60,11 @@ a{color:#2f6758}footer{padding:22px 0;border-top:1px solid var(--border);margin-
 <div class="status" id="loadStatus" role="status" aria-live="polite">Checking all seven current painting files against their manifest SHA-256 digests...</div>
 <div class="note"><strong>Revised paintings:</strong> the bridge has been repainted to include matching paved approach sides, and Waterside Landing 02 replaces the earlier visually busy landing in this scene. The west-facing moon gate is retired. Previously certified Landing 01 remains preserved outside this preview.</div>
 <h2>Connected neighbourhood</h2>
-<p class="intro">Click any tile to inspect its role. The revised bridge exactly spans the 88-unit canal and meets the narrower 40-unit street at its banks, the shopfronts face the street, the pavilion sits on land beside a continuous canal, and the side-facing moon-gate sprite is retired, while original courtyard gate openings remain geometry-driven.</p>
+<p class="intro">Click any tile to inspect its role. The revised bridge exactly spans the 88-unit canal and meets the narrower 28-unit street at its banks, the shopfronts face the street, the pavilion sits on land beside a continuous canal, and the side-facing moon-gate sprite is retired, while original courtyard gate openings remain geometry-driven.</p>
 <div class="pan"><canvas id="scene" width="1760" height="1760" aria-label="Sixteen connected 220 by 220 world-unit Yangzhou V3 tiles with seven original artwork candidates"></canvas></div>
 <div class="legend">
   <span><span class="dot" style="background:#d6d1b7"></span>Courtyards and gardens</span>
-  <span><span class="dot" style="background:#b5aa90"></span>40-unit paved streets</span>
+  <span><span class="dot" style="background:#b5aa90"></span>28-unit paved streets</span>
   <span><span class="dot" style="background:#80aaa4"></span>88-unit canals</span>
   <span><span class="dot" style="background:#b16d4e"></span>Review-only diagnostics</span>
 </div>
@@ -173,7 +173,7 @@ function drawBridgeCloseup(plan){
   c.fillStyle='rgba(253,249,237,.96)';c.fillRect(x+82,y-30,180,25);
   c.font='bold 17px system-ui';c.fillStyle='#71391f';c.fillText('88 canal units',x+92,y-12);
   c.fillRect(x+w+6,y+50,119,49);c.fillStyle='#71391f';
-  c.fillText('44 road',x+w+14,y+70);c.fillText('units',x+w+14,y+92);
+  c.fillText('44 art',x+w+14,y+70);c.fillText('units',x+w+14,y+92);
   c.restore();
  }
 }
