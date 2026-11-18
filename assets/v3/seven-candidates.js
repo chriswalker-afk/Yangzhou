@@ -86,7 +86,7 @@
   const a=bounds(p);
   if(a.left<10||a.top<10||a.right>210||a.bottom>210)return false;
   if(s.mode==='bridge'){
-   // Original 44-unit bridge art over the 88-unit canal meets narrower 40-unit approaches.
+   // Original 44-unit bridge image over the 88-unit canal meets 28-unit walkable approaches.
    const g=geometry.compile(tile.edges);
    return p.x===110&&p.y===110&&s.width===SPECIFICS.bridgeWaterWidth&&
     s.height===SPECIFICS.bridgeRoadWidth&&a.left===66&&a.right===154&&a.top===88&&a.bottom===132&&
