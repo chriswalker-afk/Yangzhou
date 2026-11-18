@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yangzhou V3 — Layer 3 first eight fine-detail assets</title>
+<style>
+:root{color-scheme:light;--ink:#35493f;--paper:#faf6eb;--line:#c9c2af}
+*{box-sizing:border-box}body{margin:0;background:#eee7d7;color:var(--ink);font:15px/1.48 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1350px;padding:18px 18px 60px;margin:auto}h1,h2,h3{font-family:Georgia,serif}
+h1{font-size:clamp(1.6rem,4vw,2.4rem);margin:10px 0}h2{font-size:1.4rem;margin:22px 0 8px}h3{font-size:1.05rem;margin:5px 0}
+a{color:#316b5a}.intro{max-width:1080px;color:#596d60}.notice,.status{border:1px solid var(--line);border-radius:8px;padding:12px 15px;background:#fbf8ee;margin:12px 0}
+.notice{border-left:4px solid #a5855f}.status{font-size:.93rem}.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:15px 0}
+button,select{font:inherit;padding:7px 10px;border:1px solid #829486;border-radius:7px;color:var(--ink);background:#fffdf8}
+button{cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #588170;outline-offset:2px}
+label{display:inline-flex;gap:6px;align-items:center}input[type="checkbox"]{accent-color:#37694c;width:17px;height:17px}
+.viewport{overflow:auto;border:1px solid var(--line);background:#dddacc;border-radius:9px;padding:9px;max-width:100%;overscroll-behavior:contain}
+#scene{display:block;width:1100px;height:auto;max-width:none;border:1px solid #ccc6b5;background:#cdd5bf}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:12px;min-width:0}
+.card small{color:#687b6c}.thumb{height:160px;display:flex;justify-content:center;align-items:center;background:repeating-conic-gradient(#ebece4 0% 25%,#e0e4d9 0% 50%) 50%/24px 24px;border-radius:7px;margin:9px 0}
+.thumb img{max-width:180px;max-height:146px;object-fit:contain}.detail{width:100%;height:auto;background:#dedfcb}
+.pass{color:#326846;font-weight:650}.issue{color:#a44a39;font-weight:650}footer{border-top:1px solid var(--line);margin-top:32px;padding-top:17px;color:#687668}
+#sourceFrame{position:absolute;left:-10000px;top:0;width:1400px;height:1000px;border:0;pointer-events:none}
+@media(max-width:640px){main{padding:12px 10px 44px}.viewport{padding:4px}.toolbar{gap:7px}}
+</style></head>
+<body><main>
+<p><a href="layer2-all-assets-v3.html">Existing 25-tile Layer 2 review</a> · <a href="index.html">Playable V2 (unchanged)</a></p>
+<h1>Yangzhou V3 · Layer 3 fine-detail review</h1>
+<p class="intro">All <strong>eight new original-painted fine details</strong> appear in context on the existing connected <strong>5 × 5 neighbourhood</strong>. This candidate uses the 28-unit stone road, 88-unit canals, fine-scale grass, authentic Layer 2 architecture and real bridge without changing their textures or geometry.</p>
+<div class="notice"><strong>Review candidate — no artwork certification.</strong> Compare <em>Layer 3 on/off</em>, then look at gardens, courtyard corners, shopfronts and watersides. The new images are compact game-scale WebP derivatives; original full-resolution PNG masters remain available separately in the project review pack and have not been replaced or falsely marked as committed source files.</div>
+<div class="toolbar" aria-label="Fine details preview controls">
+ <label><input id="showFine" type="checkbox" checked> Show Layer 3 details</label>
+ <label><input id="showGuides" type="checkbox"> Placement bounds</label>
+ <label for="focusAsset">Highlight <select id="focusAsset"><option value="">All eight</option></select></label>
+ <button id="zoomOut" type="button">− Zoom</button>
+ <button id="zoomIn" type="button">+ Zoom</button>
+ <button id="zoomReset" type="button">Fit 1×</button><strong id="zoomText">1×</strong>
+</div>
+<div id="loadStatus" class="status" role="status" aria-live="polite">Loading existing V3 neighbourhood and verifying eight Layer 3 images…</div>
+<h2>Full 25-tile composition</h2>
+<p class="intro">Click a tile to see which fine details have been placed there. No additional detail is painted over the bridge or within the canal or road core.</p>
+<div class="viewport"><canvas id="scene" width="2200" height="2200" aria-label="Five by five existing Yangzhou V3 tiles with all eight original-painted Layer 3 fine detail types"></canvas></div>
+<div id="tileInfo" class="status" aria-live="polite">Select a tile on the connected composition to inspect its details.</div>
+<h2>Five in-context close-ups</h2>
+<p class="intro">These crops come from the same connected composition above; they are not separately arranged illustrations. Switch Layer 3 off to compare the underlying textures, architecture and geometry.</p>
+<div class="grid">
+ <article class="card"><h3>Plum blossom garden</h3><small>Petals and moss, near the tree</small><canvas class="detail" id="plumCrop" width="480" height="350"></canvas></article>
+ <article class="card"><h3>Willow garden</h3><small>Fallen leaves with garden moss</small><canvas class="detail" id="willowCrop" width="480" height="350"></canvas></article>
+ <article class="card"><h3>Courtyard</h3><small>Pottery and earthenware water jar</small><canvas class="detail" id="courtCrop" width="480" height="350"></canvas></article>
+ <article class="card"><h3>Street market</h3><small>Basket, wildflowers and stone paving</small><canvas class="detail" id="marketCrop" width="480" height="350"></canvas></article>
+ <article class="card"><h3>Canal bank</h3><small>Reeds only on land; water untouched</small><canvas class="detail" id="bankCrop" width="480" height="350"></canvas></article>
+</div>
+<h2>Original artwork derivatives — eight candidates</h2>
+<div id="gallery" class="grid"></div>
+<footer>Separate Layer 3 proof only. V2 gameplay, Layer 1 materials, existing 18 Layer 2 sprites and their approval statuses are not changed. Fine details are tile-local, deterministic and visually pending review.</footer>
+</main>
+<iframe id="sourceFrame" title="Source 5×5 Layer 2 compositor" src="layer2-all-assets-v3.html" tabindex="-1" aria-hidden="true"></iframe>
+<script src="assets/v3/layer3-fine-details.js"></script>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id),fine=window.YangzhouV3FineDetails,canvas=$('scene'),ctx=canvas.getContext('2d');
+const images={},errors=[];let manifest=null,baseReady=false,layer3Plan=null,basePlan=null,frame=null,zoom=1,showFine=true,showGuides=false,highlight='';
+function setStatus(){
+ const art=Object.keys(images).length;
+ const counts=layer3Plan?(' · '+layer3Plan.totalPlacements+' legal placements across 25 tiles'):'';
+ $('loadStatus').innerHTML='<strong>'+art+' / 8</strong> Layer 3 artwork SHA-256 verified'+
+  ' · '+(baseReady?'All 18 Layer 2 sprites and base textures loaded':'Loading base scene')+counts+
+  (errors.length?' <span class="issue">Issues: '+errors.slice(-3).map(e=>String(e).replaceAll('<','&lt;')).join(' · ')+'</span>':'');
+}
+async function loadFine(){
+ try{
+  const resp=await fetch('assets/v3/fine/manifest.json',{cache:'no-store'});
+  if(!resp.ok)throw Error('Layer 3 manifest HTTP '+resp.status);
+  manifest=await resp.json();
+  if(manifest.assets.length!==8||manifest.streetWorldUnits!==28||manifest.canalWorldUnits!==88)
+   throw Error('Wrong Layer 3 asset count or route contract');
+  const gallery=$('gallery');gallery.replaceChildren();
+  for(const entry of manifest.assets){
+   const opt=document.createElement('option');opt.value=entry.id;opt.textContent=entry.name;$('focusAsset').append(opt);
+   const card=document.createElement('article');card.className='card';
+   const title=document.createElement('h3');title.textContent=entry.name;
+   const small=document.createElement('small');small.textContent=entry.worldFootprint.join(' × ')+' world units · '+entry.family;
+   const thumb=document.createElement('div');thumb.className='thumb';const img=document.createElement('img');
+   img.src=entry.prepared.path;img.alt='Transparent isolated '+entry.name;thumb.append(img);
+   const note=document.createElement('p');note.id='verified-'+entry.id;note.textContent='Verifying original-derived WebP…';
+   card.append(title,small,thumb,note);gallery.append(card);
+  }
+  await Promise.all(manifest.assets.map(async entry=>{
+   try{
+    const p=entry.prepared,r=await fetch(p.path,{cache:'no-store'});
+    if(!r.ok)throw Error('HTTP '+r.status);
+    const blob=await r.blob();
+    if(blob.size!==p.bytes)throw Error('Wrong file size for '+entry.id);
+    const hash=[...new Uint8Array(await crypto.subtle.digest('SHA-256',await blob.arrayBuffer()))]
+      .map(x=>x.toString(16).padStart(2,'0')).join('');
+    if(hash!==p.sha256)throw Error('Checksum mismatch for '+entry.id);
+    const bmp=await createImageBitmap(blob);
+    if(bmp.width!==p.pixelDimensions[0]||bmp.height!==p.pixelDimensions[1])
+     throw Error('Image dimensions mismatch for '+entry.id);
+    images[entry.id]=bmp;
+    const note=$('verified-'+entry.id);note.textContent='Source-derived WebP verified · visual candidate';note.className='pass';
+   }catch(e){errors.push(String(e.message||e));const note=$('verified-'+entry.id);note.textContent=String(e);note.className='issue';}
+   setStatus();draw();
+  }));
+ }catch(e){errors.push(String(e.message||e));setStatus();}
+}
+function readBase(){
+ try{
+  frame=$('sourceFrame').contentWindow;
+  const status=frame?.document?.getElementById('loadStatus')?.textContent||'';
+  if(!status.includes('18 / 18')||!status.includes('Grass/stone/water: 3/3')||
+     !status.includes('Wall face paints: 2/2'))return false;
+  const sourceCanvas=frame.document.getElementById('scene');
+  if(!sourceCanvas||sourceCanvas.width!==2200)return false;
+  const board=frame.YangzhouV3AllLayer2Review;
+  basePlan=board.plan();
+  layer3Plan=fine.plan(basePlan,frame.YangzhouV3Geometry,board,frame.YangzhouV3WallGeometry);
+  baseReady=true;setStatus();draw();
+  return true;
+ }catch(e){errors.push('Layer 3 plan: '+e.message);setStatus();return true;}
+}
+function waitForBase(){
+ let attempts=0;
+ const poll=()=>{
+  if(readBase())return;
+  if(attempts++<180)setTimeout(poll,300);
+  else{errors.push('The 5×5 source renderer did not finish loading');setStatus();}
+ };
+ $('sourceFrame').addEventListener('load',()=>setTimeout(poll,200),{once:true});
+}
+function drawCrop(id,role){
+ const c=$(id),out=c.getContext('2d');
+ out.clearRect(0,0,c.width,c.height);if(!basePlan)return;
+ const entry=basePlan.tiles.find(a=>a.tile.role===role);if(!entry)return;
+ const worldX=entry.tile.x*220+110,worldY=entry.tile.y*220+137;
+ const w=120,h=87.5;
+ out.drawImage(canvas,(worldX-w/2)*2,(worldY-h/2)*2,w*2,h*2,0,0,c.width,c.height);
+}
+function draw(){
+ if(!baseReady||!layer3Plan)return;
+ ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,canvas.width,canvas.height);
+ const original=frame.document.getElementById('scene');
+ ctx.drawImage(original,0,0);
+ ctx.setTransform(2,0,0,2,0,0);
+ fine.draw(ctx,layer3Plan,images,{enabled:showFine,highlight,showGuides});
+ if(highlight&&showFine){
+  ctx.save();ctx.strokeStyle='#b05a36';ctx.lineWidth=1.4;ctx.setLineDash([3,2]);
+  for(const entry of layer3Plan.tiles)for(const p of entry.art)if(p.id===highlight){
+   const d=fine.ASSETS[p.id];ctx.strokeRect(entry.tile.x*220+p.x-d.width/2,entry.tile.y*220+p.y-d.height/2,d.width,d.height);
+  }
+  ctx.restore();
+ }
+ ctx.setTransform(1,0,0,1,0,0);
+ for(const [id,role] of [['plumCrop','plum-garden'],['willowCrop','willow-garden'],['courtCrop','hall-step'],
+  ['marketCrop','market-garden'],['bankCrop','vertical-canal']])drawCrop(id,role);
+}
+function setZoom(x){
+ zoom=Math.min(3,Math.max(1,x));canvas.style.width=1100*zoom+'px';
+ $('zoomText').textContent=zoom+'×';$('zoomIn').disabled=zoom===3;$('zoomOut').disabled=zoom===1;
+}
+$('showFine').addEventListener('change',e=>{showFine=e.target.checked;draw();});
+$('showGuides').addEventListener('change',e=>{showGuides=e.target.checked;draw();});
+$('focusAsset').addEventListener('change',e=>{highlight=e.target.value;draw();});
+$('zoomIn').addEventListener('click',()=>setZoom(zoom+1));
+$('zoomOut').addEventListener('click',()=>setZoom(zoom-1));
+$('zoomReset').addEventListener('click',()=>setZoom(1));
+canvas.addEventListener('click',e=>{
+ if(!layer3Plan)return;
+ const b=canvas.getBoundingClientRect(),x=Math.floor((e.clientX-b.left)/b.width*1100/220);
+ const y=Math.floor((e.clientY-b.top)/b.height*1100/220);
+ const tile=layer3Plan.tiles.find(a=>a.tile.x===x&&a.tile.y===y);if(!tile)return;
+ $('tileInfo').textContent='Tile '+(x+1)+','+(y+1)+' · '+tile.tile.role+' · '+
+  (tile.art.map(p=>p.id).join(', ')||'Intentionally no Layer 3 sprites');
+});
+setZoom(1);setStatus();waitForBase();loadFine();
+window.YangzhouV3FineReview=Object.freeze({images,fine,readBase,getPlan:()=>layer3Plan,getErrors:()=>[...errors],draw});
+})();
+</script></body></html>
