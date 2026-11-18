@@ -66,17 +66,17 @@ const RECIPE=Object.freeze({
  * search is used only when a new secondary detail conflicts locally.
  */
 const EXTRA=Object.freeze({
- 'hall-step':Object.freeze([P('ceramic-flower-pot-02',185,165)]),
- 'courtyard-wing':Object.freeze([P('wooden-bucket-01',129,175),P('ceramic-flower-pot-02',40,177)]),
+ 'hall-step':Object.freeze([]),
+ 'courtyard-wing':Object.freeze([]),
  'vertical-canal':Object.freeze([P('floating-lotus-leaves-01',110,70),P('reed-cluster-02',181,177)]),
  corridor:Object.freeze([P('moss-clump-02',146,185),P('small-pebbles-01',82,172)]),
  'rockery-one':Object.freeze([P('small-stones-01',109,182),P('moss-clump-03',165,185)]),
  shopfront:Object.freeze([P('wooden-goods-box-01',102,187),P('rolled-woven-mat-01',183,181)]),
- 'tea-house':Object.freeze([P('stacked-wicker-baskets-01',116,181),P('tea-produce-containers-01',68,186)]),
+ 'tea-house':Object.freeze([P('stacked-wicker-baskets-01',116,181),P('tea-produce-containers-01',68,186),P('wooden-bucket-01',189,178)]),
  'market-garden':Object.freeze([P('tea-produce-containers-01',109,178),P('rolled-woven-mat-01',183,181)]),
  'street-rockery':Object.freeze([P('small-stones-01',108,176),P('small-pebbles-01',35,182)]),
- 'plum-garden':Object.freeze([P('wildflower-cluster-02',117,184)]),
- 'small-residence':Object.freeze([P('ceramic-flower-pot-02',43,181)]),
+ 'plum-garden':Object.freeze([P('wildflower-cluster-02',117,184),P('ceramic-flower-pot-02',182,184)]),
+ 'small-residence':Object.freeze([]),
  'pavilion-garden':Object.freeze([P('bamboo-planter-01',109,185)]),
  'bamboo-garden':Object.freeze([P('moss-clump-03',193,180),P('small-stones-01',40,188)]),
  'landing-new':Object.freeze([P('stone-mooring-point-01',42,185),P('reed-cluster-02',183,183)]),
