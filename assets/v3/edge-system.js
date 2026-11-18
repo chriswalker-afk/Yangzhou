@@ -1,7 +1,7 @@
 /* Yangzhou V3 Layer 1B — geometry-following edge-treatment proof.
  * Geometry remains artwork-independent; candidate images are injected by callbacks.
  * No gameplay or V2 renderer is modified.
- * Surface masks retain the exact 44-unit street and 88-unit canal mouths.
+ * V3 streets are 40 units wide; the canal remains 88 units wide.
  */
 (function(root,factory){
   const api=factory();
@@ -13,7 +13,7 @@
   // These are temporary land-side widths in world units, NOT enlarged route mouths.
   // Each outer ribbon is drawn first; the exact-width material then masks its centre.
   const treatments=Object.freeze({
-    S:Object.freeze({id:'path-verge',outside:2.5,contact:0.8,core:44}),
+    S:Object.freeze({id:'path-verge',outside:2.5,contact:0.8,core:40}),
     W:Object.freeze({id:'canal-bank',outside:4,contact:1.2,core:88})
   });
   const samplesPerCurve=49; // <= 0.5 world-unit step error for these gentle quadratics
@@ -100,6 +100,29 @@
     return group.length;
   }
 
+  // Existing painted bridge deck stays precisely 88 x 44. On its two dry banks,
+  // taper each 40-unit V3 street outward by two units per edge over eight
+  // units of travel, without changing the bridge sprite or painting canal water.
+  // draw() calls this inside the water-excluding clip, so no stone goes under
+  // any transparent pixels of the bridge.
+  const bridgeDeckWidth=44,bridgeApproachLength=8;
+  function paintBridgeTransitions(ctx,geometry,stone,ox,oy){
+    if(geometry.edges.join('')!=='WSWS')throw Error('Painted bridge needs W/S/W/S tile orientation');
+    const mid=geometry.size/2,bankHalf=treatments.W.core/2;
+    const streetHalf=treatments.S.core/2,deckHalf=bridgeDeckWidth/2;
+    for(const direction of [-1,1]){
+      const bankX=ox+mid+direction*bankHalf;
+      const streetX=ox+mid+direction*(bankHalf+bridgeApproachLength);
+      ctx.beginPath();
+      ctx.moveTo(bankX,oy+mid-deckHalf);
+      ctx.lineTo(streetX,oy+mid-streetHalf);
+      ctx.lineTo(streetX,oy+mid+streetHalf);
+      ctx.lineTo(bankX,oy+mid+deckHalf);
+      ctx.closePath();
+      ctx.fillStyle=stone;ctx.fill();
+    }
+  }
+
   // The ribbon vertices are offset into board space, never translated via ctx:
   // CanvasPattern coordinates therefore stay global across neighbouring tiles.
   // Pass the already world-aligned CanvasPattern for stone/water.
@@ -158,10 +181,13 @@
         // Re-cover any neighbouring arm crossed by a decorative grass tuft.
         for(const r of group)fillRibbon(ctx,r,'core',style.stone,ox,oy);
       }
-      if(bridgeSpriteClip)ctx.restore();
+      if(bridgeSpriteClip){
+        paintBridgeTransitions(ctx,compiled.geometry,style.stone,ox,oy);
+        ctx.restore();
+      }
     }
   }
 
-  return Object.freeze({treatments,samplesPerCurve,pointOnRoute,crossSection,traceRoute,compile,
+  return Object.freeze({treatments,bridgeDeckWidth,bridgeApproachLength,samplesPerCurve,pointOnRoute,crossSection,traceRoute,compile,
     appendRibbonPath,clipCanalBanksToLand,fillRibbon,draw});
 });
