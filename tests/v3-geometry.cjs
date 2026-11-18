@@ -10,8 +10,10 @@ assert.equal(spec.approval.artwork,'eight-large-sprites-v3-artwork-certified');
 assert.equal(spec.approval.historical,'unreviewed');
 assert.equal(spec.approval.finalGameProduction,'not-approved');
 assert.equal(spec.layers.length,4);
-assert.deepEqual(spec.portWidthWorldUnits,{L:0,S:44,W:88});
+assert.deepEqual(spec.portWidthWorldUnits,{L:0,S:40,W:88});
 assert.equal(v3.size,220);
+assert.deepEqual(v3.portWidths,{L:0,S:40,W:88});
+assert.equal(topology.portWidth.S,44,'Original V2 art and port contract must not change');
 assert.equal(v3.signatures.length,20,'Eight base families yield precisely 20 unique signatures');
 assert.equal(new Set(v3.signatures).size,20);
 assert(v3.signatures.includes('SWSW')&&v3.signatures.includes('WWWL')&&v3.signatures.includes('WLWW'));
@@ -19,7 +21,7 @@ for(const signature of v3.signatures){
  const edges=signature.split(''),g=v3.compile(edges);
  assert.deepEqual(g.edges,edges);
  for(let side=0;side<4;side++){
-  const p=g.exits[side],w=topology.portWidth[edges[side]];
+  const p=g.exits[side],w=v3.portWidths[edges[side]];
   assert.equal(p.type,edges[side]);assert.equal(p.width,w);
   assert.equal(p.start,110-w/2);assert.equal(p.end,110+w/2);
   assert.equal(p.end-p.start,w);
@@ -30,7 +32,7 @@ for(const signature of v3.signatures){
   const sides=edges.map((e,i)=>e===type?i:-1).filter(x=>x>=0);
   const routes=g.paths.filter(p=>p.type===type);
   assert.equal(routes.length,sides.length<=2?(sides.length?1:0):sides.length);
-  assert(routes.every(p=>p.width===topology.portWidth[type]));
+  assert(routes.every(p=>p.width===v3.portWidths[type]));
   for(const side of sides)assert(routes.some(r=>r.sides.includes(side)),type+' must reach exit '+side);
   if(sides.length===2&&((sides[0]+2)%4!==sides[1])){
    assert.equal(routes[0].kind,'quadratic','Bends use edge-perpendicular quadratic tangents');
@@ -60,4 +62,4 @@ assert.equal(spec.approval.artwork,'eight-large-sprites-v3-artwork-certified');
 assert.equal(spec.approval.historical,'unreviewed');
 assert.equal(spec.approval.finalGameProduction,'not-approved');
 assert.notEqual(spec.approval.materials,'approved');
-console.log('V3 geometry contracts passed: 20 signatures, exact 20%/40% centred ports, connected bends/junctions, bridge separation, honest materials.');
+console.log('V3 geometry contracts passed: 20 signatures, exact 40-unit street/88-unit canal centred ports, connected bends/junctions, bridge separation, honest materials.');
