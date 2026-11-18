@@ -19,14 +19,14 @@ async function run(){
   assert.equal(await page.locator('#edges').getAttribute('aria-pressed'),'true');
   assert.equal(await page.locator('#scene').getAttribute('width'),'1980');
 
-  // The outside-only verge is present, with an exact 40-unit street centre.
+  // The outside-only verge is present, with an exact 28-unit street centre.
   // Compare the same world-coordinate sample with and without the band:
   // this must visibly change something on land, while keeping the stone.
   const pixel=()=>page.evaluate(()=>{
     const c=document.getElementById('scene'),ctx=c.getContext('2d');
     const sample=(x,y)=>[...ctx.getImageData(x*3,y*3,1,1).data];
     return {
-      edge:sample(110,132),core:sample(110,110),water:sample(110,330),
+      edge:sample(110,125),core:sample(110,110),water:sample(110,330),
       canalBankTop:sample(110,284),canalBankBottom:sample(110,376),
       canalContactTop:sample(110,285)
     };
