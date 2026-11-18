@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "assetPack": "Yangzhou V3 - first eight Layer 3 fine-detail sprites",
-  "status": "candidate-pending-visual-scale-and-placement-approval",
+  "assetPack": "Yangzhou V3 Layer 3 — complete 24-asset fine-detail library",
+  "status": "all-24-present-candidates-pending-individual-scale-and-placement-signoff",
   "tileWorldUnits": 220,
   "streetWorldUnits": 28,
   "canalWorldUnits": 88,
@@ -269,12 +269,545 @@
       },
       "artworkCertifiedForV3": false,
       "productionApproved": false
+    },
+    {
+      "id": "moss-clump-02",
+      "name": "Moss Clump 02",
+      "family": "garden",
+      "worldFootprint": [
+        20,
+        8
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_clean_high_resolution_transparent_background_pn.png",
+        "pixelDimensions": [
+          1774,
+          887
+        ],
+        "bytes": 942029,
+        "sha256": "09c98c13451d311ad7d4e9021346641b0b4519ab5baedf2c103f2d590fcf301c",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/moss-clump-02.webp",
+        "pixelDimensions": [
+          76,
+          23
+        ],
+        "bytes": 1828,
+        "sha256": "581caef87e9a153514811120db13ff3352a5b99e44a08be2e738df5420e758c5",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "alpha crop, transparent anti-aliased silhouette; <=100px max image dimension; WebP quality 82"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "moss-clump-03",
+      "name": "Moss Clump 03",
+      "family": "garden",
+      "worldFootprint": [
+        20,
+        10
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_detailed_isolated_watercolor_ink_style_game_art.png",
+        "pixelDimensions": [
+          1774,
+          887
+        ],
+        "bytes": 1175427,
+        "sha256": "962e54ef67fa063975f84860c3c9fae86dc242d14829479f31db68dfec3b3d29",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/moss-clump-03.webp",
+        "pixelDimensions": [
+          76,
+          31
+        ],
+        "bytes": 2082,
+        "sha256": "5f0c34ae8d73c19d82cd42b4d5e06c371a14db5cc973ba482c4d8dea73af09da",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "alpha crop, transparent anti-aliased silhouette; <=100px max image dimension; WebP quality 82"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "fallen-willow-leaves-02",
+      "name": "Fallen Willow Leaves 02",
+      "family": "willow",
+      "worldFootprint": [
+        20,
+        6
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_clean_isolated_png_style_illustration_on_a_pure.png",
+        "pixelDimensions": [
+          1774,
+          887
+        ],
+        "bytes": 362787,
+        "sha256": "9c3a51f2d15c91263a31a5b228449a0f7346654bfeab3535e85065086014e88b",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/fallen-willow-leaves-02.webp",
+        "pixelDimensions": [
+          76,
+          18
+        ],
+        "bytes": 1826,
+        "sha256": "36510ac63a9148342f1f4fbb5988853ac7e6d7335e7a248e3421deb22b7f22e7",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "alpha crop, transparent anti-aliased silhouette; <=100px max image dimension; WebP quality 82"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "wildflower-cluster-02",
+      "name": "Wildflower Cluster 02",
+      "family": "garden",
+      "worldFootprint": [
+        17,
+        14
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_detailed_high_quality_watercolor_style_botanica.png",
+        "pixelDimensions": [
+          1536,
+          1024
+        ],
+        "bytes": 1897219,
+        "sha256": "17ecf1c8598adebd7b7d3c98bbe897591f2aba332b8e77bd4ed840ca00de1a73",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/wildflower-cluster-02.webp",
+        "pixelDimensions": [
+          76,
+          41
+        ],
+        "bytes": 3384,
+        "sha256": "c397534f7b76864ea714fd8e625a11ff292f0b265d326047990d93df5b5344a6",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "alpha crop, transparent anti-aliased silhouette; <=100px max image dimension; WebP quality 82"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "small-stones-01",
+      "name": "Small Stones 01",
+      "family": "garden",
+      "worldFootprint": [
+        21,
+        11
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_detailed_high_resolution_watercolor_style_illus.png",
+        "pixelDimensions": [
+          1536,
+          1024
+        ],
+        "bytes": 1772287,
+        "sha256": "46a24293c752e5855de0663bbeef7313781f0fffe0b0a5fe78b8211e812a8eae",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/small-stones-01.webp",
+        "pixelDimensions": [
+          76,
+          26
+        ],
+        "bytes": 1854,
+        "sha256": "f2d7763641d73180d04589d42c43fceba3c9ad0a084a95d962267b900c2b053e",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "alpha crop, transparent anti-aliased silhouette; <=100px max image dimension; WebP quality 82"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "small-pebbles-01",
+      "name": "Small Pebbles 01",
+      "family": "garden",
+      "worldFootprint": [
+        20,
+        6
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_detailed_digital_illustration_game_art_style_a.png",
+        "pixelDimensions": [
+          1774,
+          887
+        ],
+        "bytes": 408946,
+        "sha256": "db2b895d3989cece568ef731f4208b31aae71fb486b9cd9317a6a19071081655",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/small-pebbles-01.webp",
+        "pixelDimensions": [
+          76,
+          17
+        ],
+        "bytes": 1750,
+        "sha256": "61b33d9c63e4ab3ec334a25bf77e3a7b856f069a7a5f9c4568732c3b19735f88",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "alpha crop, transparent anti-aliased silhouette; <=100px max image dimension; WebP quality 82"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "ceramic-flower-pot-02",
+      "name": "Ceramic Flower Pot 02",
+      "family": "courtyard",
+      "worldFootprint": [
+        16,
+        22
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_highly_detailed_watercolor_ink_wash_style_illu.png",
+        "pixelDimensions": [
+          1536,
+          1024
+        ],
+        "bytes": 1859853,
+        "sha256": "055f24a0f6af4e38df73502331448061ad65d00a16d391c18e6be45729391153",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/ceramic-flower-pot-02.webp",
+        "pixelDimensions": [
+          62,
+          76
+        ],
+        "bytes": 3888,
+        "sha256": "191cb040304edef3ad8a52e0137a6c501d175a2d80a1d26c4876b155a1cd45a5",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "alpha crop, transparent anti-aliased silhouette; <=100px max image dimension; WebP quality 82"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "wooden-bucket-01",
+      "name": "Wooden Bucket 01",
+      "family": "courtyard",
+      "worldFootprint": [
+        16,
+        20
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_highly_detailed_hand_painted_watercolor_style_i.png",
+        "pixelDimensions": [
+          1536,
+          1024
+        ],
+        "bytes": 1761827,
+        "sha256": "3b5dd1d510291916aa6ae238e6a3361eda7a08d61b1d76654a3fc837a622677b",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/wooden-bucket-01.webp",
+        "pixelDimensions": [
+          76,
+          72
+        ],
+        "bytes": 3692,
+        "sha256": "965bac71dd0e61e606a4f1f0450c0d0372c430ea25b6e0bcb37c2c5941553a5d",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "alpha crop, transparent anti-aliased silhouette; <=100px max image dimension; WebP quality 82"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "bamboo-planter-01",
+      "name": "Bamboo Planter 01",
+      "family": "courtyard",
+      "worldFootprint": [
+        25,
+        18
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_detailed_high_quality_watercolor_ink_style_asse.png",
+        "pixelDimensions": [
+          1536,
+          1024
+        ],
+        "bytes": 2137567,
+        "sha256": "a1605fd18f87bc91509c51bcd475be294aeb4f7c6e7c101ea1b6d16d2e1dcf94",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/bamboo-planter-01.webp",
+        "pixelDimensions": [
+          76,
+          59
+        ],
+        "bytes": 3918,
+        "sha256": "47e26a26d1618a3c1091c99004e732e5ee0f79b0679754a82bc5b5f35ca0815c",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "alpha crop, transparent anti-aliased silhouette; <=100px max image dimension; WebP quality 82"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "stacked-wicker-baskets-01",
+      "name": "Stacked Wicker Baskets 01",
+      "family": "market",
+      "worldFootprint": [
+        23,
+        20
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_highly_detailed_hand_painted_watercolor_ink_sty.png",
+        "pixelDimensions": [
+          1536,
+          1024
+        ],
+        "bytes": 2140808,
+        "sha256": "54e6a8f7292f8df9b72851ff7ace6a29ed0a57df297e19e80a92c864511f34f5",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/stacked-wicker-baskets-01.webp",
+        "pixelDimensions": [
+          76,
+          55
+        ],
+        "bytes": 2932,
+        "sha256": "192f6a529f209d306dfa851a2e45d4ebbbcfbd82bfaccd33678a28a9844718b8",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "alpha crop, transparent anti-aliased silhouette; <=100px max image dimension; WebP quality 82"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "wooden-goods-box-01",
+      "name": "Wooden Goods Box 01",
+      "family": "market",
+      "worldFootprint": [
+        21,
+        17
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_detailed_high_quality_watercolor_ink_style_digi.png",
+        "pixelDimensions": [
+          1536,
+          1024
+        ],
+        "bytes": 2193897,
+        "sha256": "262bb61552f904ba3059d5aad3f3e0dfade554b8c8a392e723c0c89e5e541917",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/wooden-goods-box-01.webp",
+        "pixelDimensions": [
+          76,
+          49
+        ],
+        "bytes": 2502,
+        "sha256": "e3af4bf1a25f50ce6f78c54c067bd13086023c45af830a709d49618fccc220e9",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "alpha crop, transparent anti-aliased silhouette; <=100px max image dimension; WebP quality 82"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "rolled-woven-mat-01",
+      "name": "Rolled Woven Mat 01",
+      "family": "market",
+      "worldFootprint": [
+        18,
+        10
+      ],
+      "sourceOriginal": {
+        "originalFileName": "woven_reed_mat_roll_with_bow.png",
+        "pixelDimensions": [
+          1254,
+          1254
+        ],
+        "bytes": 1096094,
+        "sha256": "538717748bee70ec960d7258eeb0e5c39761d33a2a011800f8e2d5dbf537bf0d",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/rolled-woven-mat-01.webp",
+        "pixelDimensions": [
+          76,
+          52
+        ],
+        "bytes": 2232,
+        "sha256": "9329a19c094362a751a4223b82172d23fad0cd3a6f2e15c2e20d26f31d3c19e5",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "alpha crop, transparent anti-aliased silhouette; <=100px max image dimension; WebP quality 82"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "tea-produce-containers-01",
+      "name": "Tea / Produce Containers 01",
+      "family": "market",
+      "worldFootprint": [
+        23,
+        18
+      ],
+      "sourceOriginal": {
+        "originalFileName": "jiangnan_tea_and_peach_still_life.png",
+        "pixelDimensions": [
+          1536,
+          1024
+        ],
+        "bytes": 2529302,
+        "sha256": "2f9ee0de85c5a94754229879a55ad1e77a957d065b5be509c03e52baf1172976",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/tea-produce-containers-01.webp",
+        "pixelDimensions": [
+          76,
+          48
+        ],
+        "bytes": 2592,
+        "sha256": "5bf8231a165db20a3e8eaf15a3f97bcc7ad90a859e112ff5deb6240db5ebd096",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "alpha crop, transparent anti-aliased silhouette; <=100px max image dimension; WebP quality 82"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "reed-cluster-02",
+      "name": "Reed Cluster 02",
+      "family": "waterfront",
+      "worldFootprint": [
+        21,
+        22
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_high_quality_hand_painted_watercolor_ink_illust.png",
+        "pixelDimensions": [
+          1536,
+          1024
+        ],
+        "bytes": 2084340,
+        "sha256": "542cac1241215d3e6267b754276cfac02d1b07cd18d5d02a30438675ed668f42",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/reed-cluster-02.webp",
+        "pixelDimensions": [
+          76,
+          75
+        ],
+        "bytes": 5794,
+        "sha256": "1bf84377e0f241c21e1d6cfd80a634ad3efbc9465ec5d5d681f184cfb5ecebce",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "alpha crop, transparent anti-aliased silhouette; <=100px max image dimension; WebP quality 82"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "floating-lotus-leaves-01",
+      "name": "Floating Lotus Leaves 01",
+      "family": "water",
+      "worldFootprint": [
+        22,
+        12
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_detailed_painterly_watercolor_ink_style_illustr.png",
+        "pixelDimensions": [
+          1536,
+          1024
+        ],
+        "bytes": 1851919,
+        "sha256": "cb28f6c168b48d34891a0a9fc418add693e038809d13a6764cf1e15be7467cd2",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/floating-lotus-leaves-01.webp",
+        "pixelDimensions": [
+          76,
+          42
+        ],
+        "bytes": 2266,
+        "sha256": "f8008478551fecca6dd4a2566356a5f7707142630370c031be9f6d753c79581b",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "alpha crop, transparent anti-aliased silhouette; <=100px max image dimension; WebP quality 82"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false,
+      "placementPolicy": "water-only"
+    },
+    {
+      "id": "stone-mooring-point-01",
+      "name": "Stone Mooring Point 01",
+      "family": "waterfront",
+      "worldFootprint": [
+        14,
+        18
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_highly_detailed_isolated_game_asset_style_illus.png",
+        "pixelDimensions": [
+          1312,
+          1199
+        ],
+        "bytes": 2209615,
+        "sha256": "1b4d8be215cb4311dd2045301cd2fe7d327de33d21a773912ca3fbc029f798fb",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/stone-mooring-point-01.webp",
+        "pixelDimensions": [
+          55,
+          76
+        ],
+        "bytes": 2640,
+        "sha256": "312d753d2e5acac2135b415d72dd85a3665c49c1ce64c5d9613c2f8528902d58",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "alpha crop, transparent anti-aliased silhouette; <=100px max image dimension; WebP quality 82"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false,
+      "placementPolicy": "dry-bank-only; only corrected standalone object"
     }
   ],
   "notes": [
-    "These are painted sprites from the eight generated original PNG images in this conversation, not vector stand-ins.",
-    "Source PNG masters are preserved in the user's downloadable review pack but are not included in this PR; the eight game-scale WebPs ARE on GitHub.",
-    "No changes to the playable V2 game, layer 1 materials, layer 2 artwork or bridge geometry.",
-    "Do not certify artwork from manifest integrity alone: inspect 1x and 3x on connected tiles."
-  ]
+    "All 24 game-scale WebPs are committed in assets/v3/fine/. Each candidate retains source PNG metadata including SHA-256.",
+    "Original full-resolution painted source PNGs are preserved in the conversation download archive but have not been committed; sourceOriginal.committedToGitHub remains false.",
+    "Water-only lotus leaves must remain completely inside canal water and never overlap bridge art. Reeds/mooring stay on a dry bank, clear of bridge, canal and walkways.",
+    "The road remains 28 world units and the canal remains 88 units wide; V2/Layer 1/Layer 2 artwork is unchanged.",
+    "Asset certification and approval are not implied by integrity checks or test screenshots. Review all 24 at 1x and 3x."
+  ],
+  "assetCount": 24,
+  "provenance": "The existing 8 and 16 new isolated paintings use game-scale WebP derivatives. The correct revised Stone Mooring Point 01 is the isolated bollard without baked floor or water; rejected versions are excluded."
 }
