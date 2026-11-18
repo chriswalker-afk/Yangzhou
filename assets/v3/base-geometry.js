@@ -8,7 +8,7 @@
   if(!topology)throw Error('Load tile-topology.js first');
   const SIZE=topology.size, MID=topology.center;
   // V3-only visual width: V2 topology/painted tile mouths remain 44 units.
-  const portWidths=Object.freeze({...topology.portWidth,S:40});
+  const portWidths=Object.freeze({...topology.portWidth,S:28});
   const directions=Object.freeze([[MID,0],[SIZE,MID],[MID,SIZE],[0,MID]]);
   const edgesOK=edges=>topology.edgeOK(edges);
   const port=(side,type)=>{
