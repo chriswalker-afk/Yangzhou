@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Yangzhou V3 — Layer 3 first eight fine-detail assets</title>
+<title>Yangzhou V3 — Layer 3 complete 24-asset fine-detail library</title>
 <style>
 :root{color-scheme:light;--ink:#35493f;--paper:#faf6eb;--line:#c9c2af}
 *{box-sizing:border-box}body{margin:0;background:#eee7d7;color:var(--ink);font:15px/1.48 system-ui,-apple-system,Segoe UI,sans-serif}
@@ -24,31 +24,33 @@ label{display:inline-flex;gap:6px;align-items:center}input[type="checkbox"]{acce
 <body><main>
 <p><a href="layer2-all-assets-v3.html">Existing 25-tile Layer 2 review</a> · <a href="index.html">Playable V2 (unchanged)</a></p>
 <h1>Yangzhou V3 · Layer 3 fine-detail review</h1>
-<p class="intro">All <strong>eight new original-painted fine details</strong> appear in context on the existing connected <strong>5 × 5 neighbourhood</strong>. This candidate uses the 28-unit stone road, 88-unit canals, fine-scale grass, authentic Layer 2 architecture and real bridge without changing their textures or geometry.</p>
-<div class="notice"><strong>Review candidate — no artwork certification.</strong> Compare <em>Layer 3 on/off</em>, then look at gardens, courtyard corners, shopfronts and watersides. The new images are compact game-scale WebP derivatives; original full-resolution PNG masters remain available separately in the project review pack and have not been replaced or falsely marked as committed source files.</div>
+<p class="intro">All <strong>24 original-painted fine details</strong> appear in context on the existing connected <strong>5 × 5 neighbourhood</strong>. This candidate uses the 28-unit stone road, 88-unit canals, fine-scale grass, authentic Layer 2 architecture and real bridge without changing their textures or geometry.</p>
+<div class="notice"><strong>Review candidate — no artwork certification.</strong> Compare <em>Layer 3 on/off</em>, then look at gardens, courtyard corners, shopfronts and watersides. The 16 new images join the eight original WebPs as transparent game-scale review candidates. The corrected mooring point is the standalone rope-tied stone bollard with no baked paving or canal. Source PNG paintings are preserved separately and have not been falsely marked as committed.</div>
 <div class="toolbar" aria-label="Fine details preview controls">
  <label><input id="showFine" type="checkbox" checked> Show Layer 3 details</label>
  <label><input id="showGuides" type="checkbox"> Placement bounds</label>
- <label for="focusAsset">Highlight <select id="focusAsset"><option value="">All eight</option></select></label>
+ <label for="focusAsset">Highlight <select id="focusAsset"><option value="">All 24</option></select></label>
  <button id="zoomOut" type="button">− Zoom</button>
  <button id="zoomIn" type="button">+ Zoom</button>
  <button id="zoomReset" type="button">Fit 1×</button><strong id="zoomText">1×</strong>
 </div>
-<div id="loadStatus" class="status" role="status" aria-live="polite">Loading existing V3 neighbourhood and verifying eight Layer 3 images…</div>
+<div id="loadStatus" class="status" role="status" aria-live="polite">Loading existing V3 neighbourhood and verifying all 24 Layer 3 images…</div>
 <h2>Full 25-tile composition</h2>
 <p class="intro">Click a tile to see which fine details have been placed there. No additional detail is painted over the bridge or within the canal or road core.</p>
-<div class="viewport"><canvas id="scene" width="2200" height="2200" aria-label="Five by five existing Yangzhou V3 tiles with all eight original-painted Layer 3 fine detail types"></canvas></div>
+<div class="viewport"><canvas id="scene" width="2200" height="2200" aria-label="Five by five existing Yangzhou V3 tiles with all 24 original-painted Layer 3 fine detail types"></canvas></div>
 <div id="tileInfo" class="status" aria-live="polite">Select a tile on the connected composition to inspect its details.</div>
-<h2>Five in-context close-ups</h2>
+<h2>Seven in-context close-ups</h2>
 <p class="intro">These crops come from the same connected composition above; they are not separately arranged illustrations. Switch Layer 3 off to compare the underlying textures, architecture and geometry.</p>
 <div class="grid">
  <article class="card"><h3>Plum blossom garden</h3><small>Petals and moss, near the tree</small><canvas class="detail" id="plumCrop" width="480" height="350"></canvas></article>
  <article class="card"><h3>Willow garden</h3><small>Fallen leaves with garden moss</small><canvas class="detail" id="willowCrop" width="480" height="350"></canvas></article>
  <article class="card"><h3>Courtyard</h3><small>Pottery and earthenware water jar</small><canvas class="detail" id="courtCrop" width="480" height="350"></canvas></article>
  <article class="card"><h3>Street market</h3><small>Basket, wildflowers and stone paving</small><canvas class="detail" id="marketCrop" width="480" height="350"></canvas></article>
- <article class="card"><h3>Canal bank</h3><small>Reeds only on land; water untouched</small><canvas class="detail" id="bankCrop" width="480" height="350"></canvas></article>
+ <article class="card"><h3>Canal bank</h3><small>Reed variants only on dry land; water untouched</small><canvas class="detail" id="bankCrop" width="480" height="350"></canvas></article>
+ <article class="card"><h3>Floating lotus</h3><small>Lotus leaves entirely in canal water, away from bridge</small><canvas class="detail" id="lotusCrop" width="480" height="350"></canvas></article>
+ <article class="card"><h3>Stone mooring point</h3><small>Correct standalone post on the dry bank, without painted floor or water</small><canvas class="detail" id="mooringCrop" width="480" height="350"></canvas></article>
 </div>
-<h2>Original artwork derivatives — eight candidates</h2>
+<h2>Original artwork derivatives — complete 24-asset candidate library</h2>
 <div id="gallery" class="grid"></div>
 <footer>Separate Layer 3 proof only. V2 gameplay, Layer 1 materials, existing 18 Layer 2 sprites and their approval statuses are not changed. Fine details are tile-local, deterministic and visually pending review.</footer>
 </main>
@@ -62,7 +64,7 @@ const images={},errors=[];let manifest=null,baseReady=false,layer3Plan=null,base
 function setStatus(){
  const art=Object.keys(images).length;
  const counts=layer3Plan?(' · '+layer3Plan.totalPlacements+' legal placements across 25 tiles'):'';
- $('loadStatus').innerHTML='<strong>'+art+' / 8</strong> Layer 3 artwork SHA-256 verified'+
+ $('loadStatus').innerHTML='<strong>'+art+' / 24</strong> Layer 3 artwork SHA-256 verified'+
   ' · '+(baseReady?'All 18 Layer 2 sprites and base textures loaded':'Loading base scene')+counts+
   (errors.length?' <span class="issue">Issues: '+errors.slice(-3).map(e=>String(e).replaceAll('<','&lt;')).join(' · ')+'</span>':'');
 }
@@ -71,7 +73,7 @@ async function loadFine(){
   const resp=await fetch('assets/v3/fine/manifest.json',{cache:'no-store'});
   if(!resp.ok)throw Error('Layer 3 manifest HTTP '+resp.status);
   manifest=await resp.json();
-  if(manifest.assets.length!==8||manifest.streetWorldUnits!==28||manifest.canalWorldUnits!==88)
+  if(manifest.assets.length!==24||manifest.streetWorldUnits!==28||manifest.canalWorldUnits!==88)
    throw Error('Wrong Layer 3 asset count or route contract');
   const gallery=$('gallery');gallery.replaceChildren();
   for(const entry of manifest.assets){
@@ -130,7 +132,7 @@ function waitForBase(){
 function drawCrop(id,role){
  const c=$(id),out=c.getContext('2d');
  out.clearRect(0,0,c.width,c.height);if(!basePlan)return;
- const entry=basePlan.tiles.find(a=>a.tile.role===role&&(id!=='bankCrop'||a.tile.y===2));
+ const entry=basePlan.tiles.find(a=>a.tile.role===role&&(!['bankCrop','lotusCrop'].includes(id)||a.tile.y===2));
  if(!entry)return;
  // Subject-aware crops must include the *whole* very small detail and some
  // authentic surroundings, especially the right-bank reed and market basket.
@@ -139,7 +141,9 @@ function drawCrop(id,role){
   willowCrop:{x:110,y:139,w:168,h:122.5},
   courtCrop:{x:110,y:132,w:150,h:109.4},
   marketCrop:{x:110,y:112,w:219,h:160},
-  bankCrop:{x:145,y:150,w:150,h:109.4}
+  bankCrop:{x:145,y:150,w:150,h:109.4},
+   lotusCrop:{x:110,y:94,w:150,h:109.4},
+   mooringCrop:{x:73,y:163,w:148,h:108}
  };
  const v=views[id];
  const worldX=entry.tile.x*220+v.x,worldY=entry.tile.y*220+v.y;
@@ -161,7 +165,8 @@ function draw(){
  }
  ctx.setTransform(1,0,0,1,0,0);
  for(const [id,role] of [['plumCrop','plum-garden'],['willowCrop','willow-garden'],['courtCrop','hall-step'],
-  ['marketCrop','market-garden'],['bankCrop','vertical-canal']])drawCrop(id,role);
+  ['marketCrop','market-garden'],['bankCrop','vertical-canal'],['lotusCrop','vertical-canal'],
+   ['mooringCrop','landing-new']])drawCrop(id,role);
 }
 function setZoom(x){
  zoom=Math.min(3,Math.max(1,x));canvas.style.width=1100*zoom+'px';
