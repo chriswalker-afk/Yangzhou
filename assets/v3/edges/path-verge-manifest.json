@@ -27,7 +27,7 @@
   },
   "geometry": {
     "material": "stone-road",
-    "roadCoreWorldUnits": 44,
+    "roadCoreWorldUnits": 40,
     "temporaryVergeWidthWorldUnits": 2.5,
     "paintedLandwardSpreadWorldUnits": 5,
     "routePeriodWorldUnits": 220,
