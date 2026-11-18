@@ -1,0 +1,280 @@
+{
+  "schemaVersion": 1,
+  "assetPack": "Yangzhou V3 - first eight Layer 3 fine-detail sprites",
+  "status": "candidate-pending-visual-scale-and-placement-approval",
+  "tileWorldUnits": 220,
+  "streetWorldUnits": 28,
+  "canalWorldUnits": 88,
+  "assets": [
+    {
+      "id": "moss-clump-01",
+      "name": "Moss Clump 01",
+      "family": "garden",
+      "worldFootprint": [
+        17,
+        9
+      ],
+      "sourceOriginal": {
+        "originalFileName": "hand_painted_moss_clump_sprite.png",
+        "pixelDimensions": [
+          1254,
+          1254
+        ],
+        "bytes": 320650,
+        "sha256": "bc5948eca72f2bff07f20d63a83a98b28ce9686ca0881098939672972cef9bb5",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/moss-clump-01.webp",
+        "pixelDimensions": [
+          72,
+          28
+        ],
+        "bytes": 1420,
+        "sha256": "53dfba5ff1b08516192e296db874a202445504b729b4f7d0c4e81f0312e3d6b2",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "crop transparent margin, resize up to 72px, WebP lossy quality 80; small scale preview only"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "fallen-willow-leaves-01",
+      "name": "Fallen Willow Leaves 01",
+      "family": "willow",
+      "worldFootprint": [
+        18,
+        7
+      ],
+      "sourceOriginal": {
+        "originalFileName": "willow_leaf_scatter_watercolour_sprite.png",
+        "pixelDimensions": [
+          1254,
+          1254
+        ],
+        "bytes": 271918,
+        "sha256": "5aec4dc3d65d7b00ee863a18145d1c4afa36118e414602c9175404262b3b308b",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/fallen-willow-leaves-01.webp",
+        "pixelDimensions": [
+          72,
+          26
+        ],
+        "bytes": 1556,
+        "sha256": "da93145b8af83df9dd7b76d4fcf861c5ede4e9998970f80f00e624fda628cb51",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "crop transparent margin, resize up to 72px, WebP lossy quality 80; small scale preview only"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "plum-petals-01",
+      "name": "Plum Petals 01",
+      "family": "plum",
+      "worldFootprint": [
+        18,
+        8
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_clean_isolated_watercolor_ink_wash_style_illu.png",
+        "pixelDimensions": [
+          1536,
+          1024
+        ],
+        "bytes": 1273930,
+        "sha256": "0ee52ea1c782bbd0f24f74e40479884e00f8c9465c3fca4f21c9f5acfa7ee6a3",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/plum-petals-01.webp",
+        "pixelDimensions": [
+          72,
+          33
+        ],
+        "bytes": 1462,
+        "sha256": "78415a46e08a186a42f88ce211facfca3cd39baf3dd1dd70ada73f2ba9622898",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "crop transparent margin, resize up to 72px, WebP lossy quality 80; small scale preview only"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "wildflower-cluster-01",
+      "name": "Wildflower Cluster 01",
+      "family": "garden",
+      "worldFootprint": [
+        16,
+        13
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_high_quality_detailed_watercolor_chinese_ink_st.png",
+        "pixelDimensions": [
+          1536,
+          1024
+        ],
+        "bytes": 1791084,
+        "sha256": "04eeb1b6ecf980cf0eaf0093ca50ca7e11da6e101cbe2d98a7d479047a25ad7d",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/wildflower-cluster-01.webp",
+        "pixelDimensions": [
+          72,
+          43
+        ],
+        "bytes": 2502,
+        "sha256": "a42be7738b4a42ac5549d04cabdf7c8c8d8c1059dfec257afab70f142ecabbb6",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "crop transparent margin, resize up to 72px, WebP lossy quality 80; small scale preview only"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "ceramic-flower-pot-01",
+      "name": "Ceramic Flower Pot 01",
+      "family": "courtyard",
+      "worldFootprint": [
+        15,
+        20
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_detailed_high_resolution_watercolor_style_illus.png",
+        "pixelDimensions": [
+          1312,
+          1199
+        ],
+        "bytes": 1435852,
+        "sha256": "6ac822e680f140cd43c5345bcd8505fe9f93866b4f6aeac5736e9303ad83c074",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/ceramic-flower-pot-01.webp",
+        "pixelDimensions": [
+          60,
+          72
+        ],
+        "bytes": 3286,
+        "sha256": "6ea0a6c65aed2054d4af63c7b7f241336e48fb2d0d2dbb02bfb2a80a53b65d0d",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "crop transparent margin, resize up to 72px, WebP lossy quality 80; small scale preview only"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "earthenware-water-jar-01",
+      "name": "Earthenware Water Jar 01",
+      "family": "courtyard",
+      "worldFootprint": [
+        17,
+        18
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_highly_detailed_watercolor_style_illustration_o.png",
+        "pixelDimensions": [
+          1312,
+          1199
+        ],
+        "bytes": 1963613,
+        "sha256": "18af07108b30f07e58f914fa4ff456f197a9780913d202093adca53b9f7b7a11",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/earthenware-water-jar-01.webp",
+        "pixelDimensions": [
+          69,
+          72
+        ],
+        "bytes": 3332,
+        "sha256": "bb5cae78d36a4d3d7bb0b4d2d477c051d4e386ef54ccc1c6eb0584887b7d1104",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "crop transparent margin, resize up to 72px, WebP lossy quality 80; small scale preview only"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "woven-basket-01",
+      "name": "Woven Basket 01",
+      "family": "market",
+      "worldFootprint": [
+        16,
+        15
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_detailed_high_quality_watercolor_style_illustra.png",
+        "pixelDimensions": [
+          1536,
+          1024
+        ],
+        "bytes": 2178836,
+        "sha256": "34bc3d8444803a13fdd0d0fab7a30883d3b93753421f0f1d4e3386bdc917094e",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/woven-basket-01.webp",
+        "pixelDimensions": [
+          72,
+          65
+        ],
+        "bytes": 3156,
+        "sha256": "22c20660b98bc729235b18d09766a40841ad5bdf4e5d2a6da7733688e8a20b68",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "crop transparent margin, resize up to 72px, WebP lossy quality 80; small scale preview only"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    },
+    {
+      "id": "reed-cluster-01",
+      "name": "Reed Cluster 01",
+      "family": "waterfront",
+      "worldFootprint": [
+        22,
+        19
+      ],
+      "sourceOriginal": {
+        "originalFileName": "a_detailed_high_quality_watercolor_ink_style_bota.png",
+        "pixelDimensions": [
+          1536,
+          1024
+        ],
+        "bytes": 2364943,
+        "sha256": "4ee1cfb724c655f56011d657b6865b720ddda8971b2be07a53599d8fecb1c1c2",
+        "committedToGitHub": false
+      },
+      "prepared": {
+        "path": "assets/v3/fine/reed-cluster-01.webp",
+        "pixelDimensions": [
+          72,
+          57
+        ],
+        "bytes": 4274,
+        "sha256": "e4bce1a848d1700e4d7fae06ea5f32cd59826f4c47bfa9a6ac2ea8ec39223d15",
+        "mimeType": "image/webp",
+        "alpha": true,
+        "conversion": "crop transparent margin, resize up to 72px, WebP lossy quality 80; small scale preview only"
+      },
+      "artworkCertifiedForV3": false,
+      "productionApproved": false
+    }
+  ],
+  "notes": [
+    "These are painted sprites from the eight generated original PNG images in this conversation, not vector stand-ins.",
+    "Source PNG masters are preserved in the user's downloadable review pack but are not included in this PR; the eight game-scale WebPs ARE on GitHub.",
+    "No changes to the playable V2 game, layer 1 materials, layer 2 artwork or bridge geometry.",
+    "Do not certify artwork from manifest integrity alone: inspect 1x and 3x on connected tiles."
+  ]
+}
