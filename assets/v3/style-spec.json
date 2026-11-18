@@ -12,7 +12,7 @@
   ],
   "portWidthWorldUnits": {
     "L": 0,
-    "S": 40,
+    "S": 28,
     "W": 88
   },
   "palette": {
@@ -251,7 +251,7 @@
       "id": "path-verge",
       "routeType": "S",
       "geometry": "normal-offset-route-ribbon",
-      "coreMouthWorldUnits": 40,
+      "coreMouthWorldUnits": 28,
       "landSideWidthWorldUnits": 2.5,
       "contactWidthWorldUnits": 0.8,
       "status": "temporary-geometry-only",
@@ -273,7 +273,7 @@
       "id": "bridge-deck-edge",
       "routeType": "S",
       "geometry": "normal-offset-route-ribbon-over-water",
-      "coreMouthWorldUnits": 40,
+      "coreMouthWorldUnits": 28,
       "landSideWidthWorldUnits": 2.5,
       "contactWidthWorldUnits": 0.8,
       "status": "temporary-geometry-only",
@@ -318,7 +318,7 @@
       "productionApproved": false,
       "geometryTreatment": "normal-following-land-side-painted-overlay",
       "colorSpace": "sRGB",
-      "routeCoreWidthWorldUnits": 40,
+      "routeCoreWidthWorldUnits": 28,
       "paintedLandwardSpreadWorldUnits": 5,
       "width": 1992,
       "height": 194,
