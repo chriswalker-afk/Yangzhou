@@ -8,7 +8,7 @@ async function inspect(page,label){
  await page.goto(URL,{waitUntil:'domcontentloaded'});
  await page.waitForFunction(()=>{
   const el=document.getElementById('loadStatus'),r=window.YangzhouV3FineReview;
-  return el?.textContent.includes('8 / 8')&&el?.textContent.includes('All 18 Layer 2')&&
+  return el?.textContent.includes('24 / 24')&&el?.textContent.includes('All 18 Layer 2')&&
     r?.getPlan()?.tiles.length===25;
  },null,{timeout:120000});
  const state=await page.evaluate(()=>{
@@ -20,10 +20,12 @@ async function inspect(page,label){
      .getElementById('loadStatus').textContent};
  });
  assert.deepEqual(state.canvas,[2200,2200]);
- assert.equal(state.used.length,8,'All eight sprites must be in context');
- assert(state.total>=20&&state.total<=60,'Density should be restrained');
- assert.equal(state.gallery,8);assert.equal(state.images,8);
+ assert.equal(state.used.length,24,'All 24 sprites must be in context');
+ assert(state.total>=55&&state.total<=110,'Density should be restrained');
+ assert.equal(state.gallery,24);assert.equal(state.images,24);
  assert.deepEqual(state.error,[]);
+ assert(state.counts['floating-lotus-leaves-01']>0&&state.counts['stone-mooring-point-01']>0,
+  'Both corrected shoreline details must be rendered');
  assert.match(state.source,/18 \/ 18/);
  // For each fine asset, removing the overlay must change real pixels in at
  // least one of its in-context footprints, not only the gallery.
@@ -60,9 +62,9 @@ async function inspect(page,label){
  assert(compare.waterEqual&&compare.roadEqual,'Unchanged road and canal cores');
  assert(compare.restored);
  assert.deepEqual(errors,[],'No browser scripting errors');
- await page.locator('#scene').screenshot({path:'artifacts/v3/layer3-eight-'+label+'-5x5.png',animations:'disabled'});
- await page.screenshot({path:'artifacts/v3/layer3-eight-'+label+'-page.png',fullPage:true,animations:'disabled'});
- for(const c of ['plumCrop','willowCrop','courtCrop','marketCrop','bankCrop'])
+ await page.locator('#scene').screenshot({path:'artifacts/v3/layer3-complete-'+label+'-5x5.png',animations:'disabled'});
+ await page.screenshot({path:'artifacts/v3/layer3-complete-'+label+'-page.png',fullPage:true,animations:'disabled'});
+ for(const c of ['plumCrop','willowCrop','courtCrop','marketCrop','bankCrop','lotusCrop','mooringCrop'])
   if(label==='desktop')await page.locator('#'+c).screenshot({path:'artifacts/v3/layer3-'+c+'.png',animations:'disabled'});
  return state;
 }
@@ -76,7 +78,7 @@ async function main(){
   await desktop.locator('#zoomReset').click();
   const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1,isMobile:true,hasTouch:true});
   await inspect(mobile,'mobile');
-  console.log('Layer 3 desktop/mobile paint proof: 8 SHA-verified sprites, '+state.total+
+  console.log('Layer 3 desktop/mobile paint proof: 24 SHA-verified sprites, '+state.total+
    ' in-context detail placements, on/off pixel differences, unchanged canal and road, 1x/3x checks, gallery and close-ups.');
  }finally{await browser.close();}
 }
