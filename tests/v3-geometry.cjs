@@ -53,7 +53,9 @@ const junction=v3.compile('WWWL'.split(''));
 assert.equal(junction.paths.length,3);
 assert.equal(junction.exits[3].width,0);
 assert.throws(()=>v3.compile(['X','L','L','L']));
-assert(spec.materials.every(m=>m.state==='candidate-accepted'&&m.image?.endsWith(m.id+'-01-lossless.webp')),'Materials are accepted candidates with exact expected image names');
+const materialRuntime=require('../assets/v3/material-runtime.js');
+assert(spec.materials.every(m=>m.state==='candidate-accepted'&&m.image===`assets/v3/materials/${materialRuntime.files[m.id]}`),
+ 'All materials must match the versioned files selected by the V3 material runtime');
 assert.equal(spec.approval.artwork,'eight-large-sprites-v3-artwork-certified');
 assert.equal(spec.approval.historical,'unreviewed');
 assert.equal(spec.approval.finalGameProduction,'not-approved');
