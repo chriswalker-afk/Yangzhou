@@ -87,10 +87,13 @@ jobs:
           node tests/v3-waterside-landing-preview.cjs
           node tests/v3-layer2-new-asset-intake.cjs
           node --check assets/v3/all-layer2-review.js
+          node --check assets/v3/layer3-fine-details.js
+          node --check tests/v3-layer3.cjs
           node --check tests/v3-all-layer2-review.cjs
           node --check tests/v3-all-layer2-review-visual.cjs
           node tests/v3-seven-new-assets.cjs
           node tests/v3-all-layer2-review.cjs
+          node tests/v3-layer3.cjs
           node tests/v3-courtyard-enclosure.cjs
           node tests/v3-moon-gate.cjs
           node tests/v3-moon-gate-ground.cjs
