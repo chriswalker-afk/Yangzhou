@@ -185,9 +185,13 @@ function plan(basePlan,geometry,board,walls){
     }
     if(nearest)p=nearest;
    }
-   if(!legal(p))
-    throw Error('Unsafe/overlapping fine detail '+p.id+' at '+entry.tile.x+','+
-      entry.tile.y+' ('+x+','+y+') role '+role);
+   if(!legal(p)){
+    // Under no circumstances force a detail onto a road, wall, building or
+    // other asset. Secondary decorations are optional when a tile is full.
+    if(index>=oldRecipe.length)continue;
+    throw Error('Existing certified review placement moved: '+p.id+' at '+
+      entry.tile.x+','+entry.tile.y+' ('+x+','+y+') role '+role);
+   }
    placements.push(p);seen.add(p.id);totals[p.id]=(totals[p.id]||0)+1;
   }
   tiles.push(Object.freeze({tile:entry.tile,art:Object.freeze(placements)}));
